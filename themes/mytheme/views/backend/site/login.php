@@ -1,3 +1,6 @@
+<?php
+$this->pageTitle = Yii::app()->name . ' - Login';
+?>
 <style>
 <!--
     div.block {
@@ -27,6 +30,20 @@
         'clientOptions'             => array(
             'validateOnSubmit'          => true,
             'validateOnChange'          => true,
+//             // /////////////////////////
+//             'afterValidate'=>'js:function(form,data,hasError){
+//                         if(!hasError){
+//                                 $.ajax({
+//                                         "type":"POST",
+//                                         "url":"'.CHtml::normalizeUrl(array("test/eleven")).'",
+//                                         "data":form.serialize(),
+//                                         "success":function(data){$("#test").html(data);},
+            
+//                                         });
+//                                 }
+//                         }'
+            
+//             // /////////////////////////
         ),
         'htmlOptions'               => array('name' => 'loginform', 'focus'=>'input[type="fldUserName"]:first',),
     ));
@@ -79,9 +96,16 @@
 			                    <p class="note">Fields with <span class="required">*</span> are required.</p>
 	                        
 <!-- 			                <input class="form-control" type="text" placeholder="E-mail address"> -->
-			                    <?php echo $form->textField($model,'fldUserName', array('class'=>'form-control', 'placeholder'=>"E-mail address")); ?>
+			                    <?php echo $form->textField($model,'fldUserName', array('class'=>'form-control', 'placeholder'=>"E-mail address",
+'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter your email address or user name", "data-original-title"=>"Enter your email address or user name."			                    
+)); ?>
+			                    <?php echo $form->error($model,'fldUserName'); ?>
 <!-- 			                <input class="form-control" type="password" placeholder="Password"> -->
-			                    <?php echo $form->passwordField($model,'fldPassword', array('class'=>'form-control', 'placeholder'=>"Password")); ?>
+			                    <?php echo $form->passwordField($model,'fldPassword', array('class'=>'form-control', 'placeholder'=>"Password",
+'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter your password", "data-original-title"=>"Enter your password."			                    
+)); ?>
+			                    <?php echo $form->error($model,'fldPassword'); ?>
+			                    
 			                <div class="action">
 <!-- 			                    <a class="btn btn-primary signup" href="index.html">Login</a> -->
                                 <?php echo CHtml::submitButton('Login', array('class'=>'btn btn-primary signup')); ?>
@@ -105,9 +129,9 @@
     
     
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
+<!--     <script src="https://code.jquery.com/jquery.js"></script> -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/custom.js"></script>
+<!--     <script src="bootstrap/js/bootstrap.min.js"></script> -->
+<!--     <script src="js/custom.js"></script> -->
   </div>
   

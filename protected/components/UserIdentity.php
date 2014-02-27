@@ -1,10 +1,21 @@
 <?php
 
 /**
-* UserIdentity represents the data needed to identity a user.
-* It contains the authentication method that checks if the provided
-* data can identity the user.
-*/
+ * User identity component to manage authentication
+ *
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ */
+
+/**
+ * UserIdentity represents the data needed to identity a user.
+ * ...It contains the authentication method that checks if the provided
+ * ...data can identity the user.
+ *
+ * @package Components
+ * @version 1.0
+ */
 class UserIdentity extends CUserIdentity
 {
 
@@ -24,6 +35,13 @@ class UserIdentity extends CUserIdentity
         return $this->_username;
     }
 
+    /**
+     * Authenticates a user.
+     * Authenticate against our Database
+     *
+     * @return boolean whether authentication succeeds.
+     *
+     */
     public function getId()
     {
         return $this->_id;
@@ -31,9 +49,14 @@ class UserIdentity extends CUserIdentity
 
     public function authenticate()
     {
-        $user = Users::model()->find('LOWER(username)=?', array(
+
+//         $user = Users::model()->find('LOWER(username)=?', array(
+//             strtolower($this->username)
+//         ));
+        $user = User::model()->find('LOWER(user_name)=?', array(
             strtolower($this->username)
         ));
+        
         if ($user === null) {
             $this->errorCode = self::ERROR_UNKNOWN_IDENTITY;
         } elseif ($user->password !== md5($this->password)) {

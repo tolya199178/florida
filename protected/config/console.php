@@ -13,7 +13,7 @@ return array(
 	'components'=>array(
 			'db'=>array(
 					// 'connectionString' => 'mysql:host=localhost;dbname=ifas_org_za_webadm',
-					'connectionString' => 'mysql:host=localhost;dbname=datacraft_web',
+					'connectionString' => 'mysql:host=localhost;dbname=florida',
 					'emulatePrepare' => true,
 					'username' => 'root',
 					'password' => 'bluebell',

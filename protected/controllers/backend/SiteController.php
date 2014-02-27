@@ -69,10 +69,10 @@ class SiteController extends BackEndController
 			// $model = new LoginForm;
 	    $model = new LoginForm;
 	    
-	    print_r($_POST);
+	    // print_r($_POST);
 		
 			// if it is ajax validation request
-			if (isset($_POST['ajax']) && $_POST['ajax'] === 'LoginForm')
+			if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form')
 			{
 				$errors = CActiveForm::validate($model);
 				if ($errors != '[]')
