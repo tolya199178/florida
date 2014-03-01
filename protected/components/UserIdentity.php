@@ -59,12 +59,16 @@ class UserIdentity extends CUserIdentity
         
         if ($user === null) {
             $this->errorCode = self::ERROR_UNKNOWN_IDENTITY;
-        } elseif ($user->password !== md5($this->password)) {
-            $this->errorCode = self::ERROR_PASSWORD_INVALID;
+        }
+        else if($user->password !==  utf8_encode( crypt($user->user_name.$user->password,$user->password))){
+            $this->errorCode=self::ERROR_PASSWORD_INVALID;
         } else {
-            $this->_id = $user->id;
+            // Map the CUserIdentity user id field with the database user id field
+            $this->_id = $user->user_id;
+            
             $this->_username = $user->email;
-            $user->last_login_time = new CDbExpression("NOW()");
+            
+            $user->last_login = new CDbExpression("NOW()");
             $user->save();
             $this->errorCode = self::ERROR_NONE;
         }

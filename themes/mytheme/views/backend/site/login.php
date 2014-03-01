@@ -28,7 +28,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
         'enableClientValidation'    => true,
         'errorMessageCssClass'      => 'alert alert-error',
         'clientOptions'             => array(
-            'validateOnSubmit'          => true,
+          //  'validateOnSubmit'          => true,
             'validateOnChange'          => true,
 //             // /////////////////////////
 //             'afterValidate'=>'js:function(form,data,hasError){
@@ -83,7 +83,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
 			                <div class="social">
 	                            <a class="face_login" href="#">
 	                                <span class="face_icon">
-	                                    <img src="images/facebook.png" alt="fb">
+	                                    <img src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/images/facebook.png" alt="fb">
 	                                </span>
 	                                <span class="text">Sign in with Facebook</span>
 	                            </a>

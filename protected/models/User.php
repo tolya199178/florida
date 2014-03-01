@@ -32,10 +32,10 @@
  * @property string $hometown
  * @property string $marital_status
  * @property string $places_want_to_visit
- * @property string $my_info_permssions
- * @property string $photos_permssions
- * @property string $friends_permssions
- * @property string $blogs_permssions
+ * @property string $my_info_permissions
+ * @property string $photos_permissions
+ * @property string $friends_permissions
+ * @property string $blogs_permissions
  * @property string $travel_options_permissions
  * @property string $image
  *
@@ -44,101 +44,214 @@
  * @property User[] $users
  * @property User $createdBy
  * @property User[] $users1
+ * @property Advertisement[] $advertisements
+ * @property Advertisement[] $advertisements1
+ * @property Advertisement[] $advertisements2
+ * @property Business[] $businesses
+ * @property Business[] $businesses1
+ * @property Business[] $businesses2
+ * @property Business[] $businesses3
+ * @property BusinessUser[] $businessUsers
+ * @property Event[] $events
+ * @property Event[] $events1
+ * @property MailTemplate[] $mailTemplates
+ * @property MailTemplate[] $mailTemplates1
+ * @property Page[] $pages
+ * @property Page[] $pages1
+ * @property PlacesSubscribed[] $placesSubscribeds
+ * @property PlacesVisited[] $placesVisiteds
+ * @property SavedSearch[] $savedSearches
+ * @property UserEvent[] $userEvents
+ * 
+ */
+
+/**
+ * User activerecord model class provides a mechanism to keep data and their
+ * ...relevant business rules. A model instant represents a single database row.
+ * ...
+ * ...Usage:
+ * ...   $user = User::model()
+ * ...or
+ * ...   $user = new User;
+ * ...or
+ * ...   $user = new User($scenario);
+ *
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Components
+ * @version 1.0
  */
 class User extends CActiveRecord
 {
+    const SCENARIO_CHANGE_REGISTER  = 'register';
+    const SCENARIO_CHANGE_PASSWORD  = 'change-password';
+    const SCENARIO_FORGOT_PASSWORD  = 'forgot-password';
+    const SCENARIO_LOGIN            = 'login';
+    const SCENARIO_VALIDATION       = 'validation';
+
     /**
+     * Get database table name associated with the model.
+     *
+     * @param <none> <none>
+     *
      * @return string the associated database table name
+     * @access public
      */
     public function tableName()
     {
         return '{{user}}';
     }
 
+
     /**
+     * Set rules for validation of model attributes. Each attribute is listed with its
+     * ...associated rules. All attributes listed in the rules set forms a set of 'safe'
+     * ...attributes that allow it to be used in massive assignment.
+     *
+     * @param <none> <none>
+     *
      * @return array validation rules for model attributes.
+     * @access public
      */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
+        // NOTE: you should only define rules for those attributes that will receive user inputs.
         return array(
-            array('user_name, modified_time, created_by, modified_by, mobile_carrier_id', 'required'),
-            array('created_by, modified_by, mobile_carrier_id', 'numerical', 'integerOnly'=>true),
-            array('user_name, email, first_name, last_name, activation_code, facebook_id, facebook_name, hometown, places_want_to_visit, image', 'length', 'max'=>255),
-            array('password', 'length', 'max'=>512),
-            array('user_type, activation_status', 'length', 'max'=>13),
-            array('status', 'length', 'max'=>8),
-            array('registered_with_fb, loggedin_with_fb, send_sms_notification', 'length', 'max'=>1),
-            array('login_status', 'length', 'max'=>10),
-            array('mobile_number', 'length', 'max'=>64),
-            array('marital_status, my_info_permssions, photos_permssions, friends_permssions, blogs_permssions, travel_options_permissions', 'length', 'max'=>7),
-            array('created_time, activation_time, last_login, date_of_birth', 'safe'),
-
             
-            // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
-            array('user_id, user_name, email, password, first_name, last_name, user_type, status, created_time, modified_time, created_by, modified_by, activation_code, activation_status, activation_time, facebook_id, facebook_name, registered_with_fb, loggedin_with_fb, login_status, last_login, mobile_number, mobile_carrier_id, send_sms_notification, date_of_birth, hometown, marital_status, places_want_to_visit, my_info_permssions, photos_permssions, friends_permssions, blogs_permssions, travel_options_permissions, image', 'safe', 'on'=>'search'),
+            // Mandatory rules
+            array('user_name, email, first_name,
+                   last_name, mobile_carrier_id',   'required'),
+            array('password, user_name',            'required', 'on' => array(self::SCENARIO_CHANGE_PASSWORD,self::SCENARIO_LOGIN,self::SCENARIO_CHANGE_REGISTER)),
+            array('activation_code',                'required', 'on' => self::SCENARIO_VALIDATION),
+            array('email',                          'required', 'on' => self::SCENARIO_FORGOT_PASSWORD),
+            
+            // Data types, sizes
+            array('mobile_carrier_id',              'numerical', 'integerOnly'=>true),
+            array('user_name, email, password, 
+                   first_name, last_name, 
+                   activation_code, facebook_id,
+                   facebook_name, hometown, 
+                   places_want_to_visit, image',    'length', 'max'=>255),
+            array('mobile_number',                  'length', 'max'=>64),
+            
+            array('email, user_name',               'email','checkMX'=>false),
+            
+            // ranges
+            array('user_type',                      'in','range'=>array('superadmin','admin','user','business_user'),'allowEmpty'=>false),
+            array('status',                         'in','range'=>array('inactive','active','deleted','banned'),'allowEmpty'=>false),
+            array('activation_status',              'in','range'=>array('activated','not_activated'),'allowEmpty'=>false),
+            array('login_status',                   'in','range'=>array('logged in','logged out'),'allowEmpty'=>false),
+            array('send_sms_notification',          'in','range'=>array('Y','N'),'allowEmpty'=>false),
+
+            array('registered_with_fb',             'in','range'=>array('Y','N'),'allowEmpty'=>false),
+            array('loggedin_with_fb',               'in','range'=>array('Y','N'),'allowEmpty'=>false),
+            
+            array('marital_status',                 'in','range'=>array('Married','Single','Unknown'),'allowEmpty'=>false),
+            array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+            array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+            array('friends_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+            array('blogs_permissions',              'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+            array('travel_options_permissions',     'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+
+                        
+            array('date_of_birth', 'safe'),
+            
+            // The following rule is used by search(). It only contains attributes that should be searched.
+            array('user_id, user_name, email, first_name, last_name, user_type, status,
+                   created_by, modified_by, activation_code, activation_status, activation_time, 
+                   facebook_id, facebook_name, registered_with_fb, loggedin_with_fb, 
+                   login_status, last_login, mobile_number, mobile_carrier_id, send_sms_notification, 
+                   date_of_birth, hometown, marital_status, places_want_to_visit',
+                  'safe', 'on'=>'search'),
         );
     }
 
+
     /**
+     * Set rules for the relation of this record model to other record models.
+     *
+     * @param <none> <none>
+     *
      * @return array relational rules.
+     * @access public
      */
     public function relations()
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'modifiedBy' => array(self::BELONGS_TO, 'User', 'modified_by'),
-            'users' => array(self::HAS_MANY, 'User', 'modified_by'),
-            'createdBy' => array(self::BELONGS_TO, 'User', 'created_by'),
-            'users1' => array(self::HAS_MANY, 'User', 'created_by'),
-        );
+		return array(
+			'advertisements'     => array(self::HAS_MANY, 'Advertisement', 'created_by'),
+			'advertisements1'    => array(self::HAS_MANY, 'Advertisement', 'modified_by'),
+			'advertisements2'    => array(self::HAS_MANY, 'Advertisement', 'user_id'),
+			'businesses'         => array(self::HAS_MANY, 'Business', 'claimed_by'),
+			'businesses1'        => array(self::HAS_MANY, 'Business', 'created_by'),
+			'businesses2'        => array(self::HAS_MANY, 'Business', 'modified_by'),
+			'businesses3'        => array(self::HAS_MANY, 'Business', 'add_request_processed_by'),
+			'businessUsers'      => array(self::HAS_MANY, 'BusinessUser', 'user_id'),
+			'events'             => array(self::HAS_MANY, 'Event', 'created_by'),
+			'events1'            => array(self::HAS_MANY, 'Event', 'modified_by'),
+			'mailTemplates'      => array(self::HAS_MANY, 'MailTemplate', 'created_by'),
+			'mailTemplates1'     => array(self::HAS_MANY, 'MailTemplate', 'modified_by'),
+			'pages'              => array(self::HAS_MANY, 'Page', 'created_by'),
+			'pages1'             => array(self::HAS_MANY, 'Page', 'modified_by'),
+			'placesSubscribeds'  => array(self::HAS_MANY, 'PlacesSubscribed', 'user_id'),
+			'placesVisiteds'     => array(self::HAS_MANY, 'PlacesVisited', 'user_id'),
+			'savedSearches'      => array(self::HAS_MANY, 'SavedSearch', 'user_id'),
+			'modifiedBy'         => array(self::BELONGS_TO, 'User', 'modified_by'),
+			'users'              => array(self::HAS_MANY, 'User', 'modified_by'),
+			'createdBy'          => array(self::BELONGS_TO, 'User', 'created_by'),
+			'users1'             => array(self::HAS_MANY, 'User', 'created_by'),
+			'userEvents'         => array(self::HAS_MANY, 'UserEvent', 'user_id'),
+		);
     }
 
+
     /**
+     * Label set for attributes. Only required for attributes that appear on view/forms.
+     * ...
+     * Usage:
+     *    echo $form->label($model, $attribute)
+     *
+     * @param <none> <none>
+     *
      * @return array customized attribute labels (name=>label)
+     * @access public
      */
     public function attributeLabels()
     {
         return array(
-            'user_id' => 'User',
-            'user_name' => 'User Name',
-            'email' => 'Email',
-            'password' => 'Password',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'user_type' => 'User Type',
-            'status' => 'Status',
-            'created_time' => 'Created Time',
-            'modified_time' => 'Modified Time',
-            'created_by' => 'Created By',
-            'modified_by' => 'Modified By',
-            'activation_code' => 'Activation Code',
-            'activation_status' => 'Activation Status',
-            'activation_time' => 'Activation Time',
-            'facebook_id' => 'Facebook',
-            'facebook_name' => 'Facebook Name',
-            'registered_with_fb' => 'Registered With Fb',
-            'loggedin_with_fb' => 'Loggedin With Fb',
-            'login_status' => 'Login Status',
-            'last_login' => 'Last Login',
-            'mobile_number' => 'Mobile Number',
-            'mobile_carrier_id' => 'Mobile Carrier',
+            'user_id'               => 'User',
+            'user_name'             => 'User Name',
+            'email'                 => 'Email',
+            'password'              => 'Password',
+            'first_name'            => 'First Name',
+            'last_name'             => 'Last Name',
+            'user_type'             => 'User Type',
+            'status'                => 'Status',
+            'activation_code'       => 'Activation Code',
+            'activation_status'     => 'Activation Status',
+            'facebook_id'           => 'Facebook',
+            'facebook_name'         => 'Facebook Name',
+            'registered_with_fb'    => 'Registered With Fb',
+            'loggedin_with_fb'      => 'Loggedin With Fb',
+            'login_status'          => 'Login Status',
+            'mobile_number'         => 'Mobile Number',
+            'mobile_carrier_id'     => 'Mobile Carrier',
             'send_sms_notification' => 'Send Sms Notification',
-            'date_of_birth' => 'Date Of Birth',
-            'hometown' => 'Hometown',
-            'marital_status' => 'Marital Status',
-            'places_want_to_visit' => 'Places Want To Visit',
-            'my_info_permssions' => 'My Info Permssions',
-            'photos_permssions' => 'Photos Permssions',
-            'friends_permssions' => 'Friends Permssions',
-            'blogs_permssions' => 'Blogs Permssions',
+            'date_of_birth'         => 'Date Of Birth',
+            'hometown'              => 'Hometown',
+            'marital_status'        => 'Marital Status',
+            'places_want_to_visit'  => 'Places Want To Visit',
+            'my_info_permissions'   => 'My Info permissions',
+            'photos_permissions'    => 'Photos permissions',
+            'friends_permissions'   => 'Friends permissions',
+            'blogs_permissions'     => 'Blogs permissions',
             'travel_options_permissions' => 'Travel Options Permissions',
-            'image' => 'Image',
+            'image'                 => 'Image',
         );
     }
+
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -149,63 +262,84 @@ class User extends CActiveRecord
      * models according to data in model fields.
      * - Pass data provider to CGridView, CListView or any similar widget.
      *
+     * @param <none> <none>
+     *
      * @return CActiveDataProvider the data provider that can return the models
-     * based on the search/filter conditions.
+     *         ...based on the search/filter conditions.
+     * @access public
      */
     public function search()
     {
-        // @todo Please modify the following code to remove attributes that should not be searched.
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('user_id',$this->user_id);
-        $criteria->compare('user_name',$this->user_name,true);
-        $criteria->compare('email',$this->email,true);
-        $criteria->compare('password',$this->password,true);
-        $criteria->compare('first_name',$this->first_name,true);
-        $criteria->compare('last_name',$this->last_name,true);
-        $criteria->compare('user_type',$this->user_type,true);
-        $criteria->compare('status',$this->status,true);
-        $criteria->compare('created_time',$this->created_time,true);
-        $criteria->compare('modified_time',$this->modified_time,true);
-        $criteria->compare('created_by',$this->created_by);
-        $criteria->compare('modified_by',$this->modified_by);
-        $criteria->compare('activation_code',$this->activation_code,true);
-        $criteria->compare('activation_status',$this->activation_status,true);
-        $criteria->compare('activation_time',$this->activation_time,true);
-        $criteria->compare('facebook_id',$this->facebook_id,true);
-        $criteria->compare('facebook_name',$this->facebook_name,true);
-        $criteria->compare('registered_with_fb',$this->registered_with_fb,true);
-        $criteria->compare('loggedin_with_fb',$this->loggedin_with_fb,true);
-        $criteria->compare('login_status',$this->login_status,true);
-        $criteria->compare('last_login',$this->last_login,true);
-        $criteria->compare('mobile_number',$this->mobile_number,true);
-        $criteria->compare('mobile_carrier_id',$this->mobile_carrier_id);
-        $criteria->compare('send_sms_notification',$this->send_sms_notification,true);
-        $criteria->compare('date_of_birth',$this->date_of_birth,true);
-        $criteria->compare('hometown',$this->hometown,true);
-        $criteria->compare('marital_status',$this->marital_status,true);
-        $criteria->compare('places_want_to_visit',$this->places_want_to_visit,true);
-        $criteria->compare('my_info_permssions',$this->my_info_permssions,true);
-        $criteria->compare('photos_permssions',$this->photos_permssions,true);
-        $criteria->compare('friends_permssions',$this->friends_permssions,true);
-        $criteria->compare('blogs_permssions',$this->blogs_permssions,true);
-        $criteria->compare('travel_options_permissions',$this->travel_options_permissions,true);
-        $criteria->compare('image',$this->image,true);
-
+        $criteria->compare('user_id',               $this->user_id);
+        $criteria->compare('user_name',             $this->user_name,true);
+        $criteria->compare('email',                 $this->email,true);
+        $criteria->compare('first_name',            $this->first_name,true);
+        $criteria->compare('last_name',             $this->last_name,true);
+        $criteria->compare('user_type',             $this->user_type,true);
+        $criteria->compare('status',                $this->status,false);
+        $criteria->compare('created_by',            $this->created_by);
+        $criteria->compare('modified_by',           $this->modified_by);
+        $criteria->compare('activation_code',       $this->activation_code,true);
+        $criteria->compare('activation_status',     $this->activation_status);
+        $criteria->compare('activation_time',       $this->activation_time,true);
+        $criteria->compare('facebook_id',           $this->facebook_id,true);
+        $criteria->compare('facebook_name',         $this->facebook_name,true);
+        $criteria->compare('registered_with_fb',    $this->registered_with_fb);
+        $criteria->compare('loggedin_with_fb',      $this->loggedin_with_fb);
+        $criteria->compare('login_status',          $this->login_status);
+        $criteria->compare('last_login',            $this->last_login,true);
+        $criteria->compare('mobile_number',         $this->mobile_number,true);
+        $criteria->compare('mobile_carrier_id',     $this->mobile_carrier_id);
+        $criteria->compare('send_sms_notification', $this->send_sms_notification,true);
+        $criteria->compare('date_of_birth',         $this->date_of_birth,true);
+        $criteria->compare('hometown',              $this->hometown,true);
+        $criteria->compare('marital_status',        $this->marital_status);
+        $criteria->compare('places_want_to_visit',  $this->places_want_to_visit,true);   
+        
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }
 
+
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
+     *
      * @param string $className active record class name.
      * @return User the static model class
+     * 
+     * @access public
      */
     public static function model($className=__CLASS__)
     {
         return parent::model($className);
     }
+    
+    /**
+     * Runs just before the models save method is invoked. It provides a change to
+     * ...further prepare the data for saving. The CActiveRecord (parent class)
+     * ...beforeSave is called to process any raised events.
+     * 
+     * @param <none> <none>
+     * @return boolean the decision to continue the save or not.  
+     *
+     * @access public
+     */
+    public function beforeSave() {
+        if ($this->isNewRecord) {
+            $this->created_time = new CDbExpression('NOW()');
+            $this->created_by   = Yii::app()->user->id;
+        }
+        else {
+            $this->modified_time = new CDbExpression('NOW()');
+            $this->modified_by   = Yii::app()->user->id;
+        }
+    
+        return parent::beforeSave();
+    }
+    
 }

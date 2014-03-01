@@ -1,3 +1,5 @@
+SET foreign_key_checks = 0;
+
 -- ---------------------------------------------------------------------
 -- places subscribed
 -- ---------------------------------------------------------------------
@@ -7,11 +9,11 @@ CREATE TABLE `tbl_user` (
   `user_id`                    int(11) NOT NULL AUTO_INCREMENT,
   `user_name`                  varchar(255) NOT NULL  COMMENT 'unique',
 
-  `email`                      varchar(255) DEFAULT NULL COMMENT 'unique, same as username',
-  `password`                   varchar(512) DEFAULT NULL COMMENT 'encrypted',
+  `email`                      varchar(255) NOT NULL COMMENT 'unique, same as username',
+  `password`                   varchar(255) NOT NULL COMMENT 'encrypted',
   
-  `first_name`                 varchar(255) DEFAULT NULL,
-  `last_name`                  varchar(255) DEFAULT NULL, 
+  `first_name`                 varchar(255) NOT NULL,
+  `last_name`                  varchar(255) NOT NULL, 
   
   `user_type`                  enum('superadmin','admin','user','business_user') DEFAULT 'user',
   
@@ -47,14 +49,12 @@ CREATE TABLE `tbl_user` (
 
   `places_want_to_visit`       varchar(255) DEFAULT NULL,
   
-  `my_info_permssions`         enum('none', 'friends', 'all') DEFAULT 'all',
-  `photos_permssions`          enum('none', 'friends', 'all') DEFAULT 'all',
-  `friends_permssions`         enum('none', 'friends', 'all') DEFAULT 'all',
-  `blogs_permssions`           enum('none', 'friends', 'all') DEFAULT 'all',
-  `travel_options_permissions` enum('none', 'friends', 'all') DEFAULT 'all',
-  
-  
-  
+  `my_info_permissions`         enum('none', 'friends', 'all') DEFAULT 'all',
+  `photos_permissions`          enum('none', 'friends', 'all') DEFAULT 'all',
+  `friends_permissions`         enum('none', 'friends', 'all') DEFAULT 'all',
+  `blogs_permissions`           enum('none', 'friends', 'all') DEFAULT 'all',
+  `travel_options_permissions`  enum('none', 'friends', 'all') DEFAULT 'all',
+
   `image`                      varchar(255) DEFAULT NULL,
 
   PRIMARY KEY (`user_id`),
@@ -275,15 +275,15 @@ DROP TABLE IF EXISTS `tbl_business`;
 CREATE TABLE `tbl_business` (
   `business_id`             int(11) NOT NULL AUTO_INCREMENT,
   
-  `business_name`           varchar(100) NOT NULL,
+  `business_name`           varchar(255) NOT NULL,
   `business_address1`       longtext,
   `business_address2`       longtext,
   `business_city_id`        int(11) DEFAULT NULL,
   `business_zipcode`        varchar(16) DEFAULT NULL,
-  `business_phone_ext`      varchar(5) DEFAULT NULL,
+  `business_phone_ext`      varchar(16) DEFAULT NULL,
   `business_phone`          varchar(16) DEFAULT NULL,
-  `business_email`          varchar(125) DEFAULT NULL,
-  `business_website`        varchar(150) DEFAULT NULL,
+  `business_email`          varchar(255) DEFAULT NULL,
+  `business_website`        varchar(255) DEFAULT NULL,
  
   `business_description`    text,
   
@@ -304,13 +304,13 @@ CREATE TABLE `tbl_business` (
   `add_request_processing_status` ENUM('Accepted', 'Rejected') DEFAULT 'Rejected',
   `add_request_processing_time`   TIMESTAMP NOT NULL COMMENT 'Used for rejection as well',
   `add_request_processed_by`      int(11) NOT NULL,
-  `add_request_rejection_reasom`  varchar(255) NOT NULL,
+  `add_request_rejection_reason`  varchar(255) NOT NULL,
 
   
   `claim_status`               ENUM('Claimed', 'Unclaimed') DEFAULT 'Unclaimed',
   `claim_processing_time`      TIMESTAMP NOT NULL  COMMENT 'Used for rejection as well',
   `claimed_by`                 int(11) NOT NULL,
-  `claim_rejection_reasom`     varchar(255) NOT NULL,
+  `claim_rejection_reason`     varchar(255) NOT NULL,
   
   
   `is_active`                  enum('Y', 'N') DEFAULT 'N',
@@ -617,3 +617,22 @@ ADD CONSTRAINT fk_advertisement_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
      
+
+-- ---------------------------------------------------------------------
+-- system settings
+-- ---------------------------------------------------------------------
+
+CREATE TABLE `tbl_system_settings` (
+  `settings_id` int(11) NOT NULL AUTO_INCREMENT,
+  `attribute`   varchar(255) NOT NULL,
+  `value`       varchar(4096) NOT NULL,
+  PRIMARY KEY (`settings_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+
+-- ---------------------------------------------------------------------
+-- END
+-- ---------------------------------------------------------------------

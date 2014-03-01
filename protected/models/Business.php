@@ -26,11 +26,11 @@
  * @property string $add_request_processing_status
  * @property string $add_request_processing_time
  * @property integer $add_request_processed_by
- * @property string $add_request_rejection_reasom
+ * @property string $add_request_rejection_reason
  * @property string $claim_status
  * @property string $claim_processing_time
  * @property integer $claimed_by
- * @property string $claim_rejection_reasom
+ * @property string $claim_rejection_reason
  * @property string $is_active
  * @property string $is_featured
  * @property string $is_closed
@@ -47,168 +47,241 @@
  * @property BusinessUser[] $businessUsers
  * @property RestaurantCertificate[] $restaurantCertificates
  */
+
+/**
+ * User activerecord model class provides a mechanism to keep data and their
+ * ...relevant business rules. A model instant represents a single database row.
+ * ...
+ * ...Usage:
+ * ...   $business = Business::model()
+ * ...or
+ * ...   $business = new Business;
+ * ...or
+ * ...   $business = new Business($scenario);
+ *
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Components
+ * @version 1.0
+ */
 class Business extends CActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
+    /**
+     * Get database table name associated with the model.
+     *
+     * @param <none> <none>
+     *
+     * @return string the associated database table name
+     * @access public
+     */
 	public function tableName()
 	{
 		return '{{business}}';
 	}
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
+    /**
+     * Set rules for validation of model attributes. Each attribute is listed with its
+     * ...associated rules. All attributes listed in the rules set forms a set of 'safe'
+     * ...attributes that allow it to be used in massive assignment.
+     *
+     * @param <none> <none>
+     *
+     * @return array validation rules for model attributes.
+     * @access public
+     */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+
 		return array(
-			array('business_name, modified_time, created_by, modified_by, add_request_processed_by, add_request_rejection_reasom, claimed_by, claim_rejection_reasom', 'required'),
-			array('business_city_id, created_by, modified_by, add_request_processed_by, claimed_by', 'numerical', 'integerOnly'=>true),
-			array('business_name', 'length', 'max'=>100),
-			array('business_zipcode, business_phone', 'length', 'max'=>16),
-			array('business_phone_ext', 'length', 'max'=>5),
-			array('business_email', 'length', 'max'=>125),
-			array('business_website', 'length', 'max'=>150),
-			array('business_allow_review, business_allow_rating, is_active, is_featured, is_closed', 'length', 'max'=>1),
-			array('add_request_processing_status', 'length', 'max'=>8),
-			array('add_request_rejection_reasom, claim_rejection_reasom, activation_code', 'length', 'max'=>255),
-			array('claim_status', 'length', 'max'=>9),
-			array('activation_status', 'length', 'max'=>13),
-			array('business_address1, business_address2, business_description, image, business_keywords, created_time, add_request_processing_time, claim_processing_time, activation_time', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('business_id, business_name, business_address1, business_address2, business_city_id, business_zipcode, business_phone_ext, business_phone, business_email, business_website, business_description, image, business_allow_review, business_allow_rating, business_keywords, created_time, modified_time, created_by, modified_by, add_request_processing_status, add_request_processing_time, add_request_processed_by, add_request_rejection_reasom, claim_status, claim_processing_time, claimed_by, claim_rejection_reasom, is_active, is_featured, is_closed, activation_code, activation_status, activation_time', 'safe', 'on'=>'search'),
+		    
+		    // Mandatory rules
+
+			array('business_name, add_request_processed_by, add_request_rejection_reason, claimed_by, claim_rejection_reason', 'required'),
+		    
+		    // Data types, sizes
+			array('business_city_id, add_request_processed_by, claimed_by', 'numerical', 'integerOnly'=>true),
+		    array('business_name, business_email, business_website, add_request_rejection_reason, claim_rejection_reason, activation_code', 'length', 'max'=>255),
+			array('business_zipcode, business_phone, business_phone_ext',    'length', 'max'=>16),
+		    
+		    // ranges
+			array('business_allow_review, 
+			       business_allow_rating, is_active,
+			       is_featured, is_closed',               'in','range'=>array('Y','N'),'allowEmpty'=>false),
+		    array('claim_status',                         'in','range'=>array('Claimed', 'Unclaimed'),'allowEmpty'=>false),
+		    array('activation_status',                    'in','range'=>array('activated', 'not_activated'),'allowEmpty'=>false),
+		    array('add_request_processing_status',        'in','range'=>array('Accepted', 'Rejected'),'allowEmpty'=>false),		    
+			
+		    
+			array('business_address1, business_address2, business_description, image, business_keywords', 'safe'),
+
+            // The following rule is used by search(). It only contains attributes that should be searched.
+			array('business_id, business_name, business_address1, business_address2, business_city_id, business_zipcode,
+			       business_phone_ext, business_phone, business_email, business_website, business_description,
+			       business_allow_review, business_allow_rating, business_keywords, created_time, modified_time, 
+			       created_by, modified_by, add_request_processing_status, add_request_processing_time,
+			       add_request_processed_by, add_request_rejection_reason, claim_status, claim_processing_time, 
+			       claimed_by, claim_rejection_reason, is_active, is_featured, is_closed, activation_code, 
+			       activation_status, activation_time', 'safe', 'on'=>'search'),
 		);
 	}
 
-	/**
-	 * @return array relational rules.
-	 */
+    /**
+     * Set rules for the relation of this record model to other record models.
+     *
+     * @param <none> <none>
+     *
+     * @return array relational rules.
+     * @access public
+     */
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'businessCity' => array(self::BELONGS_TO, 'City', 'business_city_id'),
-			'claimedBy' => array(self::BELONGS_TO, 'User', 'claimed_by'),
-			'createdBy' => array(self::BELONGS_TO, 'User', 'created_by'),
-			'modifiedBy' => array(self::BELONGS_TO, 'User', 'modified_by'),
-			'addRequestProcessedBy' => array(self::BELONGS_TO, 'User', 'add_request_processed_by'),
-			'businessUsers' => array(self::HAS_MANY, 'BusinessUser', 'business_id'),
+			'businessCity'           => array(self::BELONGS_TO, 'City', 'business_city_id'),
+			'claimedBy'              => array(self::BELONGS_TO, 'User', 'claimed_by'),
+			'createdBy'              => array(self::BELONGS_TO, 'User', 'created_by'),
+			'modifiedBy'             => array(self::BELONGS_TO, 'User', 'modified_by'),
+			'addRequestProcessedBy'  => array(self::BELONGS_TO, 'User', 'add_request_processed_by'),
+			'businessUsers'          => array(self::HAS_MANY, 'BusinessUser', 'business_id'),
 			'restaurantCertificates' => array(self::HAS_MANY, 'RestaurantCertificate', 'business_id'),
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
+    /**
+     * Label set for attributes. Only required for attributes that appear on view/forms.
+     * ...
+     * Usage:
+     *    echo $form->label($model, $attribute)
+     *
+     * @param <none> <none>
+     *
+     * @return array customized attribute labels (name=>label)
+     * @access public
+     */
 	public function attributeLabels()
 	{
 		return array(
-			'business_id' => 'Business',
-			'business_name' => 'Business Name',
-			'business_address1' => 'Business Address1',
-			'business_address2' => 'Business Address2',
-			'business_city_id' => 'Business City',
-			'business_zipcode' => 'Business Zipcode',
-			'business_phone_ext' => 'Business Phone Ext',
-			'business_phone' => 'Business Phone',
-			'business_email' => 'Business Email',
-			'business_website' => 'Business Website',
-			'business_description' => 'Business Description',
-			'image' => 'Image',
-			'business_allow_review' => 'Business Allow Review',
-			'business_allow_rating' => 'Business Allow Rating',
-			'business_keywords' => 'Business Keywords',
-			'created_time' => 'Created Time',
-			'modified_time' => 'Modified Time',
-			'created_by' => 'Created By',
-			'modified_by' => 'Modified By',
-			'add_request_processing_status' => 'Add Request Processing Status',
-			'add_request_processing_time' => 'Add Request Processing Time',
-			'add_request_processed_by' => 'Add Request Processed By',
-			'add_request_rejection_reasom' => 'Add Request Rejection Reasom',
-			'claim_status' => 'Claim Status',
-			'claim_processing_time' => 'Claim Processing Time',
-			'claimed_by' => 'Claimed By',
-			'claim_rejection_reasom' => 'Claim Rejection Reasom',
-			'is_active' => 'Is Active',
-			'is_featured' => 'Is Featured',
-			'is_closed' => 'Is Closed',
-			'activation_code' => 'Activation Code',
-			'activation_status' => 'Activation Status',
-			'activation_time' => 'Activation Time',
+			'business_id'                        => 'Business',
+			'business_name'                      => 'Business Name',
+			'business_address1'                  => 'Business Address1',
+			'business_address2'                  => 'Business Address2',
+			'business_city_id'                   => 'Business City',
+			'business_zipcode'                   => 'Business Zipcode',
+			'business_phone_ext'                 => 'Business Phone Ext',
+			'business_phone'                     => 'Business Phone',
+			'business_email'                     => 'Business Email',
+			'business_website'                   => 'Business Website',
+			'business_description'               => 'Business Description',
+			'image'                              => 'Image',
+			'business_allow_review'              => 'Business Allow Review',
+			'business_allow_rating'              => 'Business Allow Rating',
+			'business_keywords'                  => 'Business Keywords',
+			'add_request_processing_status'      => 'Add Request Processing Status',
+			'add_request_rejection_reason'       => 'Add Request Rejection reason',
+			'claim_status'                       => 'Claim Status',
+			'claimed_by'                         => 'Claimed By',
+			'claim_rejection_reason'             => 'Claim Rejection reason',
+			'is_active'                          => 'Is Active',
+			'is_featured'                        => 'Is Featured',
+			'is_closed'                          => 'Is Closed',
+			'activation_code'                    => 'Activation Code',
+			'activation_status'                  => 'Activation Status',
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @param <none> <none>
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     *         ...based on the search/filter conditions.
+     * @access public
+     */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('business_id',$this->business_id);
-		$criteria->compare('business_name',$this->business_name,true);
-		$criteria->compare('business_address1',$this->business_address1,true);
-		$criteria->compare('business_address2',$this->business_address2,true);
-		$criteria->compare('business_city_id',$this->business_city_id);
-		$criteria->compare('business_zipcode',$this->business_zipcode,true);
-		$criteria->compare('business_phone_ext',$this->business_phone_ext,true);
-		$criteria->compare('business_phone',$this->business_phone,true);
-		$criteria->compare('business_email',$this->business_email,true);
-		$criteria->compare('business_website',$this->business_website,true);
-		$criteria->compare('business_description',$this->business_description,true);
-		$criteria->compare('image',$this->image,true);
-		$criteria->compare('business_allow_review',$this->business_allow_review,true);
-		$criteria->compare('business_allow_rating',$this->business_allow_rating,true);
-		$criteria->compare('business_keywords',$this->business_keywords,true);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('modified_time',$this->modified_time,true);
-		$criteria->compare('created_by',$this->created_by);
-		$criteria->compare('modified_by',$this->modified_by);
-		$criteria->compare('add_request_processing_status',$this->add_request_processing_status,true);
-		$criteria->compare('add_request_processing_time',$this->add_request_processing_time,true);
-		$criteria->compare('add_request_processed_by',$this->add_request_processed_by);
-		$criteria->compare('add_request_rejection_reasom',$this->add_request_rejection_reasom,true);
-		$criteria->compare('claim_status',$this->claim_status,true);
-		$criteria->compare('claim_processing_time',$this->claim_processing_time,true);
-		$criteria->compare('claimed_by',$this->claimed_by);
-		$criteria->compare('claim_rejection_reasom',$this->claim_rejection_reasom,true);
-		$criteria->compare('is_active',$this->is_active,true);
-		$criteria->compare('is_featured',$this->is_featured,true);
-		$criteria->compare('is_closed',$this->is_closed,true);
-		$criteria->compare('activation_code',$this->activation_code,true);
-		$criteria->compare('activation_status',$this->activation_status,true);
-		$criteria->compare('activation_time',$this->activation_time,true);
+		$criteria->compare('business_id',                     $this->business_id);
+		$criteria->compare('business_name',                   $this->business_name,true);
+		$criteria->compare('business_address1',               $this->business_address1,true);
+		$criteria->compare('business_address2',               $this->business_address2,true);
+		$criteria->compare('business_city_id',                $this->business_city_id);
+		$criteria->compare('business_zipcode',                $this->business_zipcode);
+		$criteria->compare('business_phone',                  $this->business_phone,true);
+		$criteria->compare('business_email',                  $this->business_email,true);
+		$criteria->compare('business_website',                $this->business_website,true);
+		$criteria->compare('business_description',            $this->business_description,true);
+		$criteria->compare('business_allow_review',           $this->business_allow_review);
+		$criteria->compare('business_allow_rating',           $this->business_allow_rating);
+		$criteria->compare('business_keywords',               $this->business_keywords,true);
+		$criteria->compare('created_time',                    $this->created_time,true);
+		$criteria->compare('modified_time',                   $this->modified_time,true);
+		$criteria->compare('created_by',                      $this->created_by);
+		$criteria->compare('modified_by',                     $this->modified_by);
+		$criteria->compare('add_request_processing_status',   $this->add_request_processing_status);
+		$criteria->compare('add_request_processing_time',     $this->add_request_processing_time,true);
+		$criteria->compare('add_request_processed_by',        $this->add_request_processed_by);
+		$criteria->compare('add_request_rejection_reason',    $this->add_request_rejection_reason,true);
+		$criteria->compare('claim_status',                    $this->claim_status);
+		$criteria->compare('claim_processing_time',           $this->claim_processing_time,true);
+		$criteria->compare('claimed_by',                      $this->claimed_by);
+		$criteria->compare('claim_rejection_reason',          $this->claim_rejection_reason,true);
+		$criteria->compare('is_active',                       $this->is_active);
+		$criteria->compare('is_featured',                     $this->is_featured;
+		$criteria->compare('is_closed',                       $this->is_closed);
+		$criteria->compare('activation_code',                 $this->activation_code,true);
+		$criteria->compare('activation_status',               $this->activation_status);
+		$criteria->compare('activation_time',                 $this->activation_time,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return Business the static model class
-	 */
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     *
+     * @param string $className active record class name.
+     * @return User the static model class
+     * 
+     * @access public
+     */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+	
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave() {
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = Yii::app()->user->id;
+	    }
+	    else {
+	        $this->modified_time = new CDbExpression('NOW()');
+	        $this->modified_by   = Yii::app()->user->id;
+	    }
+	
+	    return parent::beforeSave();
 	}
 }
