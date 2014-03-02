@@ -101,14 +101,13 @@ class City extends CActiveRecord
      */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+
 		return array(
-			'businesses'         => array(self::HAS_MANY, 'Business', 'business_city_id'),
-			'state'              => array(self::BELONGS_TO, 'State', 'state_id'),
-			'events'             => array(self::HAS_MANY, 'Event', 'event_city_id'),
-			'placesSubscribeds'  => array(self::HAS_MANY, 'PlacesSubscribed', 'city_id'),
-			'placesVisiteds'     => array(self::HAS_MANY, 'PlacesVisited', 'city_id'),
+			'businesses'         => array(self::HAS_MANY,    'Business', 'business_city_id'),
+			'state'              => array(self::BELONGS_TO,  'State', 'state_id'),
+			'events'             => array(self::HAS_MANY,    'Event', 'event_city_id'),
+			'placesSubscribeds'  => array(self::HAS_MANY,    'PlacesSubscribed', 'city_id'),
+			'placesVisiteds'     => array(self::HAS_MANY,    'PlacesVisited', 'city_id'),
 		);
 	}
 
@@ -156,7 +155,6 @@ class City extends CActiveRecord
      */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 

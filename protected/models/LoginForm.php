@@ -1,14 +1,24 @@
 <?php
 
 /**
+ * This is the model class for Login form
+ *
+ * The followings are the available columns in table '{{user_event}}':
+ * @property string $fldUserName
+ * @property string fldPassword
+ *
+ */
+    
+/**
  * LoginForm class.
  * LoginForm is the data structure for keeping user login form data.    
  * It is used by the 'login' action of 'SiteController'.
- * Extended class description
  *
- * @author pradesh
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Components
  * @version 1.0
- * @package application.models
  */
 class LoginForm extends CFormModel
 {
@@ -62,7 +72,16 @@ class LoginForm extends CFormModel
     public $isNewRecord = false;
     public $email;
     
-    
+    /**
+     * Set rules for validation of model attributes. Each attribute is listed with its
+     * ...associated rules. All attributes listed in the rules set forms a set of 'safe'
+     * ...attributes that allow it to be used in massive assignment.
+     *
+     * @param <none> <none>
+     *
+     * @return array validation rules for model attributes.
+     * @access public
+     */
     public function rules()
     {
         return array(
@@ -74,7 +93,7 @@ class LoginForm extends CFormModel
                 'message' => "{attribute} required"
             ),
             
-            // Pradesh hack for offline testing for audit
+            // Pradesh hack for offline testing for audit. Disable MX check
             // array('fldUserName', 'email', 'checkMX' => true, 'allowName' => true, 'message' => 'Email id not valid'),
             
             array(
@@ -109,32 +128,39 @@ class LoginForm extends CFormModel
      * The fldUserName is checked for existence against the database. An arror is raised
      * ...if the user is not registered, banned or marked as deleted
      *
-     * @param
-     *            <none>
-     * @return <none>
+     * @param string $attribute the field being validated
+     * @param array $params options specified in the validation rule
+     * 
+     * @return boolean result of validation
      */
-    public function validateUserAccount($attribute)
+    public function validateUserAccount($attribute,$params)
     {
-        return true;
         
-        $msg = '';
-        $sql = 'email=:email AND mglist_id<>:list_id';
+        $sql = 'user_name=:user_name AND status=:status';
         $count = User::model()->count($sql, array(
-            'list_id' => $id,
-            ':member_id' => $member['member_id']
+            ':user_name' => $this->fldUserName,
+            ':status' => 'active'
         ));
-        ;
         
-        $user = User::model()->count('email="' . $this->fldUserName . '"');
-        if ($user == 0) :
-            $msg = "Email id not available";
-            $this->addError($attribute, $msg);
-        
-     endif;
+        if ($count == 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
+
     }
 
     /**
-     * Declares attribute labels.
+     * Label set for attributes. Only required for attributes that appear on view/forms.
+     * ...
+     * Usage:
+     *    echo $form->label($model, $attribute)
+     *
+     * @param <none> <none>
+     *
+     * @return array customized attribute labels (name=>label)
+     * @access public
      */
     public function attributeLabels()
     {
@@ -144,15 +170,20 @@ class LoginForm extends CFormModel
     }
 
     /**
-     * Authenticates the fldPassword.
-     * This is the 'authenticate' validator as declared in rules().
+     * Custom validation to authenticates the user.
+     * This is the 'authenticate' validator as declared in rules()
+     *
+     * @param string $attribute the field being validated
+     * @param array $params options specified in the validation rule
+     *
+     * @return boolean result of validation
      */
     public function authenticate($attribute, $params)
     {
         if (! $this->hasErrors()) {
             $this->_identity = new UserIdentity($this->fldUserName, $this->fldPassword);
             if (! $this->_identity->authenticate())
-                $this->addError('fldPassword', 'Incorrect fldUserName or password.');
+                $this->addError($attribute, 'Incorrect fldUserName or password.');
         }
     }
 
