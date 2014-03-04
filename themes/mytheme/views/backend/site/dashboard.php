@@ -1,5 +1,4 @@
 
-		  <div class="col-md-10">
 		  	<div class="row">
 		  		<div class="col-md-6">
 		  			<div class="content-box-large">
@@ -143,4 +142,4 @@
 				Pellentesque id arcu et odio imperdiet laoreet. Nulla sed eros risus. Sed tellus odio, faucibus et odio eu, eleifend aliquet nisl. In porttitor odio pulvinar ligula tempor, bibendum lacinia metus mattis. Donec venenatis, tellus non aliquet lobortis, magna lorem ullamcorper urna, nec posuere metus lacus non tellus. Aenean condimentum, velit ac tincidunt volutpat, dolor metus pulvinar lacus, a commodo massa dolor eget magna. Ut hendrerit lectus sit amet malesuada tincidunt.
 				<br /><br />
 		  	</div>
-		  </div>
+

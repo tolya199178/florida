@@ -18,6 +18,7 @@
  * @package Components
  * @version 1.0
  */
+
 class BackEndController extends CController
 {
 

@@ -1,1 +1,20 @@
+# AddDefaultCharset utf-8
+# 
+# Options +FollowSymLinks
+# IndexIgnore */*
+# RewriteEngine on
+# 
+# <IfModule mod_rewrite.c>
+# 
+#     # Make the backend accessible via url: http://site/backend.
+#     RewriteRule ^backend backend.php
+#     
+#     # If a directory or a file exists, use it directly.
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     
+#     # Otherwise forward it to index.php.
+#     RewriteRule . index.php
+# 
+# </IfModule>
 deny from all
