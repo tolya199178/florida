@@ -84,11 +84,30 @@
  */
 class User extends CActiveRecord
 {
+    
+    // /////////////////////////////////////////////////////////////////////////
+    // Scenario constants
+    // /////////////////////////////////////////////////////////////////////////
     const SCENARIO_CHANGE_REGISTER  = 'register';
     const SCENARIO_CHANGE_PASSWORD  = 'change-password';
     const SCENARIO_FORGOT_PASSWORD  = 'forgot-password';
     const SCENARIO_LOGIN            = 'login';
     const SCENARIO_VALIDATION       = 'validation';
+    
+    
+    // /////////////////////////////////////////////////////////////////////////
+    // Attributes to be used for form processing only
+    // /////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * Form only. Used to verify the password entered.
+     *
+     * @param <none> <none>
+     *
+     * @return string the repeated password entry
+     * @access public
+     */
+    public $fldVerifyPassword;
 
     /**
      * Get database table name associated with the model.
@@ -121,7 +140,7 @@ class User extends CActiveRecord
             
             // Mandatory rules
             array('user_name, email, first_name,
-                   last_name, mobile_carrier_id',   'required'),
+                   last_name',   'required'),
             array('password, user_name',            'required', 'on' => array(self::SCENARIO_CHANGE_PASSWORD,self::SCENARIO_LOGIN,self::SCENARIO_CHANGE_REGISTER)),
             array('activation_code',                'required', 'on' => self::SCENARIO_VALIDATION),
             array('email',                          'required', 'on' => self::SCENARIO_FORGOT_PASSWORD),
@@ -147,14 +166,18 @@ class User extends CActiveRecord
             array('registered_with_fb',             'in','range'=>array('Y','N'),'allowEmpty'=>false),
             array('loggedin_with_fb',               'in','range'=>array('Y','N'),'allowEmpty'=>false),
             
-            array('marital_status',                 'in','range'=>array('Married','Single','Unknown'),'allowEmpty'=>false),
+            array('marital_status',                 'in','range'=>array('Married','Single','Unknown'),'allowEmpty'=>true),
             array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
             array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
             array('friends_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
             array('blogs_permissions',              'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
             array('travel_options_permissions',     'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
 
-                        
+            // other
+
+            // compare entered and verified password. Only for change password and register screens.
+            array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_CHANGE_REGISTER)),
+            
             array('date_of_birth', 'safe'),
             
             // The following rule is used by search(). It only contains attributes that should be searched.
@@ -203,6 +226,7 @@ class User extends CActiveRecord
 			'createdBy'          => array(self::BELONGS_TO, 'User', 'created_by'),
 			'users1'             => array(self::HAS_MANY, 'User', 'created_by'),
 			'userEvents'         => array(self::HAS_MANY, 'UserEvent', 'user_id'),
+			'mobileCarrier'      => array(self::BELONGS_TO, 'MobileCarrier', 'mobile_carrier_id'),
 		);
     }
 
@@ -249,6 +273,7 @@ class User extends CActiveRecord
             'blogs_permissions'     => 'Blogs permissions',
             'travel_options_permissions' => 'Travel Options Permissions',
             'image'                 => 'Image',
+            'fldVerifyPassword'     => 'Re enter Password',
         );
     }
 
@@ -330,16 +355,137 @@ class User extends CActiveRecord
      * @access public
      */
     public function beforeSave() {
-        if ($this->isNewRecord) {
-            $this->created_time = new CDbExpression('NOW()');
-            $this->created_by   = Yii::app()->user->id;
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Some scenarios only require certain fields to be updated. We handle
+        // ...this separately.
+        // /////////////////////////////////////////////////////////////////////
+        
+        if ($this->scenario == self::SCENARIO_LOGIN) {
+            /** Login scenario */
+            $this->last_login = new CDbExpression('NOW()');
         }
         else {
+            
+            /** All other scenarios */
+                        
+            // /////////////////////////////////////////////////////////////////
+            // Set the create time and user for new records
+            // /////////////////////////////////////////////////////////////////
+            if ($this->isNewRecord) {
+                $this->created_time = new CDbExpression('NOW()');
+                $this->created_by   = Yii::app()->user->id;
+            }
+            
+            // /////////////////////////////////////////////////////////////////
+            // The modified log details is set for record creation and update
+            // /////////////////////////////////////////////////////////////////
             $this->modified_time = new CDbExpression('NOW()');
             $this->modified_by   = Yii::app()->user->id;
+            
+            // /////////////////////////////////////////////////////////////////
+            // Encrypt the password. Only do this if the password is set
+            // /////////////////////////////////////////////////////////////////
+            if (isset($this->password) && (!empty($this->password))) {
+                 
+                $salt              =  utf8_encode( mcrypt_create_iv(30) );
+                $password_hash     =  utf8_encode( crypt($this->user_name.$this->password, $salt) );
+                $this->password    =  $password_hash;
+            
+            }
         }
+
+        
     
         return parent::beforeSave();
+    }
+    
+    /**
+     * Default scope which is applied to all seaches in the model. The default
+     * ...scope is not honored when other scopes are applied. Should not be
+     * ...applied to UPDATE
+     *
+     * @param <none> <none>
+     * @return array DbCriteria directives
+     *
+     * @access public
+     */
+    public function defaultScope()
+    {
+        return array(
+            'condition'=>"status <> 'deleted'"
+        );
+    }
+    
+    /**
+     * Build an associative list of user type values.
+     * 
+     * @param <none> <none>
+     * @return array associatve list of user type values
+     *
+     * @access public
+     */
+    public function listUserType() {
+
+        return array('superadmin'       => 'SuperAdmin',
+                     'admin'            => 'Admin',
+                     'user'             => 'User',
+                     'business_user'    => 'Business User');
+    }
+    
+    /**
+     * Build an associative list of user status values.
+     *
+     * @param <none> <none>
+     * @return array associatve list of user status values
+     *
+     * @access public
+     */
+    public function listStatus() {
+    
+        return array('inactive'     => 'Inactive',
+                     'active'       => 'Active',
+                     // 'deleted'      => 'Deleted',  Don't show this to the user
+                     'banned'       => 'Banned');
+    }
+    
+    /**
+     * Build an associative list of activation status values.
+     *
+     * @param <none> <none>
+     * @return array associatve list of activation status values
+     *
+     * @access public
+     */
+    public function listActivationStatus() {
+    
+        return array('activated' => 'Activated', 'not_activated' => 'Not Activated');
+    }
+    
+    /**
+     * Build an associative list of marital status values.
+     *
+     * @param <none> <none>
+     * @return array associatve list of marital status values
+     *
+     * @access public
+     */
+    public function listMaritalStatus() {
+    
+        return array('Married' =>'Married', 'Single' => 'Single', 'Unknown' => 'Unknown');
+    }
+    
+    /**
+     * Build an associative list of permission values.
+     *
+     * @param <none> <none>
+     * @return array associatve list of permission status values
+     *
+     * @access public
+     */
+    public function listPermissions() {
+    
+        return array('none' => 'Do not share','friends' => 'My Friends', 'all' => 'Everybody');
     }
     
 }

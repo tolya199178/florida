@@ -63,11 +63,14 @@ class UserIdentity extends CUserIdentity
         else if($user->password !==  utf8_encode( crypt($user->user_name.$user->password,$user->password))){
             $this->errorCode=self::ERROR_PASSWORD_INVALID;
         } else {
+            
+            $user->scenario = User::SCENARIO_LOGIN;
+            
             // Map the CUserIdentity user id field with the database user id field
             $this->_id = $user->user_id;
             
             $this->_username = $user->email;
-            
+                        
             $user->last_login = new CDbExpression("NOW()");
             $user->save();
             $this->errorCode = self::ERROR_NONE;

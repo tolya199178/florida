@@ -40,7 +40,7 @@ CREATE TABLE `tbl_user` (
   `last_login`                 datetime DEFAULT NULL,
   
   `mobile_number`              varchar(64) DEFAULT NULL,
-  `mobile_carrier_id`          int(11) NOT NULL COMMENT 'FK with mobile_carrier',
+  `mobile_carrier_id`          int(11) DEFAULT NULL COMMENT 'FK with mobile_carrier',
   `send_sms_notification`      enum('Y', 'N') DEFAULT 'N',
   
   `date_of_birth`              date DEFAULT NULL,
@@ -75,6 +75,10 @@ ADD CONSTRAINT fk_user_modified_by
      FOREIGN KEY (modified_by) 
      REFERENCES tbl_user(user_id);
      
+ALTER TABLE tbl_user
+ADD CONSTRAINT fk_mobile_carrier
+     FOREIGN KEY (mobile_carrier_id) 
+     REFERENCES tbl_mobile_carrier(mobile_carrier_id);
      
      
 -- ---------------------------------------------------------------------
@@ -619,8 +623,22 @@ ADD CONSTRAINT fk_advertisement_user
      
 
 -- ---------------------------------------------------------------------
+-- Mobile Carriers
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_mobile_carrier`;
+
+CREATE TABLE `tbl_mobile_carrier` (
+  `mobile_carrier_id` int(11) NOT NULL AUTO_INCREMENT,
+  `mobile_carrier_name`       varchar(255) NOT NULL,
+  PRIMARY KEY (`mobile_carrier_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+-- ---------------------------------------------------------------------
 -- system settings
 -- ---------------------------------------------------------------------
+
 
 CREATE TABLE `tbl_system_settings` (
   `settings_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -628,9 +646,6 @@ CREATE TABLE `tbl_system_settings` (
   `value`       varchar(4096) NOT NULL,
   PRIMARY KEY (`settings_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
 
 
 -- ---------------------------------------------------------------------

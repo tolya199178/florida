@@ -1,16 +1,44 @@
 <?php
 
+/**
+ * Controller interface for User management.
+ */
+
+/**
+ * User Controller class to provide access to controller actions for clients.
+ * The contriller action interfaces 'directly' with the Client. This controller
+ * ...must therefore be responsible for input processing and response handling.
+ * 
+ * Usage:
+ * ...Typical usage is from a web browser, by means of a URL
+ * ...
+ * ...   http://application.domain/index.php?/user/action/attribute1/parameter1/.../attribute-n/parameter-n/
+ * ...eg.
+ * ...   http://mydomain/index.php?/user/edit/user_id/99/
+ * ...
+ * ...The 'action' in the request is converted to invoke the actionAction() action
+ * ...eg. /user/edit/user_id/99/ will invoke UserController::actionEdit()
+ * ...(case is significant)
+ * ...Additional parameters after the action are passed as $_GET pairs
+ * ...eg. /user/edit/user_id/99/ will pass $_GET['user_id'] = 99
+ *
+ * @package   Controllers
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Controllers
+ * @version 1.0
+ */
 class UserController extends BackEndController
 {
-	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
-	// public $layout='//layouts/column2';
 
-	/**
-	 * @return array action filters
-	 */
+    /**
+     * Specify a list of filters to apply to action requests
+     *
+     * @param <none> <none>
+     *
+     * @return array action filters
+     * @access public
+     */
 	public function filters()
 	{
 		return array(
@@ -45,128 +73,202 @@ class UserController extends BackEndController
 // 		);
 // 	}
 
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id)
-	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
-	}
 
 	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 * Creates a new user record.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the user details capture form
+	 * ... - the (subsequent) POST request saves the submitted post data as a User record.
+	 * ...If the save (POST request) is successful, the default method (index()) is called.  
+	 * ...If the save (POST request) is not successful, the details form is shown
+	 * ...again with error messages form the User validation (User::rules())
+	 *  
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
 	 */
 	public function actionCreate()
 	{
-		$model=new User;
+	    
+		$userModel=new User;
+	    	    
+	    // Uncomment the following line if AJAX validation is needed
+	    // todo: broken for Jquery precedence order loading
+	    // $this->performAjaxValidation($userModel);
+	    
+	    if(isset($_POST['User']))
+	    {
+
+	        $userModel->attributes=$_POST['User'];
+	        if($userModel->save())
+	            $this->redirect(array('index'/* ,'id'=>$userModel->user_id */));
+	            
+	    }
+	    
+	    // Show the details screen
+	    $this->render('details',array(
+	        'model'=>$userModel,
+	    ));
+
+	}
+
+
+	/**
+	 * Updates an existing user record.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the requested user's
+	 * ...   details capture form
+	 * ... - the (subsequent) POST request saves the submitted post data for
+	 * ...   the existing User record
+	 * ...If the save (POST request) is successful, the default method (index()) is called.
+	 * ...If the save (POST request) is not successful, the details form is shown
+	 * ...again with error messages form the User validation (User::rules())
+	 * 
+	 * @param integer $user_id the ID of the model to be updated
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionEdit($user_id)
+	{
+	    
+		$userModel=$this->loadModel($user_id);
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($userModel);
 
 		if(isset($_POST['User']))
 		{
-			$model->attributes=$_POST['User'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->user_id));
+
+		    // Unset the password if it is not supplied so that it is not
+		    // ...overwritten by an empty password.
+		    if (empty($_POST['User']['password']))
+		        unset($_POST['User']['password']);
+
+			$userModel->attributes=$_POST['User'];
+			if($userModel->save())
+				$this->redirect(array('index'/* ,'id'=>$userModel->user_id */));
+				
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
+		$userModel->password = '';            // Don't show the password
+		$this->render('details',array(
+			'model'=>$userModel,
 		));
 	}
 
 	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
+	 * Deletes an existing user record.
+	 * ...As an additional safety measure, only POST requests are processed.
+	 * ...Currently, instead of physically deleting the entry, the record is
+	 * ...modified with the status fields set to 'deleted'
+	 * ...We also expect a JSON request only, and return a JSON string providing
+	 * ...outcome details. 
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return string $result JSON encoded result and message
+	 * @access public
 	 */
-	public function actionUpdate($id)
+	public function actionDelete()
 	{
-		$model=$this->loadModel($id);
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['User']))
-		{
-			$model->attributes=$_POST['User'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->user_id));
-		}
-
-		$this->render('update',array(
-			'model'=>$model,
-		));
+	    
+	    // todo: add proper error message . iether flash or raiseerror. Might
+	    // be difficult is sending ajax response.
+	    
+	    // todo: Only process ajax request
+        $userId = $_POST['user_id'];
+        $userModel = User::model()->findByPk($userId);
+        
+        if ($userModel == null) {
+            header("Content-type: application/json");
+            echo '{"result":"fail", "message":"Invalid user"}';
+        }
+        
+        // /////////////////////////////////////////////////////////////////
+        // Instead of deleting the entry, the record is modified with the
+        // ...status fields set to 'deleted'
+        // /////////////////////////////////////////////////////////////////
+        // $result = $user->delete();
+        
+        $userModel->status = 'deleted';
+        
+        $result = $userModel->save();
+         
+        	    
+        if ($result == false) {
+            header("Content-type: application/json");
+            echo '{"result":"fail", "message":"Failed to mark record for deletion"}';
+        }
+        
+        echo '{"result":"success", "message":""}';
+         
 	}
 
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
-	public function actionDelete($id)
-	{
-		$this->loadModel($id)->delete();
-
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-	}
 
 	/**
-	 * Lists all models.
+	 * Default action for the controller.
+	 * Does not perform any processing. Redirects to the desired action instead.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('User');
-		$this->render('list',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model=new User('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['User']))
-			$model->attributes=$_GET['User'];
-
-		$this->render('admin',array(
-			'model'=>$model,
-		));
+	    // Default action is to show all users.
+        $this->actionList();
 	}
 	
-	public function actionListjson() {
-// 	    $user_list = User::model()->findAll();
-// 	    CJSON::encode($user_list);
-//
-// 	    $model = Post::model()->find();
-// 	    CJSON::encode($model);
 
-        //print_r($_POST);
-        
-        $limit_start 	= isset($_POST['iDisplayStart'])?$_POST['iDisplayStart']:0;
-        $limit_items 	= isset($_POST['iDisplayLength'])?$_POST['iDisplayLength']:10;
-        
-        
-        // $chief_director_id = Yii::app()->request->getQuery('chief_director_id');
-        
+	/**
+	 * Show all users. Renders the user listing view.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionList()
+	{
+	    $dataProvider=new CActiveDataProvider('User');
+	    $this->render('list',array(
+	        'dataProvider'=>$dataProvider,
+	    ));
+	}
+	
+	/**
+	 * Generates a JSON encoded list of all users.
+	 * The output is customised for the datatables Jquery plugin.
+	 * http://www.datatables.net
+	 * 
+	 * The table plugins send a request for a JSON list based on criteria
+	 * ...determined by default settings or user bahaviour.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionListjson() {
+
+        // /////////////////////////////////////////////////////////////////////
+        // Create a Db Criteria to filter and customise the resulting results
+        // /////////////////////////////////////////////////////////////////////
         $criteria = new CDbCriteria;
         
-        $criteria->limit 			= $limit_items;
-        $criteria->offset 			= $limit_start;
+        // Paging criteria
+        // Set defaults
+        $limitStart 	           = isset($_POST['iDisplayStart'])?$_POST['iDisplayStart']:0;
+        $limitItems 	           = isset($_POST['iDisplayLength'])?$_POST['iDisplayLength']:Yii::app()->params['PAGESIZEREC'];
         
+        $criteria->limit 		   = $limitItems;
+        $criteria->offset 		   = $limitStart;
         
-        // 		if ($chief_director_id != null) {
-        // 			$criteria->condition = " chief_director_id = '$chief_director_id' ";
-        // 		}
+        // TODO: Search criteria
+        
         
         $user_list=User::model()->findAll($criteria);
         
@@ -184,12 +286,11 @@ class UserController extends BackEndController
             if($f++) echo ',';
             echo   '[' .
                 '"'  .$r->attributes['user_id'] .'"'
-                    . ',"' .$r->attributes['user_name'] .'"'
-                        . ',"' .$r->attributes['first_name'] .' '. $r->attributes['last_name'] .'"'
-                            . ',"' .$r->attributes['user_type'] .'"'
-                            . ',""'
-                                
-                                . ']';
+              . ',"' .$r->attributes['user_name'] .'"'
+              . ',"' .$r->attributes['first_name'] .' '. $r->attributes['last_name'] .'"'
+              . ',"' .$r->attributes['user_type'] .'"'
+            . ',""'
+            . ']';
         }
         echo ']}';
         	    
@@ -197,30 +298,39 @@ class UserController extends BackEndController
 	    
 	}
 
+
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
+	 *
 	 * @param integer $id the ID of the model to be loaded
+	 *
 	 * @return User the loaded model
 	 * @throws CHttpException
+	 * @access public
 	 */
 	public function loadModel($id)
 	{
-		$model=User::model()->findByPk($id);
-		if($model===null)
+		$userModel=User::model()->findByPk($id);
+		if($userModel===null)
 			throw new CHttpException(404,'The requested page does not exist.');
-		return $model;
+		return $userModel;
 	}
+
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param User $model the model to be validated
+	 *
+	 * @param User $userModel the model to be validated
+	 *
+	 * @return string validation results message
+	 * @access protected
 	 */
-	protected function performAjaxValidation($model)
+	protected function performAjaxValidation($userModel)
 	{
 		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
 		{
-			echo CActiveForm::validate($model);
+			echo CActiveForm::validate($userModel);
 			Yii::app()->end();
 		}
 	}
