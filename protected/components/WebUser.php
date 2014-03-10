@@ -64,7 +64,7 @@ class WebUser extends CWebUser
         $userModel = $this->loadUser(Yii::app()->user->id);
         if ($userModel !== null)
         {
-            return intval($userModel->user_type) == Users::USER_TYPE_ADMIN;
+            return intval($userModel->user_type) == User::USER_TYPE_ADMIN;
        }
         else
         {
@@ -81,7 +81,7 @@ class WebUser extends CWebUser
         $userModel = $this->loadUser(Yii::app()->user->id);
         if ($userModel !== null)
         {
-            return intval($userModel->user_type) == Users::USER_TYPE_SUPERADMIN;
+            return $userModel->user_type == User::USER_TYPE_SUPERADMIN;
         }
         else
         {
@@ -95,7 +95,7 @@ class WebUser extends CWebUser
     {
         if ($this->_model === null) {
             if ($userId !== null)
-                $this->_model = Users::model()->findByPk($userId);
+                $this->_model = User::model()->findByPk($userId);
         }
         return $this->_model;
     }

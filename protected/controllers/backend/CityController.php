@@ -61,25 +61,29 @@ class CityController extends BackEndController
 	 */
     public function accessRules()
     {
+        
+       // echo Yii::app()->user->isSuperAdmin();exit;
 
         return array(
             // Admin has full access. Applies to all controller action.
             array(
                 'allow',
-                'expression' =>'Yii::app()->user->isSuperAdmin',
+                'expression' =>'Yii::app()->user->isSuperAdmin()',
+               // 'actions'    =>array('create'),
+                
             ),
             
             // delegate to city model methods to determine ownership
             array(
                 'allow',
-                'expression' =>'CityAdmin::model()->hasdelegation(Yii::app()->request->getQuery("city_id"))',
+                'expression' =>'CityAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("city_id"))',
                 'actions'    =>array('edit'),
             ),
             
             // delegate to city model methods to determine ownership
             array(
                 'allow',
-                'expression' =>'Yii::app()->user->isAdmin',
+                'expression' =>'Yii::app()->user->isAdmin()',
                                 'actions'    =>array('list', 'index'),
             ),
 
@@ -117,8 +121,24 @@ class CityController extends BackEndController
 	    {
 
 	        $cityModel->attributes=$_POST['City'];
+	        
+	        $uploadedFile = CUploadedFile::getInstance($cityModel,'image');
+	        	         
 	        if($cityModel->save())
+	        {
+	            
+	            $imageFileName = 'city-'.$cityModel->city_id.'-'.$cityModel->image;
+	            $imagePath = Yii::getPathOfAlias('webroot').'/uploads/images/city/'.$imageFileName;
+	            	                 
+                if(!empty($uploadedFile))  // check if uploaded file is set or not
+                {
+                    $uploadedFile->saveAs($imagePath);
+                }
+                
 	            $this->redirect(array('index'/* ,'id'=>$cityModel->city_id */));
+	            	      
+	        }  
+	        
 	            
 	    }
 	    
@@ -163,19 +183,33 @@ class CityController extends BackEndController
 		if(isset($_POST['City']))
 		{
 		    
+		    // Make a note of the existing image. and delete it before overwriting.
+		    $currentImagePath = Yii::getPathOfAlias('webroot').'/uploads/images/city/city-'.$cityModel->city_id.'-'.$cityModel->image;
 
-		    // Unset the password if it is not supplied so that it is not
-		    // ...overwritten by an empty password.
-		    if (empty($_POST['City']['password']))
-		        unset($_POST['City']['password']);
-
-			$cityModel->attributes=$_POST['City'];
-			if($cityModel->save())
-				$this->redirect(array('index'/* ,'id'=>$cityModel->city_id */));
+		    $cityModel->attributes=$_POST['City'];
+		    
+			
+	        $uploadedFile = CUploadedFile::getInstance($cityModel,'image');
+	        	         
+	        if($cityModel->save())
+	        {
+	            
+	            print_r($cityModel);exit;
+	            
+	            $imageFileName = 'city-'.$cityModel->city_id.'-'.$cityModel->image;
+	            $imagePath = Yii::getPathOfAlias('webroot').'/uploads/images/city/'.$imageFileName;
+	            	                 
+                if(!empty($uploadedFile))  // check if uploaded file is set or not
+                {
+                    $uploadedFile->saveAs($imagePath);
+                }
+                
+	            $this->redirect(array('index'/* ,'id'=>$cityModel->city_id */));
+	            	      
+	        } 
 				
 		}
 
-		$cityModel->password = '';            // Don't show the password
 		$this->render('details',array(
 			'model'=>$cityModel,
 		));

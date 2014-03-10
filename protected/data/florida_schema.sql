@@ -143,6 +143,8 @@ ADD CONSTRAINT fk_city_state
      FOREIGN KEY (state_id) 
      REFERENCES tbl_state(state_id);
 
+-- alter  table tbl_city  change city_name city_name varchar(512) NOT NULL DEFAULT '';
+-- alter  table tbl_city  change city_alternate_name city_alternate_name varchar(512) NOT NULL DEFAULT '';
      
 -- ---------------------------------------------------------------------
 -- City Admin User

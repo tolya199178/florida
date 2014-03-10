@@ -1,4 +1,4 @@
-creta<?php
+<?php
     $cs = Yii::app()->getClientScript();
     $cs->registerCssFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataTables 1.10.0-beta.2/media/css/jquery.dataTables.css');
     $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataTables 1.10.0-beta.2/media/js/jquery.dataTables.js', CClientScript::POS_END);
@@ -27,7 +27,7 @@ creta<?php
             <div class="navbar-form navbar-left" role="search">
                 <div class="form-group">
                     <a
-                        href="<?php echo Yii::app()->createUrl('city/create'); ?>;"
+                        href="<?php echo Yii::app()->createUrl('city/create'); ?>"
                         class="btn btn-primary">Add New City</a>
                 </div>
             </div>
@@ -95,7 +95,7 @@ $script = <<<EOD
     
             'columnDefs': [
                 // These columns not visible
-                { 'visible': false,  'targets': [ 0,1 ] },
+                { 'visible': false,  'targets': [ 0 ] },
                 
                 // In row delete button
                 {

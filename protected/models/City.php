@@ -72,7 +72,7 @@ class City extends CActiveRecord
 		return array(
 		    
 		    // Mandatory rules
-			array('state_id, description, more_information',     'required'),
+			array('description, more_information',     'required'),
 		    
 		    // Data types, sizes
 			array('state_id', 'numerical',                       'integerOnly'=>true),
@@ -83,8 +83,8 @@ class City extends CActiveRecord
 		    // ranges
 			array('is_featured, isactive',                       'in','range'=>array('Y','N'),'allowEmpty'=>false),
 		    
-			array('image',                                       'safe'),
-		    
+			array('image',                                        'file', 'types'=>'jpg, jpeg, gif, png'),
+
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('city_id, city_name, city_alternate_name,
 			       state_id, is_featured, isactive, description','safe', 'on'=>'search'),
@@ -201,13 +201,13 @@ class City extends CActiveRecord
 	    // Used for forced implemantations where state details are hidden or implied.
 	    if ($this->isNewRecord) {
 	        
-	        $stateModel = State::model()->findByAttributes(array('state_name' => STATE));
+	        $stateModel = State::model()->findByAttributes(array('state_name' => Yii::app()->params['STATE']));
 	        
 	        if ($stateModel === null) {
-	            $this->state = 1;
+	            $this->state_id = 1;
 	        }
 	        else {
-	            $this->state = $stateModel->attributes['state_id'];
+	            $this->state_id = $stateModel->attributes['state_id'];
 	        }
 	    }
 
