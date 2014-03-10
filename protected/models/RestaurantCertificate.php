@@ -19,19 +19,49 @@
  * The followings are the available model relations:
  * @property Business $business
  */
+
+/**
+ * User activerecord model class provides a mechanism to keep data and their
+ * ...relevant business rules. A model instant represents a single database row.
+ * ...
+ * ...Usage:
+ * ...   $certificate = RestaurantCertificate::model()
+ * ...or
+ * ...   $certificate = new RestaurantCertificate;
+ * ...or
+ * ...   $certificate = new RestaurantCertificate($scenario);
+ *
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Components
+ * @version 1.0
+ */
 class RestaurantCertificate extends CActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
+    /**
+     * Get database table name associated with the model.
+     *
+     * @param <none> <none>
+     *
+     * @return string the associated database table name
+     * @access public
+     */
 	public function tableName()
 	{
 		return '{{restaurant_certificate}}';
 	}
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
+    /**
+     * Set rules for validation of model attributes. Each attribute is listed with its
+     * ...associated rules. All attributes listed in the rules set forms a set of 'safe'
+     * ...attributes that allow it to be used in massive assignment.
+     *
+     * @param <none> <none>
+     *
+     * @return array validation rules for model attributes.
+     * @access public
+     */
 	public function rules()
 	{
 		// NOTE: you should only define rules for those attributes that
@@ -49,9 +79,14 @@ class RestaurantCertificate extends CActiveRecord
 		);
 	}
 
-	/**
-	 * @return array relational rules.
-	 */
+    /**
+     * Set rules for the relation of this record model to other record models.
+     *
+     * @param <none> <none>
+     *
+     * @return array relational rules.
+     * @access public
+     */
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
@@ -61,9 +96,17 @@ class RestaurantCertificate extends CActiveRecord
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
+    /**
+     * Label set for attributes. Only required for attributes that appear on view/forms.
+     * ...
+     * Usage:
+     *    echo $form->label($model, $attribute)
+     *
+     * @param <none> <none>
+     *
+     * @return array customized attribute labels (name=>label)
+     * @access public
+     */
 	public function attributeLabels()
 	{
 		return array(
@@ -81,18 +124,21 @@ class RestaurantCertificate extends CActiveRecord
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @param <none> <none>
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     *         ...based on the search/filter conditions.
+     * @access public
+     */
 	public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
@@ -116,12 +162,15 @@ class RestaurantCertificate extends CActiveRecord
 		));
 	}
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return RestaurantCertificate the static model class
-	 */
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     *
+     * @param string $className active record class name.
+     * @return RestaurantCertificate the static model class
+     * 
+     * @access public
+     */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);

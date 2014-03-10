@@ -248,7 +248,7 @@ class Event extends CActiveRecord
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      *
      * @param string $className active record class name.
-     * @return User the static model class
+     * @return Event the static model class
      * 
      * @access public
      */
@@ -268,15 +268,21 @@ class Event extends CActiveRecord
 	 * @access public
 	 */
 	public function beforeSave() {
-	    if ($this->isNewRecord) {
-	        $this->created_time = new CDbExpression('NOW()');
-	        $this->created_by   = Yii::app()->user->id;
-	    }
-	    else {
-	        $this->modified_time = new CDbExpression('NOW()');
-	        $this->modified_by   = Yii::app()->user->id;
-	    }
-	
+	    
+	    
+        // /////////////////////////////////////////////////////////////////
+        // Set the create time and user for new records
+        // /////////////////////////////////////////////////////////////////
+        if ($this->isNewRecord) {
+            $this->created_time = new CDbExpression('NOW()');
+            $this->created_by   = Yii::app()->user->id;
+        }
+        
+        // /////////////////////////////////////////////////////////////////
+        // The modified log details is set for record creation and update
+        // /////////////////////////////////////////////////////////////////
+        $this->modified_time = new CDbExpression('NOW()');
+        $this->modified_by   = Yii::app()->user->id;	
 	    return parent::beforeSave();
 	}
 	

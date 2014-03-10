@@ -1,15 +1,47 @@
 <?php
 
-// class SiteController extends Controller
+/**
+ * Controller interface for the Backend Site Module
+ */
+
+
+/**
+ * Site Controller class to provide access to controller actions for general
+ * ...rendering of site. The contriller action interfaces 'directly' with the
+ * ...Client, and must therefore be responsible for input processing and 
+ * ...response handling.
+ *
+ * Usage:
+ * ...Typical usage is from a web browser, by means of a URL
+ * ...
+ * ...   http://application.domain/index.php?/user/site/attribute1/parameter1/.../attribute-n/parameter-n/
+ * ...eg.
+ * ...   http://mydomain/index.php?/site/login/my_name/tom/
+ * ...
+ * ...The 'action' in the request is converted to invoke the actionAction() action
+ * ...eg. /site/login/my_name/tom/ will invoke UserController::actionLogin()
+ * ...(case is significant)
+ * ...Additional parameters after the action are passed as $_GET pairs
+ * ...eg. /site/login/my_name/tom/ will pass $_GET['my_name'] = tom
+ *
+ * @package   Controllers
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Controllers
+ * @version 1.0
+ */
 class SiteController extends BackEndController
 {
 
-    public $layout = '//layouts/page';
-
-    public $menu_node = 'home';
-
     /**
-     * Declares class-based actions.
+     * Specify class-based actions. Specifies external (files or other classes
+     * ...for action handlers. This allows the controller to redirect the action
+     * ...another class for handing,
+     *
+     * @param <none> <none>
+     *
+     * @return array action specifiers
+     * @access public
      */
     public function actions()
     {
@@ -28,31 +60,48 @@ class SiteController extends BackEndController
     }
 
     /**
-     * This is the default 'index' action that is invoked
-     * when an action is not explicitly requested by users.
+     * Default action for the controller. Invoked when an action is not
+     * ....explicitly requested by users.
+     * 
+     * Does not perform any processing. Redirects to the desired action instead.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
      */
     public function actionIndex()
     {
-        // renders the view file 'protected/views/site/index.php'
-        // using the default layout 'protected/views/layouts/main.php'
-        
-        // $this->redirect( array('dashboard') );
-        
-        $this->actionDashboard();
+        // Default action is to show all users.
+        $this->redirect( array('dashboard') );
     }
+
 
     /**
      * This is the action to handle external exceptions.
+     * This action is configured in the application config, and serves as default
+     * ...error handler. It renders an error message using the site layout.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
      */
     public function actionError()
     {
         
         if ($error = Yii::app()->errorHandler->error) {
+
+            // /////////////////////////////////////////////////////////////////
+            // Only send the error message for Ajax requests, otherwise render
+            // ...the error message into the application layout.
+            // /////////////////////////////////////////////////////////////////
             if (Yii::app()->request->isAjaxRequest)
+            {
                 echo $error['message'];
-            else {
-                print_r($error);exit;
-                // $this->render('error', $error);
+            }
+            else
+            {
                 $this->render('error', array(
                     'error' => $error
                 ));
@@ -61,7 +110,19 @@ class SiteController extends BackEndController
     }
 
     /**
-     * Displays the login page
+     * Process the user login action.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the login form
+	 * ... - the (subsequent) POST request processes the login request.
+	 * ...If the save (POST request) is successful, the user is directed back to
+	 * ...the calling url  
+	 * ...If the save (POST request) is not successful, the login form is shown
+	 * ...again with error messages from the loginform validation (Loginform::rules())
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
      */
     public function actionLogin()
     {
@@ -97,7 +158,7 @@ class SiteController extends BackEndController
             }
         }
         
-        // display the login form
+        // display the login form with a different layout to the site.
         $this->layout = '//layouts/blank';
         
         $this->render('login', array(
@@ -106,7 +167,12 @@ class SiteController extends BackEndController
     }
 
     /**
-     * Displays the dashboard
+     * Renders the application dashboard.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
      */
     public function actionDashboard()
     {
@@ -114,8 +180,14 @@ class SiteController extends BackEndController
         $this->render('/site/dashboard');
     }
 
+
     /**
      * Logs out the current user and redirect to homepage.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
      */
     public function actionLogout()
     {

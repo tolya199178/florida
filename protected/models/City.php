@@ -176,7 +176,7 @@ class City extends CActiveRecord
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      *
      * @param string $className active record class name.
-     * @return User the static model class
+     * @return City the static model class
      * 
      * @access public
      */
@@ -196,6 +196,9 @@ class City extends CActiveRecord
 	 * @access public
 	 */
 	public function beforeSave() {
+	    
+	    // Force the state to be the first entry in the country table.
+	    // Used for forced implemantations where state details are hidden or implied.
 	    if ($this->isNewRecord) {
 	        
 	        $stateModel = State::model()->findByAttributes(array('state_name' => STATE));

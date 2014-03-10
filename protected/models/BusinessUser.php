@@ -151,7 +151,7 @@ class BusinessUser extends CActiveRecord
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      *
      * @param string $className active record class name.
-     * @return User the static model class
+     * @return BusinessUser the static model class
      * 
      * @access public
      */

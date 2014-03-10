@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bootstrap Admin Theme v3</title>
+    <title><?php echo Yii::app()->params['SITE_NAME']; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/bootstrap.min.css">
@@ -14,6 +14,12 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    
+    <style type="text/css">
+
+
+    
+    </style>
   </head>
   <body>
   	<div class="header">
@@ -22,7 +28,7 @@
 	           <div class="col-md-5">
 	              <!-- Logo -->
 	              <div class="logo">
-	                 <h1><a href="index.html">Florida.com Admin</a></h1>
+	                 <h1><a href="index.html"><?php echo Yii::app()->params['SITE_NAME']; ?> Admin</a></h1>
 	              </div>
 	           </div>
 	           <div class="col-md-5">

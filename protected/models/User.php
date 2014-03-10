@@ -94,6 +94,12 @@ class User extends CActiveRecord
     const SCENARIO_LOGIN            = 'login';
     const SCENARIO_VALIDATION       = 'validation';
     
+    const USER_TYPE_SUPERADMIN      = 'superadmin';
+    const USER_TYPE_ADMIN           = 'admin';
+    const USER_TYPE_BUSINESS        = 'business_user';
+    const USER_TYPE_USER            = 'user';
+    
+    
     
     // /////////////////////////////////////////////////////////////////////////
     // Attributes to be used for form processing only
@@ -109,6 +115,8 @@ class User extends CActiveRecord
      */
     public $fldVerifyPassword;
 
+    
+    
     /**
      * Get database table name associated with the model.
      *
@@ -154,7 +162,11 @@ class User extends CActiveRecord
                    places_want_to_visit, image',    'length', 'max'=>255),
             array('mobile_number',                  'length', 'max'=>64),
             
-            array('email, user_name',               'email','checkMX'=>false),
+            array('email, user_name',               'email', 'checkMX'=>false),
+            
+            array('email', 'unique'),
+            array('user_name', 'unique'),
+
             
             // ranges
             array('user_type',                      'in','range'=>array('superadmin','admin','user','business_user'),'allowEmpty'=>false),

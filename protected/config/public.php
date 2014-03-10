@@ -2,8 +2,8 @@
 return CMap::mergeArray(
 		require(dirname(__FILE__).'/main.php'),
 		array(
-				//'theme' 		=> 'renewal',
 				'components'	=> array(
+// TODO: Disabled for now. Will address later
 // 						'urlManager' => array(
 // 								'urlFormat' => 'path',
 // 								'showScriptName' => false,
@@ -13,8 +13,10 @@ return CMap::mergeArray(
 // 										'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 // 								),
 // 						),
+// TODO: END
+				    
 				)
-				// Put front-end settings there
+				// NOTE: Put additional front-end settings there. Don't forget the comma
 		)
 );
 ?>

@@ -54,10 +54,10 @@ class WebApplicationEndBehavior extends CBehavior
     public function runEnd($name)
     {
         // Set the end name
-        $this->_endName = $name;
+        $this->_endName         = $name;
         
         // Attach the changeModulePaths event handler and raise the event.
-        $this->onModuleCreate = array($this, 'changeModulePaths');
+        $this->onModuleCreate   = array($this, 'changeModulePaths');
         $this->onModuleCreate(new CEvent($this->owner));
         
         $this->owner->run(); // Run application.

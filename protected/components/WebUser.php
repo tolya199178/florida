@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * Component that extends CWebUser and retrieves the user information from database
+ * ...tables.
+ *
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ */
+
+/**
+ * This component class extends the CWebUser and provide override functions to
+ * ...requests from Yii user management. We do this because the application is
+ * ...customised to use a database as a repository for authentication data.
+ *
+ * @package Components
+ * @version 1.0
+ */
+
+
 class WebUser extends CWebUser
 {
     // Store model to not repeat query.
@@ -8,51 +27,58 @@ class WebUser extends CWebUser
     // access it by Yii::app()->user->first_name
     function getFirstName()
     {
-        $user = $this->loadUser(Yii::app()->user->id);
-        return $user->firstname;
+        $userModelModel = $this->loadUser(Yii::app()->user->id);
+        return $userModel->firstname;
     }
 
     function getFullName()
     {
-        $user = $this->loadUser(Yii::app()->user->id);
-        return $user->fullName();
+        $userModel = $this->loadUser(Yii::app()->user->id);
+        return $userModel->fullName();
     }
 
     function getRole()
     {
-        $user = $this->loadUser(Yii::app()->user->id);
-        return $user->role;
+        $userModel = $this->loadUser(Yii::app()->user->id);
+        return $userModel->role;
     }
 
     function getPage()
     {
-        $user = $this->loadUser(Yii::app()->user->id);
-        return $user->pagination;
+        $userModel = $this->loadUser(Yii::app()->user->id);
+        return $userModel->pagination;
     }
 
     function getPasswordExpires()
     {
-        $user = $this->loadUser(Yii::app()->user->id);
-        return $user->checkExpiryDate();
+        $userModel = $this->loadUser(Yii::app()->user->id);
+        return $userModel->checkExpiryDate();
     }
+
     // This is a function that checks the field 'role'
     // in the User model to be equal to constant defined in our User class
     // that means it's admin
     // access it by Yii::app()->user->isAdmin()
     function isAdmin()
     {
-        $user = $this->loadUser(Yii::app()->user->id);
-        if ($user !== null)
-            return intval($user->role) == Users::ROLE_ADMIN;
+        $userModel = $this->loadUser(Yii::app()->user->id);
+        if ($userModel !== null)
+        {
+            return intval($userModel->role) == Users::ROLE_ADMIN;
+        }
         else
+        {
             return false;
+        }
     }
+
+    
     // Load user model.
-    protected function loadUser($id = null)
+    protected function loadUser($userId = null)
     {
         if ($this->_model === null) {
-            if ($id !== null)
-                $this->_model = Users::model()->findByPk($id);
+            if ($userId !== null)
+                $this->_model = Users::model()->findByPk($userId);
         }
         return $this->_model;
     }

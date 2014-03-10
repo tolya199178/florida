@@ -1,14 +1,16 @@
 <?php
-return CMap::mergeArray(require (dirname(__FILE__) . '/main.php'), array(
-    // 'theme' => 'renewal',
-    'components' => array(
+return CMap::mergeArray(
+        require (dirname(__FILE__) . '/main.php'),
+        array(
+            'components' => array(
+// TODO: Disabled for now. Will address later
 //         'user'=>array(
 //             // enable cookie-based authentication
 //             'allowAutoLogin'=>true,
 //             'loginUrl' => array('/backend/site/login'),
 //             'class'=>'WebUser',
 //         ),
-        
+//
 //         'urlManager' => array(
 //             'urlFormat' => 'path',
 //             'showScriptName' => false,
@@ -25,6 +27,8 @@ return CMap::mergeArray(require (dirname(__FILE__) . '/main.php'), array(
 //                 'backend/<_c>/<_a>' => '<_c>/<_a>'
 //             )
 //         )
-    )
+// TODO: END
+            )
+            // NOTE: Put additional front-end settings there. Don't forget the comma
 ));
 ?>

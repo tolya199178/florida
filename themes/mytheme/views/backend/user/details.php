@@ -1,3 +1,38 @@
+<?php
+$script = <<<EOD
+
+function changeUserType(obj)
+{
+
+   alert(obj)
+}
+
+
+EOD;
+
+Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_LOAD);
+
+?>
+
+<script type="text/javascript">
+function changeUserType(userType)
+{
+
+   if (userType == 'user')
+   {
+       document.getElementById('user_profile').style.display="block";                
+       return false;               
+   }
+   else
+   {               
+       document.getElementById('user_profile').style.display="none";                
+       return false;                
+   }
+		   
+}
+
+</script>
+
 <style>
 
 .form-group {
@@ -10,7 +45,7 @@
 <div class="modal-header">HEADER</div>  
 <div class="modal-body"> 
 -->
-    <h1>Update User <?php echo $model->user_id; ?></h1>
+    <h3>Update User: <?php echo $model->first_name.' '.$model->last_name.' (ID:'.$model->user_id.')'; ?></h3>
         
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -83,11 +118,18 @@
 	</div>
 	
 	
+	<!--  Add Access rights processing for user -->
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'user_type',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'user_type', $model->listUserType(), array('prompt'=>'Select User Type'));?>
+                <?php echo $form->dropDownList($model,
+                                               'user_type',
+                                               $model->listUserType(),
+                                               array('prompt'=>'Select User Type',
+                                                     'onchange'=>'return changeUserType(this.value)'
+                                                    )
+                );?>
                 <?php echo $form->error($model,'user_type'); ?>
                 <!--  todo: styling for dropdown -->  
             </div>
@@ -140,7 +182,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'created_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'created_by',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[createdBy]', $model->createdBy->user_name, array('class'=>"form-control", 'readonly' => 'readonly')); ?>                
             </div>
         </div>	
 	</div>
@@ -158,7 +200,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'modified_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'modified_by',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', $model->modifiedBy->user_name, array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>	
 	</div>
@@ -352,86 +394,91 @@
    
   <div class="tab-pane" id="profile">
   
-	<div class="row">
-        <div class="form-group">	
-            <?php echo $form->labelEx($model,'places_want_to_visit',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'places_want_to_visit',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'places_want_to_visit'); ?>
-            </div>
-        </div>	
+    <!-- profile settings for type user -->
+    <div id='user_profile' style="display:none">
+    	<div class="row">
+            <div class="form-group">	
+                <?php echo $form->labelEx($model,'places_want_to_visit',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->textField($model,'places_want_to_visit',array('class'=>"form-control")); ?>
+                    <?php echo $form->error($model,'places_want_to_visit'); ?>
+                </div>
+            </div>	
+        </div>
+      
+    	<div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'my_info_permissions',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'my_info_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
+                    <?php echo $form->error($model,'my_info_permissions'); ?>
+                </div>
+            </div>	
+    	</div>
+      
+    
+    	<div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'my_info_permissions',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'my_info_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
+                    <?php echo $form->error($model,'my_info_permissions'); ?>
+                </div>
+            </div>	
+    	</div>
+    	
+    	<div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'photos_permissions',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'photos_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>s
+                    <?php echo $form->error($model,'photos_permissions'); ?>
+                </div>
+            </div>	
+    	</div>
+    	
+    	<div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'friends_permissions',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'friends_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
+                    <?php echo $form->error($model,'friends_permissions'); ?>
+                </div>
+            </div>	
+    	</div>
+    
+    	<div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'blogs_permissions',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'blogs_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
+                    <?php echo $form->error($model,'blogs_permissions'); ?>
+                </div>
+            </div>	
+    	</div>
+    	
+    	<div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'travel_options_permissions',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'travel_options_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
+                    <?php echo $form->error($model,'travel_options_permissions'); ?>
+                </div>
+            </div>	
+    	</div>
+    	
+    	<div class="row">
+            <div class="form-group">	
+                <?php echo $form->labelEx($model,'image',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->textField($model,'image',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
+                    <?php echo $form->error($model,'image'); ?>
+                </div>
+            </div>	
+        </div>
     </div>
-  
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'my_info_permissions',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'my_info_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
-                <?php echo $form->error($model,'my_info_permissions'); ?>
-            </div>
-        </div>	
-	</div>
-  
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'my_info_permissions',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'my_info_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
-                <?php echo $form->error($model,'my_info_permissions'); ?>
-            </div>
-        </div>	
-	</div>
-	
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'photos_permissions',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'photos_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>s
-                <?php echo $form->error($model,'photos_permissions'); ?>
-            </div>
-        </div>	
-	</div>
-	
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'friends_permissions',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'friends_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
-                <?php echo $form->error($model,'friends_permissions'); ?>
-            </div>
-        </div>	
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'blogs_permissions',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'blogs_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
-                <?php echo $form->error($model,'blogs_permissions'); ?>
-            </div>
-        </div>	
-	</div>
-	
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'travel_options_permissions',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'travel_options_permissions', $model->listPermissions(), array('prompt'=>'Select Premission Level'));?>
-                <?php echo $form->error($model,'travel_options_permissions'); ?>
-            </div>
-        </div>	
-	</div>
-	
-	<div class="row">
-        <div class="form-group">	
-            <?php echo $form->labelEx($model,'image',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'image',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
-                <?php echo $form->error($model,'image'); ?>
-            </div>
-        </div>	
-    </div>
+    <!-- end profile settings for type user -->
+    
   
   
   </div>
@@ -458,3 +505,4 @@
     
 -->  
 </div> 
+

@@ -5,12 +5,54 @@
 
 ?>
 
-<!-- User Details Modal -->
-  <!-- Button trigger modal -->
-<!--   <a data-toggle="modal" href="#myModal" class="btn btn-primary">Add New User</a> -->
-    <a href="<?php echo Yii::app()->createUrl('user/create'); ?>" class="btn btn-primary">Add New User</a>
-  
-  <br /><br />
+<style>
+    .dataTables_filter {
+         display: none;
+    }
+
+/*     .popover {max-width:400px;} */
+#popover-content {
+margin-right:-800px;
+max-width:600px;
+width:800px;
+}
+
+</style>
+
+
+
+<nav class="navbar navbar-default" role="navigation">
+   <div class="navbar-header">
+      <a class="navbar-brand" href="#">Manage Users</a>
+   </div>
+   <div>
+      <div class="navbar-form navbar-left" role="search">
+         <div class="form-group">
+           <a href="<?php echo Yii::app()->createUrl('user/create'); ?>" class="btn btn-primary">Add New User</a>
+         </div>
+      </div>
+      <div class="navbar-form navbar-right" role="search">
+         <div class="form-group">
+            <input type="text" class="form-control" id="searchbox" placeholder="Search">
+         </div>
+         
+        <a data-placement="bottom" data-toggle="popover" data-title="" data-container="body" type="button" data-html="true" href="#" id="login" class="btn btn-primary">Advanced Search</a>
+        <div id="popover-content" class="hide">
+          
+some content
+	<p id="renderingEngineFilter"></p>
+	<p id="browserFilter"></p>
+	<p id="platformsFilter"></p>
+	<p id="engineVersionFilter"></p>
+	<p id="cssGradeFilter"></p>
+          
+        </div>
+         
+      </div> 
+
+      
+   </div>
+</nav>
 
   <!-- Modal -->  
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">  
@@ -25,27 +67,30 @@
 			<table id="user_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-						<th>User </th>
-						<th>Position</th>
-						<th>Office</th>
-						<th>Extn.</th>
+						<th>User ID</th>
+						<th>User Type</th>
+						<th>User Name</th>
+						<th>User's Full Name</th>
+						<th>Status</th>
+						<th>Last Login</th>
+						<th>Links</th>
 						<th>&nbsp;</th>
 						<th>&nbsp;</th>
 
 					</tr>
 				</thead>
 
-				<tfoot>
-					<tr>
-						<th>Name</th>
-						<th>Position</th>
-						<th>Office</th>
-						<th>Extn.</th>
-						<th>&nbsp;</th>
-						<th>&nbsp;</th>
+<!-- 				<tfoot> -->
+<!-- 					<tr> -->
+<!-- 						<th>Name</th> -->
+<!-- 						<th>Position</th> -->
+<!-- 						<th>Office</th> -->
+<!-- 						<th>Extn.</th> -->
+<!-- 						<th>&nbsp;</th> -->
+<!-- 						<th>&nbsp;</th> -->
 
-					</tr>
-				</tfoot>
+<!-- 					</tr> -->
+<!-- 				</tfoot> -->
 			</table>
 			
 <?php
@@ -62,28 +107,33 @@ var table = $('#user_table').DataTable({
         oLanguage: {
             sLengthMenu: '_MENU_ records per page'
         },
-        bFilter: false,
+       // bFilter: false,
 
         'bProcessing': true,
         'bServerSide': true,
          'sPaginationType': 'full_numbers',
-        'sAjaxSource': '{$data_url}',
+        // 'sAjaxSource': '{$data_url}',
+        "ajax": {
+            "url": '{$data_url}',
+            "type": "POST"
+        },
 
         'columnDefs': [
+            // These columns not visible
+            { 'visible': false,  'targets': [ 0,1 ] },
+        
             {
                 // The `data` parameter refers to the data for the cell (defined by the
                 // `data` option, which defaults to the column being worked with, in
                 // this case `data: 0`.
                 'render': function ( data, type, row ) {
-                    return data +' ('+ row[3]+')';
+                    return data +' ('+ row[1]+')';
                 },
-                'targets': 1
+                'targets': 2
             },
-            { 'visible': false,  'targets': [ 0 ] },
             {
                 "targets": [-1],
                 "data": null,
-                // "defaultContent": "<button class='editrow'>Edit</button>" + row[0],
                 'render': function ( data, type, row ) {
                     var editurl = "<button class='deleterow btn btn-danger btn-xs'>Delete</button>";
                   //  alert(editurl);
@@ -93,9 +143,17 @@ var table = $('#user_table').DataTable({
             {
                 "targets": [-2],
                 "data": null,
-                // "defaultContent": "<button class='editrow'>Edit</button>" + row[0],
                 'render': function ( data, type, row ) {
                     var editurl = "<a class='editrow btn btn-info btn-xs' href='{$edit_url}/user_id/" + row[0] + "'>Edit</a>";
+                    // alert(editurl);
+                    return editurl;
+                },
+            },
+            {
+                "targets": [-3],
+                "data": null,
+                'render': function ( data, type, row ) {
+                    var editurl = "<a class='editrow btn btn-info btn-xs' href='{$edit_url}/user_id/" + row[0] + "'>Location</a>";
                     // alert(editurl);
                     return editurl;
                 },
@@ -128,10 +186,13 @@ var table = $('#user_table').DataTable({
                         // var oTable = $('#tModuleListing').dataTable();
                         table.draw();   
                     }
+                    else {
+                        alert('Failed to Delete item - ' + data.message);
+                    }
                     
                 },
                 error: function () {
-                    alert('Failed to Delete item');
+                    alert('Failed to Delete item - unexpected error');
                     // todo: add proper error message 
                 }
             });
@@ -160,9 +221,35 @@ var table = $('#user_table').DataTable({
       //  alert( "DeleteMe :" + data[0] +"'s salary is: "+ data[ 3 ] );
       }
       
-     // debugger;
-
     } );
+
+    // Search the table from the external search textbox. Limit to search string > 3 characters
+    $('#searchbox').on( 'keyup', function () {
+       if (($("#searchbox").val().length > 2) || ($("#searchbox").val().length == 0)) {
+            table.search( this.value ).draw();
+       }
+                        
+    } );
+                    
+                    
+// table.columnFilter({aoColumns:[
+// 				{ sSelector: "#renderingEngineFilter", type:"select"  },
+// 				{ sSelector: "#browserFilter" },
+// 				{ sSelector: "#platformsFilter" },
+// 				{ sSelector: "#engineVersionFilter", type:"number-range" },
+// 				{ sSelector: "#cssGradeFilter", type:"select", values : ["A", "B", "C"] }
+// 				]}
+// 			);
+                    
+                    
+$("[data-toggle=popover]").popover({
+    html: true, 
+	content: function() {
+          return $('#popover-content').html();
+        }
+});
+
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);

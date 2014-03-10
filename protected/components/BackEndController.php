@@ -28,11 +28,6 @@ class BackEndController extends CController
      * @access public
      */
     public $layout = '//layouts/page';
-        
-    // Not used
-    //     public $menu=array();
-    //     public $breadcrumbs=array();
-    
     
     /**
      * Override CController filters and provide base filters for derived class.

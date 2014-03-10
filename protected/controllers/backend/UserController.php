@@ -47,32 +47,6 @@ class UserController extends BackEndController
 		);
 	}
 
-// 	/**
-// 	 * Specifies the access control rules.
-// 	 * This method is used by the 'accessControl' filter.
-// 	 * @return array access control rules
-// 	 */
-// 	public function accessRules()
-// 	{
-// 		return array(
-// 			array('allow',  // allow all users to perform 'index' and 'view' actions
-// 				'actions'=>array('index','view'),
-// 				'users'=>array('*'),
-// 			),
-// 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-// 				'actions'=>array('create','update'),
-// 				'users'=>array('@'),
-// 			),
-// 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-// 				'actions'=>array('admin','delete'),
-// 				'users'=>array('admin'),
-// 			),
-// 			array('deny',  // deny all users
-// 				'users'=>array('*'),
-// 			),
-// 		);
-// 	}
-
 
 	/**
 	 * Creates a new user record.
@@ -81,7 +55,7 @@ class UserController extends BackEndController
 	 * ... - the (subsequent) POST request saves the submitted post data as a User record.
 	 * ...If the save (POST request) is successful, the default method (index()) is called.  
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages form the User validation (User::rules())
+	 * ...again with error messages from the User validation (User::rules())
 	 *  
 	 * @param <none> <none>
 	 *
@@ -123,7 +97,7 @@ class UserController extends BackEndController
 	 * ...   the existing User record
 	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages form the User validation (User::rules())
+	 * ...again with error messages from the User validation (User::rules())
 	 * 
 	 * @param integer $user_id the ID of the model to be updated
 	 *
@@ -133,13 +107,20 @@ class UserController extends BackEndController
 	public function actionEdit($user_id)
 	{
 	    
-		$userModel=$this->loadModel($user_id);
+		$userModel = User::model()->findByPk($user_id);
+		if($userModel===null)
+		{
+		    throw new CHttpException(404,'The requested page does not exist.');		    
+		}
+
 
 		// Uncomment the following line if AJAX validation is needed
+		// TODO: Currently disabled as it breaks JQuery loading order
 		// $this->performAjaxValidation($userModel);
 
 		if(isset($_POST['User']))
 		{
+		    
 
 		    // Unset the password if it is not supplied so that it is not
 		    // ...overwritten by an empty password.
@@ -177,13 +158,22 @@ class UserController extends BackEndController
 	    // todo: add proper error message . iether flash or raiseerror. Might
 	    // be difficult is sending ajax response.
 	    
-	    // todo: Only process ajax request
+	    // TODO: Only process ajax request
         $userId = $_POST['user_id'];
         $userModel = User::model()->findByPk($userId);
+        
+        // /////////////////////////////////////////////////////////////////
+        // Disable deletion of superadmin user.
+        // /////////////////////////////////////////////////////////////////
+        if ($userModel->attributes['user_type'] == User::USER_TYPE_SUPERADMIN) {
+            echo '{"result":"fail", "message":"Operation not supported"}';
+            Yii::app()->end();         
+        } 
         
         if ($userModel == null) {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Invalid user"}';
+            Yii::app()->end();
         }
         
         // /////////////////////////////////////////////////////////////////
@@ -200,6 +190,7 @@ class UserController extends BackEndController
         if ($result == false) {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Failed to mark record for deletion"}';
+            Yii::app()->end();
         }
         
         echo '{"result":"success", "message":""}';
@@ -208,8 +199,9 @@ class UserController extends BackEndController
 
 
 	/**
-	 * Default action for the controller.
-	 * Does not perform any processing. Redirects to the desired action instead.
+     * Default action for the controller. Invoked when an action is not
+     * ....explicitly requested by user
+   	 * Does not perform any processing. Redirects to the desired action instead.
 	 *
 	 * @param <none> <none>
 	 *
@@ -219,7 +211,7 @@ class UserController extends BackEndController
 	public function actionIndex()
 	{
 	    // Default action is to show all users.
-        $this->actionList();
+	    $this->redirect(array('list'));
 	}
 	
 
@@ -257,22 +249,26 @@ class UserController extends BackEndController
         // /////////////////////////////////////////////////////////////////////
         // Create a Db Criteria to filter and customise the resulting results
         // /////////////////////////////////////////////////////////////////////
-        $criteria = new CDbCriteria;
+        $searchCriteria = new CDbCriteria;
         
         // Paging criteria
         // Set defaults
-        $limitStart 	           = isset($_POST['iDisplayStart'])?$_POST['iDisplayStart']:0;
-        $limitItems 	           = isset($_POST['iDisplayLength'])?$_POST['iDisplayLength']:Yii::app()->params['PAGESIZEREC'];
+        $limitStart 	           = isset($_POST['start'])?$_POST['start']:0;
+        $limitItems 	           = isset($_POST['length'])?$_POST['length']:Yii::app()->params['PAGESIZEREC'];
         
-        $criteria->limit 		   = $limitItems;
-        $criteria->offset 		   = $limitStart;
+        $searchCriteria->limit 		 = $limitItems;
+        $searchCriteria->offset 	 = $limitStart;
+                        
+         if (isset($_POST['search']['value']) && (strlen($_POST['search']['value']) > 2)) {             
+             $searchCriteria->addSearchCondition('t.first_name', $_POST['search']['value'], true, 'OR');
+             $searchCriteria->addSearchCondition('t.last_name',  $_POST['search']['value'], true, 'OR');
+                          
+         }
         
-        // TODO: Search criteria
         
+        $user_list=User::model()->findAll($searchCriteria);
         
-        $user_list=User::model()->findAll($criteria);
-        
-        $rows_count 		= User::model()->count($criteria);;
+        $rows_count 		= User::model()->count($searchCriteria);;
         $total_records 		= User::model()->count();
         
         
@@ -286,9 +282,11 @@ class UserController extends BackEndController
             if($f++) echo ',';
             echo   '[' .
                 '"'  .$r->attributes['user_id'] .'"'
-              . ',"' .$r->attributes['user_name'] .'"'
-              . ',"' .$r->attributes['first_name'] .' '. $r->attributes['last_name'] .'"'
               . ',"' .$r->attributes['user_type'] .'"'
+              . ',"' .$r->attributes['user_name'] .'"'
+              . ',"' .$r->attributes['first_name'] .' '. $r->attributes['last_name'] .'"'                
+              . ',"' .$r->attributes['status'] .'"'
+              . ',"' .$r->attributes['last_login'] .'"'
             . ',""'
             . ']';
         }
@@ -296,25 +294,6 @@ class UserController extends BackEndController
         	    
 	    
 	    
-	}
-
-
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 *
-	 * @param integer $id the ID of the model to be loaded
-	 *
-	 * @return User the loaded model
-	 * @throws CHttpException
-	 * @access public
-	 */
-	public function loadModel($id)
-	{
-		$userModel=User::model()->findByPk($id);
-		if($userModel===null)
-			throw new CHttpException(404,'The requested page does not exist.');
-		return $userModel;
 	}
 
 

@@ -586,7 +586,7 @@ CREATE TABLE `tbl_advertisement` (
   
   `published`           enum('Y', 'N') DEFAULT 'N',
   
-  `piblish_date`        DATE,
+  `publish_date`        DATE,
   `expiry_date`         DATE,
   
 
@@ -622,6 +622,8 @@ ADD CONSTRAINT fk_advertisement_user
      REFERENCES tbl_user(user_id);
      
 
+-- alter table tbl_advertisement change column piblish_date publish_date DATE;
+     
 -- ---------------------------------------------------------------------
 -- Mobile Carriers
 -- ---------------------------------------------------------------------

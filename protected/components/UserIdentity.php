@@ -20,19 +20,19 @@ class UserIdentity extends CUserIdentity
 {
 
     /**
-     * Authenticates a user.
-     * Authenticate against our Database
+     * local variables used to reference authenticaton values.
+     * The current login values are retuned 
      * 
      * @return boolean whether authentication succeeds.
      *        
      */
-    private $_id;
-
-    private $_username;
+    private $_userId;
+    private $__userName;
+    
 
     public function getName()
     {
-        return $this->_username;
+        return $this->__userName;
     }
 
     /**
@@ -44,37 +44,38 @@ class UserIdentity extends CUserIdentity
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->_userId;
     }
 
     public function authenticate()
     {
 
-//         $user = Users::model()->find('LOWER(username)=?', array(
-//             strtolower($this->username)
-//         ));
-        $user = User::model()->find('LOWER(user_name)=?', array(
+        $userModel = User::model()->find('LOWER(user_name)=?', array(
             strtolower($this->username)
         ));
         
-        if ($user === null) {
+        if ($userModel === null)
+        {
             $this->errorCode = self::ERROR_UNKNOWN_IDENTITY;
         }
-        else if($user->password !==  utf8_encode( crypt($user->user_name.$user->password,$user->password))){
+        else if($userModel->password !=  utf8_encode( crypt($userModel->user_name.$userModel->password,$userModel->password)))
+        {
             $this->errorCode=self::ERROR_PASSWORD_INVALID;
-        } else {
+        }
+        else
+        {
             
-            $user->scenario = User::SCENARIO_LOGIN;
+            $userModel->scenario = User::SCENARIO_LOGIN;
             
             // Map the CUserIdentity user id field with the database user id field
-            $this->_id = $user->user_id;
+            $this->_userId          = $userModel->user_id;
             
-            $this->_username = $user->email;
+            $this->__userName       = $userModel->email;
                         
-            $user->last_login = new CDbExpression("NOW()");
-            $user->save();
+            $userModel->last_login  = new CDbExpression("NOW()");
+            $userModel->save();
             $this->errorCode = self::ERROR_NONE;
         }
-        return ! $this->errorCode;
+        return (!$this->errorCode);
     }
 } 
