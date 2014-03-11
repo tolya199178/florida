@@ -143,6 +143,33 @@ ADD CONSTRAINT fk_city_state
      FOREIGN KEY (state_id) 
      REFERENCES tbl_state(state_id);
 
+-- alter  table tbl_city  change city_name city_name varchar(512) NOT NULL DEFAULT '';
+-- alter  table tbl_city  change city_alternate_name city_alternate_name varchar(512) NOT NULL DEFAULT '';
+     
+-- ---------------------------------------------------------------------
+-- City Admin User
+-- ---------------------------------------------------------------------
+ 
+ DROP TABLE IF EXISTS `tbl_city_admin`;
+  
+ CREATE TABLE `tbl_city_admin` (
+  `city_admin_id`   int(11) NOT NULL AUTO_INCREMENT,
+  `city_id`         int(11) NOT NULL,    -- fk to city
+  `user_id`         int(11) NOT NULL,    -- fk to user 
+  PRIMARY KEY        (`city_admin_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  
+  
+ALTER TABLE tbl_city_admin
+ADD CONSTRAINT fk_city_admin_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_city_admin
+ADD CONSTRAINT fk_city_admin_city_id
+     FOREIGN KEY (city_id) 
+     REFERENCES tbl_city(city_id);  
+     
      
 -- ---------------------------------------------------------------------
 -- places visited
@@ -370,7 +397,7 @@ ADD CONSTRAINT fk_business_city
 
 
 -- ---------------------------------------------------------------------
--- saved_search
+-- Business User
 -- ---------------------------------------------------------------------
  
  DROP TABLE IF EXISTS `tbl_business_user`;
