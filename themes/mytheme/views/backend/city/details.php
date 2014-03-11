@@ -18,8 +18,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 <style>
 
 .form-group {
-    padding-top:12px;
-    padding-bottom:12px;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 </style>
 
@@ -35,9 +35,12 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
-	<div class="alert alert-danger">
-	<?php echo $form->errorSummary($model); ?>	
-	</div>
+    <?php if($model->hasErrors()) {  ?>
+        <div class="alert alert-danger">
+        	<?php echo $form->errorSummary($model); ?>	
+        </div>
+    <?php } ?>
+
 
     <?php echo $form->hiddenField($model,'city_id'); ?>    
 
@@ -52,6 +55,26 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         </div>	
 	</div>
 
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'city_alternate_name',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'city_alternate_name',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'city_alternate_name'); ?>
+            </div>
+        </div>	
+	</div>
+	
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'is_featured',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->error($model,'is_featured'); ?>
+                <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+            </div>
+        </div>	
+	</div>
+	
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'city_alternate_name',array('class'=>"col-sm-2 control-label")); ?>

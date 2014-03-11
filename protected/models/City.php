@@ -83,7 +83,7 @@ class City extends CActiveRecord
 		    // ranges
 			array('is_featured, isactive',                       'in','range'=>array('Y','N'),'allowEmpty'=>false),
 		    
-			array('image',                                        'file', 'types'=>'jpg, jpeg, gif, png'),
+			array('image',                                        'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('city_id, city_name, city_alternate_name,

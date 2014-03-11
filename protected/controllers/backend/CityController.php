@@ -193,9 +193,7 @@ class CityController extends BackEndController
 	        	         
 	        if($cityModel->save())
 	        {
-	            
-	            print_r($cityModel);exit;
-	            
+	            	            
 	            $imageFileName = 'city-'.$cityModel->city_id.'-'.$cityModel->image;
 	            $imagePath = Yii::getPathOfAlias('webroot').'/uploads/images/city/'.$imageFileName;
 	            	                 
@@ -237,32 +235,16 @@ class CityController extends BackEndController
 	    // TODO: Only process ajax request
         $cityId = $_POST['city_id'];
         $cityModel = City::model()->findByPk($cityId);
-        
-        // /////////////////////////////////////////////////////////////////
-        // Disable deletion of superadmin city.
-        // /////////////////////////////////////////////////////////////////
-        if ($cityModel->attributes['city_type'] == City::USER_TYPE_SUPERADMIN) {
-            echo '{"result":"fail", "message":"Operation not supported"}';
-            Yii::app()->end();         
-        } 
-        
+                
         if ($cityModel == null) {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Invalid city"}';
             Yii::app()->end();
         }
         
-        // /////////////////////////////////////////////////////////////////
-        // Instead of deleting the entry, the record is modified with the
-        // ...status fields set to 'deleted'
-        // /////////////////////////////////////////////////////////////////
-        // $result = $city->delete();
-        
-        $cityModel->status = 'deleted';
-        
-        $result = $cityModel->save();
-         
-        	    
+
+        $result = $cityModel->delete();
+                	    
         if ($result == false) {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Failed to mark record for deletion"}';
