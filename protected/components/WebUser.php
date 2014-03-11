@@ -64,7 +64,24 @@ class WebUser extends CWebUser
         $userModel = $this->loadUser(Yii::app()->user->id);
         if ($userModel !== null)
         {
-            return intval($userModel->role) == Users::ROLE_ADMIN;
+            return intval($userModel->user_type) == User::USER_TYPE_ADMIN;
+       }
+        else
+        {
+            return false;
+        }
+    }
+    
+    // This is a function that checks the field 'role'
+    // in the User model to be equal to constant defined in our User class
+    // that means it's admin
+    // access it by Yii::app()->user->isAdmin()
+    function isSuperAdmin()
+    {
+        $userModel = $this->loadUser(Yii::app()->user->id);
+        if ($userModel !== null)
+        {
+            return $userModel->user_type == User::USER_TYPE_SUPERADMIN;
         }
         else
         {
@@ -78,7 +95,7 @@ class WebUser extends CWebUser
     {
         if ($this->_model === null) {
             if ($userId !== null)
-                $this->_model = Users::model()->findByPk($userId);
+                $this->_model = User::model()->findByPk($userId);
         }
         return $this->_model;
     }
