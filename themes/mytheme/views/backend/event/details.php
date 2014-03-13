@@ -201,7 +201,7 @@
             <?php echo $form->labelEx($model,'event_city_id',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
                 <?php echo $form->dropDownList($model,'event_city_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?> 
-                <?php echo $form->error($model,'user_type'); ?>
+                <?php echo $form->error($model,'event_city_id'); ?>
                 <!--  todo: styling for dropdown -->  
             </div>
         </div>	
@@ -273,11 +273,15 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'event_type',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'event_type',array('class'=>"form-control")); ?>
+                <?php echo $form->dropDownList($model,
+                                               'event_type',
+                                               $model->listEventTypes(),
+                                               array('prompt'=>'Select Event Type')
+                );?>
                 <?php echo $form->error($model,'event_type'); ?>
             </div>        
         </div>	
-	</div
+	</div>
 	
 	<div class="row">
         <div class="form-group">
@@ -297,7 +301,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'created_time',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'created_time',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'created_time',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
                 <?php echo $form->error($model,'created_time'); ?>
             </div>        
         </div>	

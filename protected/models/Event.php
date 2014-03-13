@@ -112,10 +112,10 @@ class Event extends CActiveRecord
 		    array('event_latitude, event_longitude',                      'length', 'max'=>10),
 		    
 		    // ranges
-		    array('is_featured, isactive, event_show_map, 
-		           is_featured, is_popular',                     'in','range'=>array('Y','N'),'allowEmpty'=>false),
-			array('event_type',                                  'in','range'=>array('public', 'private', 'meetups'),'allowEmpty'=>false),
-		    array('event_status',                                'in','range'=>array('Inactive', 'Active','Closed', 'Cancelled'),'allowEmpty'=>false),
+		    array('is_featured, event_show_map, 
+		           is_featured, is_popular',                     'in','range'=>array('Y','N'),'allowEmpty'=>true),
+			array('event_type',                                  'in','range'=>array('public', 'private', 'meetups'),'allowEmpty'=>true),
+		    array('event_status',                                'in','range'=>array('Inactive', 'Active','Closed', 'Cancelled'),'allowEmpty'=>true),
 		    
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('event_id, event_title, event_description, event_type,
@@ -268,7 +268,8 @@ class Event extends CActiveRecord
 	 *
 	 * @access public
 	 */
-	public function beforeSave() {
+	public function beforeSave()
+	{
 	    
 	    
         // /////////////////////////////////////////////////////////////////
@@ -295,11 +296,28 @@ class Event extends CActiveRecord
 	 *
 	 * @access public
 	 */
-	public function listStatus() {
+	public function listStatus()
+	{
 	
 	    return array('Inactive'    => 'Inactive',
 	                 'Active'      => 'Active',
 	                 'Closed'      => 'Closed',
 	        	     'Cancelled'   => 'Cancelled');
+	}
+	
+	/**
+	 * Build an associative list of event type values.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of permission status values
+	 *
+	 * @access public
+	 */
+	public function listEventTypes()
+	{
+	
+	    // TODO: Confirm that meetups is out of scope
+	    // return array('public' =>'Public','private' => 'Private','meetups' => 'Meetups');
+	    return array('public' =>'Public','private' => 'Private');
 	}
 }
