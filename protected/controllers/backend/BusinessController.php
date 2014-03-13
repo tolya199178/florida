@@ -33,10 +33,26 @@ class BusinessController extends BackEndController
     
     /**
      * @var string imagesDirPath Directory where Business images will be stored
-     * @access public
+     * @access private
      */
     private $imagesDirPath;
     
+    /**
+     * @var string imagesDirPath Directory where Business image thumbnails will be stored
+     * @access private
+     */
+    private $thumbnailsDirPath;
+    
+    /**
+     * @var string thumbnailWidth thumbnail width
+     * @access private
+     */
+    private $thumbnailWidth     = 240;
+    /**
+     * @var string thumbnailWidth thumbnail width
+     * @access private
+     */
+    private $thumbnailHeight    = 240;
 
     /**
      * Controller initailisation routines to set up the controller
@@ -48,7 +64,14 @@ class BusinessController extends BackEndController
      */
     public function init()
     {
-        $this->imagesDirPath = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business/';        
+        $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business';
+        $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business/thumbnails';
+        
+        /*
+         *     Small-s- 100px(width)
+         *     Medum-m- 240px(width)
+         *     Large-l- 600px(width)
+         */
     }
     
     
@@ -145,12 +168,6 @@ class BusinessController extends BackEndController
 	        $businessModel->attributes=$_POST['Business'];
 	        
 	        $uploadedFile = CUploadedFile::getInstance($businessModel,'fldUploadImage');
-	        
-	        // ////////////////////////////////////////////////////////////////////////
-	        // Create a temporary file name. This will later be renamed to a file name
-	        // ...that includes the business id. We can only get the id after saving.
-	        // ////////////////////////////////////////////////////////////////////////
-
 
 	        if($businessModel->save())
 	        {
@@ -161,6 +178,8 @@ class BusinessController extends BackEndController
                 {
                     $uploadedFile->saveAs($imagePath);
                     $businessModel->image = $imageFileName;
+                    
+                    $this->createThumbnail($imageFileName);
                     
                     $businessModel->save();
                 }
@@ -215,29 +234,45 @@ class BusinessController extends BackEndController
 
 		if(isset($_POST['Business']))
 		{
-		    
-		    // Make a note of the existing image. and delete it before overwriting.
-		    $currentImagePath = Yii::getPathOfAlias('webroot').'/uploads/images/business/business-'.$businessModel->business_id.'-'.$businessModel->image;
-
+            // Assign all fields from the form
 		    $businessModel->attributes=$_POST['Business'];
 		    
-			
-	        $uploadedFile = CUploadedFile::getInstance($businessModel,'image');
-	        	         
-	        if($businessModel->save())
-	        {
-	            	            
-	            $imageFileName = 'business-'.$businessModel->business_id.'-'.$businessModel->image;
-	            $imagePath = Yii::getPathOfAlias('webroot').'/uploads/images/business/'.$imageFileName;
-	            	                 
-                if(!empty($uploadedFile))  // check if uploaded file is set or not
-                {
-                    $uploadedFile->saveAs($imagePath);
-                }
-                
-	            $this->redirect(array('index'/* ,'id'=>$businessModel->business_id */));
-	            	      
-	        } 
+		    $uploadedFile = CUploadedFile::getInstance($businessModel,'fldUploadImage');
+		    
+		    // Make a note of the existing image file name. It will be deleted soon.
+		    $oldImageFileName = $businessModel->image;
+		    
+		    if(!empty($uploadedFile))  // check if uploaded file is set or not
+		    {
+		        // Save the image file name
+		        $businessModel->image = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+		    }
+		    
+		    if($businessModel->save())
+		    {
+		        $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+		        $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+		         
+		        if(!empty($uploadedFile))  // check if uploaded file is set or not
+		        {
+		            // Remove existing images
+		            if (!empty($oldImageFileName))
+		            {
+		                $this->deleteImages($oldImageFileName);		                
+		            }
+
+		            // Save the new uploaded image
+		            $uploadedFile->saveAs($imagePath);
+		    
+		            $this->createThumbnail($imageFileName);
+		        }
+		    
+		        $this->redirect(array('index'));
+		    
+		    }
+		    else {
+		        Yii::app()->user->setFlash('error', "Error creating a business record.'");
+		    }
 				
 		}
 
@@ -419,9 +454,9 @@ class BusinessController extends BackEndController
 	}
 	
 	/**
-	 * Delete images for the business. Normally invoked when business is being deleted
+	 * Delete images for the business. Normally invoked when business is being deleted.
 	 *
-	 * @param <none> <none>
+	 * @param string $imageFileName the name of the file
 	 *
 	 * @return <none> <none>
 	 * @access public
@@ -429,7 +464,53 @@ class BusinessController extends BackEndController
 	private function deleteImages($imageFileName)
 	{
         $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-        unlink($imagePath);	    
+        @unlink($imagePath);
+        
+        $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+        @unlink($thumbnailPath);
+	}
+	
+	/**
+	 * Create a thumbnail image from the filename give, Store it in the thumnails folder.
+	 *
+	 * @param <none> <none>
+	 * 
+	 * @return <none> <none>
+	 * @access public
+	 */
+	private function createThumbnail($imageFileName, $sizeWidth = 0, $sizeHeight = 0)
+	{
+	    
+	    if ($sizeWidth == 0)
+	    {
+	        $sizeWidth     = $this->thumbnailWidth;
+	    }
+	    if ($sizeHeight == 0)
+	    {
+	        $sizeHeight    = $this->thumbnailHeight;
+	    }
+	    
+	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+	    $imagePath         = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+	    
+	    $imgThumbnail              = new Thumbnail;
+	    $imgThumbnail->PathImgOld  = $imagePath;
+	    $imgThumbnail->PathImgNew  = $thumbnailPath;
+	    
+	    $imgThumbnail->NewWidth    = $sizeWidth;
+	    $imgThumbnail->NewHeight   = $sizeHeight;
+	    
+	    $result = $imgThumbnail->create_thumbnail_images();
+	    
+	    if (!$result)
+	    {
+	        return false;
+	    }
+	    else
+	    {
+	        return true;
+	    }
+
 	}
 	
 }
