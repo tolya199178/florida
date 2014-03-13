@@ -420,14 +420,14 @@ class BusinessController extends BackEndController
         foreach($business_list as $r){
 
             $row = array($r->attributes['business_id'],
-                         $r->attributes['event_title'],
-                         $r->attributes['created_by'],
-                         $r->attributes['event_business_id'],
-                         $r->attributes['event_category_id'],
-                         $r->attributes['event_start_date'],
-                         $r->attributes['event_status'],
-                         ''
+                         $r->attributes['business_name'],
+                         $r->attributes['business_name'],
+                         $r->attributes['business_name'],
+                         $r->attributes['business_email'],
+                         $r->attributes['business_phone'],
+                         $r->attributes['business_city_id'],
                         );
+
             $output['aaData'][] = $row;
 
         }
