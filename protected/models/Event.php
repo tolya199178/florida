@@ -61,6 +61,13 @@
  */
 class Event extends CActiveRecord
 {
+    
+    /**
+     *
+     * @var string fldUploadImage Business image uploader.
+     * @access public
+     */
+    public $fldUploadImage;
 
     /**
      * Get database table name associated with the model.
@@ -93,17 +100,17 @@ class Event extends CActiveRecord
 		    // Mandatory rules		    
 			array('event_title, event_start_date,event_end_date,
 			       event_category_id, event_business_id,
-			        event_tag',                                  'required'),
+			       event_tag',                                   'required'),
 
 		    // Data types, sizes
 		    array('event_city_id, event_category_id, event_business_id,
-		           created_by, modified_by, event_views',        'numerical', 'integerOnly'=>true),
-			array('event_title, cost',                           'length', 'max'=>255),
-		    array('event_frequency',                             'length', 'max'=>64),
-		    array('event_address1, event_address2',              'length', 'max'=>1024),
-		    array('event_street',                                'length', 'max'=>512),
-		    array('event_phone_no',                              'length', 'max'=>32),
-		    array('event_latitude, event_longitude',             'length', 'max'=>10),
+		           event_views',                                          'numerical', 'integerOnly'=>true),
+			array('event_title, cost',                                    'length', 'max'=>255),
+		    array('event_frequency',                                      'length', 'max'=>64),
+		    array('event_address1, event_address2, event_description',    'length', 'max'=>1024),
+		    array('event_street, event_start_time, event_end_time',       'length', 'max'=>512),
+		    array('event_phone_no',                                       'length', 'max'=>32),
+		    array('event_latitude, event_longitude',                      'length', 'max'=>10),
 		    
 		    // ranges
 		    array('is_featured, isactive, event_show_map, 
@@ -111,16 +118,11 @@ class Event extends CActiveRecord
 			array('event_type',                                  'in','range'=>array('public', 'private', 'meetups'),'allowEmpty'=>false),
 		    array('event_status',                                'in','range'=>array('Inactive', 'Active','Closed', 'Cancelled'),'allowEmpty'=>false),
 		    
-            // safe
-			array('event_description, event_start_time, event_end_time, event_photo, created_time', 'safe'),
-
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('event_id, event_title, event_description, event_type,
-			       event_start_date, event_end_date, event_start_time,
-			       event_end_time, event_frequency, event_address1, event_address2,
-			       event_street, event_city_id, event_phone_no, event_show_map,
-			       event_photo, event_category_id, event_business_id, event_latitude,
-			       event_longitude, event_tag, created_time, modified_time, created_by,
+			       event_start_date, event_start_time, event_address1, event_address2,
+			       event_street, event_city_id, event_phone_no,
+			       event_category_id, event_business_id,event_tag, created_time, created_by,
 			       modified_by, is_featured, is_popular, event_status, cost, event_views', 'safe', 'on'=>'search'),
 		);
 	}
@@ -286,4 +288,19 @@ class Event extends CActiveRecord
 	    return parent::beforeSave();
 	}
 	
+	/**
+	 * Build an associative list of status values.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of permission status values
+	 *
+	 * @access public
+	 */
+	public function listStatus() {
+	
+	    return array('Inactive'    => 'Inactive',
+	                 'Active'      => 'Active',
+	                 'Closed'      => 'Closed',
+	        	     'Cancelled'   => 'Cancelled');
+	}
 }
