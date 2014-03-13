@@ -147,7 +147,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'add_request_processed_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'add_request_processed_by',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'add_request_processed_by',array('class'=>"form-control",'readonly' => 'readonly')); ?>
                 <?php echo $form->error($model,'add_request_processed_by'); ?>
             </div>        
         </div>	
@@ -167,7 +167,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'claimed_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'claimed_by',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'claimed_by',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
                 <?php echo $form->error($model,'claimed_by'); ?>
             </div>        
         </div>	
@@ -201,7 +201,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'business_allow_review',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'business_allow_review',array('class'=>"form-control")); ?>
+                <?php echo $form->checkBox($model,'business_allow_review', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>                
                 <?php echo $form->error($model,'business_allow_review'); ?>
             </div>        
         </div>	
@@ -211,7 +211,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'business_allow_rating',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'business_allow_rating',array('class'=>"form-control")); ?>
+                <?php echo $form->checkBox($model,'business_allow_rating', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
                 <?php echo $form->error($model,'business_allow_rating'); ?>
             </div>        
         </div>	
@@ -221,7 +221,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'is_active',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'is_active',array('class'=>"form-control")); ?>
+                <?php echo $form->checkBox($model,'is_active', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>            
                 <?php echo $form->error($model,'is_active'); ?>
             </div>        
         </div>	
@@ -231,7 +231,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'is_featured',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'is_featured',array('class'=>"form-control")); ?>
+                <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>            
                 <?php echo $form->error($model,'is_featured'); ?>
             </div>        
         </div>	
@@ -241,7 +241,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'is_closed',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'is_closed',array('class'=>"form-control")); ?>
+                <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
                 <?php echo $form->error($model,'is_closed'); ?>
             </div>        
         </div>	
@@ -252,7 +252,11 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'claim_status',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'claim_status',array('class'=>"form-control")); ?>
+                <?php echo $form->dropDownList($model,
+                                               'claim_status',
+                                               $model->listClaimStatus(),
+                                               array('prompt'=>'Select Status')
+                );?>
                 <?php echo $form->error($model,'claim_status'); ?>
             </div>        
         </div>	
@@ -262,8 +266,12 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'activation_status',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'activation_status',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'activation_status'); ?>
+                <?php echo $form->dropDownList($model,
+                                               'activation_status',
+                                               $model->listActivationStatus(),
+                                               array('prompt'=>'Select Status')
+                );?>
+            <?php echo $form->error($model,'activation_status'); ?>
             </div>        
         </div>	
 	</div>
@@ -272,7 +280,11 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'add_request_processing_status',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'add_request_processing_status',array('class'=>"form-control")); ?>
+                <?php echo $form->dropDownList($model,
+                                               'add_request_processing_status',
+                                               $model->listAddRequestProcessingStatus(),
+                                               array('prompt'=>'Select Status')
+                );?>
                 <?php echo $form->error($model,'add_request_processing_status'); ?>
             </div>        
         </div>	
@@ -280,10 +292,10 @@
 	
 	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'image',array('class'=>"col-sm-2 control-label")); ?>
+            <?php echo $form->labelEx($model,'fldUploadImage',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'image',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'image'); ?>
+                <?php echo CHtml::activeFileField($model,'fldUploadImage',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'fldUploadImage'); ?>
             </div>        
         </div>	
 	</div>

@@ -30,6 +30,28 @@
  */
 class BusinessController extends BackEndController
 {
+    
+    /**
+     * @var string imagesDirPath Directory where Business images will be stored
+     * @access public
+     */
+    private $imagesDirPath;
+    
+
+    /**
+     * Controller initailisation routines to set up the controller
+     *
+     * @param <none> <none>
+     *
+     * @return array action filters
+     * @access public
+     */
+    public function init()
+    {
+        $this->imagesDirPath = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business/';        
+    }
+    
+    
 
     /**
      * Specify a list of filters to apply to action requests
@@ -122,22 +144,33 @@ class BusinessController extends BackEndController
 
 	        $businessModel->attributes=$_POST['Business'];
 	        
-	        $uploadedFile = CUploadedFile::getInstance($businessModel,'image');
-	        	         
+	        $uploadedFile = CUploadedFile::getInstance($businessModel,'fldUploadImage');
+	        
+	        // ////////////////////////////////////////////////////////////////////////
+	        // Create a temporary file name. This will later be renamed to a file name
+	        // ...that includes the business id. We can only get the id after saving.
+	        // ////////////////////////////////////////////////////////////////////////
+
+
 	        if($businessModel->save())
 	        {
-	            
-	            $imageFileName = 'business-'.$businessModel->business_id.'-'.$businessModel->image;
-	            $imagePath = Yii::getPathOfAlias('webroot').'/uploads/images/business/'.$imageFileName;
+	            $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 	            	                 
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
                     $uploadedFile->saveAs($imagePath);
+                    $businessModel->image = $imageFileName;
+                    
+                    $businessModel->save();
                 }
                 
-	            $this->redirect(array('index'/* ,'id'=>$businessModel->business_id */));
+	            $this->redirect(array('index'));
 	            	      
-	        }  
+	        }
+	        else {
+                Yii::app()->user->setFlash('error', "Error creating a business record.'");
+	        }
 	        
 	            
 	    }
@@ -229,14 +262,15 @@ class BusinessController extends BackEndController
 	public function actionDelete()
 	{
 	    
-	    // todo: add proper error message . iether flash or raiseerror. Might
-	    // be difficult is sending ajax response.
+	    // TODO: add proper error message . iether flash or raiseerror. Might
+	    // be difficult when sending ajax response.
 	    
 	    // TODO: Only process ajax request
         $businessId = $_POST['business_id'];
         $businessModel = Business::model()->findByPk($businessId);
                 
-        if ($businessModel == null) {
+        if ($businessModel == null)
+        {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Invalid business"}';
             Yii::app()->end();
@@ -245,13 +279,21 @@ class BusinessController extends BackEndController
 
         $result = $businessModel->delete();
                 	    
-        if ($result == false) {
+        if ($result == false)
+        {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Failed to mark record for deletion"}';
             Yii::app()->end();
         }
+        else
+        {
+            $this->deleteImages($businessModel->image);
+        }
+        
+        
         
         echo '{"result":"success", "message":""}';
+        Yii::app()->end();
          
 	}
 
@@ -317,18 +359,17 @@ class BusinessController extends BackEndController
         $searchCriteria->limit 		 = $limitItems;
         $searchCriteria->offset 	 = $limitStart;
                         
-         if (isset($_POST['search']['value']) && (strlen($_POST['search']['value']) > 2)) {             
+         if (isset($_POST['search']['value']) && (strlen($_POST['search']['value']) > 2))
+         {             
              $searchCriteria->addSearchCondition('t.business_name', $_POST['search']['value'], true);                          
          }
         
         
-        $business_list          = Business::model()->findAll($searchCriteria);
+        $business_list      = Business::model()->findAll($searchCriteria);
         
         $rows_count 		= Business::model()->count($searchCriteria);;
         $total_records 		= Business::model()->count();
-        
-        
-        
+       
         /*
          * Output
          */
@@ -376,4 +417,19 @@ class BusinessController extends BackEndController
 			Yii::app()->end();
 		}
 	}
+	
+	/**
+	 * Delete images for the business. Normally invoked when business is being deleted
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	private function deleteImages($imageFileName)
+	{
+        $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+        unlink($imagePath);	    
+	}
+	
 }

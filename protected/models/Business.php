@@ -67,6 +67,15 @@
  */
 class Business extends CActiveRecord
 {
+    
+    /**
+     *
+     * @var string fldUploadImage Business image uploader.
+     * @access public
+     */
+    public $fldUploadImage;
+    
+    
     /**
      * Get database table name associated with the model.
      *
@@ -97,12 +106,15 @@ class Business extends CActiveRecord
 		    
 		    // Mandatory rules
 
-			array('business_name, add_request_processed_by, add_request_rejection_reason, claimed_by, claim_rejection_reason', 'required'),
+			array('business_name', 'required'),
 		    
 		    // Data types, sizes
-			array('business_city_id, add_request_processed_by, claimed_by', 'numerical', 'integerOnly'=>true),
 		    array('business_name, business_email, business_website, add_request_rejection_reason, claim_rejection_reason, activation_code', 'length', 'max'=>255),
-			array('business_zipcode, business_phone, business_phone_ext',    'length', 'max'=>16),
+			array('business_zipcode, business_phone, business_phone_ext',        'length', 'max'=>16),
+		    array('business_address1, business_address2, business_description,
+		           business_keywords',  'length', 'max'=>1024),
+		    array('add_request_rejection_reason, claim_rejection_reason',        'length', 'max'=>255),
+
 		    
 		    // ranges
 			array('business_allow_review, 
@@ -112,9 +124,9 @@ class Business extends CActiveRecord
 		    array('activation_status',                    'in','range'=>array('activated', 'not_activated'),'allowEmpty'=>false),
 		    array('add_request_processing_status',        'in','range'=>array('Accepted', 'Rejected'),'allowEmpty'=>false),		    
 			
+		    // Form only field.
+		    array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 		    
-			array('business_address1, business_address2, business_description, image, business_keywords', 'safe'),
-
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('business_id, business_name, business_address1, business_address2, business_city_id, business_zipcode,
 			       business_phone_ext, business_phone, business_email, business_website, business_description,
@@ -174,7 +186,7 @@ class Business extends CActiveRecord
 			'business_email'                     => 'Business Email',
 			'business_website'                   => 'Business Website',
 			'business_description'               => 'Business Description',
-			'image'                              => 'Image',
+			'image'                              => 'Business Image',
 			'business_allow_review'              => 'Business Allow Review',
 			'business_allow_rating'              => 'Business Allow Rating',
 			'business_keywords'                  => 'Business Keywords',
@@ -289,5 +301,49 @@ class Business extends CActiveRecord
         $this->modified_by   = Yii::app()->user->id;
         
 	    return parent::beforeSave();
+	}
+	
+	/**
+	 * Build an associative list of Add Request processing Values.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of user type values
+	 *
+	 * @access public
+	 */
+	public function listAddRequestProcessingStatus() {
+	
+	    return array(  'Accepted'       => 'Accepted',
+	                   'Rejected'       => 'Rejected',
+                    );
+	}
+	
+	/**
+	 * Build an associative list of Claim Status values
+	 * @param <none> <none>
+	 * @return array associatve list of user type values
+	 *
+	 * @access public
+	 */
+	public function listClaimStatus() {
+	
+	    return array('Claimed'         => 'Claimed',
+	                 'Unclaimed'       => 'Unclaimed',
+	                );
+	}
+	
+	/**
+	 * Build an associative list of activation status values.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of user type values
+	 *
+	 * @access public
+	 */
+	public function listActivationStatus() {
+	
+	    return array(  'activated'         => 'Activated',
+	                   'not_activated'     => 'Not Activated',
+	    );
 	}
 }
