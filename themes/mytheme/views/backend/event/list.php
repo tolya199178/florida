@@ -13,7 +13,7 @@
     
     #popover-content {
     	margin-right: -800px;
-    	max-width: 600px;
+    	max-width: 800px;
     	width: 800px;
     }
 </style>

@@ -149,7 +149,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'event_views',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'event_views',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'event_views',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
                 <?php echo $form->error($model,'event_views'); ?>
             </div>        
         </div>	
