@@ -126,7 +126,7 @@
             <?php echo $form->labelEx($model,'business_city_id',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
                 <?php echo $form->dropDownList($model,'business_city_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?> 
-                <?php echo $form->error($model,'user_type'); ?>
+                <?php echo $form->error($model,'business_city_id'); ?>
                 <!--  todo: styling for dropdown -->  
             </div>
         </div>	

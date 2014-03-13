@@ -1,26 +1,26 @@
 <?php
 
 /**
- * Controller interface for Business management.
+ * Controller interface for Event management.
  */
 
 /**
- * Business Controller class to provide access to controller actions for clients.
+ * Event Controller class to provide access to controller actions for clients.
  * The contriller action interfaces 'directly' with the Client. This controller
  * ...must therefore be responsible for input processing and response handling.
  * 
  * Usage:
  * ...Typical usage is from a web browser, by means of a URL
  * ...
- * ...   http://application.domain/index.php?/business/action/attribute1/parameter1/.../attribute-n/parameter-n/
+ * ...   http://application.domain/index.php?/event/action/attribute1/parameter1/.../attribute-n/parameter-n/
  * ...eg.
- * ...   http://mydomain/index.php?/business/edit/business_id/99/
+ * ...   http://mydomain/index.php?/event/edit/event_id/99/
  * ...
  * ...The 'action' in the request is converted to invoke the actionAction() action
- * ...eg. /business/edit/business_id/99/ will invoke BusinessController::actionEdit()
+ * ...eg. /event/edit/event_id/99/ will invoke EventController::actionEdit()
  * ...(case is significant)
  * ...Additional parameters after the action are passed as $_GET pairs
- * ...eg. /business/edit/business_id/99/ will pass $_GET['business_id'] = 99
+ * ...eg. /event/edit/event_id/99/ will pass $_GET['event_id'] = 99
  *
  * @package   Controllers
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -28,17 +28,17 @@
  * @package Controllers
  * @version 1.0
  */
-class BusinessController extends BackEndController
+class EventController extends BackEndController
 {
     
     /**
-     * @var string imagesDirPath Directory where Business images will be stored
+     * @var string imagesDirPath Directory where Event images will be stored
      * @access private
      */
     private $imagesDirPath;
     
     /**
-     * @var string imagesDirPath Directory where Business image thumbnails will be stored
+     * @var string imagesDirPath Directory where Event image thumbnails will be stored
      * @access private
      */
     private $thumbnailsDirPath;
@@ -64,8 +64,8 @@ class BusinessController extends BackEndController
      */
     public function init()
     {
-        $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business';
-        $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business/thumbnails';
+        $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/event';
+        $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/event/thumbnails';
         
         /*
          *     Small-s- 100px(width)
@@ -118,14 +118,14 @@ class BusinessController extends BackEndController
                 
             ),
             
-            // delegate to business model methods to determine ownership
+            // delegate to event model methods to determine ownership
             array(
                 'allow',
-                'expression' =>'BusinessAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("business_id"))',
+                'expression' =>'EventAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("event_id"))',
                 'actions'    =>array('edit'),
             ),
             
-            // delegate to business model methods to determine ownership
+            // delegate to event model methods to determine ownership
             array(
                 'allow',
                 'expression' =>'Yii::app()->user->isAdmin()',
@@ -140,13 +140,13 @@ class BusinessController extends BackEndController
 
 
 	/**
-	 * Creates a new business record.
+	 * Creates a new event record.
 	 * ...The function is normally invoked twice:
-	 * ... - the (initial) GET request loads and renders the business details capture form
-	 * ... - the (subsequent) POST request saves the submitted post data as a Business record.
+	 * ... - the (initial) GET request loads and renders the event details capture form
+	 * ... - the (subsequent) POST request saves the submitted post data as a Event record.
 	 * ...If the save (POST request) is successful, the default method (index()) is called.  
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages from the Business validation (Business::rules())
+	 * ...again with error messages from the Event validation (Event::rules())
 	 *  
 	 * @param <none> <none>
 	 *
@@ -156,39 +156,39 @@ class BusinessController extends BackEndController
 	public function actionCreate()
 	{
 	    
-		$businessModel = new Business;
+		$eventModel = new Event;
 	    	    
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
-	    // $this->performAjaxValidation($businessModel);
+	    // $this->performAjaxValidation($eventModel);
 	    
-	    if(isset($_POST['Business']))
+	    if(isset($_POST['Event']))
 	    {
 
-	        $businessModel->attributes=$_POST['Business'];
+	        $eventModel->attributes=$_POST['Event'];
 	        
-	        $uploadedFile = CUploadedFile::getInstance($businessModel,'fldUploadImage');
+	        $uploadedFile = CUploadedFile::getInstance($eventModel,'fldUploadImage');
 
-	        if($businessModel->save())
+	        if($eventModel->save())
 	        {
-	            $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+	            $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
 	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 	            	                 
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
                     $uploadedFile->saveAs($imagePath);
-                    $businessModel->image = $imageFileName;
+                    $eventModel->image = $imageFileName;
                     
                     $this->createThumbnail($imageFileName);
                     
-                    $businessModel->save();
+                    $eventModel->save();
                 }
                 
 	            $this->redirect(array('index'));
 	            	      
 	        }
 	        else {
-                Yii::app()->user->setFlash('error', "Error creating a business record.'");
+                Yii::app()->user->setFlash('error', "Error creating a event record.'");
 	        }
 	        
 	            
@@ -196,33 +196,33 @@ class BusinessController extends BackEndController
 	    
 	    // Show the details screen
 	    $this->render('details',array(
-	        'model'=>$businessModel,
+	        'model'=>$eventModel,
 	    ));
 
 	}
 
 
 	/**
-	 * Updates an existing business record.
+	 * Updates an existing event record.
 	 * ...The function is normally invoked twice:
-	 * ... - the (initial) GET request loads and renders the requested business's
+	 * ... - the (initial) GET request loads and renders the requested event's
 	 * ...   details capture form
 	 * ... - the (subsequent) POST request saves the submitted post data for
-	 * ...   the existing Business record
+	 * ...   the existing Event record
 	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages from the Business validation (Business::rules())
+	 * ...again with error messages from the Event validation (Event::rules())
 	 * 
-	 * @param integer $business_id the ID of the model to be updated
+	 * @param integer $event_id the ID of the model to be updated
 	 *
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionEdit($business_id)
+	public function actionEdit($event_id)
 	{
 	    
-		$businessModel = Business::model()->findByPk($business_id);
-		if($businessModel===null)
+		$eventModel = Event::model()->findByPk($event_id);
+		if($eventModel===null)
 		{
 		    throw new CHttpException(404,'The requested page does not exist.');		    
 		}
@@ -230,31 +230,31 @@ class BusinessController extends BackEndController
 
 		// Uncomment the following line if AJAX validation is needed
 		// TODO: Currently disabled as it breaks JQuery loading order
-		// $this->performAjaxValidation($businessModel);
+		// $this->performAjaxValidation($eventModel);
 
-		if(isset($_POST['Business']))
+		if(isset($_POST['Event']))
 		{
             // Assign all fields from the form
-		    $businessModel->attributes=$_POST['Business'];
+		    $eventModel->attributes=$_POST['Event'];
 		    
-		    $uploadedFile = CUploadedFile::getInstance($businessModel,'fldUploadImage');
+		    $uploadedFile = CUploadedFile::getInstance($eventModel,'fldUploadImage');
 		    
 		    // Make a note of the existing image file name. It will be deleted soon.
-		    $oldImageFileName = $businessModel->image;
+		    $oldImageFileName = $eventModel->image;
 		    
 		    if(!empty($uploadedFile))  // check if uploaded file is set or not
 		    {
 		        // Save the image file name
-		        $businessModel->image = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+		        $eventModel->image = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
 		    }
 		    
-		    if($businessModel->save())
+		    if($eventModel->save())
 		    {
 		         
 		        if(!empty($uploadedFile))  // check if uploaded file is set or not
 		        {
 		            
-		            $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+		            $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
 		            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 		            
 		            // Remove existing images
@@ -273,18 +273,18 @@ class BusinessController extends BackEndController
 		    
 		    }
 		    else {
-		        Yii::app()->user->setFlash('error', "Error creating a business record.'");
+		        Yii::app()->user->setFlash('error', "Error creating a event record.'");
 		    }
 				
 		}
 
 		$this->render('details',array(
-			'model'=>$businessModel,
+			'model'=>$eventModel,
 		));
 	}
 
 	/**
-	 * Deletes an existing business record.
+	 * Deletes an existing event record.
 	 * ...As an additional safety measure, only POST requests are processed.
 	 * ...Currently, instead of physically deleting the entry, the record is
 	 * ...modified with the status fields set to 'deleted'
@@ -303,18 +303,18 @@ class BusinessController extends BackEndController
 	    // be difficult when sending ajax response.
 	    
 	    // TODO: Only process ajax request
-        $businessId = $_POST['business_id'];
-        $businessModel = Business::model()->findByPk($businessId);
+        $eventId = $_POST['event_id'];
+        $eventModel = Event::model()->findByPk($eventId);
                 
-        if ($businessModel == null)
+        if ($eventModel == null)
         {
             header("Content-type: application/json");
-            echo '{"result":"fail", "message":"Invalid business"}';
+            echo '{"result":"fail", "message":"Invalid event"}';
             Yii::app()->end();
         }
         
 
-        $result = $businessModel->delete();
+        $result = $eventModel->delete();
                 	    
         if ($result == false)
         {
@@ -324,7 +324,7 @@ class BusinessController extends BackEndController
         }
         else
         {
-            $this->deleteImages($businessModel->image);
+            $this->deleteImages($eventModel->image);
         }
         
         
@@ -337,7 +337,7 @@ class BusinessController extends BackEndController
 
 	/**
      * Default action for the controller. Invoked when an action is not
-     * ....explicitly requested by business
+     * ....explicitly requested by event
    	 * Does not perform any processing. Redirects to the desired action instead.
 	 *
 	 * @param <none> <none>
@@ -347,13 +347,13 @@ class BusinessController extends BackEndController
 	 */
 	public function actionIndex()
 	{
-	    // Default action is to show all businesss.
+	    // Default action is to show all events.
 	    $this->redirect(array('list'));
 	}
 	
 
 	/**
-	 * Show all businesss. Renders the business listing view.
+	 * Show all events. Renders the event listing view.
 	 *
 	 * @param <none> <none>
 	 *
@@ -362,19 +362,19 @@ class BusinessController extends BackEndController
 	 */
 	public function actionList()
 	{
-	    $dataProvider=new CActiveDataProvider('Business');
+	    $dataProvider=new CActiveDataProvider('Event');
 	    $this->render('list',array(
 	        'dataProvider'=>$dataProvider,
 	    ));
 	}
 	
 	/**
-	 * Generates a JSON encoded list of all businesss.
+	 * Generates a JSON encoded list of all events.
 	 * The output is customised for the datatables Jquery plugin.
 	 * http://www.datatables.net
 	 * 
 	 * The table plugins send a request for a JSON list based on criteria
-	 * ...determined by default settings or business bahaviour.
+	 * ...determined by default settings or event bahaviour.
 	 *
 	 * @param <none> <none>
 	 *
@@ -398,15 +398,14 @@ class BusinessController extends BackEndController
                         
          if (isset($_POST['search']['value']) && (strlen($_POST['search']['value']) > 2))
          {             
-             $searchCriteria->addSearchCondition('t.event_title', $_POST['search']['value'], true);
-             $searchCriteria->addSearchCondition('t.event_description', $_POST['search']['value'], true);
+             $searchCriteria->addSearchCondition('t.event_name', $_POST['search']['value'], true);                          
          }
         
         
-        $business_list      = Business::model()->findAll($searchCriteria);
+        $event_list      = Event::model()->findAll($searchCriteria);
         
-        $rows_count 		= Business::model()->count($searchCriteria);;
-        $total_records 		= Business::model()->count();
+        $rows_count 		= Event::model()->count($searchCriteria);;
+        $total_records 		= Event::model()->count();
        
         /*
          * Output
@@ -417,22 +416,24 @@ class BusinessController extends BackEndController
             "aaData"                => array()
         );
         
-        foreach($business_list as $r){
-
-            $row = array($r->attributes['business_id'],
-                         $r->attributes['event_title'],
-                         $r->attributes['created_by'],
-                         $r->attributes['event_business_id'],
-                         $r->attributes['event_category_id'],
-                         $r->attributes['event_start_date'],
-                         $r->attributes['event_status'],
+        foreach($event_list as $r){
+            
+            $row = array($r->attributes['event_id'],
+                         $r->attributes['event_name'],
+                         $r->attributes['event_name'],
+                         $r->attributes['event_name'],
+                         $r->attributes['event_email'],
+                         $r->attributes['event_phone'],
+                         $r->attributes['event_city_id'],
                          ''
                         );
             $output['aaData'][] = $row;
 
         }
-
+        
+         
         echo json_encode($output);
+	    
 	    
 	}
 
@@ -440,22 +441,22 @@ class BusinessController extends BackEndController
 	/**
 	 * Performs the AJAX validation.
 	 *
-	 * @param Business $businessModel the model to be validated
+	 * @param Event $eventModel the model to be validated
 	 *
 	 * @return string validation results message
 	 * @access protected
 	 */
-	protected function performAjaxValidation($businessModel)
+	protected function performAjaxValidation($eventModel)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='business-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='event-form')
 		{
-			echo CActiveForm::validate($businessModel);
+			echo CActiveForm::validate($eventModel);
 			Yii::app()->end();
 		}
 	}
 	
 	/**
-	 * Delete images for the business. Normally invoked when business is being deleted.
+	 * Delete images for the event. Normally invoked when event is being deleted.
 	 *
 	 * @param string $imageFileName the name of the file
 	 *
