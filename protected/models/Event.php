@@ -100,11 +100,10 @@ class Event extends CActiveRecord
 		    // Mandatory rules		    
 			array('event_title, event_start_date,event_end_date,
 			       event_category_id, event_business_id,
-			       event_tag',                                   'required'),
+			       event_tag',                                            'required'),
 
 		    // Data types, sizes
-		    array('event_city_id, event_category_id, event_business_id,
-		           event_views',                                          'numerical', 'integerOnly'=>true),
+		    array('event_city_id, event_category_id, event_business_id',  'numerical', 'integerOnly'=>true),
 			array('event_title, cost',                                    'length', 'max'=>255),
 		    array('event_frequency',                                      'length', 'max'=>64),
 		    array('event_address1, event_address2, event_description',    'length', 'max'=>1024),
