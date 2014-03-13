@@ -250,13 +250,11 @@ class BusinessController extends BackEndController
 		    
 		    if($businessModel->save())
 		    {
+		        $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+		        $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 		         
 		        if(!empty($uploadedFile))  // check if uploaded file is set or not
 		        {
-		            
-		            $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
-		            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-		            
 		            // Remove existing images
 		            if (!empty($oldImageFileName))
 		            {
@@ -398,8 +396,7 @@ class BusinessController extends BackEndController
                         
          if (isset($_POST['search']['value']) && (strlen($_POST['search']['value']) > 2))
          {             
-             $searchCriteria->addSearchCondition('t.event_title', $_POST['search']['value'], true);
-             $searchCriteria->addSearchCondition('t.event_description', $_POST['search']['value'], true);
+             $searchCriteria->addSearchCondition('t.business_name', $_POST['search']['value'], true);                          
          }
         
         
@@ -418,7 +415,7 @@ class BusinessController extends BackEndController
         );
         
         foreach($business_list as $r){
-
+            
             $row = array($r->attributes['business_id'],
                          $r->attributes['business_name'],
                          $r->attributes['business_name'],
@@ -426,13 +423,15 @@ class BusinessController extends BackEndController
                          $r->attributes['business_email'],
                          $r->attributes['business_phone'],
                          $r->attributes['business_city_id'],
+                         ''
                         );
-
             $output['aaData'][] = $row;
 
         }
-
+        
+         
         echo json_encode($output);
+	    
 	    
 	}
 
