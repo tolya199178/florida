@@ -47,12 +47,12 @@ class BusinessController extends BackEndController
      * @var string thumbnailWidth thumbnail width
      * @access private
      */
-    private $thumbnailWidth     = 240;
+    private $thumbnailWidth     = 100;
     /**
      * @var string thumbnailWidth thumbnail width
      * @access private
      */
-    private $thumbnailHeight    = 240;
+    private $thumbnailHeight    = 100;
 
     /**
      * Controller initailisation routines to set up the controller
@@ -463,7 +463,7 @@ class BusinessController extends BackEndController
 	 */
 	private function deleteImages($imageFileName)
 	{
-        $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+        $imagePath          = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
         @unlink($imagePath);
         
         $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
