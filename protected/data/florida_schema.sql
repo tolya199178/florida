@@ -333,15 +333,15 @@ CREATE TABLE `tbl_business` (
   `modified_by`             int(11) NOT NULL COMMENT 'FK with user',  
   
   `add_request_processing_status` ENUM('Accepted', 'Rejected') DEFAULT 'Rejected',
-  `add_request_processing_time`   TIMESTAMP NOT NULL COMMENT 'Used for rejection as well',
-  `add_request_processed_by`      int(11) NOT NULL,
-  `add_request_rejection_reason`  varchar(255) NOT NULL,
+  `add_request_processing_time`   TIMESTAMP COMMENT 'Used for rejection as well',
+  `add_request_processed_by`      int(11) DEFAULT NULL,
+  `add_request_rejection_reason`  varchar(255) DEFAULT NULL,
 
   
   `claim_status`               ENUM('Claimed', 'Unclaimed') DEFAULT 'Unclaimed',
-  `claim_processing_time`      TIMESTAMP NOT NULL  COMMENT 'Used for rejection as well',
-  `claimed_by`                 int(11) NOT NULL,
-  `claim_rejection_reason`     varchar(255) NOT NULL,
+  `claim_processing_time`      TIMESTAMP DEFAULT 0 COMMENT 'Used for rejection as well',
+  `claimed_by`                 int(11)DEFAULT NULL,
+  `claim_rejection_reason`     varchar(255) DEFAULT NULL,
   
   
   `is_active`                  enum('Y', 'N') DEFAULT 'N',
@@ -353,7 +353,7 @@ CREATE TABLE `tbl_business` (
   `activation_time`            TIMESTAMP,
 
   PRIMARY KEY (`business_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 
 ALTER TABLE tbl_business
