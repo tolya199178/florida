@@ -17,40 +17,66 @@
                 padding-bottom: 20px;
             }
         </style>
-        <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/main.css">
+        <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/site/main.css">
 
         <script src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
-    <body>
+    <body id='body'>
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
-    <div class="navbar navbar-inverse navbar-fixed-top">
+
+<!-- 
+    <header>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span3">
+                <h1>
+                    <a href="<?php echo Yii::app()->baseUrl; ?>">
+                      <img src="<?php echo Yii::app()->theme->baseUrl."/resources/images/site/logo-v1.png"; ?>" class='logo'>
+                </a>
+                </h1>
+            </div>
+            <div class="span9">
+                <div class="nav-collapse" id="header_menu">
+                    < ? php $this->renderPartial('//layouts/header_navigation', array('cls' => "nav social-root pull-right")); ? >
+                </div>
+                <! - - nav-collapse  - - > 
+            </div>
+        </div>
+    </div>
+    </header>
+ -->
+
+    <div class="navbar navbar-fixed-top header">
       <div class="container">
-        <div class="navbar-header">
+        <div class="navbar-header header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+<a href="<?php echo Yii::app()->baseUrl; ?>" class="navbar-brand">
+<img src="<?php echo Yii::app()->theme->baseUrl."/resources/images/site/logo-v1.png"; ?>">
+</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact">Concierge</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cities<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
+                <li><a href="#">Add a business</a></li>
+                <li><a href="#">Claim your business</a></li>
+                <li><a href="#">Report</a></li>
                 <li class="divider"></li>
                 <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
+                <li><a href="#">Search</a></li>
+                <li><a href="#">I want to...</a></li>   
               </ul>
             </li>
           </ul>
@@ -62,27 +88,34 @@
               <input type="password" placeholder="Password" class="form-control">
             </div>
             <button type="submit" class="btn btn-success">Sign in</button>
+            &nbsp;&nbsp;&nbsp;<a href="#">Not a member?</a>
           </form>
         </div><!--/.navbar-collapse -->
       </div>
     </div>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-      </div>
-    </div>
-
+    <!-- container -->
     <div class="container">
-<?php echo $content; ?>
+    
+
+<?php
+        // /////////////////////////////////////////////////////////////////////
+        // The result of the render() is placed here.
+        // /////////////////////////////////////////////////////////////////////
+        echo $content;
+        // /////////////////////////////////////////////////////////////////////
+        // The result of the render() is placed here.
+        // /////////////////////////////////////////////////////////////////////
+        
+?>
 
       <footer>
-        <p>&copy; Company 2013</p>
+        <p>&copy; Company 2014</p>
       </footer>
-    </div> <!-- /container -->
+    </div> 
+    <!-- /container -->
+    
+    
 <!--     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>  -->
         <script>window.jQuery || document.write('<script src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
 

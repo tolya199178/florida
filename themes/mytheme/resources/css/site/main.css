@@ -1,0 +1,90 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+navbar {
+  background-image: url("../../img/site/nav.jpg");	
+}
+
+div.navbar.navbar-fixed-top.header
+{
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  background-color: transparent;
+  background-image: url("../../img/site/nav.jpg");  
+  background-repeat: repeat-x;
+  background-attachment: scroll;
+  background-position: 0% 0%;
+  background-clip: border-box;
+  background-origin: padding-box;
+  background-size: auto auto;
+  height: 400px;
+  
+  width: auto
+}
+
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+	background-color: red;
+}
+
+ a.navbar-brand > img {
+  color: #fff;
+  font-size: 20px;
+  float: left;
+  /* margin: -10px 0; */
+  display: block;
+  line-height: normal;
+  height: 35px;
+  margin-left:-170px; 
+  
+  opacity:0.4;
+filter:alpha(opacity=40); /* For IE8 and earlier */
+  
+}
+
+.navbar .navbar-nav > a {
+  background-color: transparent;
+  font-weight: bold;
+  font-size:14px;
+}
+.navbar .navbar-nav > .active > a {
+  background-color: transparent;
+  font-weight: bold;
+  font-size:14px;
+}
+
+.navbar ul.nav.navbar-nav>li> a {
+  font-weight: bold;
+  font-size:14px;
+   color:#606060;
+}
+
+.navbar-brand,
+.navbar-nav > li > a {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+
+body  {
+  background: #ddd       url("../../img/site/banner-bg-2.jpg") center top no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  min-height: 400px;
+  padding-top: 100px;
+}
+
+
+
+
+
+
+
+
