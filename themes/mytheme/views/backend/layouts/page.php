@@ -16,9 +16,8 @@
     <![endif]-->
     
     <style type="text/css">
+   
 
-
-    
     </style>
   </head>
   <body>
@@ -66,29 +65,52 @@
     	<div class="row">
 		  <div class="col-md-2">
 		  	<div class="sidebar content-box" style="display: block;">
-                <ul class="nav">
-                    <!-- Main menu -->
-                    <li class="current"><a href="index.html"><i class="glyphicon glyphicon-home"></i> Dashboard</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('system/setup'); ?>"><i class="glyphicon glyphicon-calendar"></i> Setup</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('/user/index'); ?>"><i class="glyphicon glyphicon-calendar"></i> Users</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('/city/index'); ?>"><i class="glyphicon glyphicon-stats"></i> Cities</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('/business/index'); ?>"><i class="glyphicon glyphicon-stats"></i> Businesses</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('/event/index'); ?>"><i class="glyphicon glyphicon-stats"></i> Event</a></li>
-                    <li><a href="buttons.html"><i class="glyphicon glyphicon-record"></i> </a></li>
-                    <li><a href="editors.html"><i class="glyphicon glyphicon-pencil"></i> Editors</a></li>
-                    <li><a href="forms.html"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li>
-                    <li class="submenu">
-                         <a href="#">
-                            <i class="glyphicon glyphicon-list"></i> Pages
-                            <span class="caret pull-right"></span>
-                         </a>
-                         <!-- Sub menu -->
-                         <ul>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="signup.html">Signup</a></li>
+		  	
+                  <!-- start menu 1 -->
+                  <ul class="nav nav-list">
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i> Dashboard</a>
+                      </li>
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Users</a>
+                          <ul class="nav nav-list tree">
+                              <li><a href="<?php echo Yii::app()->createUrl('/user/index'); ?>">Admin Users</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/user/index'); ?>">Site Users</a></li>
+                          </ul>
+                      </li>
+        
+                      <!-- Business Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Business</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/business/index'); ?>">Business Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/business/index'); ?>">Reviews</a></li>
+                          </ul>
+                      </li>
+        
+                      <!-- Cities Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Cities</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/city/index'); ?>">Business Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/city/index'); ?>">Reviews</a></li>
+                          </ul>
+                      </li>
+                      
+                      <!-- Events Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Events</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/event/index'); ?>">Business Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/event/index'); ?>">Reviews</a></li>
                         </ul>
-                    </li>
-                </ul>
+                      </li>
+                      
+                      <li class="nav-divider"></li>
+                  </ul>
+
+                 <!--  END menu test -->
+                 
+                 
              </div>
 		  </div>
 		  
@@ -96,11 +118,15 @@
 		  
               <?php echo $content; ?>
               
+              <p>&nbsp;</p>
+              
 		  </div>
 
 		</div>
         
     </div>
+    
+
 
     <footer>
          <div class="container">
@@ -117,5 +143,16 @@
           <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/js/vendor/bootstrap.min.js"></script>
         <script src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/js/custom.js"></script>
+        
+        <script type="text/javascript">
+        $(document).ready(function() {
+            
+            $('a.tree-toggler').click(function () {
+            	  $(this).parent().children('ul.tree').toggle(300);
+            	});
+
+        });
+        </script>
+        
   </body>
 </html>
