@@ -17,7 +17,7 @@
                 padding-bottom: 20px;
             }
         </style>
-        <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/bootstrap-theme.css">
+<!--         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/bootstrap-theme.css">   -->
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/site/main.css">
 
         <script src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
@@ -95,7 +95,7 @@
     </div>
 
     <!-- container -->
-    <div class="container">
+    <div class="class="container-full">
     
 
 <?php
@@ -110,7 +110,7 @@
 ?>
 
       <footer>
-        <p>&copy; Company 2014</p>
+        <p>&copy; Company <?php echo date("Y"); ?></p>
       </footer>
     </div> 
     <!-- /container -->

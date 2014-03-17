@@ -214,4 +214,14 @@ class City extends CActiveRecord
 	
 	    return parent::beforeSave();
 	}
+	
+	/* Get List of City Array Data */
+	public static function getCity($order = "city_name",$byAutoSearch=0) {
+	    $order = array('order' => $order);
+	    $models = self::model()->findAll($order);
+	    
+	    $_rtnData = CHtml::listData($models, 'city_id', 'city_name');
+	    return $byAutoSearch ? array_values($_rtnData) : $_rtnData;
+	
+	}
 }
