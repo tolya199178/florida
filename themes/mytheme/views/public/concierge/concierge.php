@@ -46,84 +46,104 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
    bottom: 3px;
 }
 
-.twitter-typeahead .tt-query,
-.twitter-typeahead .tt-hint {
-  margin-bottom: 0;
+.typeahead,
+.tt-query,
+.tt-hint {
+  width: 250px;
+/*   height: 30px; */
+  padding: 8px 12px;
+/*   font-size: 24px; */
+/*   line-height: 30px; */
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+}
+
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
 }
 
 .tt-dropdown-menu {
-  min-width: 160px;
-  margin-top: 2px;
-  padding: 5px 0;
+  width: 250px;
+  margin-top: 12px;
+  padding: 8px 0;
   background-color: #fff;
   border: 1px solid #ccc;
-  border: 1px solid rgba(0,0,0,.2);
-  *border-right-width: 2px;
-  *border-bottom-width: 2px;
-  -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
   -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
      -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
           box-shadow: 0 5px 10px rgba(0,0,0,.2);
-  -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
-          background-clip: padding-box;
 }
 
 .tt-suggestion {
-  display: block;
   padding: 3px 20px;
+/*   font-size: 18px; */
+  line-height: 24px;
 }
 
-.tt-suggestion.tt-is-under-cursor {
+.tt-suggestion.tt-cursor {
   color: #fff;
-  background-color: #0081c2;
-  background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
-  background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
-  background-image: -o-linear-gradient(top, #0088cc, #0077b3);
-  background-image: linear-gradient(to bottom, #0088cc, #0077b3);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0)
-}
+  background-color: #0097cf;
 
-.tt-suggestion.tt-is-under-cursor a {
-  color: #fff;
 }
 
 .tt-suggestion p {
   margin: 0;
 }
    
+.cities {
+   float:right;
+}
+
+#city {
+  min-width: 250px;
+}
 
 -->
 </style>
 <?php
-    $data_url = Yii::app()->createUrl('concierge/prefecthlistall');
-    echo $data_url;
-    
+
+$local_list = City::model()->getListjson();
+        
 $script = <<<EOD
 
+// Load the city list for type ahead
 var numbers = new Bloodhound({
   datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.city_name); },
   queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {url: '{$data_url}'}
+   local: {$local_list}
 });
  
 // initialize the bloodhound suggestion engine
 numbers.initialize();
  
 // instantiate the typeahead UI
-$('#city').typeahead(null, {
+$('.cities .typeahead').typeahead(null, {
   displayKey: 'city_name',
   source: numbers.ttAdapter()
 });
-      
-    
 EOD;
     
-    Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
+Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
     
 ?>
 
@@ -144,27 +164,17 @@ EOD;
                 This is the mainpanel and ir grows
                 <div class="row">
                     <div class="col-lg-4" style="">
-                        I AM IN 
-                        <input id="city" class="typeahead form-control" type="text" placeholder="City">
+                        <label for="city" class="heading">I AM IN &nbsp;&nbsp;&nbsp;</label>
+                        <div class="cities">
+                            <input class="typeahead form-control" name="city" id="city"  type="text" autocomplete="off" value="" placeholder="I am in...">   
+                        </div>
                     </div>
                     
-                    <div class="col-lg-8" style="">
-                        I WANT TO
-                        
-        <div class="label-query-interested">
-            <label for="slt_city" class="heading">I am IN</label>
-            <?php
-            $data = City::getCity();
-            echo Chosen::dropDownList('slt_city', $defaultCity->city_id, $data, array('onChange' => "changeLocation(this.value);", 'class' => 'cls_slt_city'));
-            echo CHtml::hiddenField('where_hidden', $defaultCity->city_id);
-            echo CHtml::hiddenField('interest_hidden', $interest);
-            echo CHtml::hiddenField('what_hidden', $what);
-            echo CHtml::hiddenField('when_hidden', $when);
-            ?>
-            <label for="" class="heading">I want to</label>
-        </div>
-
-
+                    <div class="col-lg-8" style="">                        
+                        <label for="city" class="heading">I WANT TO &nbsp;&nbsp;&nbsp;</label>
+                        <div class="cities">
+                            <input class="form-control" name="iwantto" id="iwantto"  type="text" autocomplete="off" value="">   
+                        </div>
 
                     </div>
                     

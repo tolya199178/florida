@@ -221,7 +221,8 @@ class ConciergeController extends Controller
          foreach($cityList as $recCity){
              $listResults[] = array('city_name' => $recCity->attributes['city_name']);
          }
-    
+          header('Content-type: application/json');
+              
          // echo json_encode($listResults);
          echo CJSON::encode($listResults);
               
