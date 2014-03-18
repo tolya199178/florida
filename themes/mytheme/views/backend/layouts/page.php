@@ -68,8 +68,19 @@
 		  	
                   <!-- start menu 1 -->
                   <ul class="nav nav-list">
-                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i> Dashboard</a>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i> Dashboard</a></li>
+                      
+                      <li class="nav-divider"></li>
+                      
+                      <!-- System Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>System</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/activity/index'); ?>">Activities</a></li>
+                        </ul>
                       </li>
+                      
+                      
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Users</a>
                           <ul class="nav nav-list tree">
@@ -104,6 +115,8 @@
                               <li><a href="<?php echo Yii::app()->createUrl('/event/index'); ?>">Reviews</a></li>
                         </ul>
                       </li>
+                      
+
                       
                       <li class="nav-divider"></li>
                   </ul>
