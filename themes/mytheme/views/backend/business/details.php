@@ -1,8 +1,67 @@
- <?php
+<?php
+/* Inherited local variables */
 /* @var $this BusinessController */
 /* @var $model Business */
 /* @var $form CActiveForm */
 ?>
+<?
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/tagmanager/dist/js/bootstrap-tags.js', CClientScript::POS_END);
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/tagmanager/dist/css/bootstrap-tags.css');
+?>
+<?php
+
+$listActivity = Activity::model()->getListjson();
+        
+$script = <<<EOD
+
+    
+     $("#activities_list").tags({
+       tagSize: "lg",
+       restrictTo: {$listActivity},
+       suggestions: {$listActivity},
+//       promptText: "Click here to add new tags",
+       suggestOnClick: true
+     });
+    
+EOD;
+    
+Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
+    
+?>
+
+
+<!-- Button trigger modal -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        
+        
+<div id="activities_list"></div>
+        
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+                    	
 
 <style>
 .row > .form-group 
@@ -11,6 +70,117 @@
     padding-top:10px;
     padding-bottom:10px;
 }
+
+<style>
+<!--
+#sidebar {
+	background-color: white;
+	text-align: left;
+	position: fixed;
+	top: 66px;
+	bottom: 3px;
+	/*   left: 0px; */
+	/*   width: 23.4043%; */
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	box-shadow: #b0b0b0;
+	z-index: 20;
+}
+
+#mainpanel {
+	background-color: white;
+	text-align: left;
+	position: fixed;
+	top: 66px;
+	bottom: 3px;
+	/*   left: 0px; */
+	width: 74%;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	box-shadow: #b0b0b0;
+	z-index: 21;
+}
+
+.rightpanel {
+	background-color: yellow;
+	bottom: 3px;
+}
+
+.typeahead,.tt-query,.tt-hint {
+	width: 250px;
+	/*   height: 30px; */
+	padding: 8px 12px;
+	/*   font-size: 24px; */
+	/*   line-height: 30px; */
+	border: 2px solid #ccc;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	outline: none;
+}
+
+.typeahead {
+	background-color: #fff;
+}
+
+.typeahead:focus {
+	border: 2px solid #0097cf;
+}
+
+.tt-query {
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+	color: #999
+}
+
+.tt-dropdown-menu {
+	width: 250px;
+	margin-top: 12px;
+	padding: 8px 0;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+}
+
+.tt-suggestion {
+	padding: 3px 20px;
+	/*   font-size: 18px; */
+	line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+	color: #fff;
+	background-color: #0097cf;
+}
+
+.tt-suggestion p {
+	margin: 0;
+}
+
+.cities {
+	float: right;
+}
+
+#city {
+	min-width: 250px;
+}
+
+
+
 </style>
 
     <h3>Update Business : <?php echo $model->business_name; ?></h3>
@@ -34,6 +204,8 @@
     
         </div>
     </nav>
+    
+    
         
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -49,6 +221,8 @@
     <?php } ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	
+	
 	
 	<?php echo $form->hiddenField($model,'business_id'); ?>    
 	
@@ -213,6 +387,7 @@
         
         <!-- Categorisation Tab -->
         <div class="tab-pane" id="categorisation">
+
         
         	<div class="row">
                 <div class="form-group">
@@ -223,6 +398,18 @@
                     </div>        
                 </div>	
         	</div>
+
+        	<div class="row">
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'business_activities',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-4">
+                        <?php echo $form->textField($model,'business_activities',array('class'=>"form-control")); ?>
+                        <?php echo $form->error($model,'business_activities'); ?>                        
+                    </div>        
+                </div>	
+        	</div>
+        	
+
         </div>
         <!-- /.Categoriation Tab -->
         

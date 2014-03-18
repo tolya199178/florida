@@ -146,7 +146,7 @@ class Activity extends CActiveRecord
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      *
      * @param string $className active record class name.
-     * @return City the static model class
+     * @return Activity the static model class
      * 
      * @access public
      */
@@ -154,4 +154,34 @@ class Activity extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    /**
+     * Generates a JSON encoded list of all activities.
+     *
+     * @param <none> <none>
+     *            
+     * @return <none> <none>
+     * @access public
+     */
+    public function getListjson()
+    {
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Create a Db Criteria to filter and customise the resulting results
+        // /////////////////////////////////////////////////////////////////////
+        $searchCriteria = new CDbCriteria();
+        
+        $lstActivity = Activity::model()->findAll($searchCriteria);
+        
+        $listResults = array();
+        
+        foreach ($lstActivity as $recActivity) {
+            // $listResults[] = array('keyword' => $recActivity->attributes['keyword']);
+            $listResults[] = $recActivity->attributes['keyword'];
+        }
+        // header('Content-type: application/json');
+
+        return CJSON::encode($listResults);
+    }
+	
 }
