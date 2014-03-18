@@ -1,4 +1,7 @@
-SET foreign_key_checks = 0;
+
+SET NAMES utf8;
+SET FOREIGN_KEY_CHECKS = 0;
+
 
 -- ---------------------------------------------------------------------
 -- places subscribed
@@ -63,7 +66,7 @@ CREATE TABLE `tbl_user` (
   UNIQUE KEY `unqkey_facebook_id` (`facebook_id`)
 
 
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 ALTER TABLE tbl_user
 ADD CONSTRAINT fk_user_created_by
@@ -91,7 +94,7 @@ ADD CONSTRAINT fk_mobile_carrier
     `country_name` varchar(512) NOT NULL DEFAULT 'United States of America',
     `iso_code` varchar(32) NOT NULL DEFAULT 'US',
   PRIMARY KEY (`country_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
   INSERT INTO tbl_country set country_name = 'United States of America', iso_code = 'US';
      
@@ -106,7 +109,7 @@ ADD CONSTRAINT fk_mobile_carrier
     `country_id` int(11) NOT NULL,
     `time_zone` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`state_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 ALTER TABLE tbl_state
 ADD CONSTRAINT fk_state_country
@@ -136,7 +139,7 @@ ADD CONSTRAINT fk_state_country
  
     `image` text,
   PRIMARY KEY (`city_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 ALTER TABLE tbl_city
 ADD CONSTRAINT fk_city_state
@@ -157,7 +160,7 @@ ADD CONSTRAINT fk_city_state
   `city_id`         int(11) NOT NULL,    -- fk to city
   `user_id`         int(11) NOT NULL,    -- fk to user 
   PRIMARY KEY        (`city_admin_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
   
 ALTER TABLE tbl_city_admin
@@ -181,7 +184,7 @@ ADD CONSTRAINT fk_city_admin_city_id
     `user_id` int(11) NOT NULL,
     `city_id` int(11) NOT NULL,
   PRIMARY KEY (`places_visted_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 ALTER TABLE tbl_places_visited
 ADD CONSTRAINT fk_places_visited_user
@@ -205,7 +208,7 @@ ADD CONSTRAINT fk_places_visited_city
     `user_id` int(11) NOT NULL,
     `city_id` int(11) NOT NULL,
   PRIMARY KEY (`places_subscribed_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 ALTER TABLE tbl_places_subscribed
 ADD CONSTRAINT fk_places_subscribed_user
@@ -239,7 +242,7 @@ ADD CONSTRAINT fk_places_subscribed_city
   `modified_by`                int(11) NOT NULL COMMENT 'FK with user',  
     
   PRIMARY KEY (`page_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 
 ALTER TABLE tbl_page
@@ -269,7 +272,7 @@ ADD CONSTRAINT fk_page_modified_by
     `path`            varchar(512) NOT NULL DEFAULT '',
     `thumbnail`       varchar(512) NOT NULL DEFAULT '',
   PRIMARY KEY (`photo_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 -- Can be done in Yii using condition on relations
 -- 'city' => array(self::BELONGS_TO, 'City', 'city_id', 'condition' => 'photo_type = "city"'),
@@ -289,7 +292,7 @@ ADD CONSTRAINT fk_page_modified_by
   `created_time`     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `search_details` text NOT NULL DEFAULT '',       -- Serialised string with filter details
   PRIMARY KEY (`search_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
   
 ALTER TABLE tbl_saved_search
@@ -409,7 +412,7 @@ ADD CONSTRAINT fk_business_city
   `primary_user`     enum('Y', 'N') DEFAULT 'N',
   PRIMARY KEY        (`business_user_id`),
   UNIQUE KEY         `idx_business_primary_user` (`business_id`,`user_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
   
 ALTER TABLE tbl_business_user
@@ -479,7 +482,7 @@ ADD CONSTRAINT fk_business_user_business
   `event_views`         integer(11) DEFAULT '0', 
     
   PRIMARY KEY (`event_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 
 ALTER TABLE tbl_event
@@ -509,7 +512,7 @@ ADD CONSTRAINT fk_event_modified_by
     `user_id` int(11) NOT NULL,
     `event_id` int(11) NOT NULL,
   PRIMARY KEY (`user_event_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 ALTER TABLE tbl_user_event
 ADD CONSTRAINT fk_user_event_user
@@ -546,7 +549,7 @@ ADD CONSTRAINT fk_user_event_event
   `redeem_date`             DATETIME DEFAULT NULL,  
 
   PRIMARY KEY (`certificate_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
   
 ALTER TABLE tbl_restaurant_certificate
@@ -574,7 +577,7 @@ ADD CONSTRAINT fk_restaurant_certificate_business
   `modified_by`         int(11) NOT NULL COMMENT 'FK with user',
   
   PRIMARY KEY (`template_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 
   
@@ -627,7 +630,7 @@ CREATE TABLE `tbl_advertisement` (
   `ads_clicks`          double DEFAULT NULL,
 
   PRIMARY KEY (`advertisement_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -660,9 +663,7 @@ CREATE TABLE `tbl_mobile_carrier` (
   `mobile_carrier_id` int(11) NOT NULL AUTO_INCREMENT,
   `mobile_carrier_name`       varchar(255) NOT NULL,
   PRIMARY KEY (`mobile_carrier_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---------------------------------------------------------------------
 -- system settings
@@ -674,9 +675,77 @@ CREATE TABLE `tbl_system_settings` (
   `attribute`   varchar(255) NOT NULL,
   `value`       varchar(4096) NOT NULL,
   PRIMARY KEY (`settings_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 -- ---------------------------------------------------------------------
+-- language
+-- ---------------------------------------------------------------------
+ -- From http://snipplr.com/view/61741/languages-table/
+
+
+-- ----------------------------
+--  Table structure for `languages`
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_language`;
+CREATE TABLE `tbl_language` (
+  `language_id` int(11) NOT NULL auto_increment,
+  `name` mediumtext NOT NULL,
+  `short` mediumtext NOT NULL,
+  PRIMARY KEY  (`language_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `languages`
+-- ----------------------------
+BEGIN;
+INSERT INTO `tbl_language` VALUES ('1', 'English', 'en'), ('2', 'German', 'de'), ('3', 'French', 'fr'), ('4', 'Dutch', 'nl'), ('5', 'Italian', 'it'), ('6', 'Spanish', 'es'), ('7', 'Polish', 'pl'), ('8', 'Russian', 'ru'), ('9', 'Japanese', 'ja'), ('10', 'Portuguese', 'pt'), ('11', 'Swedish', 'sv'), ('12', 'Chinese', 'zh'), ('13', 'Catalan', 'ca'), ('14', 'Ukrainian', 'uk'), ('15', 'Norwegian (Bokmål)', 'no'), ('16', 'Finnish', 'fi'), ('17', 'Vietnamese', 'vi'), ('18', 'Czech', 'cs'), ('19', 'Hungarian', 'hu'), ('20', 'Korean', 'ko'), ('21', 'Indonesian', 'id'), ('22', 'Turkish', 'tr'), ('23', 'Romanian', 'ro'), ('24', 'Persian', 'fa'), ('25', 'Arabic', 'ar'), ('26', 'Danish', 'da'), ('27', 'Esperanto', 'eo'), ('28', 'Serbian', 'sr'), ('29', 'Lithuanian', 'lt'), ('30', 'Slovak', 'sk'), ('31', 'Malay', 'ms'), ('32', 'Hebrew', 'he'), ('33', 'Bulgarian', 'bg'), ('34', 'Slovenian', 'sl'), ('35', 'Volapük', 'vo'), ('36', 'Kazakh', 'kk'), ('37', 'Waray-Waray', 'war'), ('38', 'Basque', 'eu'), ('39', 'Croatian', 'hr'), ('40', 'Hindi', 'hi'), ('41', 'Estonian', 'et'), ('42', 'Azerbaijani', 'az'), ('43', 'Galician', 'gl'), ('44', 'Simple English', 'simple'), ('45', 'Norwegian (Nynorsk)', 'nn'), ('46', 'Thai', 'th'), ('47', 'Newar / Nepal Bhasa', 'new'), ('48', 'Greek', 'el'), ('49', 'Aromanian', 'roa-rup'), ('50', 'Latin', 'la'), ('51', 'Occitan', 'oc'), ('52', 'Tagalog', 'tl'), ('53', 'Haitian', 'ht'), ('54', 'Macedonian', 'mk'), ('55', 'Georgian', 'ka'), ('56', 'Serbo-Croatian', 'sh'), ('57', 'Telugu', 'te'), ('58', 'Piedmontese', 'pms'), ('59', 'Cebuano', 'ceb'), ('60', 'Tamil', 'ta'), ('61', 'Belarusian (Taraškievica)', 'be-x-old'), ('62', 'Breton', 'br'), ('63', 'Latvian', 'lv'), ('64', 'Javanese', 'jv'), ('65', 'Albanian', 'sq'), ('66', 'Belarusian', 'be'), ('67', 'Marathi', 'mr'), ('68', 'Welsh', 'cy'), ('69', 'Luxembourgish', 'lb'), ('70', 'Icelandic', 'is'), ('71', 'Bosnian', 'bs'), ('72', 'Yoruba', 'yo'), ('73', 'Malagasy', 'mg'), ('74', 'Aragonese', 'an'), ('75', 'Bishnupriya Manipuri', 'bpy'), ('76', 'Lombard', 'lmo'), ('77', 'West Frisian', 'fy'), ('78', 'Bengali', 'bn'), ('79', 'Ido', 'io'), ('80', 'Swahili', 'sw'), ('81', 'Gujarati', 'gu'), ('82', 'Malayalam', 'ml'), ('83', 'Western Panjabi', 'pnb'), ('84', 'Afrikaans', 'af'), ('85', 'Low Saxon', 'nds'), ('86', 'Sicilian', 'scn'), ('87', 'Urdu', 'ur'), ('88', 'Kurdish', 'ku'), ('89', 'Cantonese', 'zh-yue'), ('90', 'Armenian', 'hy'), ('91', 'Quechua', 'qu'), ('92', 'Sundanese', 'su'), ('93', 'Nepali', 'ne'), ('94', 'Zazaki', 'diq'), ('95', 'Asturian', 'ast'), ('96', 'Tatar', 'tt'), ('97', 'Neapolitan', 'nap'), ('98', 'Irish', 'ga'), ('99', 'Chuvash', 'cv'), ('100', 'Samogitian', 'bat-smg'), ('101', 'Walloon', 'wa'), ('102', 'Amharic', 'am'), ('103', 'Kannada', 'kn'), ('104', 'Alemannic', 'als'), ('105', 'Buginese', 'bug'), ('106', 'Burmese', 'my'), ('107', 'Interlingua', 'ia');
+COMMIT;
+
+
+
+-- ---------------------------------------------------------------------
+-- activity
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `tbl_activity`;
+
+ CREATE TABLE `tbl_activity` (
+    `activity_id`     int(11) NOT NULL AUTO_INCREMENT,
+    `keyword`         varchar(255) NOT NULL,
+    `language`        varchar(8) NOT NULL DEFAULT 'en',
+    `related_words`   text,
+  PRIMARY KEY (`activity_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+  
+
+-- ---------------------------------------------------------------------
+-- Business Activity
+-- ---------------------------------------------------------------------
+ 
+ DROP TABLE IF EXISTS `tbl_business_activity`;
+  
+ CREATE TABLE `tbl_business_activity` (
+  `business_activity_id`    int(11) NOT NULL AUTO_INCREMENT,
+  `business_id`             int(11) NOT NULL,    -- fk to biz
+  `activity_id`             int(11) NOT NULL,    -- fk to activity 
+  PRIMARY KEY        (`business_activity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+  
+  
+ALTER TABLE tbl_business_activity
+ADD CONSTRAINT fk_business_activity_business_id
+     FOREIGN KEY (business_id) 
+     REFERENCES tbl_business(business_id);
+     
+ALTER TABLE tbl_business_activity
+ADD CONSTRAINT fk_business_activity_activity_id
+     FOREIGN KEY (activity_id) 
+     REFERENCES tbl_activity(activity_id);
+  
+-- ---------------------------------------------------------------------
+-- ---------------------------------------------------------------------
 -- END
+-- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
