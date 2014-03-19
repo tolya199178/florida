@@ -6,24 +6,46 @@
 ?>
 <?
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/tagmanager/dist/js/bootstrap-tags.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/tagmanager/dist/css/bootstrap-tags.css');
+// Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/tagmanager/dist/js/bootstrap-tags.js', CClientScript::POS_END);
+// Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/tagmanager/dist/css/bootstrap-tags.css');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
+
 ?>
 <?php
 
 $listActivity = Activity::model()->getListjson();
+$data_url = Yii::app()->createUrl('concierge/prefecthlistall');
         
 $script = <<<EOD
 
     
-     $("#activities_list").tags({
-       tagSize: "lg",
-       restrictTo: {$listActivity},
-       suggestions: {$listActivity},
-//       promptText: "Click here to add new tags",
-       suggestOnClick: true
-     });
+//      $("#activities_list").tags({
+//        tagSize: "lg",
+//        restrictTo: {$listActivity},
+//        suggestions: {$listActivity},
+// //       promptText: "Click here to add new tags",
+//        suggestOnClick: true
+//      });
     
+    $('#Business_business_activities').tagsinput({
+    typeahead: {
+    source:  {$listActivity}
+    }
+    });
+    
+    
+$('input').tagsinput();
+ 
+// Adding custom typeahead support using http://twitter.github.io/typeahead.js
+$('input').tagsinput('input').typeahead({
+prefetch: '{$data_url}'
+}).bind('typeahead:selected', $.proxy(function (obj, datum) {
+this.tagsinput('add', datum.value);
+this.tagsinput('input').typeahead('setQuery', '');
+}, $('input')));
+
+
 EOD;
     
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
@@ -393,7 +415,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_keywords',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_keywords',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_keywords',array('class'=>"form-control", 'data-role' => "tagsinput")); ?>
                         <?php echo $form->error($model,'business_keywords'); ?>
                     </div>        
                 </div>	
@@ -403,7 +425,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_activities',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_activities',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_activities',array('class'=>"form-control", 'data-role' => "tagsinput")); ?>
                         <?php echo $form->error($model,'business_activities'); ?>                        
                     </div>        
                 </div>	

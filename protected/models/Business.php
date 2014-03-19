@@ -121,7 +121,7 @@ class Business extends CActiveRecord
 		           business_keywords',  'length', 'max'=>1024),
 		    array('add_request_rejection_reason, claim_rejection_reason',        'length', 'max'=>255),
 		    
-		    array('$business_activities',                                         'length', 'max'=>255),
+		    array('business_activities',                                         'length', 'max'=>255),
 		    
 
 		    
