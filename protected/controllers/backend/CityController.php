@@ -330,24 +330,42 @@ class CityController extends BackEndController
         $total_records 		= City::model()->count();
         
         
-        echo '{"iTotalRecords":'.$rows_count.',
-        		"iTotalDisplayRecords":'.$rows_count.',
-        		"aaData":[';
-        $f=0;
+//         echo '{"iTotalRecords":'.$rows_count.',
+//         		"iTotalDisplayRecords":'.$rows_count.',
+//         		"aaData":[';
+//         $f=0;
+//         foreach($city_list as $r){
+        
+//             //print_r($r)
+//             if($f++) echo ',';
+//             echo   '[' .
+//                 '"'  .$r->attributes['city_id'] .'"'
+//               . ',"' .$r->attributes['city_name'] .'"'
+//               . ',"' .$r->attributes['city_alternate_name'] .'"'
+//             . ',""'
+//             . ']';
+//         }
+//         echo ']}';
+        	    
+        
+        $output = array(
+            "iTotalRecords"         => $rows_count,
+            "iTotalDisplayRecords"  => $total_records,
+            "aaData"                => array()
+        );
+        
         foreach($city_list as $r){
         
-            //print_r($r)
-            if($f++) echo ',';
-            echo   '[' .
-                '"'  .$r->attributes['city_id'] .'"'
-              . ',"' .$r->attributes['city_name'] .'"'
-              . ',"' .$r->attributes['city_alternate_name'] .'"'
-            . ',""'
-            . ']';
+            $row = array($r->attributes['city_id'],
+                $r->attributes['city_name'],
+                $r->attributes['city_alternate_name'],
+                ''
+            );
+            $output['aaData'][] = $row;
+        
         }
-        echo ']}';
-        	    
-	    
+         
+        echo json_encode($output);
 	    
 	}
 
