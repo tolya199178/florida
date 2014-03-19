@@ -121,7 +121,7 @@ class BusinessController extends BackEndController
             // delegate to business model methods to determine ownership
             array(
                 'allow',
-                'expression' =>'BusinessAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("business_id"))',
+                'expression' =>'Yii::app()->user->isAdmin()',
                 'actions'    =>array('edit'),
             ),
             

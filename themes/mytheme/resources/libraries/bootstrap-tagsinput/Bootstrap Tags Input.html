@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html><head>
+    <title>Bootstrap Tags Input</title>
+    <meta name="robots" content="index, follow">
+    <!-- base href="http://timschlechter.github.io/bootstrap-tagsinput/examples/" -->
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <link rel="stylesheet" href="Bootstrap%20Tags%20Input_files/bootstrap.css">
+    <link rel="stylesheet" href="Bootstrap%20Tags%20Input_files/docs.css">
+    <link rel="stylesheet" href="Bootstrap%20Tags%20Input_files/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="Bootstrap%20Tags%20Input_files/app.css">
+
+    <script async="" src="Bootstrap%20Tags%20Input_files/cbgapi.loaded_1"></script><script async="" src="Bootstrap%20Tags%20Input_files/cbgapi.loaded_0"></script><script src="Bootstrap%20Tags%20Input_files/all.js" id="facebook-jssdk"></script><script gapi_processed="true" src="Bootstrap%20Tags%20Input_files/plusone.js" async="" type="text/javascript"></script><script src="Bootstrap%20Tags%20Input_files/widgets.js" id="twitter-wjs"></script><script src="Bootstrap%20Tags%20Input_files/analytics.js" async=""></script><script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-42755476-1', 'timschlechter.github.io');
+    ga('send', 'pageview');
+    </script>
+  <style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none !important;}ng\:form{display:block;}</style><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}
+.fb_invisible{display:none}
+.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}
+.fb_reset > div{overflow:hidden}
+.fb_link img{border:none}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}
+.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}
+.fb_dialog_content{background:#fff;color:#333}
+.fb_dialog_close_icon{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif);cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px;top:8px\9;right:7px\9}
+.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}
+.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}
+.fb_dialog_close_icon:hover{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}
+.fb_dialog_close_icon:active{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}
+.fb_dialog_loader{background-color:#f2f2f2;border:1px solid #606060;font-size:24px;padding:20px}
+.fb_dialog_top_left,
+.fb_dialog_top_right,
+.fb_dialog_bottom_left,
+.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}
+.fb_dialog_top_left{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}
+.fb_dialog_top_right{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}
+.fb_dialog_bottom_left{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}
+.fb_dialog_bottom_right{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}
+.fb_dialog_vert_left,
+.fb_dialog_vert_right,
+.fb_dialog_horiz_top,
+.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}
+.fb_dialog_vert_left,
+.fb_dialog_vert_right{width:10px;height:100%}
+.fb_dialog_vert_left{margin-left:-10px}
+.fb_dialog_vert_right{right:0;margin-right:-10px}
+.fb_dialog_horiz_top,
+.fb_dialog_horiz_bottom{width:100%;height:10px}
+.fb_dialog_horiz_top{margin-top:-10px}
+.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}
+.fb_dialog_iframe{line-height:0}
+.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #3b5998;color:#fff;font-size:14px;font-weight:bold;margin:0}
+.fb_dialog_content .dialog_title > span{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yd/r/Cou7n-nqK52.gif)
+no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}
+body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}
+.fb_dialog.fb_dialog_mobile.loading{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ya/r/3rhSv5V8j3o.gif)
+white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}
+.fb_dialog.fb_dialog_mobile.loading.centered{max-height:590px;min-height:590px;max-width:500px;min-width:500px}
+#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;left:0;top:0;width:100%;min-height:100%;z-index:10000}
+#fb-root #fb_dialog_ipad_overlay.hidden{display:none}
+.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}
+.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}
+.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%
+}
+.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px
+}
+.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px
+}
+.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6),
+color-stop(0.5, #355492), to(#2A4887));border:1px solid #29447e;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset,
+rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}
+.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}
+.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}
+.fb_dialog_content .dialog_content{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}
+.fb_dialog_content .dialog_footer{background:#f2f2f2;border:1px solid #555;border-top-color:#ccc;height:40px}
+#fb_dialog_loader_close{float:left}
+.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}
+.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}
+.fb_iframe_widget{display:inline-block;position:relative}
+.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}
+.fb_iframe_widget iframe{position:absolute}
+.fb_iframe_widget_lift{z-index:1}
+.fb_hide_iframes iframe{position:relative;left:-10000px}
+.fb_iframe_widget_loader{position:relative;display:inline-block}
+.fb_iframe_widget_fluid{display:inline}
+.fb_iframe_widget_fluid span{width:100%}
+.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}
+.fb_iframe_widget_loader .FB_Loader{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}
+.fb_connect_bar_container div,
+.fb_connect_bar_container span,
+.fb_connect_bar_container a,
+.fb_connect_bar_container img,
+.fb_connect_bar_container strong{background:none;border-spacing:0;border:0;direction:ltr;font-style:normal;font-variant:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal;vertical-align:baseline}
+.fb_connect_bar_container{position:fixed;left:0 !important;right:0 !important;height:42px !important;padding:0 25px !important;margin:0 !important;vertical-align:middle !important;border-bottom:1px solid #333 !important;background:#3b5998 !important;z-index:99999999 !important;overflow:hidden !important}
+.fb_connect_bar_container_ie6{position:absolute;top:expression(document.compatMode=="CSS1Compat"? document.documentElement.scrollTop+"px":body.scrollTop+"px")}
+.fb_connect_bar{position:relative;margin:auto;height:100%;width:100%;padding:6px 0 0 0 !important;background:none;color:#fff !important;font-family:"lucida grande", tahoma, verdana, arial, sans-serif !important;font-size:13px !important;font-style:normal !important;font-variant:normal !important;font-weight:normal !important;letter-spacing:normal !important;line-height:1 !important;text-decoration:none !important;text-indent:0 !important;text-shadow:none !important;text-transform:none !important;white-space:normal !important;word-spacing:normal !important}
+.fb_connect_bar a:hover{color:#fff}
+.fb_connect_bar .fb_profile img{height:30px;width:30px;vertical-align:middle;margin:0 6px 5px 0}
+.fb_connect_bar div a,
+.fb_connect_bar span,
+.fb_connect_bar span a{color:#bac6da;font-size:11px;text-decoration:none}
+.fb_connect_bar .fb_buttons{float:right;margin-top:7px}
+.fbpluginrecommendationsbarleft,
+.fbpluginrecommendationsbarright{position:fixed !important;bottom:0;z-index:999}
+.fbpluginrecommendationsbarleft{left:10px}
+.fbpluginrecommendationsbarright{right:10px}</style></head>
+  <body data-twttr-rendered="true">
+    <div class=" fb_reset" id="fb-root"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe src="Bootstrap%20Tags%20Input_files/LEdxGgtB9cN.html" style="border: medium none;" tab-index="-1" title="Facebook Cross Domain Communication Frame" aria-hidden="true" id="fb_xdm_frame_http" allowtransparency="true" name="fb_xdm_frame_http" scrolling="no" frameborder="0"></iframe><iframe src="Bootstrap%20Tags%20Input_files/LEdxGgtB9cN_002.html" style="border: medium none;" tab-index="-1" title="Facebook Cross Domain Communication Frame" aria-hidden="true" id="fb_xdm_frame_https" allowtransparency="true" name="fb_xdm_frame_https" scrolling="no" frameborder="0"></iframe></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe src="Bootstrap%20Tags%20Input_files/ping.html" style="display: none;" allowtransparency="true" name="f21f85056aba246" scrolling="no" frameborder="0"></iframe></div></div></div>
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+      <div class="container">
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="https://github.com/timschlechter/bootstrap-tagsinput">Code on Github</a>
+            </li>
+            <li>
+               <a href="http://timschlechter.github.io/bootstrap-tagsinput/examples/">Bootstrap 2.3.2</a>
+            </li>
+            <li>
+              <a href="http://timschlechter.github.io/bootstrap-tagsinput/build/bootstrap-tagsinput.zip">Download <small>(latest)</small></a>
+            </li>          
+          </ul>
+          <p class="navbar-text pull-right">
+            <iframe style="width: 108px; height: 20px;" data-twttr-rendered="true" title="Twitter Tweet Button" class="navbar-link twitter-share-button twitter-tweet-button twitter-count-horizontal" src="Bootstrap%20Tags%20Input_files/tweet_button.html" allowtransparency="true" id="twitter-widget-0" scrolling="no" frameborder="0"></iframe>
+                <script>!function (d, s, id) {
+                    var js, fjs = d.getElementsByTagName(s)[0];
+                    if (!d.getElementById(id)) {
+                        js = d.createElement(s);
+                        js.id = id;
+                        js.src = "//platform.twitter.com/widgets.js";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }
+                }(document, "script", "twitter-wjs");</script>
+
+                <!-- Place this tag where you want the +1 button to render. -->
+                <div id="___plusone_0" style="text-indent: 0px; margin: 0px; padding: 0px; background: none repeat scroll 0% 0% transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 90px; height: 20px;"><iframe title="+1" data-gapiattached="true" src="Bootstrap%20Tags%20Input_files/fastbutton.html" name="I0_1395180707509" id="I0_1395180707509" vspace="0" tabindex="0" style="position: static; top: 0px; width: 90px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 20px;" marginwidth="0" marginheight="0" hspace="0" scrolling="no" width="100%" frameborder="0"></iframe></div>
+
+                <!-- Place this tag after the last +1 button tag. -->
+                <script type="text/javascript">
+                    (function () {
+                        var po = document.createElement('script');
+                        po.type = 'text/javascript';
+                        po.async = true;
+                        po.src = 'https://apis.google.com/js/plusone.js';
+                        var s = document.getElementsByTagName('script')[0];
+                        s.parentNode.insertBefore(po, s);
+                    })();
+                </script>
+                <script>(function(d, s, id) {
+                  var js, fjs = d.getElementsByTagName(s)[0];
+                  if (d.getElementById(id)) return;
+                  js = d.createElement(s); js.id = id;
+                  js.src = "//connect.facebook.net/nl_NL/all.js#xfbml=1&appId=122064240555";
+                  fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));</script>
+                <a fb-iframe-plugin-query="app_id=122064240555&amp;href=http%3A%2F%2Ftimschlechter.github.io%2Fbootstrap-tagsinput%2Fexamples%2Fbootstrap3%2F&amp;layout=button_count&amp;locale=nl_NL&amp;sdk=joey&amp;send=false&amp;show_faces=true&amp;width=110" fb-xfbml-state="rendered" class="navbar-link fb-like fb_iframe_widget" data-href="http://timschlechter.github.io/bootstrap-tagsinput/examples/bootstrap3/" data-width="110" data-layout="button_count" data-show-faces="true" data-send="false"><span style="vertical-align: bottom; width: 114px; height: 20px;"><iframe class="" src="Bootstrap%20Tags%20Input_files/like.html" style="border: medium none; visibility: visible; width: 114px; height: 20px;" title="fb:like Facebook Social Plugin" allowtransparency="true" name="f1bf214f11d7a2e" scrolling="no" width="110px" frameborder="0" height="1000px"></iframe></span></a>
+          </p>
+        </nav>
+      </div>
+    </header>
+    
+    <div class="bs-header">
+      <div class="container">
+        <h1>Bootstrap Tags Input</h1>
+        <p>jQuery plugin providing a Twitter Bootstrap user interface for managing tags</p>
+      </div>
+    </div>
+    <div class="container">
+      <section id="examples">
+        <div class="page-header">
+          <h2>Examples</h2>
+        </div>
+
+        <div class="example example_markup">
+          <h3>Markup</h3>
+          <p>Just add <code>data-role="tagsinput"</code> to your input field to automatically change it to a tags input field.</p>
+          <div class="bs-example">
+            <input style="display: none;" value="Amsterdam,Washington,Sydney,Beijing,Cairo,london" data-role="tagsinput" type="text"><div class="bootstrap-tagsinput"><span class="tag label label-info">Amsterdam<span data-role="remove"></span></span> <span class="tag label label-info">Washington<span data-role="remove"></span></span> <span class="tag label label-info">Sydney<span data-role="remove"></span></span> <span class="tag label label-info">Beijing<span data-role="remove"></span></span> <span class="tag label label-info">Cairo<span data-role="remove"></span></span> <span class="tag label label-info">london<span data-role="remove"></span></span> <input size="1" placeholder="" type="text"></div>
+          </div>
+          <div class="accordion">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="#accordion_example_markup">
+                  Show code
+                </a>
+              </div>
+              <div id="accordion_example_markup" class="accordion-body collapse">
+                <div class="accordion-inner highlight">
+                  <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Amsterdam,Washington,Sydney,Beijing,Cairo"</span><span class="pln"> </span><span class="atn">data-role</span><span class="pun">=</span><span class="atv">"tagsinput"</span><span class="pln"> </span><span class="tag">/&gt;</span></li></ol></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+           <table class="table table-bordered table-condensed"><thead><tr><th>statement</th><th>returns</th></tr></thead><tbody><tr><td><code>$("input").val()</code></td><td><pre class="val prettyprint linenums">"Amsterdam,Washington,Sydney,Beijing,Cairo,london"</pre></td></tr><tr><td><code>$("input").tagsinput('items')</code></td><td><pre class="items prettyprint linenums">["Amsterdam","Washington","Sydney","Beijing","Cairo","london"]</pre></td></tr></tbody></table>
+        </div>
+
+        <div class="example example_multivalue">
+          <h3>True multi value</h3>
+          <p>
+            Use a <code>&lt;select multiple /&gt;</code> as your input 
+element for a tags input, to gain true multivalue support. Instead of a 
+comma separated string, the values will be set in an array. Existing <code>&lt;option /&gt;</code> elements will automatically be set as tags. This makes it also possible to create tags containing a comma.
+          </p>
+          <div class="bs-example">
+            <select style="display: none;" multiple="multiple" data-role="tagsinput">
+              <option selected="selected" value="Amsterdam">Amsterdam</option>
+              <option selected="selected" value="Washington">Washington</option>
+              <option selected="selected" value="Sydney">Sydney</option>
+              <option selected="selected" value="Beijing">Beijing</option>
+              <option selected="selected" value="Cairo">Cairo</option>
+            </select><div class="bootstrap-tagsinput"><span class="tag label label-info">Amsterdam<span data-role="remove"></span></span> <span class="tag label label-info">Washington<span data-role="remove"></span></span> <span class="tag label label-info">Sydney<span data-role="remove"></span></span> <span class="tag label label-info">Beijing<span data-role="remove"></span></span> <span class="tag label label-info">Cairo<span data-role="remove"></span></span> <input size="1" placeholder="" type="text"></div>
+          </div>
+          <div class="accordion ">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="#example_multivalue">
+                  Show code
+                </a>
+              </div>
+              <div id="example_multivalue" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="tag">&lt;select</span><span class="pln"> </span><span class="atn">multiple</span><span class="pln"> </span><span class="atn">data-role</span><span class="pun">=</span><span class="atv">"tagsinput"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">  </span><span class="tag">&lt;option</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Amsterdam"</span><span class="tag">&gt;</span><span class="pln">Amsterdam</span><span class="tag">&lt;/option&gt;</span></li><li class="L2"><span class="pln">  </span><span class="tag">&lt;option</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Washington"</span><span class="tag">&gt;</span><span class="pln">Washington</span><span class="tag">&lt;/option&gt;</span></li><li class="L3"><span class="pln">  </span><span class="tag">&lt;option</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Sydney"</span><span class="tag">&gt;</span><span class="pln">Sydney</span><span class="tag">&lt;/option&gt;</span></li><li class="L4"><span class="pln">  </span><span class="tag">&lt;option</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Beijing"</span><span class="tag">&gt;</span><span class="pln">Beijing</span><span class="tag">&lt;/option&gt;</span></li><li class="L5"><span class="pln">  </span><span class="tag">&lt;option</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Cairo"</span><span class="tag">&gt;</span><span class="pln">Cairo</span><span class="tag">&lt;/option&gt;</span></li><li class="L6"><span class="tag">&lt;/select&gt;</span></li></ol></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+           <table class="table table-bordered table-condensed"><thead><tr><th>statement</th><th>returns</th></tr></thead><tbody><tr><td><code>$("select").val()</code></td><td><pre class="val prettyprint linenums">["Amsterdam","Washington","Sydney","Beijing","Cairo"]</pre></td></tr><tr><td><code>$("select").tagsinput('items')</code></td><td><pre class="items prettyprint linenums">["Amsterdam","Washington","Sydney","Beijing","Cairo"]</pre></td></tr></tbody></table>
+        </div>
+       
+        <div class="example example_typeahead">
+          <h3>Typeahead</h3>
+          Typeahead is not included in Bootstrap 3, so you'll have to include your own typeahead library. I'd recommed <a href="http://twitter.github.io/typeahead.js/">typeahead.js</a>. An example of using this is shown below.
+
+          <div class="bs-example">
+            <input style="display: none;" value="Amsterdam,Washington" type="text"><div class="bootstrap-tagsinput"><span class="tag label label-info">Amsterdam<span data-role="remove"></span></span> <span class="tag label label-info">Washington<span data-role="remove"></span></span> <span style="position: relative; display: inline-block;" class="twitter-typeahead"><input style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; background: none repeat scroll 0% 0% transparent;" class="tt-hint" autocomplete="off" spellcheck="off" disabled="disabled" type="text"><input dir="auto" style="position: relative; vertical-align: top; background-color: transparent;" spellcheck="false" autocomplete="off" class="tt-query" size="1" placeholder="" type="text"><span style="position: absolute; left: -9999px; visibility: hidden; white-space: nowrap; font-family: &quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: optimizelegibility; text-transform: none;"></span><span style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;" class="tt-dropdown-menu"></span></span></div>
+          </div>
+           <div class="accordion ">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="#example_typeahead">
+                  Show code
+                </a>
+              </div>
+              <div id="example_typeahead" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Amsterdam,Washington"</span><span class="pln"> </span><span class="atn">data-role</span><span class="pun">=</span><span class="atv">"tagsinput"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L1"><span class="tag">&lt;script&gt;</span></li><li class="L2"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">();</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="com">// Adding custom typeahead support using http://twitter.github.io/typeahead.js</span></li><li class="L5"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">typeahead</span><span class="pun">({</span></li><li class="L6"><span class="pln">  prefetch</span><span class="pun">:</span><span class="pln"> </span><span class="str">'citynames.json'</span></li><li class="L7"><span class="pun">}).</span><span class="pln">bind</span><span class="pun">(</span><span class="str">'typeahead:selected'</span><span class="pun">,</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">proxy</span><span class="pun">(</span><span class="kwd">function</span><span class="pln"> </span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> datum</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></li><li class="L8"><span class="pln">  </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> datum</span><span class="pun">.</span><span class="pln">value</span><span class="pun">);</span></li><li class="L9"><span class="pln">  </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">typeahead</span><span class="pun">(</span><span class="str">'setQuery'</span><span class="pun">,</span><span class="pln"> </span><span class="str">''</span><span class="pun">);</span></li><li class="L0"><span class="pun">},</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">)));</span></li><li class="L1"><span class="tag">&lt;/script&gt;</span></li></ol></pre>
+                </div>
+              </div>
+            </div>                  
+          </div>
+          <table class="table table-bordered table-condensed"><thead><tr><th>statement</th><th>returns</th></tr></thead><tbody><tr><td><code>$("input").val()</code></td><td><pre class="val prettyprint linenums">"Amsterdam,Washington"</pre></td></tr><tr><td><code>$("input").tagsinput('items')</code></td><td><pre class="items prettyprint linenums">["Amsterdam","Washington"]</pre></td></tr></tbody></table>
+        </div>
+
+        <div class="example example_objects_as_tags">
+          <h3>Objects as tags</h3>
+          <p>
+            Instead of just adding strings as tags, bind objects to your
+ tags. This makes it possible to set id values in your input field's 
+value, instead of just the tag's text.
+          </p>
+          <div class="bs-example">
+            <input value="1,4,7,10,13" style="display: none;" type="text"><div class="bootstrap-tagsinput"><span class="tag label label-info">Amsterdam<span data-role="remove"></span></span> <span class="tag label label-info">Washington<span data-role="remove"></span></span> <span class="tag label label-info">Sydney<span data-role="remove"></span></span> <span class="tag label label-info">Beijing<span data-role="remove"></span></span> <span class="tag label label-info">Cairo<span data-role="remove"></span></span> <span style="position: relative; display: inline-block;" class="twitter-typeahead"><input style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; background: none repeat scroll 0% 0% transparent;" class="tt-hint" autocomplete="off" spellcheck="off" disabled="disabled" type="text"><input dir="auto" style="position: relative; vertical-align: top; background-color: transparent;" spellcheck="false" autocomplete="off" class="tt-query" size="1" placeholder="" type="text"><span style="position: absolute; left: -9999px; visibility: hidden; white-space: nowrap; font-family: &quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: optimizelegibility; text-transform: none;"></span><span style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;" class="tt-dropdown-menu"></span></span></div>
+          </div>
+          <div class="accordion">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="#accordion_example_objects_as_tags">
+                  Show code
+                </a>
+              </div>
+              <div id="accordion_example_objects_as_tags" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L1"><span class="tag">&lt;script&gt;</span></li><li class="L2"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L3"><span class="pln">  itemValue</span><span class="pun">:</span><span class="pln"> </span><span class="str">'value'</span><span class="pun">,</span></li><li class="L4"><span class="pln">  itemText</span><span class="pun">:</span><span class="pln"> </span><span class="str">'text'</span></li><li class="L5"><span class="pun">});</span></li><li class="L6"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Amsterdam"</span><span class="pln">   </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Europe"</span><span class="pln">    </span><span class="pun">});</span></li><li class="L7"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">4</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Washington"</span><span class="pln">  </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"America"</span><span class="pln">   </span><span class="pun">});</span></li><li class="L8"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">7</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Sydney"</span><span class="pln">      </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Australia"</span><span class="pln"> </span><span class="pun">});</span></li><li class="L9"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">10</span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Beijing"</span><span class="pln">     </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Asia"</span><span class="pln">      </span><span class="pun">});</span></li><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">13</span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Cairo"</span><span class="pln">       </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Africa"</span><span class="pln">    </span><span class="pun">});</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">typeahead</span><span class="pun">({</span></li><li class="L3"><span class="pln">  valueKey</span><span class="pun">:</span><span class="pln"> </span><span class="str">'text'</span><span class="pun">,</span></li><li class="L4"><span class="pln">  prefetch</span><span class="pun">:</span><span class="pln"> </span><span class="str">'assets/cities.json'</span><span class="pun">,</span></li><li class="L5"><span class="pln">  template</span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;p&gt;{{text}}&lt;/p&gt;'</span><span class="pun">,</span></li><li class="L6"><span class="pln">  engine</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Hogan</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="pun">}).</span><span class="pln">bind</span><span class="pun">(</span><span class="str">'typeahead:selected'</span><span class="pun">,</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">proxy</span><span class="pun">(</span><span class="kwd">function</span><span class="pln"> </span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> datum</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">	</span><span class="kwd">this</span><span class="pun">.</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> datum</span><span class="pun">);</span></li><li class="L0"><span class="pln">	</span><span class="kwd">this</span><span class="pun">.</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">typeahead</span><span class="pun">(</span><span class="str">'setQuery'</span><span class="pun">,</span><span class="pln"> </span><span class="str">''</span><span class="pun">);</span></li><li class="L1"><span class="pun">},</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">)));</span></li><li class="L2"><span class="tag">&lt;/script&gt;</span></li></ol></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="table table-bordered table-condensed"><thead><tr><th>statement</th><th>returns</th></tr></thead><tbody><tr><td><code>$("input").val()</code></td><td><pre class="val prettyprint linenums">"1,4,7,10,13"</pre></td></tr><tr><td><code>$("input").tagsinput('items')</code></td><td><pre class="items prettyprint linenums">[{"value":1,"text":"Amsterdam","continent":"Europe"},{"value":4,"text":"Washington","continent":"America"},{"value":7,"text":"Sydney","continent":"Australia"},{"value":10,"text":"Beijing","continent":"Asia"},{"value":13,"text":"Cairo","continent":"Africa"}]</pre></td></tr></tbody></table>
+        </div>
+
+        <div class="example example_tagclass">
+          <h3>Categorizing tags</h3>
+          <p>
+            You can set a fixed css class for your tags, or determine dynamically by provinding a custom function.
+          </p>
+          <div class="bs-example">
+            <input value="1,4,7,10,13" style="display: none;" type="text"><div class="bootstrap-tagsinput"><span class="tag label label-primary">Amsterdam<span data-role="remove"></span></span> <span class="tag label label-danger label-important">Washington<span data-role="remove"></span></span> <span class="tag label label-success">Sydney<span data-role="remove"></span></span> <span class="tag label label-warning">Beijing<span data-role="remove"></span></span> <span class="tag label label-default">Cairo<span data-role="remove"></span></span> <span style="position: relative; display: inline-block;" class="twitter-typeahead"><input style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; background: none repeat scroll 0% 0% transparent;" class="tt-hint" autocomplete="off" spellcheck="off" disabled="disabled" type="text"><input dir="auto" style="position: relative; vertical-align: top; background-color: transparent;" spellcheck="false" autocomplete="off" class="tt-query" size="1" placeholder="" type="text"><span style="position: absolute; left: -9999px; visibility: hidden; white-space: nowrap; font-family: &quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: optimizelegibility; text-transform: none;"></span><span style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;" class="tt-dropdown-menu"></span></span></div>
+          </div>
+          <div class="accordion">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="#accordion_example_tagclass">
+                  Show code
+                </a>
+              </div>
+              <div id="accordion_example_tagclass" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L1"><span class="tag">&lt;script&gt;</span></li><li class="L2"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L3"><span class="pln">  tagClass</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">item</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L4"><span class="pln">    </span><span class="kwd">switch</span><span class="pln"> </span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">continent</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L5"><span class="pln">      </span><span class="kwd">case</span><span class="pln"> </span><span class="str">'Europe'</span><span class="pln">   </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="str">'label label-primary'</span><span class="pun">;</span></li><li class="L6"><span class="pln">      </span><span class="kwd">case</span><span class="pln"> </span><span class="str">'America'</span><span class="pln">  </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="str">'label label-danger label-important'</span><span class="pun">;</span></li><li class="L7"><span class="pln">      </span><span class="kwd">case</span><span class="pln"> </span><span class="str">'Australia'</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="str">'label label-success'</span><span class="pun">;</span></li><li class="L8"><span class="pln">      </span><span class="kwd">case</span><span class="pln"> </span><span class="str">'Africa'</span><span class="pln">   </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="str">'label label-default'</span><span class="pun">;</span></li><li class="L9"><span class="pln">      </span><span class="kwd">case</span><span class="pln"> </span><span class="str">'Asia'</span><span class="pln">     </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="str">'label label-warning'</span><span class="pun">;</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pln">  </span><span class="pun">},</span></li><li class="L2"><span class="pln">  itemValue</span><span class="pun">:</span><span class="pln"> </span><span class="str">'value'</span><span class="pun">,</span></li><li class="L3"><span class="pln">  itemText</span><span class="pun">:</span><span class="pln"> </span><span class="str">'text'</span></li><li class="L4"><span class="pun">});</span></li><li class="L5"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Amsterdam"</span><span class="pln">   </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Europe"</span><span class="pln">    </span><span class="pun">});</span></li><li class="L6"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">4</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Washington"</span><span class="pln">  </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"America"</span><span class="pln">   </span><span class="pun">});</span></li><li class="L7"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">7</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Sydney"</span><span class="pln">      </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Australia"</span><span class="pln"> </span><span class="pun">});</span></li><li class="L8"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">10</span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Beijing"</span><span class="pln">     </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Asia"</span><span class="pln">      </span><span class="pun">});</span></li><li class="L9"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">"value"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">13</span><span class="pun">,</span><span class="pln"> </span><span class="str">"text"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Cairo"</span><span class="pln">       </span><span class="pun">,</span><span class="pln"> </span><span class="str">"continent"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Africa"</span><span class="pln">    </span><span class="pun">});</span></li><li class="L0"><span class="pln">&nbsp;</span></li><li class="L1"><span class="com">// Adding custom typeahead support using http://twitter.github.io/typeahead.js</span></li><li class="L2"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">typeahead</span><span class="pun">({</span></li><li class="L3"><span class="pln">  valueKey</span><span class="pun">:</span><span class="pln"> </span><span class="str">'text'</span><span class="pun">,</span></li><li class="L4"><span class="pln">  prefetch</span><span class="pun">:</span><span class="pln"> </span><span class="str">'cities.json'</span><span class="pun">,</span></li><li class="L5"><span class="pln">  template</span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;p&gt;{{text}}&lt;/p&gt;'</span><span class="pun">,</span><span class="pln">                                      </span></li><li class="L6"><span class="pln">  engine</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Hogan</span></li><li class="L7"><span class="pun">}).</span><span class="pln">bind</span><span class="pun">(</span><span class="str">'typeahead:selected'</span><span class="pun">,</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">proxy</span><span class="pun">(</span><span class="kwd">function</span><span class="pln"> </span><span class="pun">(</span><span class="pln">obj</span><span class="pun">,</span><span class="pln"> datum</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></li><li class="L8"><span class="pln">  </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> datum</span><span class="pun">);</span></li><li class="L9"><span class="pln">  </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">typeahead</span><span class="pun">(</span><span class="str">'setQuery'</span><span class="pun">,</span><span class="pln"> </span><span class="str">''</span><span class="pun">);</span></li><li class="L0"><span class="pun">},</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">)));</span></li><li class="L1"><span class="tag">&lt;/script&gt;</span></li></ol></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="table table-bordered table-condensed"><thead><tr><th>statement</th><th>returns</th></tr></thead><tbody><tr><td><code>$("input").val()</code></td><td><pre class="val prettyprint linenums">"1,4,7,10,13"</pre></td></tr><tr><td><code>$("input").tagsinput('items')</code></td><td><pre class="items prettyprint linenums">[{"value":1,"text":"Amsterdam","continent":"Europe"},{"value":4,"text":"Washington","continent":"America"},{"value":7,"text":"Sydney","continent":"Australia"},{"value":10,"text":"Beijing","continent":"Asia"},{"value":13,"text":"Cairo","continent":"Africa"}]</pre></td></tr></tbody></table>
+        </div>
+
+        <!-- div id="angular" class="example example_angular" ng-app="AngularExample" ng-controller="CityTagsInputController">
+          <h3>AngularJS support</h3>
+          <p>
+            Include <code>bootstrap-tagsinput-angular.js</code> and register the 'bootstrap-tagsinput' in your Angular JS application to use the bootstrap-tagsinput directive.
+          </p>
+          <div class="bs-example">
+            <bootstrap-tagsinput
+              ng-model="cities"
+              typeahead-source="queryCities"
+              tagclass="getTagClass"
+              itemvalue="value"
+              itemtext="text">
+            </bootstrap-tagsinput>
+          </div>
+          <div class="accordion">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="#example_angular">
+                  Show code
+                </a>
+              </div>
+              <div id="example_angular" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <pre class="prettyprint linenums">&lt;bootstrap-tagsinput
+  ng-model="cities"
+  typeahead-source="queryCities"
+  tagclass="getTagClass"
+  itemvalue="value"
+  itemtext="text"&gt;
+&lt;/bootstrap-tagsinput&gt;
+
+&lt;script&gt;
+angular.module('AngularExample', ['bootstrap-tagsinput'])
+  .controller('CityTagsInputController',
+    function CityTagsInputController($scope) {
+      // Init with some cities
+      $scope.cities = [
+        { "value": 1 , "text": "Amsterdam"   , "continent": "Europe"    },
+        { "value": 4 , "text": "Washington"  , "continent": "America"   },
+        { "value": 7 , "text": "Sydney"      , "continent": "Australia" },
+        { "value": 10, "text": "Beijing"     , "continent": "Asia"      },
+        { "value": 13, "text": "Cairo"       , "continent": "Africa"    }
+      ];
+
+      $scope.queryCities = function(query) {
+        return $http.get('cities.json');
+      };
+
+      $scope.getTagClass = function(city) {
+        switch (city.continent) {
+          case 'Europe'   : return 'badge badge-info';
+          case 'America'  : return 'label label-important';
+          case 'Australia': return 'badge badge-success';
+          case 'Africa'   : return 'label label-inverse';
+          case 'Asia'     : return 'badge badge-warning';
+        }
+      };
+    }
+  );
+&lt;/script&gt;</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr><th>statement</th><th>returns</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>$scope.cities</code></td><td><pre class="items prettyprint linenums">{{cities}}</td></tr>
+              <tr><td><code>$("select").val()</code></td><td><pre class="val prettyprint linenums"></pre></td></tr>
+              <tr><td><code>$("select").tagsinput('items')</code></td><td><pre class="items prettyprint linenums"></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section -->
+
+      <section id="options">
+        <div class="page-header">
+          <h2>Options</h2>
+        </div>
+        <table class="table table-bordered table-condensed">
+          <thead>
+            <tr>
+              <th colspan="2">option</th>
+              <th>description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="2"><code>tagClass</code></td>
+              <td>
+                <p>Classname for the tags, or a function returning a classname</p>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  tagClass</span><span class="pun">:</span><span class="pln"> </span><span class="str">'big'</span></li><li class="L2"><span class="pun">});</span></li></ol></pre>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  tagClass</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">item</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> </span><span class="pun">(</span><span class="pln">item</span><span class="pun">.</span><span class="pln">length </span><span class="pun">&gt;</span><span class="pln"> </span><span class="lit">10</span><span class="pln"> </span><span class="pun">?</span><span class="pln"> </span><span class="str">'big'</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'small'</span><span class="pun">);</span></li><li class="L3"><span class="pln">  </span><span class="pun">}</span></li><li class="L4"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"><code>itemValue</code></td>
+              <td>
+                <p>When adding objects as tags, itemValue <em>must</em> be set to the name of the property containing the item's value, or a function returning an item's value.</p>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">    itemValue</span><span class="pun">:</span><span class="pln"> </span><span class="str">'id'</span></li><li class="L2"><span class="pun">});</span></li></ol></pre>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  itemValue</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">item</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> item</span><span class="pun">.</span><span class="pln">id</span><span class="pun">;</span></li><li class="L3"><span class="pln">  </span><span class="pun">}</span></li><li class="L4"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"><code>itemText</code></td>
+              <td>
+                <p>When adding objects as tags, you can set itemText to 
+the name of the property of item to use for a its tag's text. You may 
+also provide a function which returns an item's value. When this options
+ is not set, the value of <code>itemValue</code> will be used.
+
+
+                </p><pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  itemText</span><span class="pun">:</span><span class="pln"> </span><span class="str">'label'</span></li><li class="L2"><span class="pun">});</span></li></ol></pre>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  itemText</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">item</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> item</span><span class="pun">.</span><span class="pln">label</span><span class="pun">;</span></li><li class="L3"><span class="pln">  </span><span class="pun">}</span></li><li class="L4"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"><code>confirmKeys</code></td>
+              <td>
+                <p>Array of keycodes which will add a tag when typing in the input. (default: [13], which is ENTER)</p>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  confirmKeys</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="lit">13</span><span class="pun">,</span><span class="pln"> </span><span class="lit">44</span><span class="pun">]</span></li><li class="L2"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"><code>maxTags</code></td>
+              <td>
+                <p>When set, no more than the given number of tags are 
+allowed to add (default: undefined). When maxTags is reached, a class 
+'bootstrap-tagsinput-max' is placed on the tagsinput element.</p>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  maxTags</span><span class="pun">:</span><span class="pln"> </span><span class="lit">3</span></li><li class="L2"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>  
+            <tr>
+              <td colspan="2"><code>freeInput</code></td>
+              <td>
+                <p>Allow creating tags which are not returned by typeahead's source (default: true)</p>
+                <div class="bs-callout bs-callout-warning">
+                    This is only possible when using string as tags. When itemValue option is set, this option will be ignored.
+                </div>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  typeahead</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">    source</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="str">'Amsterdam'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Washington'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Sydney'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Beijing'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Cairo'</span><span class="pun">],</span></li><li class="L3"><span class="pln">    freeInput</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L4"><span class="pln">  </span><span class="pun">}</span></li><li class="L5"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"><code>typeahead</code></td>
+              <td><p>Object containing typeahead specific options</p></td>
+            </tr>
+            
+            <tr>
+              <td></td>
+              <td><code>source</code></td>
+              <td>
+                <p>An array (or function returning a promise or array), which will be used as source for a typeahead.
+
+
+                </p><pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  typeahead</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">    source</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="str">'Amsterdam'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Washington'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Sydney'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Beijing'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'Cairo'</span><span class="pun">]</span></li><li class="L3"><span class="pln">  </span><span class="pun">}</span></li><li class="L4"><span class="pun">});</span></li></ol></pre>
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  typeahead</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">                  </span></li><li class="L2"><span class="pln">    source</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">query</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">      </span><span class="kwd">return</span><span class="pln"> $</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'http://someservice.com'</span><span class="pun">);</span></li><li class="L4"><span class="pln">    </span><span class="pun">}</span></li><li class="L5"><span class="pln">  </span><span class="pun">}</span></li><li class="L6"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"><code>onTagExists</code></td>
+              <td><p>Function invoked when trying to add an item which allready exists. By default, the existing tag hides and fades in.
+                </p><pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">({</span></li><li class="L1"><span class="pln">  onTagExists</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">item</span><span class="pun">,</span><span class="pln"> $tag</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">    $tag</span><span class="pun">.</span><span class="pln">hide</span><span class="pun">.</span><span class="pln">fadeIn</span><span class="pun">();</span></li><li class="L3"><span class="pln">  </span><span class="pun">}</span></li><li class="L4"><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>          
+          </tbody>
+        </table>
+      </section>
+
+      <section id="methods">
+        <div class="page-header">
+          <h2>Methods</h2>
+        </div>
+        <table class="table table-bordered table-condensed">
+          <thead>
+            <tr>
+              <th colspan="2">method</th>
+              <th>description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>add</code></td>
+              <td>
+                <p>Adds a tag</p>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'some tag'</span><span class="pun">);</span></li></ol></pre>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'add'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> id</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln"> text</span><span class="pun">:</span><span class="pln"> </span><span class="str">'some tag'</span><span class="pln"> </span><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td><code>remove</code></td>
+              <td>
+                <p>Removes a tag</p>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'remove'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'some tag'</span><span class="pun">);</span></li></ol></pre>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'remove'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> id</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln"> text</span><span class="pun">:</span><span class="pln"> </span><span class="str">'some tag'</span><span class="pln"> </span><span class="pun">});</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td><code>removeAll</code></td>
+              <td>
+                <p>Removes all tags</p>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'removeAll'</span><span class="pun">);</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td><code>focus</code></td>
+              <td>
+                <p>Sets focus in the tagsinput</p>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'focus'</span><span class="pun">);</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td><code>input</code></td>
+              <td>
+                <p>Returns the tagsinput's internal &lt;input /&gt;, 
+which is used for adding tags. You could use this to add your own 
+typeahead behaviour for example.</p>
+
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> $elt </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">);</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td><code>refresh</code></td>
+              <td>
+                <p>Refreshes the tags input UI. This might be usefull 
+when you're adding objects as tags. When an object's text changes, 
+you'll have to refresh to update the matching tag's text.</p>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'refresh'</span><span class="pun">);</span></li></ol></pre>
+              </td>
+            </tr>
+            <tr>
+              <td><code>destroy</code></td>
+              <td>
+                <p>Removes tagsinput behaviour</p>
+
+                <pre class="prettyprint linenums"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'input'</span><span class="pun">).</span><span class="pln">tagsinput</span><span class="pun">(</span><span class="str">'destroy'</span><span class="pun">);</span></li></ol></pre>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section></div>
+    <footer class="bs-footer">
+      <p>Code licensed under <a href="https://raw.github.com/TimSchlechter/bootstrap-tagsinput/master/LICENSE" target="_blank">MIT License</a></p>
+    </footer>
+
+    <script src="Bootstrap%20Tags%20Input_files/jquery.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/bootstrap.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/angular.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/prettify.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/bootstrap-tagsinput.js"></script><iframe tabindex="-1" style="width: 1px; height: 1px; position: absolute; top: -100px;" src="Bootstrap%20Tags%20Input_files/postmessageRelay.html" id="oauth2relay392019116" name="oauth2relay392019116"></iframe>
+    <script src="Bootstrap%20Tags%20Input_files/bootstrap-tagsinput-angular.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/typeahead.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/hogan-2.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/app_bs3.js"></script>
+    <script src="Bootstrap%20Tags%20Input_files/app.js"></script>
+  
+
+</body><iframe src="" style="display: none;"></iframe></html>
