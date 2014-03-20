@@ -743,7 +743,49 @@ ALTER TABLE tbl_business_activity
 ADD CONSTRAINT fk_business_activity_activity_id
      FOREIGN KEY (activity_id) 
      REFERENCES tbl_activity(activity_id);
+
+-- ---------------------------------------------------------------------
+-- CSV Import
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `hotel_import`;
+
+ CREATE TABLE `hotel_import` (
+  `hotelid_ppn` varchar(255),
+  `hotelid_a` varchar(255),
+  `hotelid_b` varchar(255),
+  `hotelid_t` varchar(255),
+  `hotel_name` varchar(255),
+  `hotel_address` varchar(255),
+  `city` varchar(255),
+  `cityid_ppn` varchar(255),
+  `state` varchar(255),
+  `state_code` varchar(255),
+  `country` varchar(255),
+  `country_code` varchar(255),
+  `latitude` varchar(255),
+  `longitude` varchar(255),
+  `area_id` varchar(255),
+  `postal_code` varchar(255),
+  `star_rating` varchar(255),
+  `low_rate` varchar(255),
+  `currency_code` varchar(255),
+  `review_rating` varchar(255),
+  `review_count` varchar(255),
+  `rank_score_ppn` varchar(255),
+  `chain_id_ppn` varchar(255),
+  `thumbnail` varchar(255),
+  `has_photos` varchar(255),
+  `room_count` varchar(255),
+  `check_in` varchar(255),
+  `check_out` varchar(255),
+  `property_description` varchar(255),
+  `amenity_codes` varchar(255),
+  `active` varchar(255),
+  `mod_date_time` varchar(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
   
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
