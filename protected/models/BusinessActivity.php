@@ -12,69 +12,77 @@
  * @property Activity $activity
  * @property Business $business
  */
+
+/**
+ * User activerecord model class provides a mechanism to keep data and their
+ * ...relevant business rules. A model instant represents a single database row.
+ * ...
+ * ...The table is a 'barebones' table and will not normally have a seperate UI
+ * ...associated with it, therefore the absence of attributes and rules. The
+ * ...typical usage for user input will be 'embedding' with the business screens. 
+ * ...
+ * ...Usage:
+ * ...   $business_activity = BusinessActivity::model()
+ * ...or
+ * ...   $business_activity = new BusinessActivity;
+ * ...or
+ * ...   $business_activity = new BusinessActivity($scenario);
+ *
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Components
+ * @version 1.0
+ */
 class BusinessActivity extends CActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
+
+    /**
+     * Get database table name associated with the model.
+     *
+     * @param <none> <none>
+     *
+     * @return string the associated database table name
+     * @access public
+     */
 	public function tableName()
 	{
 		return '{{business_activity}}';
 	}
 
 	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('business_id, activity_id', 'required'),
-			array('business_id, activity_id', 'numerical', 'integerOnly'=>true),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('business_activity_id, business_id, activity_id', 'safe', 'on'=>'search'),
-		);
-	}
-
-	/**
+	 * Set rules for the relation of this record model to other record models.
+	 *
+	 * @param <none> <none>
+	 *
 	 * @return array relational rules.
+	 * @access public
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+
 		return array(
 			'activity' => array(self::BELONGS_TO, 'Activity', 'activity_id'),
 			'business' => array(self::BELONGS_TO, 'Business', 'business_id'),
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'business_activity_id' => 'Business Activity',
-			'business_id' => 'Business',
-			'activity_id' => 'Activity',
-		);
-	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @param <none> <none>
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     *         ...based on the search/filter conditions.
+     * @access public
+     */
 	public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
@@ -90,11 +98,15 @@ class BusinessActivity extends CActiveRecord
 		));
 	}
 
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 *
 	 * @param string $className active record class name.
 	 * @return BusinessActivity the static model class
+	 *
+	 * @access public
 	 */
 	public static function model($className=__CLASS__)
 	{

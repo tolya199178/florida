@@ -165,8 +165,9 @@ class Business extends CActiveRecord
 			'createdBy'              => array(self::BELONGS_TO, 'User', 'created_by'),
 			'modifiedBy'             => array(self::BELONGS_TO, 'User', 'modified_by'),
 			'addRequestProcessedBy'  => array(self::BELONGS_TO, 'User', 'add_request_processed_by'),
-			'businessUsers'          => array(self::HAS_MANY, 'BusinessUser', 'business_id'),
-			'restaurantCertificates' => array(self::HAS_MANY, 'RestaurantCertificate', 'business_id'),
+		    'businessActivities'     => array(self::HAS_MANY,   'BusinessActivity', 'business_id'),
+			'businessUsers'          => array(self::HAS_MANY,   'BusinessUser', 'business_id'),
+			'restaurantCertificates' => array(self::HAS_MANY,   'RestaurantCertificate', 'business_id'),
 		);
 	}
 
