@@ -229,4 +229,48 @@ class ConciergeController extends Controller
     
     
     }
+    
+    /**
+     * Fires off a search and returns all results to the client.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionDosearch() {
+        
+
+        $argDoWhat      = Yii::app()->request->getParam('dowhat', null);
+        $argWithWhat    = Yii::app()->request->getParam('withwhat', null);
+         
+    
+    
+        // /////////////////////////////////////////////////////////////////////
+        // Create a Db Criteria to filter and customise the resulting results
+        // /////////////////////////////////////////////////////////////////////
+        $searchCriteria = new CDbCriteria;
+         
+        $cityList          = Business::model()->findAll($searchCriteria);
+    
+        //         if ($cityList){
+        //             header('Content-type: application/json');
+        //             echo CJSON::encode($cityList);
+        //         }
+    
+         
+         
+        $listResults = array();
+    
+        foreach($cityList as $recCity){
+            $listResults[] = array('city_name' => $recCity->attributes['city_name']);
+        }
+        header('Content-type: application/json');
+    
+        // echo json_encode($listResults);
+        echo CJSON::encode($listResults);
+    
+    
+    
+    }
 }

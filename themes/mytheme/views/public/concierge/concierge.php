@@ -4,6 +4,9 @@
  */
 $baseScriptUrl = $this->createAbsoluteUrl('/');
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
+
 ?>
 <style>
 <!--
@@ -114,9 +117,14 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
    float:right;
 }
 
+.activities {
+   float:right;
+}
+
 #city {
   min-width: 250px;
 }
+
 
 -->
 </style>
@@ -141,6 +149,41 @@ $('.cities .typeahead').typeahead(null, {
   displayKey: 'city_name',
   source: numbers.ttAdapter()
 });
+
+    
+  function doSearch() {
+    var dowhat      = $("#dowhat").val();
+    var withwhat    = $("#withwhat").val();
+    
+    var url         = '/concierge/dosearch/dowhat/'+dowhat+'/withwhat/'+withwhat;
+    alert(url);
+    
+      $.get(url,function(data,status){
+        alert("Data: " + data + "Status: " + status);
+      });
+
+  }
+
+    $('#dowhat').tagsinput({
+    maxTags: 1
+    });
+    
+    $('#withwhat').tagsinput({
+    maxTags: 1
+    });
+    
+    $("#dowhat").on("change", function() {
+      alert($("#dowhat").val());
+        doSearch()
+    });
+
+    $("#withwhat").on("change", function() {
+      alert($("#withwhat").val());
+    });
+    
+    
+
+    
 EOD;
     
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
@@ -151,11 +194,10 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 <div class="row">
     <div class="col-lg-3">
         <div id="sidebar"  >
-            <div class="alert alert-warning">
+            <div class="alert alert-warning"">
                 <p>Follow friends and curators their lookup search here! </p>
                 <p class="pagination-centered"><a href="#" class="btn btn-info">Follow</a></p>
             </div>
-      
         </div>
     </div>
         
@@ -163,17 +205,18 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
             <div id="mainpanel"  >
                 This is the mainpanel and ir grows
                 <div class="row">
-                    <div class="col-lg-4" style="">
+                    <div class="col-lg-4">
                         <label for="city" class="heading">I AM IN &nbsp;&nbsp;&nbsp;</label>
                         <div class="cities">
                             <input class="typeahead form-control" name="city" id="city"  type="text" autocomplete="off" value="" placeholder="I am in...">   
                         </div>
                     </div>
                     
-                    <div class="col-lg-8" style="">                        
-                        <label for="city" class="heading">I WANT TO &nbsp;&nbsp;&nbsp;</label>
-                        <div class="cities">
-                            <input class="form-control" name="iwantto" id="iwantto"  type="text" autocomplete="off" value="">   
+                    <div class="col-lg-8">                        
+                        <label for="dowhat" class="heading">I WANT TO &nbsp;&nbsp;&nbsp;</label>
+                        <div class="activities">
+                            <input class="form-control" name="dowhat" id="dowhat"  type="text" autocomplete="off" value="">
+                            <input class="form-control" name="withwhat" id="withwhat"  type="text" autocomplete="off" value="">   
                         </div>
 
                     </div>
