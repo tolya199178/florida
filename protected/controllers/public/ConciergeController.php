@@ -244,33 +244,42 @@ class ConciergeController extends Controller
         $argDoWhat      = Yii::app()->request->getParam('dowhat', null);
         $argWithWhat    = Yii::app()->request->getParam('withwhat', null);
          
-    
-    
-        // /////////////////////////////////////////////////////////////////////
-        // Create a Db Criteria to filter and customise the resulting results
-        // /////////////////////////////////////////////////////////////////////
-        $searchCriteria = new CDbCriteria;
-         
-        $cityList          = Business::model()->findAll($searchCriteria);
-    
-        //         if ($cityList){
-        //             header('Content-type: application/json');
-        //             echo CJSON::encode($cityList);
-        //         }
-    
-         
-         
-        $listResults = array();
-    
-        foreach($cityList as $recCity){
-            $listResults[] = array('city_name' => $recCity->attributes['city_name']);
-        }
-        header('Content-type: application/json');
-    
-        // echo json_encode($listResults);
-        echo CJSON::encode($listResults);
-    
-    
+        $seachCriteria = new CDbCriteria;
+        
+        $seachCriteria->with = array('businessActivities',
+                                     'businessActivities.activity');
+
+        $seachCriteria->together = true;
+        
+        $seachCriteria->select = array('business_name');
+        $seachCriteria->condition = "activity.keyword=:activity";
+
+        $seachCriteria->params = array(':activity' => $argDoWhat);
+        // $seachCriteria->order = 'activity.col5 DESC';
+       // $seachCriteria->limit = 10;
+        
+//        $lstBusiness    = Business::model()->findAll($seachCriteria);
+        
+//         foreach ($lstBusiness as $recBusiness)
+//         {
+//             $arrBusinessRec = $recBusiness->attributes;
+ //           
+//             $arrBusiness = array('business_name'    => ((strlen($arrBusinessRec['business_name']) > 30)?substr($arrBusinessRec['business_name'], 0, 30) . "..." : $arrBusinessRec['business_name']),
+//                                  'url'              => Yii::app()->createUrl('concierge/viewbusiness/', array('bizid' => $arrBusinessRec['business_name'])),
+//            	
+//                                 );
+//             echo $this->renderPartial('result_business_entity', $arrBusiness);
+//         }
+
+        $dataProvider = new CActiveDataProvider('Business',
+            array(
+                'criteria'  => $seachCriteria,
+            )
+        );
+        
+        $this->renderPartial('search_results_container',array('dataProvider'=>$dataProvider));
+        
+           
     
     }
 }
