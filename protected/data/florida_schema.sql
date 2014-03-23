@@ -787,6 +787,20 @@ ADD CONSTRAINT fk_business_activity_activity_id
   
 
 -- ---------------------------------------------------------------------
+-- Search log - quick log for all seaches
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `tbl_search_log`;
+
+ CREATE TABLE `tbl_search_log` (
+  `search_id` int(11) NOT NULL AUTO_INCREMENT,
+  `search_origin` varchar(255) NOT NULL DEFAULT '',
+  `search_details` text NOT NULL,
+  `search_count`         int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`search_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
 -- ---------------------------------------------------------------------
