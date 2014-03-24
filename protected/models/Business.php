@@ -37,6 +37,7 @@
  * @property string $activation_code
  * @property string $activation_status
  * @property string $activation_time
+ * 
  *
  * The followings are the available model relations:
  * @property City $businessCity
@@ -80,6 +81,20 @@ class Business extends CActiveRecord
      * @access public
      */
     public $fldUploadImage;
+    
+    /**
+     *
+     * @var string read-only (non-db field) for full path name of business image.
+     * @access public
+     */
+    public $imgFullPath;
+
+    /**
+     *
+     * @var string read-only (non-db field) for full path name of business thumbnail.
+     * @access public
+     */
+    public $thumbnailFullPath;
     
     
     /**
@@ -133,8 +148,9 @@ class Business extends CActiveRecord
 		    array('activation_status',                    'in','range'=>array('activated', 'not_activated'),'allowEmpty'=>false),
 		    array('add_request_processing_status',        'in','range'=>array('Accepted', 'Rejected'),'allowEmpty'=>false),		    
 			
-		    // Form only field.
+		    // Form only attributes. 
 		    array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+		    
 		    
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('business_id, business_name, business_address1, business_address2, business_city_id, business_zipcode,
@@ -356,4 +372,45 @@ class Business extends CActiveRecord
 	                   'not_activated'     => 'Not Activated',
 	    );
 	}
+	
+	/**
+	 * Getter function for virtual attribute $thumbnailFullPath
+	 *
+	 * @param <none> <none>
+	 * @return string full path name of business image thumbnail
+	 *
+	 * @access public
+	 */
+	public function getThumbnailFullPath()
+	{
+	    
+	    $thumbnailsDirPath     = Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails';
+	    $thumbnailPath         = $thumbnailsDirPath.DIRECTORY_SEPARATOR.$this->image;
+	    
+	    $this->thumbnailFullPath = $thumbnailPath;
+	    
+	    return $thumbnailPath;	     
+
+	}
+	
+	/**
+	 * Getter function for virtual attribute $imgFullPath
+	 *
+	 * @param <none> <none>
+	 * @return string full path name of business image
+	 *
+	 * @access public
+	 */
+	public function getImgFullPath()
+	{
+	     
+	    $imagesDirPath         = Yii::app()->request->baseUrl.'/uploads/images/business';
+	    $imagePath             = $imagesDirPath.DIRECTORY_SEPARATOR.$this->image;
+	    
+	    $this->imgFullPath = $imagePath;
+	     
+	    return $imagePath;
+	
+	}
+	
 }
