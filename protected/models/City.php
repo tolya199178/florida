@@ -224,4 +224,41 @@ class City extends CActiveRecord
 	    return $byAutoSearch ? array_values($_rtnData) : $_rtnData;
 	
 	}
+	
+	/**
+	 * Generates a JSON encoded list of all citys.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function getListjson() {
+	     
+	
+	
+	    // /////////////////////////////////////////////////////////////////////
+	    // Create a Db Criteria to filter and customise the resulting results
+	    // /////////////////////////////////////////////////////////////////////
+	    $searchCriteria = new CDbCriteria;
+	     
+	    $cityList          = City::model()->findAll($searchCriteria);
+	
+	     
+	     
+	    $listResults = array();
+	
+	    foreach($cityList as $recCity){
+	         $listResults[] = array('city_name' => $recCity->attributes['city_name']);
+	       // $listResults[] = $recCity->attributes['city_name'];
+	    }
+	    // header('Content-type: application/json');
+	
+	    // echo json_encode($listResults);
+	    return CJSON::encode($listResults);
+	
+	
+	
+	}
+	
 }

@@ -221,11 +221,100 @@ class ConciergeController extends Controller
          foreach($cityList as $recCity){
              $listResults[] = array('city_name' => $recCity->attributes['city_name']);
          }
-    
+          header('Content-type: application/json');
+              
          // echo json_encode($listResults);
          echo CJSON::encode($listResults);
               
     
     
+    }
+    
+    /**
+     * Fires off a search and returns all results to the client.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionDosearch() {
+        
+
+        $argDoWhat      = Yii::app()->request->getParam('dowhat', null);
+        $argWithWhat    = Yii::app()->request->getParam('withwhat', null);
+        $argPlace       = Yii::app()->request->getParam('withwhat', null);
+        
+        // /////////////////////////////////////////////////////////////////////
+        // If a place was entered, find the corresponding city id.
+        // /////////////////////////////////////////////////////////////////////
+        $cityId = 0;
+        if (!empty($argPlace))
+        {
+            $modelCity  = City::model()->findByAttributes(array('condition'=>'city_name=:city_name','params'=>array(':city_name' => $argPlace)));
+            
+            if ($modelCity != null)
+            {
+                $cityId = $modelCity->attributes['city_id'];
+            }
+        }
+         
+        $seachCriteria = new CDbCriteria;
+        
+        $seachCriteria->with = array('businessActivities',
+                                     'businessActivities.activity');
+
+        $seachCriteria->together = true;
+        
+        
+        // $seachCriteria->select = array('business_name');
+        
+        if (!empty($cityId))
+        {
+            $seachCriteria->compare('city_id', $cityId);
+        }
+        
+        if (!empty($argDoWhat))
+        {
+            $seachCriteria->compare('activity.keyword', $argDoWhat);
+//             $seachCriteria->condition = "activity.keyword=:activity";
+//             $seachCriteria->params = array(':activity' => $argDoWhat);
+            
+        }        
+        
+
+        $seachCriteria->limit = Yii::app()->params['PAGESIZEREC+'];
+        
+
+        $dataProvider = new CActiveDataProvider('Business',
+            array(
+                'criteria'  => $seachCriteria,
+            )
+        );
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Log the search
+        // /////////////////////////////////////////////////////////////////////
+        // Save the search
+        $modelSearchLog = new SearchLog;
+        $modelSearchLog->search_origin    = 'concierge';
+        $modelSearchLog->search_details   = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat));
+        $modelSearchLog->save();
+        
+        
+        // Save the search against the user
+        // TODO: START: For now we log all queries against user 1, when user logins are implemented
+        //       ...    we save only for logged in users.
+        $savedSearch = array('user_id'          => 1,
+                             'search_name'      => 'concierge',
+                             'search_details'   => serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat))
+                             );
+        $modelSavedSearch  = new SavedSearch;
+        $modelSavedSearch->attributes  = $savedSearch;
+        $modelSavedSearch->save();
+        
+        $this->renderPartial('search_results_container',array('dataProvider'=>$dataProvider));       
+        // TODO: END
+        
     }
 }
