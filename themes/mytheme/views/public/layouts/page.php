@@ -95,7 +95,7 @@
     </div>
 
     <!-- container -->
-    <div class="class="container-full">
+    <div class="container-full">
     
 
 <?php

@@ -243,6 +243,21 @@ class ConciergeController extends Controller
 
         $argDoWhat      = Yii::app()->request->getParam('dowhat', null);
         $argWithWhat    = Yii::app()->request->getParam('withwhat', null);
+        $argPlace       = Yii::app()->request->getParam('withwhat', null);
+        
+        // /////////////////////////////////////////////////////////////////////
+        // If a place was entered, find the corresponding city id.
+        // /////////////////////////////////////////////////////////////////////
+        $cityId = 0;
+        if (!empty($argPlace))
+        {
+            $modelCity  = City::model()->findByAttributes(array('condition'=>'city_name=:city_name','params'=>array(':city_name' => $argPlace)));
+            
+            if ($modelCity != null)
+            {
+                $cityId = $modelCity->attributes['city_id'];
+            }
+        }
          
         $seachCriteria = new CDbCriteria;
         
@@ -251,25 +266,25 @@ class ConciergeController extends Controller
 
         $seachCriteria->together = true;
         
-        $seachCriteria->select = array('business_name');
-        $seachCriteria->condition = "activity.keyword=:activity";
+        
+        // $seachCriteria->select = array('business_name');
+        
+        if (!empty($cityId))
+        {
+            $seachCriteria->compare('city_id', $cityId);
+        }
+        
+        if (!empty($argDoWhat))
+        {
+            $seachCriteria->compare('activity.keyword', $argDoWhat);
+//             $seachCriteria->condition = "activity.keyword=:activity";
+//             $seachCriteria->params = array(':activity' => $argDoWhat);
+            
+        }        
+        
 
-        $seachCriteria->params = array(':activity' => $argDoWhat);
-        // $seachCriteria->order = 'activity.col5 DESC';
-       // $seachCriteria->limit = 10;
+        $seachCriteria->limit = Yii::app()->params['PAGESIZEREC+'];
         
-//        $lstBusiness    = Business::model()->findAll($seachCriteria);
-        
-//         foreach ($lstBusiness as $recBusiness)
-//         {
-//             $arrBusinessRec = $recBusiness->attributes;
- //           
-//             $arrBusiness = array('business_name'    => ((strlen($arrBusinessRec['business_name']) > 30)?substr($arrBusinessRec['business_name'], 0, 30) . "..." : $arrBusinessRec['business_name']),
-//                                  'url'              => Yii::app()->createUrl('concierge/viewbusiness/', array('bizid' => $arrBusinessRec['business_name'])),
-//            	
-//                                 );
-//             echo $this->renderPartial('result_business_entity', $arrBusiness);
-//         }
 
         $dataProvider = new CActiveDataProvider('Business',
             array(
@@ -277,9 +292,29 @@ class ConciergeController extends Controller
             )
         );
         
-        $this->renderPartial('search_results_container',array('dataProvider'=>$dataProvider));
+        // /////////////////////////////////////////////////////////////////////
+        // Log the search
+        // /////////////////////////////////////////////////////////////////////
+        // Save the search
+        $modelSearchLog = new SearchLog;
+        $modelSearchLog->search_origin    = 'concierge';
+        $modelSearchLog->search_details   = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat));
+        $modelSearchLog->save();
         
-           
-    
+        
+        // Save the search against the user
+        // TODO: START: For now we log all queries against user 1, when user logins are implemented
+        //       ...    we save only for logged in users.
+        $savedSearch = array('user_id'          => 1,
+                             'search_name'      => 'concierge',
+                             'search_details'   => serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat))
+                             );
+        $modelSavedSearch  = new SavedSearch;
+        $modelSavedSearch->attributes  = $savedSearch;
+        $modelSavedSearch->save();
+        
+        $this->renderPartial('search_results_container',array('dataProvider'=>$dataProvider));       
+        // TODO: END
+        
     }
 }
