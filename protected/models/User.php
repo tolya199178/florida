@@ -387,6 +387,7 @@ class User extends CActiveRecord
             if ($this->isNewRecord) {
                 $this->created_time = new CDbExpression('NOW()');
                 $this->created_by   = '1';  // Special case for not logged in user
+                $this->modified_by  = '1';
             }
             else
             {
