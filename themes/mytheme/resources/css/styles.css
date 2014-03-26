@@ -650,3 +650,8 @@ body {
       border-radius:10px;
    }  
 }
+
+.errorMessage
+{
+	color:red;
+}
