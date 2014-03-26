@@ -103,13 +103,15 @@ class AccountController extends Controller
 		    // Create a new user entry
 		    // /////////////////////////////////////////////////////////////////
 		    $userModel = new User;
+		    $userModel->scenario = User::SCENARIO_REGISTER;
 		    
 		    // Copy form details
 			$userModel->setAttributes($_POST['ProfileForm']);
 			$formModel->setAttributes($_POST['ProfileForm']);
 			
 			// Add additional fields
-			$userModel->password             = 'abcd';
+			$userModel->password             = $_POST['ProfileForm']['password'];
+			$userModel->fldVerifyPassword    = $_POST['ProfileForm']['confirm_password'];
 			$userModel->created_by           = 1;
 			$userModel->user_name            = $userModel->email;
 			$userModel->status               = 'inactive';
