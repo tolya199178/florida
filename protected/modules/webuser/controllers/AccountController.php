@@ -99,6 +99,9 @@ class AccountController extends Controller
         
         if (isset($_POST['ProfileForm'])) {
             
+            $formModel->setAttributes($_POST['ProfileForm']);
+            $formModel->user_name = $formModel->email;
+            
             if ($formModel->validate()) {
                 
                 // /////////////////////////////////////////////////////////////////
@@ -109,7 +112,6 @@ class AccountController extends Controller
                 
                 // Copy form details
                 $userModel->setAttributes($_POST['ProfileForm']);
-                $formModel->setAttributes($_POST['ProfileForm']);
                 
                 // Add additional fields
                 $userModel->password = $_POST['ProfileForm']['password'];
@@ -120,38 +122,107 @@ class AccountController extends Controller
                 $userModel->activation_status = 'not_activated';
                 $userModel->activation_code = '0xDEADFEED';
                 
-                $formModel->user_name = $formModel->email;
                 
                 $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
                 
                 if ($userModel->validate() && $formModel->validate()) {
                     
                     if ($userModel->save()) {
-                        $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
-                        $imagePath = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
-                        
-                        if (! empty($uploadedFile))                         // check if uploaded file is set or not
+                        if (!empty($uploadedFile))
                         {
-                            $uploadedFile->saveAs($imagePath);
-                            $userModel->image = $imageFileName;
+                            $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
+                            $imagePath = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
                             
-                            $this->createThumbnail($imageFileName);
+                            if (! empty($uploadedFile))                         // check if uploaded file is set or not
+                            {
+                                $uploadedFile->saveAs($imagePath);
+                                $userModel->image = $imageFileName;
                             
-                            $userModel->save();
+                                $this->createThumbnail($imageFileName);
+                            
+                                $userModel->save();
+                            }
                         }
+
                         
-                        $this->redirect(array(
-                            'index'
-                        ));
+                        $this->render('register_thanks', array('model' => $formModel));
+                        Yii::app()->end();
+                        
                     } else {
                         Yii::app()->user->setFlash('error', "Error creating a business record.'");
                     }
                 }
             }
-        }
+        }   
         
         $this->render('user_profile', array('model' => $formModel));
 		
 	}
 	
+	/**
+	 * Process the user login action.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the login form
+	 * ... - the (subsequent) POST request processes the login request.
+	 * ...If the save (POST request) is successful, the user is directed back to
+	 * ...the calling url
+	 * ...If the save (POST request) is not successful, the login form is shown
+	 * ...again with error messages from the loginform validation (Loginform::rules())
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionLogin()
+	{
+	    $modelLoginForm = new LoginForm();
+	    
+	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
+
+	    // collect user input data
+	    if (isset($_POST['LoginForm'])) {
+	
+	        $modelLoginForm->attributes = $_POST['LoginForm'];
+	
+	        // validate user input and redirect to the previous page if valid
+	        if ($modelLoginForm->validate() && $modelLoginForm->login()) {
+	            
+	            // Send back a JSON request for Ajax submissions
+	            if (Yii::app()->request->isAjaxRequest == 1)
+	            {
+	                header("Content-type: application/json");
+	                echo CJSON::encode(array(
+	                    'authenticated'    => true,
+	                    'redirectUrl'      => Yii::app()->user->returnUrl,
+	                ));
+	                Yii::app()->end();  
+	            }
+	
+	            // For normal page submissions, redirect
+	            $this->redirect(Yii::app()->user->returnUrl);
+	        }
+	        else {
+	            
+	            // Send back a JSON request for Ajax submissions
+	            if (Yii::app()->request->isAjaxRequest == 1)
+	            {
+	                header("Content-type: application/json");
+	                echo CJSON::encode(array(
+	                    'authenticated'    => false,
+	                    'redirectUrl'      => Yii::app()->user->returnUrl,
+	                ));
+	                Yii::app()->end();
+	            }
+	            
+	            // For normal page submissions, redirect
+	            $this->redirect(Yii::app()->user->returnUrl);
+	            
+	        }
+	    }
+	
+        // If we got here, then this is an invalid request. Die quitely
+	    Yii::app()->end();
+	}
+		
 }
