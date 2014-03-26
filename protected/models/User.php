@@ -88,7 +88,7 @@ class User extends CActiveRecord
     // /////////////////////////////////////////////////////////////////////////
     // Scenario constants
     // /////////////////////////////////////////////////////////////////////////
-    const SCENARIO_CHANGE_REGISTER  = 'register';
+    const SCENARIO_REGISTER         = 'register';
     const SCENARIO_CHANGE_PASSWORD  = 'change-password';
     const SCENARIO_FORGOT_PASSWORD  = 'forgot-password';
     const SCENARIO_LOGIN            = 'login';
@@ -149,7 +149,7 @@ class User extends CActiveRecord
             // Mandatory rules
             array('user_name, email, first_name,
                    last_name',   'required'),
-            array('password, user_name',            'required', 'on' => array(self::SCENARIO_CHANGE_PASSWORD,self::SCENARIO_LOGIN,self::SCENARIO_CHANGE_REGISTER)),
+            array('password, user_name',            'required', 'on' => array(self::SCENARIO_CHANGE_PASSWORD,self::SCENARIO_LOGIN,self::SCENARIO_REGISTER)),
             array('activation_code',                'required', 'on' => self::SCENARIO_VALIDATION),
             array('email',                          'required', 'on' => self::SCENARIO_FORGOT_PASSWORD),
             
@@ -188,7 +188,7 @@ class User extends CActiveRecord
             // other
 
             // compare entered and verified password. Only for change password and register screens.
-            array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_CHANGE_REGISTER)),
+            array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_REGISTER)),
             
             array('date_of_birth', 'safe'),
             
@@ -386,14 +386,17 @@ class User extends CActiveRecord
             // /////////////////////////////////////////////////////////////////
             if ($this->isNewRecord) {
                 $this->created_time = new CDbExpression('NOW()');
-                $this->created_by   = Yii::app()->user->id;
+                $this->created_by   = '1';  // Special case for not logged in user
+            }
+            else
+            {
+                $this->modified_by   = Yii::app()->user->id;
             }
             
             // /////////////////////////////////////////////////////////////////
             // The modified log details is set for record creation and update
             // /////////////////////////////////////////////////////////////////
             $this->modified_time = new CDbExpression('NOW()');
-            $this->modified_by   = Yii::app()->user->id;
             
             // /////////////////////////////////////////////////////////////////
             // Encrypt the password. Only do this if the password is set
