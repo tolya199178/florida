@@ -58,8 +58,8 @@ class ProfileForm extends CFormModel
 			array('user_name, email, first_name, last_name, removePicture', 'filter', 'filter'=>'trim'),
 			array('user_name, email, first_name, last_name, removePicture', 'default', 'setOnEmpty'=>true, 'value' => null),
 
-			array('user_name, email', 'required'),
-			array('user_name, email', 'uniqueIdentity'),
+			array('email', 'required'),
+			array('email', 'uniqueIdentity'),
 			array('email', 'email'),
 			array('removePicture', 'boolean'),
 			array('password', 'validCurrentPassword', 'except'=>'register'),

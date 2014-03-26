@@ -88,7 +88,7 @@
               <input type="password" placeholder="Password" class="form-control">
             </div>
             <button type="submit" class="btn btn-success">Sign in</button>
-            &nbsp;&nbsp;&nbsp;<a href="#">Not a member?</a>
+            &nbsp;&nbsp;&nbsp;<a href="<?php echo Yii::app()->createUrl('webuser/account/register/'); ?>">Not a member?</a>
           </form>
         </div><!--/.navbar-collapse -->
       </div>

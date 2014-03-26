@@ -88,78 +88,69 @@ class AccountController extends Controller
      */
 	public function actionRegister()
 	{
-
-		$formModel = new ProfileForm('register');
-		
-
-		if (isset($_POST['ajax']) && $_POST['ajax']==='profile-form') {
-			echo CActiveForm::validate(array($model));
-			Yii::app()->end();
-		}
-		
-		if (isset($_POST['ProfileForm'])) {
-		    
-		    // /////////////////////////////////////////////////////////////////
-		    // Create a new user entry
-		    // /////////////////////////////////////////////////////////////////
-		    $userModel = new User;
-		    $userModel->scenario = User::SCENARIO_REGISTER;
-		    
-		    // Copy form details
-			$userModel->setAttributes($_POST['ProfileForm']);
-			$formModel->setAttributes($_POST['ProfileForm']);
-			
-			// Add additional fields
-			$userModel->password             = $_POST['ProfileForm']['password'];
-			$userModel->fldVerifyPassword    = $_POST['ProfileForm']['confirm_password'];
-			$userModel->created_by           = 1;
-			$userModel->user_name            = $userModel->email;
-			$userModel->status               = 'inactive';
-			$userModel->activation_status    = 'not_activated';
-			$userModel->activation_code      = '0xDEADFEED';
-			
-			$formModel->user_name             = $formModel->email;
-				
-						
-			$uploadedFile = CUploadedFile::getInstance($formModel,'picture');
-			
-			if ($userModel->validate() && $formModel->validate()) {
-			    
-			    if($userModel->save())
-			    {
-			        $imageFileName = 'user-'.$businessModel->business_id.'-'.$uploadedFile->name;
-			        $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-			    
-			        if(!empty($uploadedFile))  // check if uploaded file is set or not
-			        {
-			            $uploadedFile->saveAs($imagePath);
-			            $userModel->image = $imageFileName;
-			             
-			            $this->createThumbnail($imageFileName);
-			             
-			            $userModel->save();
-			        }
-			         
-			        $this->redirect(array('index'));
-			         
-			    }
-			    else {
-			      print_r($userModel);exit;
-			        Yii::app()->user->setFlash('error', "Error creating a business record.'");
-			    }
-			    
-			}
-			else
-			{
-			    print_r($userModel);
-			    print_r($formModel);exit;
-			exit;
-			     
-			}
-
-		}
-		
-		$this->render('user_profile',array('model'=>$formModel));
+        $formModel = new ProfileForm('register');
+        
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'profile-form') {
+            echo CActiveForm::validate(array(
+                $model
+            ));
+            Yii::app()->end();
+        }
+        
+        if (isset($_POST['ProfileForm'])) {
+            
+            if ($formModel->validate()) {
+                
+                // /////////////////////////////////////////////////////////////////
+                // Create a new user entry
+                // /////////////////////////////////////////////////////////////////
+                $userModel = new User();
+                $userModel->scenario = User::SCENARIO_REGISTER;
+                
+                // Copy form details
+                $userModel->setAttributes($_POST['ProfileForm']);
+                $formModel->setAttributes($_POST['ProfileForm']);
+                
+                // Add additional fields
+                $userModel->password = $_POST['ProfileForm']['password'];
+                $userModel->fldVerifyPassword = $_POST['ProfileForm']['confirm_password'];
+                $userModel->created_by = 1;
+                $userModel->user_name = $userModel->email;
+                $userModel->status = 'inactive';
+                $userModel->activation_status = 'not_activated';
+                $userModel->activation_code = '0xDEADFEED';
+                
+                $formModel->user_name = $formModel->email;
+                
+                $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
+                
+                if ($userModel->validate() && $formModel->validate()) {
+                    
+                    if ($userModel->save()) {
+                        $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
+                        $imagePath = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
+                        
+                        if (! empty($uploadedFile))                         // check if uploaded file is set or not
+                        {
+                            $uploadedFile->saveAs($imagePath);
+                            $userModel->image = $imageFileName;
+                            
+                            $this->createThumbnail($imageFileName);
+                            
+                            $userModel->save();
+                        }
+                        
+                        $this->redirect(array(
+                            'index'
+                        ));
+                    } else {
+                        Yii::app()->user->setFlash('error', "Error creating a business record.'");
+                    }
+                }
+            }
+        }
+        
+        $this->render('user_profile', array('model' => $formModel));
 		
 	}
 	
