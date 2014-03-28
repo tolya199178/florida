@@ -147,7 +147,7 @@ class MailTemplate extends CActiveRecord
 
 		$criteria->compare('template_id',     $this->template_id);
 		$criteria->compare('template_name',   $this->template_name,true);
-		$criteria->compare('msg',$            this->msg,true);
+		$criteria->compare('msg',             $this->msg,true);
 		$criteria->compare('isreadonly',      $this->isreadonly,true);
 		$criteria->compare('created_time',    $this->created_time,true);
 		$criteria->compare('modified_time',   $this->modified_time,true);

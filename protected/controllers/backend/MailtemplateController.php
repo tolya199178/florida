@@ -267,7 +267,7 @@ class MailtemplateController extends BackEndController
 	 */
 	public function actionList()
 	{
-	    $dataProvider=new CActiveDataProvider('Mailtemplate');
+	    $dataProvider=new CActiveDataProvider('MailTemplate');
 	    $this->render('list',array(
 	        'dataProvider'=>$dataProvider,
 	    ));
