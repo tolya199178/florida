@@ -147,7 +147,7 @@ class MailTemplate extends CActiveRecord
 
 		$criteria->compare('template_id',     $this->template_id);
 		$criteria->compare('template_name',   $this->template_name,true);
-		$criteria->compare('msg',$            this->msg,true);
+		$criteria->compare('msg',             $this->msg,true);
 		$criteria->compare('isreadonly',      $this->isreadonly,true);
 		$criteria->compare('created_time',    $this->created_time,true);
 		$criteria->compare('modified_time',   $this->modified_time,true);
@@ -186,18 +186,20 @@ class MailTemplate extends CActiveRecord
 	 */
 	public function beforeSave() {
 	
-	
-        // /////////////////////////////////////////////////////////////////
-        // Set the create time and user for new records
-        // /////////////////////////////////////////////////////////////////
-        if ($this->isNewRecord) {
-            $this->created_time = new CDbExpression('NOW()');
-        }
-
-        // /////////////////////////////////////////////////////////////////
-        // The modified log details is set for record creation and update
-        // /////////////////////////////////////////////////////////////////
-        $this->modified_time = new CDbExpression('NOW()');
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord)
+	    {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = Yii::app()->user->id;
+	    }
+	    
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_by   = Yii::app()->user->id;
 	
 	
 	    return parent::beforeSave();
