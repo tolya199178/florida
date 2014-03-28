@@ -186,18 +186,20 @@ class MailTemplate extends CActiveRecord
 	 */
 	public function beforeSave() {
 	
-	
-        // /////////////////////////////////////////////////////////////////
-        // Set the create time and user for new records
-        // /////////////////////////////////////////////////////////////////
-        if ($this->isNewRecord) {
-            $this->created_time = new CDbExpression('NOW()');
-        }
-
-        // /////////////////////////////////////////////////////////////////
-        // The modified log details is set for record creation and update
-        // /////////////////////////////////////////////////////////////////
-        $this->modified_time = new CDbExpression('NOW()');
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord)
+	    {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = Yii::app()->user->id;
+	    }
+	    
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_by   = Yii::app()->user->id;
 	
 	
 	    return parent::beforeSave();

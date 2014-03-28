@@ -5,7 +5,7 @@
  */
 
 /**
- * Mailtemplate Controller class to provide access to controller actions for clients.
+ * MailTemplate Controller class to provide access to controller actions for clients.
  * The contriller action interfaces 'directly' with the Client. This controller
  * ...must therefore be responsible for input processing and response handling.
  * 
@@ -17,7 +17,7 @@
  * ...   http://mydomain/index.php?/mailtemplate/edit/template_id/99/
  * ...
  * ...The 'action' in the request is converted to invoke the actionAction() action
- * ...eg. /mailtemplate/edit/template_id/99/ will invoke MailtemplateController::actionEdit()
+ * ...eg. /mailtemplate/edit/template_id/99/ will invoke MailTemplateController::actionEdit()
  * ...(case is significant)
  * ...Additional parameters after the action are passed as $_GET pairs
  * ...eg. /mailtemplate/edit/template_id/99/ will pass $_GET['template_id'] = 99
@@ -28,7 +28,7 @@
  * @package Controllers
  * @version 1.0
  */
-class MailtemplateController extends BackEndController
+class MailTemplateController extends BackEndController
 {
 
 
@@ -44,7 +44,6 @@ class MailtemplateController extends BackEndController
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 	
@@ -77,7 +76,7 @@ class MailtemplateController extends BackEndController
             // delegate to mailtemplate model methods to determine ownership
             array(
                 'allow',
-                'expression' =>'MailtemplateAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("template_id"))',
+                'expression' =>'MailTemplateAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("template_id"))',
                 'actions'    =>array('edit'),
             ),
             
@@ -99,10 +98,10 @@ class MailtemplateController extends BackEndController
 	 * Creates a new mailtemplate record.
 	 * ...The function is normally invoked twice:
 	 * ... - the (initial) GET request loads and renders the mailtemplate details capture form
-	 * ... - the (subsequent) POST request saves the submitted post data as a Mailtemplate record.
+	 * ... - the (subsequent) POST request saves the submitted post data as a MailTemplate record.
 	 * ...If the save (POST request) is successful, the default method (index()) is called.  
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages from the Mailtemplate validation (Mailtemplate::rules())
+	 * ...again with error messages from the MailTemplate validation (MailTemplate::rules())
 	 *  
 	 * @param <none> <none>
 	 *
@@ -112,48 +111,30 @@ class MailtemplateController extends BackEndController
 	public function actionCreate()
 	{
 	    
-		$mailtemplateModel = new Mailtemplate;
+		$mailtemplateModel = new MailTemplate;
 	    	    
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
 	    // $this->performAjaxValidation($mailtemplateModel);
 	    
-	    if(isset($_POST['Mailtemplate']))
+	    if(isset($_POST['MailTemplate']))
 	    {
 
-	        $mailtemplateModel->attributes=$_POST['Mailtemplate'];
+	        $mailtemplateModel->attributes=$_POST['MailTemplate'];
 	        
-	        $uploadedFile = CUploadedFile::getInstance($mailtemplateModel,'fldUploadImage');
-
 	        if($mailtemplateModel->save())
-	        {
-	            $imageFileName = 'mailtemplate-'.$mailtemplateModel->template_id.'-'.$uploadedFile->name;
-	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	            	                 
-                if(!empty($uploadedFile))  // check if uploaded file is set or not
-                {
-                    $uploadedFile->saveAs($imagePath);
-                    $mailtemplateModel->image = $imageFileName;
-                    
-                    $this->createThumbnail($imageFileName);
-                    
-                    $mailtemplateModel->save();
-                }
-                
-	            $this->redirect(array('index'));
-	            	      
+	        {               
+	            $this->redirect(array('index'));            	      
 	        }
-	        else {
+	        else
+	        {
                 Yii::app()->user->setFlash('error', "Error creating a mailtemplate record.'");
 	        }
-	        
 	            
 	    }
 	    
 	    // Show the details screen
-	    $this->render('details',array(
-	        'model'=>$mailtemplateModel,
-	    ));
+	    $this->render('details',array('model'=>$mailtemplateModel));
 
 	}
 
@@ -164,10 +145,10 @@ class MailtemplateController extends BackEndController
 	 * ... - the (initial) GET request loads and renders the requested mailtemplate's
 	 * ...   details capture form
 	 * ... - the (subsequent) POST request saves the submitted post data for
-	 * ...   the existing Mailtemplate record
+	 * ...   the existing MailTemplate record
 	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages from the Mailtemplate validation (Mailtemplate::rules())
+	 * ...again with error messages from the MailTemplate validation (MailTemplate::rules())
 	 * 
 	 * @param integer $template_id the ID of the model to be updated
 	 *
@@ -177,7 +158,7 @@ class MailtemplateController extends BackEndController
 	public function actionEdit($template_id)
 	{
 	    
-		$mailtemplateModel = Mailtemplate::model()->findByPk($template_id);
+		$mailtemplateModel = MailTemplate::model()->findByPk((int)$template_id);
 		if($mailtemplateModel===null)
 		{
 		    throw new CHttpException(404,'The requested page does not exist.');		    
@@ -188,55 +169,25 @@ class MailtemplateController extends BackEndController
 		// TODO: Currently disabled as it breaks JQuery loading order
 		// $this->performAjaxValidation($mailtemplateModel);
 
-		if(isset($_POST['Mailtemplate']))
+		if(isset($_POST['MailTemplate']))
 		{
             // Assign all fields from the form
-		    $mailtemplateModel->attributes=$_POST['Mailtemplate'];
-		    
-		    $uploadedFile = CUploadedFile::getInstance($mailtemplateModel,'fldUploadImage');
-		    
-		    // Make a note of the existing image file name. It will be deleted soon.
-		    $oldImageFileName = $mailtemplateModel->image;
-		    
-		    if(!empty($uploadedFile))  // check if uploaded file is set or not
-		    {
-		        // Save the image file name
-		        $mailtemplateModel->image = 'mailtemplate-'.$mailtemplateModel->template_id.'-'.$uploadedFile->name;
-		    }
+		    $mailtemplateModel->attributes=$_POST['MailTemplate'];
 		    
 		    if($mailtemplateModel->save())
 		    {
-		         
-		        if(!empty($uploadedFile))  // check if uploaded file is set or not
-		        {
-		            
-		            $imageFileName = 'mailtemplate-'.$mailtemplateModel->template_id.'-'.$uploadedFile->name;
-		            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-		            
-		            // Remove existing images
-		            if (!empty($oldImageFileName))
-		            {
-		                $this->deleteImages($oldImageFileName);		                
-		            }
-
-		            // Save the new uploaded image
-		            $uploadedFile->saveAs($imagePath);
-		    
-		            $this->createThumbnail($imageFileName);
-		        }
 		    
 		        $this->redirect(array('index'));
 		    
 		    }
-		    else {
+		    else
+		    {
 		        Yii::app()->user->setFlash('error', "Error creating a mailtemplate record.'");
 		    }
 				
 		}
 
-		$this->render('details',array(
-			'model'=>$mailtemplateModel,
-		));
+	    $this->render('details',array('model'=> $mailtemplateModel));
 	}
 
 
@@ -256,9 +207,8 @@ class MailtemplateController extends BackEndController
 	    $this->redirect(array('list'));
 	}
 	
-
 	/**
-	 * Show all mailtemplates. Renders the mailtemplate listing view.
+	 * Show all events. Renders the event listing view.
 	 *
 	 * @param <none> <none>
 	 *
@@ -268,10 +218,11 @@ class MailtemplateController extends BackEndController
 	public function actionList()
 	{
 	    $dataProvider=new CActiveDataProvider('MailTemplate');
-	    $this->render('list',array(
+	    $this->render('list', array(
 	        'dataProvider'=>$dataProvider,
 	    ));
 	}
+
 	
 	/**
 	 * Generates a JSON encoded list of all mailtemplates.
@@ -295,8 +246,8 @@ class MailtemplateController extends BackEndController
         
         // Paging criteria
         // Set defaults
-        $limitStart 	           = isset($_POST['start'])?$_POST['start']:0;
-        $limitItems 	           = isset($_POST['length'])?$_POST['length']:Yii::app()->params['PAGESIZEREC'];
+        $limitStart 	           = isset($_POST['start'])?(int)$_POST['start']:0;
+        $limitItems 	           = isset($_POST['length'])?(int)$_POST['length']:Yii::app()->params['PAGESIZEREC'];
         
         $searchCriteria->limit 		 = $limitItems;
         $searchCriteria->offset 	 = $limitStart;
@@ -307,37 +258,32 @@ class MailtemplateController extends BackEndController
          }
         
         
-        $mailtemplate_list      = Mailtemplate::model()->findAll($searchCriteria);
+        $lstMailTemplate    = MailTemplate::model()->findAll($searchCriteria);
         
-        $rows_count 		= Mailtemplate::model()->count($searchCriteria);;
-        $total_records 		= Mailtemplate::model()->count();
+        $countRows 		= MailTemplate::model()->count($searchCriteria);;
+        $totalRecords 		= MailTemplate::model()->count();
        
         /*
          * Output
          */
-        $output = array(
-            "iTotalRecords"         => $rows_count,
-            "iTotalDisplayRecords"  => $total_records,
+        $jsonOutput = array(
+            "iTotalRecords"         => $countRows,
+            "iTotalDisplayRecords"  => $totalRecords,
             "aaData"                => array()
         );
         
-        foreach($mailtemplate_list as $r){
+        foreach($lstMailTemplate as $recTemplate){
             
-            $row = array($r->attributes['template_id'],
-                         $r->attributes['mailtemplate_name'],
-                         $r->attributes['mailtemplate_name'],
-                         $r->attributes['mailtemplate_name'],
-                         $r->attributes['mailtemplate_email'],
-                         $r->attributes['mailtemplate_phone'],
-                         $r->attributes['mailtemplate_city_id'],
+            $recRow = array( $recTemplate->attributes['template_id'],
+                             $recTemplate->attributes['template_name'],
                          ''
                         );
-            $output['aaData'][] = $row;
+            $jsonOutput['aaData'][] = $recRow;
 
         }
         
          
-        echo json_encode($output);
+        echo json_encode($jsonOutput);
 	    
 	    
 	}
@@ -346,7 +292,7 @@ class MailtemplateController extends BackEndController
 	/**
 	 * Performs the AJAX validation.
 	 *
-	 * @param Mailtemplate $mailtemplateModel the model to be validated
+	 * @param MailTemplate $mailtemplateModel the model to be validated
 	 *
 	 * @return string validation results message
 	 * @access protected
@@ -360,64 +306,5 @@ class MailtemplateController extends BackEndController
 		}
 	}
 	
-	/**
-	 * Delete images for the mailtemplate. Normally invoked when mailtemplate is being deleted.
-	 *
-	 * @param string $imageFileName the name of the file
-	 *
-	 * @return <none> <none>
-	 * @access public
-	 */
-	private function deleteImages($imageFileName)
-	{
-        $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-        @unlink($imagePath);
-        
-        $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-        @unlink($thumbnailPath);
-	}
-	
-	/**
-	 * Create a thumbnail image from the filename give, Store it in the thumnails folder.
-	 *
-	 * @param <none> <none>
-	 * 
-	 * @return <none> <none>
-	 * @access public
-	 */
-	private function createThumbnail($imageFileName, $sizeWidth = 0, $sizeHeight = 0)
-	{
-	    
-	    if ($sizeWidth == 0)
-	    {
-	        $sizeWidth     = $this->thumbnailWidth;
-	    }
-	    if ($sizeHeight == 0)
-	    {
-	        $sizeHeight    = $this->thumbnailHeight;
-	    }
-	    
-	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	    $imagePath         = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	    
-	    $imgThumbnail              = new Thumbnail;
-	    $imgThumbnail->PathImgOld  = $imagePath;
-	    $imgThumbnail->PathImgNew  = $thumbnailPath;
-	    
-	    $imgThumbnail->NewWidth    = $sizeWidth;
-	    $imgThumbnail->NewHeight   = $sizeHeight;
-	    
-	    $result = $imgThumbnail->create_thumbnail_images();
-	    
-	    if (!$result)
-	    {
-	        return false;
-	    }
-	    else
-	    {
-	        return true;
-	    }
-
-	}
 	
 }

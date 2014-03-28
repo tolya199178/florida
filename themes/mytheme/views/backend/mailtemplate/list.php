@@ -63,7 +63,6 @@
                 <th>Template ID</th>
                 <th>Template Name</th>
                 <th>&nbsp;</th>
-                <th>&nbsp;</th>
     
             </tr>
         </thead>
@@ -95,23 +94,12 @@ $script = <<<EOD
                 // These columns not visible
                 { 'visible': false,  'targets': [ 0 ] },
                 
-                // In row delete button
+                // In row edit button
                 {
                     "targets": [-1],
                     "data": null,
                     'render': function ( data, type, row ) {
-                        var editurl = "<button class='deleterow btn btn-danger btn-xs'>Delete</button>";
-                      //  alert(editurl);
-                        return editurl;
-                    },
-                },
-                
-                // In row edit button
-                {
-                    "targets": [-2],
-                    "data": null,
-                    'render': function ( data, type, row ) {
-                        var editurl = "<a class='editrow btn btn-info btn-xs' href='{$edit_url}/mailtemplate_id/" + row[0] + "'>Edit</a>";
+                        var editurl = "<a class='editrow btn btn-info btn-xs' href='{$edit_url}/template_id/" + row[0] + "'>Edit</a>";
                         // alert(editurl);
                         return editurl;
                     },
@@ -135,7 +123,7 @@ $script = <<<EOD
             
                 $.ajax({
                     type: 'POST',
-                    data: { "mailtemplate_id": data[0] },
+                    data: { "template_id": data[0] },
                     dataType: 'json',
                     url: '{$delete_url}',
                     success: function (data) {
@@ -167,7 +155,7 @@ $script = <<<EOD
             // alert( data[0] +"'s salary is: "+ data[ 3 ] );
         
             //  $('#myModal').modal('show');
-            url = "{$edit_url}/mailtemplate_id/" + data[0];
+            url = "{$edit_url}/template_id/" + data[0];
             $('#myModal').removeData();
                 $('#myModal').modal({
                     remote : url
