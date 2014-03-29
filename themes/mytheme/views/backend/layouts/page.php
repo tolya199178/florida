@@ -77,6 +77,7 @@
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>System</a>
                           <ul class="nav nav-list tree active-trial">
                               <li><a href="<?php echo Yii::app()->createUrl('/activity/index'); ?>">Activities</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/mailtemplate/index'); ?>">Email-templates</a></li>
                         </ul>
                       </li>
                       
@@ -94,7 +95,6 @@
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Business</a>
                           <ul class="nav nav-list tree active-trial">
                               <li><a href="<?php echo Yii::app()->createUrl('/business/index'); ?>">Business Listing</a></li>
-                              <li><a href="<?php echo Yii::app()->createUrl('/business/index'); ?>">Reviews</a></li>
                           </ul>
                       </li>
         
@@ -102,8 +102,7 @@
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Cities</a>
                           <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/city/index'); ?>">Business Listing</a></li>
-                              <li><a href="<?php echo Yii::app()->createUrl('/city/index'); ?>">Reviews</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/city/index'); ?>">Cities Listing</a></li>
                           </ul>
                       </li>
                       
@@ -111,8 +110,7 @@
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Events</a>
                           <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/event/index'); ?>">Business Listing</a></li>
-                              <li><a href="<?php echo Yii::app()->createUrl('/event/index'); ?>">Reviews</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/event/index'); ?>">Events Listing</a></li>
                         </ul>
                       </li>
                       

@@ -62,6 +62,7 @@
             <tr>
                 <th>Template ID</th>
                 <th>Template Name</th>
+                <th>Subject</th>
                 <th>&nbsp;</th>
     
             </tr>
