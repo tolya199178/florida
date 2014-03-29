@@ -171,7 +171,7 @@ class AccountController extends Controller
             }
         }   
         
-        $this->render('user_profile', array('model' => $formModel));
+        $this->render('user_register', array('model' => $formModel));
 		
 	}
 	
