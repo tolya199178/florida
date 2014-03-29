@@ -61,8 +61,6 @@ class MailTemplateController extends BackEndController
 	 */
     public function accessRules()
     {
-        
-       // echo Yii::app()->user->isSuperAdmin();exit;
 
         return array(
             // Admin has full access. Applies to all controller action.
@@ -76,7 +74,7 @@ class MailTemplateController extends BackEndController
             // delegate to mailtemplate model methods to determine ownership
             array(
                 'allow',
-                'expression' =>'MailTemplateAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("template_id"))',
+                'expression' =>'true',
                 'actions'    =>array('edit'),
             ),
             
@@ -276,6 +274,7 @@ class MailTemplateController extends BackEndController
             
             $recRow = array( $recTemplate->attributes['template_id'],
                              $recTemplate->attributes['template_name'],
+                             $recTemplate->attributes['subject'],
                          ''
                         );
             $jsonOutput['aaData'][] = $recRow;
