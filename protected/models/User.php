@@ -391,6 +391,7 @@ class User extends CActiveRecord
         }
         
         if ( ($this->scenario == self::SCENARIO_CHANGE_PASSWORD) ||
+             ($this->scenario == self::SCENARIO_REGISTER) ||
              ($this->scenario == 'insert') ||
              ($this->scenario == 'update')
            )
