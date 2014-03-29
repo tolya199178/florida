@@ -424,7 +424,7 @@ class User extends CActiveRecord
         }
         else
         {
-            $this->modified_by   = Yii::app()->user->id;
+            $this->modified_by   = isset(Yii::app()->user->id)?Yii::app()->user->id:1;
         }
         
         // /////////////////////////////////////////////////////////////////////

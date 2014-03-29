@@ -1,10 +1,42 @@
 <?php
 
 
+/**
+ * Helper class for Account Management
+ */
+
+
+/**
+ * HAccount is a class containing functions to support the account management
+ * ...on the site (mostly front end).to provide access to controller actions for general
+ *
+ * Usage:
+ * ...Typical usage is from othe application componente (eg, model, or controller)
+ * ...
+ * ...   HAccount::helperFunction(arguments ...)
+ * ...eg.
+ * ...   HAccount::getVerificationCode('myemail@mydomain.com');
+ * ...
+ * @package   Controllers
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Controllers
+ * @version 1.0
+ */
+
 class HAccount
 {
     
-    /* Create a random verify code */
+
+    /**
+     * Create a random verify code to be used for account validation. Use the email
+     * ...address as a salt.
+     *
+     * @param $toEmailAddress string The value to use for generating the code
+     *
+     * @return string the activation code
+     * @access public
+     */
     public function getVerificationCode($toEmailAddress)
     {
         
@@ -16,7 +48,17 @@ class HAccount
 
     }
     
-    /* Create a random verify code */
+    /**
+     * Sends an email message.
+     *
+     * @param $toEmailAddress string The recpient email address
+     * @param $toName string The recpient name
+     * @param $msgSubject string The message subject
+     * @param $msgContent string The message to be sent
+     *
+     * @return <none>
+     * @access public
+     */
     public function sendMessage($toEmailAddress = null, $toName = null, $msgSubject, $msgContent)
     {
         
@@ -43,7 +85,24 @@ class HAccount
     
     }
     
-    /* Replace {varname} with $replacementValuesList['varname'] */
+    /* 
+    /**
+     * Utility function to substitute values in a template.
+     * 
+     * ...Template variables are enclosed with braces. For example :-
+     * ...  'Hello. {your_name}. How are you today?'
+     * ...The replacement values is an associative array with the replacement
+     * ...key as the index key. For example.
+     * ... $replacement_value['your_name'} = 'Tom'
+     * ...The resulting string is 
+     * ...  'Hello. Tom. How are you today?' 
+     *
+     * @param $messageContent string The template to be converted
+     * @param $replacementValuesList array Associative list of replacement values
+     *
+     * @return string The template, after applying replacement
+     * @access public
+     */
     public function CustomiseMessage($messageContent, $replacementValuesList)
     {
         
@@ -63,6 +122,15 @@ class HAccount
         return $convertedMessage;
     }
     
+    
+    /**
+     * Retrieves the message from a given Email template.
+     *
+     * @param $messageName string The name of the message
+     *
+     * @return string The message content,
+     * @access public
+     */
     public function getEmailMessage($messageName)
     {
         // /////////////////////////////////////////////////////////////////////
@@ -80,6 +148,14 @@ class HAccount
 
     }
     
+    /**
+     * Retrieves the message subject from a given Email template.
+     *
+     * @param $messageName string The name of the message
+     *
+     * @return string The message subject,
+     * @access public
+     */
     public function getEmailSubject($messageName)
     {
         // /////////////////////////////////////////////////////////////////////

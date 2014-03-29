@@ -264,7 +264,7 @@ class AccountController extends Controller
 	    
 	    if ($userRecord === null)
 	    {
-	        throw new CHttpException(405,'There was a problem saving the email log record.');
+	        throw new CHttpException(405,'There was a problem obtaining the user record.');
 	    }
 	    
 	    // If we are here, then we have a good record. Update the active status and save the entry.
