@@ -373,36 +373,36 @@ class User extends CActiveRecord
         // ...this separately.
         // /////////////////////////////////////////////////////////////////////
         
-        if ($this->scenario == self::SCENARIO_LOGIN) {
+        if ($this->scenario == self::SCENARIO_LOGIN)
+        {
             /** Login scenario */
             $this->last_login = new CDbExpression('NOW()');
         }
-        else {
+        
+        if ($this->scenario == self::SCENARIO_VALIDATION)
+        {
+            /** Account activation scenario */
             
-            /** All other scenarios */
-                        
-            // /////////////////////////////////////////////////////////////////
-            // Set the create time and user for new records
-            // /////////////////////////////////////////////////////////////////
-            if ($this->isNewRecord) {
-                $this->created_time = new CDbExpression('NOW()');
-                $this->created_by   = '1';  // Special case for not logged in user
-                $this->modified_by  = '1';
-            }
-            else
+            if ($this->activation_status == 'activated')
             {
-                $this->modified_by   = Yii::app()->user->id;
+                $this->activation_code = '';
+                $this->activation_time = new CDbExpression('NOW()');                
             }
-            
-            // /////////////////////////////////////////////////////////////////
-            // The modified log details is set for record creation and update
-            // /////////////////////////////////////////////////////////////////
-            $this->modified_time = new CDbExpression('NOW()');
-            
-            // /////////////////////////////////////////////////////////////////
+        }
+        
+        if ( ($this->scenario == self::SCENARIO_CHANGE_PASSWORD) ||
+             ($this->scenario == self::SCENARIO_REGISTER) ||
+             ($this->scenario == 'insert') ||
+             ($this->scenario == 'update')
+           )
+        {
+            /** Password change scenario */
+        
+            // /////////////////////////////////////////////////////////////////////
             // Encrypt the password. Only do this if the password is set
-            // /////////////////////////////////////////////////////////////////
-            if (isset($this->password) && (!empty($this->password))) {
+            // /////////////////////////////////////////////////////////////////////
+            if (isset($this->password) && (!empty($this->password)))
+            {
                  
                 $salt              =  utf8_encode( mcrypt_create_iv(30) );
                 $password_hash     =  utf8_encode( crypt($this->user_name.$this->password, $salt) );
@@ -410,8 +410,27 @@ class User extends CActiveRecord
             
             }
         }
-
         
+    
+        /** All other scenarios */
+                    
+        // /////////////////////////////////////////////////////////////////////
+        // Set the create time and user for new records
+        // /////////////////////////////////////////////////////////////////////
+        if ($this->isNewRecord) {
+            $this->created_time = new CDbExpression('NOW()');
+            $this->created_by   = '1';  // Special case for not logged in user
+            $this->modified_by  = '1';
+        }
+        else
+        {
+            $this->modified_by   = isset(Yii::app()->user->id)?Yii::app()->user->id:1;
+        }
+        
+        // /////////////////////////////////////////////////////////////////////
+        // The modified log details is set for record creation and update
+        // /////////////////////////////////////////////////////////////////////
+        $this->modified_time = new CDbExpression('NOW()');
     
         return parent::beforeSave();
     }

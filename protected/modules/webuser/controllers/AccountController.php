@@ -114,14 +114,16 @@ class AccountController extends Controller
                 $userModel->setAttributes($_POST['ProfileForm']);
                 
                 // Add additional fields
-                $userModel->password = $_POST['ProfileForm']['password'];
-                $userModel->fldVerifyPassword = $_POST['ProfileForm']['confirm_password'];
-                $userModel->created_by = 1;
-                $userModel->user_name = $userModel->email;
-                $userModel->status = 'inactive';
-                $userModel->activation_status = 'not_activated';
-                $userModel->activation_code = '0xDEADFEED';
+                $userModel->password            = $_POST['ProfileForm']['password'];
+                $userModel->fldVerifyPassword   = $_POST['ProfileForm']['confirm_password'];
+                $userModel->created_by          = 1;
+                $userModel->user_name           = $userModel->email;
+                $userModel->status              = 'inactive';
+                $userModel->activation_status   = 'not_activated';
+
                 
+                // Create a verification code, before the entry is saved
+                $userModel->activation_code = HAccount::getVerificationCode(CHtml::encode($userModel->email));
                 
                 $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
                 
@@ -143,9 +145,23 @@ class AccountController extends Controller
                                 $userModel->save();
                             }
                         }
+                        
+                        // Get the email message and subject
+                        $emailMessage = HAccount::getEmailMessage('verification_email');
+                        $emailSubject = HAccount::getEmailSubject('verification_email');
+                        
+                        
+                        // Customise the email message
+                        $emailMessage = HAccount::CustomiseMessage($emailMessage, $userModel->attributes);
+                        
+                        
+                        // Send the message
+                        HAccount::sendMessage($userModel->attributes['email'], $userModel->attributes['first_name'].' '.$userModel->attributes['last_name'], $emailSubject, $emailMessage);
 
                         
-                        $this->render('register_thanks', array('model' => $formModel));
+                        $this->render('register_thanks', array('model' => $formModel));                        
+                        
+                        
                         Yii::app()->end();
                         
                     } else {
@@ -223,6 +239,53 @@ class AccountController extends Controller
 	
         // If we got here, then this is an invalid request. Die quitely
 	    Yii::app()->end();
+	}
+	
+	/**
+	 * Process the user activation action.
+	 * ...This action is normally generated from an email that is sent to the
+	 * ...user.
+	 * ...
+	 * ...The user account is checked against the activation code and if there
+	 * ...is a match, the user account is marked as activated.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionActivate()
+	{
+	    	    
+	    $actionvationCode  = Yii::app()->request->getParam('cde');
+	    
+	    // Find the corresponding user record.
+	    $userRecord = User::model()->findByAttributes(array('activation_code' => $actionvationCode));
+	    
+	    if ($userRecord === null)
+	    {
+	        throw new CHttpException(405,'There was a problem obtaining the user record.');
+	    }
+	    
+	    // If we are here, then we have a good record. Update the active status and save the entry.
+	    $userRecord->scenario              = User::SCENARIO_VALIDATION;
+	    
+	    $userRecord['activation_status']   = 'activated';
+	    
+        if($userRecord->save())
+        {
+            
+            $this->render('welcome_validated_user', array('model' => $userRecord));
+
+        }
+        else
+        {
+            Yii::app()->user->setFlash('error', "Error activating your account.");
+            $this->render('invalid_activation', array('model' => $userRecord));
+            
+        }
+	    
+	    
 	}
 		
 }
