@@ -7,6 +7,7 @@
  * @property integer $template_id
  * @property string $template_name
  * @property string $msg
+ * @property string $subject
  * @property string $isreadonly
  * @property string $created_time
  * @property string $modified_time
@@ -73,6 +74,7 @@ class MailTemplate extends CActiveRecord
 		    
 		    // Data types, sizes
 			array('template_name',           'length', 'max'=>128),
+		    array('subject',                 'length', 'max'=>255),
 		    
 		    // ranges
 		    array('isreadonly',             'in','range'=>array('Y','N'),'allowEmpty'=>false),
@@ -116,6 +118,7 @@ class MailTemplate extends CActiveRecord
 			'template_id'    => 'Template',
 			'template_name'  => 'Template Name',
 			'msg'            => 'Message',
+		    'subject'        => 'Subject',
 			'isreadonly'     => 'Read Only',
 			'created_time'   => 'Created Time',
 			'modified_time'  => 'Modified Time',
@@ -148,7 +151,7 @@ class MailTemplate extends CActiveRecord
 		$criteria->compare('template_id',     $this->template_id);
 		$criteria->compare('template_name',   $this->template_name,true);
 		$criteria->compare('msg',             $this->msg,true);
-		$criteria->compare('isreadonly',      $this->isreadonly,true);
+		$criteria->compare('subject',         $this->subject,true);
 		$criteria->compare('created_time',    $this->created_time,true);
 		$criteria->compare('modified_time',   $this->modified_time,true);
 		$criteria->compare('created_by',      $this->created_by);

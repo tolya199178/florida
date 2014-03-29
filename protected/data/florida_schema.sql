@@ -591,6 +591,7 @@ ADD CONSTRAINT fk_mail_template_modified_by
      FOREIGN KEY (modified_by) 
      REFERENCES tbl_user(user_id);
      
+ALTER TABLE tbl_mail_template ADD COLUMN subject VARCHAR(255) DEFAULT null;
 
 -- ---------------------------------------------------------------------
 -- advert
