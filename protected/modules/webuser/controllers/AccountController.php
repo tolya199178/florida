@@ -114,14 +114,16 @@ class AccountController extends Controller
                 $userModel->setAttributes($_POST['ProfileForm']);
                 
                 // Add additional fields
-                $userModel->password = $_POST['ProfileForm']['password'];
-                $userModel->fldVerifyPassword = $_POST['ProfileForm']['confirm_password'];
-                $userModel->created_by = 1;
-                $userModel->user_name = $userModel->email;
-                $userModel->status = 'inactive';
-                $userModel->activation_status = 'not_activated';
-                $userModel->activation_code = '0xDEADFEED';
+                $userModel->password            = $_POST['ProfileForm']['password'];
+                $userModel->fldVerifyPassword   = $_POST['ProfileForm']['confirm_password'];
+                $userModel->created_by          = 1;
+                $userModel->user_name           = $userModel->email;
+                $userModel->status              = 'inactive';
+                $userModel->activation_status   = 'not_activated';
+
                 
+                // Create a verification code, before the entry is saved
+                $userModel->activation_code = HAccount::getVerificationCode(CHtml::encode($userModel->email));
                 
                 $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
                 
@@ -143,9 +145,22 @@ class AccountController extends Controller
                                 $userModel->save();
                             }
                         }
+                        
+                        // Get the email message
+                        $emailMessage = HAccount::getEmailMessage('verification_email');
+                        
+                        
+                        // Customise the email message
+                        $emailMessage = HAccount::CustomiseMessage($emailMessage, $userModel->attributes);
+                        
+                        
+                        // Send the message
+                        HAccount::sendMessage($userModel->attributes['email'], $userModel->attributes['first_name'].' '.$userModel->attributes['last_name'], "Welcome to Florida.com", $emailMessage);
 
                         
-                        $this->render('register_thanks', array('model' => $formModel));
+                        $this->render('register_thanks', array('model' => $formModel));                        
+                        
+                        
                         Yii::app()->end();
                         
                     } else {
