@@ -80,5 +80,22 @@ class HAccount
 
     }
     
+    public function getEmailSubject($messageName)
+    {
+        // /////////////////////////////////////////////////////////////////////
+        // Get the message details
+        // /////////////////////////////////////////////////////////////////////
+        $modelMailTemplate    = MailTemplate::model()->findByAttributes(array('template_name' =>$messageName));
+        if ($modelMailTemplate === null)
+        {
+            return null;
+        }
+    
+        $messageSubject       = $modelMailTemplate->attributes['subject'];
+    
+        return $messageSubject;
+    
+    }
+    
     
 }

@@ -126,7 +126,7 @@ class MailTemplateController extends BackEndController
 	        }
 	        else
 	        {
-                Yii::app()->user->setFlash('error', "Error creating a mailtemplate record.'");
+                Yii::app()->user->setFlash('error', "Error creating a mailtemplate record.");
 	        }
 	            
 	    }
