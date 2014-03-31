@@ -73,9 +73,9 @@ class AccountController extends Controller
     
         /*
          *     Small-s- 100px(width)
-        *     Medum-m- 240px(width)
-        *     Large-l- 600px(width)
-        */
+         *     Medum-m- 240px(width)
+         *     Large-l- 600px(width)
+         */
     }
     
     /**
@@ -238,7 +238,8 @@ class AccountController extends Controller
 	    }
 	
         // If we got here, then this is an invalid request. Die quitely
-	    Yii::app()->end();
+	    throw new CHttpException(400,'Invalid Request.');
+	    
 	}
 	
 	/**
