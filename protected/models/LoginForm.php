@@ -194,15 +194,39 @@ class LoginForm extends CFormModel
      */
     public function login()
     {
+        
+        // /////////////////////////////////////////////////////////////////////
+        // Don't allow users that are not active.
+        // /////////////////////////////////////////////////////////////////////
+        $userModel = User::model()->find('LOWER(user_name)=?', array(
+            strtolower(CHtml::encode($this->fldUserName))
+        ));
+        
+        if ($userModel === null)        // Account not found
+        {
+            return false;
+        }
+        
+        if ( ($userModel->attributes['activation_status'] == 'not_activated') || ($userModel->attributes['status'] == 'inactive') )
+        {
+            return false;   
+        }
+        
+        
+        
+        
         if ($this->_identity === null) {
-            $this->_identity = new UserIdentity($this->fldUserName, $this->fldPassword);
+            $this->_identity = new UserIdentity(CHtml::encode($this->fldUserName), CHtml::encode($this->fldPassword));
             $this->_identity->authenticate();
         }
         if ($this->_identity->errorCode === UserIdentity::ERROR_NONE) {
             $duration = $this->fldRememberMe ? 3600 * 24 * 30 : 0; // 30 days
             Yii::app()->user->login($this->_identity, $duration);
             return true;
-        } else
+        }
+        else
+        {
             return false;
+        }
     }
 }

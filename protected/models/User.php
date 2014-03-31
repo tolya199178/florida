@@ -386,6 +386,7 @@ class User extends CActiveRecord
             if ($this->activation_status == 'activated')
             {
                 $this->activation_code = '';
+                $this->status          = 'active';
                 $this->activation_time = new CDbExpression('NOW()');                
             }
         }
