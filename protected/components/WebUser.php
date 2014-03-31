@@ -27,7 +27,7 @@ class WebUser extends CWebUser
     // access it by Yii::app()->user->first_name
     function getFirstName()
     {
-        $userModelModel = $this->loadUser(Yii::app()->user->id);
+        $userModel = $this->loadUser(Yii::app()->user->id);
         return $userModel->firstname;
     }
 
