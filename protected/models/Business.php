@@ -37,7 +37,7 @@
  * @property string $activation_code
  * @property string $activation_status
  * @property string $activation_time
- * 
+ *
  *
  * The followings are the available model relations:
  * @property City $businessCity
@@ -69,34 +69,34 @@
 class Business extends CActiveRecord
 {
     /**
-     * Form only comma-seperated list of business activities 
+     * Form only comma-seperated list of business activities
      * @var string fldUploadImage Business image uploader.
      * @access public
      */
     public $business_activities;
-    
+
     /**
      *
      * @var string fldUploadImage Business image uploader.
      * @access public
      */
     public $fldUploadImage;
-    
-    /**
-     *
-     * @var string read-only (non-db field) for full path name of business image.
-     * @access public
-     */
-    public $imgFullPath;
 
     /**
      *
-     * @var string read-only (non-db field) for full path name of business thumbnail.
+     * @var string read-only (non-db field) for url of business image.
      * @access public
      */
-    public $thumbnailFullPath;
-    
-    
+    public $imgUrl;
+
+    /**
+     *
+     * @var string read-only (non-db field) for full url of business thumbnail.
+     * @access public
+     */
+    public $thumbnailUrl;
+
+
     /**
      * Get database table name associated with the model.
      *
@@ -124,41 +124,41 @@ class Business extends CActiveRecord
 	{
 
 		return array(
-		    
+
 		    // Mandatory rules
 
 			array('business_name', 'required'),
-		    
+
 		    // Data types, sizes
 		    array('business_name, business_email, business_website, add_request_rejection_reason, claim_rejection_reason, activation_code', 'length', 'max'=>255),
 			array('business_zipcode, business_phone, business_phone_ext',        'length', 'max'=>16),
 		    array('business_address1, business_address2, business_description,
 		           business_keywords',  'length', 'max'=>1024),
 		    array('add_request_rejection_reason, claim_rejection_reason',        'length', 'max'=>255),
-		    
-		    array('business_activities',                                         'length', 'max'=>255),
-		    
 
-		    
+		    array('business_activities',                                         'length', 'max'=>255),
+
+
+
 		    // ranges
-			array('business_allow_review, 
+			array('business_allow_review,
 			       business_allow_rating, is_active,
 			       is_featured, is_closed',               'in','range'=>array('Y','N'),'allowEmpty'=>false),
 		    array('claim_status',                         'in','range'=>array('Claimed', 'Unclaimed'),'allowEmpty'=>false),
 		    array('activation_status',                    'in','range'=>array('activated', 'not_activated'),'allowEmpty'=>false),
-		    array('add_request_processing_status',        'in','range'=>array('Accepted', 'Rejected'),'allowEmpty'=>false),		    
-			
-		    // Form only attributes. 
+		    array('add_request_processing_status',        'in','range'=>array('Accepted', 'Rejected'),'allowEmpty'=>false),
+
+		    // Form only attributes.
 		    array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
-		    
-		    
+
+
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('business_id, business_name, business_address1, business_address2, business_city_id, business_zipcode,
 			       business_phone_ext, business_phone, business_email, business_website, business_description,
-			       business_allow_review, business_allow_rating, business_keywords, created_time, modified_time, 
+			       business_allow_review, business_allow_rating, business_keywords, created_time, modified_time,
 			       created_by, modified_by, add_request_processing_status, add_request_processing_time,
-			       add_request_processed_by, add_request_rejection_reason, claim_status, claim_processing_time, 
-			       claimed_by, claim_rejection_reason, is_active, is_featured, is_closed, activation_code, 
+			       add_request_processed_by, add_request_rejection_reason, claim_status, claim_processing_time,
+			       claimed_by, claim_rejection_reason, is_active, is_featured, is_closed, activation_code,
 			       activation_status, activation_time', 'safe', 'on'=>'search'),
 		);
 	}
@@ -292,14 +292,14 @@ class Business extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return Business the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
-	
+
 	/**
 	 * Runs just before the models save method is invoked. It provides a change to
 	 * ...further prepare the data for saving. The CActiveRecord (parent class)
@@ -311,7 +311,7 @@ class Business extends CActiveRecord
 	 * @access public
 	 */
 	public function beforeSave() {
-	    
+
         // /////////////////////////////////////////////////////////////////
         // Set the create time and user for new records
         // /////////////////////////////////////////////////////////////////
@@ -319,16 +319,16 @@ class Business extends CActiveRecord
             $this->created_time = new CDbExpression('NOW()');
             $this->created_by   = Yii::app()->user->id;
         }
-        
+
         // /////////////////////////////////////////////////////////////////
         // The modified log details is set for record creation and update
         // /////////////////////////////////////////////////////////////////
         $this->modified_time = new CDbExpression('NOW()');
         $this->modified_by   = Yii::app()->user->id;
-        
+
 	    return parent::beforeSave();
 	}
-	
+
 	/**
 	 * Build an associative list of Add Request processing Values.
 	 *
@@ -338,12 +338,12 @@ class Business extends CActiveRecord
 	 * @access public
 	 */
 	public function listAddRequestProcessingStatus() {
-	
+
 	    return array(  'Accepted'       => 'Accepted',
 	                   'Rejected'       => 'Rejected',
                     );
 	}
-	
+
 	/**
 	 * Build an associative list of Claim Status values
 	 * @param <none> <none>
@@ -352,12 +352,12 @@ class Business extends CActiveRecord
 	 * @access public
 	 */
 	public function listClaimStatus() {
-	
+
 	    return array('Claimed'         => 'Claimed',
 	                 'Unclaimed'       => 'Unclaimed',
 	                );
 	}
-	
+
 	/**
 	 * Build an associative list of activation status values.
 	 *
@@ -367,50 +367,50 @@ class Business extends CActiveRecord
 	 * @access public
 	 */
 	public function listActivationStatus() {
-	
+
 	    return array(  'activated'         => 'Activated',
 	                   'not_activated'     => 'Not Activated',
 	    );
 	}
-	
+
 	/**
-	 * Getter function for virtual attribute $thumbnailFullPath
+	 * Getter function for virtual attribute $thumbnailUrl
 	 *
 	 * @param <none> <none>
-	 * @return string full path name of business image thumbnail
+	 * @return string url of business image thumbnail
 	 *
 	 * @access public
 	 */
-	public function getThumbnailFullPath()
+	public function getThumbnailUrl()
 	{
-	    
-	    $thumbnailsDirPath     = Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails';
-	    $thumbnailPath         = $thumbnailsDirPath.DIRECTORY_SEPARATOR.$this->image;
-	    
-	    $this->thumbnailFullPath = $thumbnailPath;
-	    
-	    return $thumbnailPath;	     
+
+	    $thumbnailsDirUrl     = Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails';
+	    $thumbnailUrl         = $thumbnailsDirUrl.DIRECTORY_SEPARATOR.$this->image;
+
+	    $this->thumbnailUrl = $thumbnailUrl;
+
+	    return $thumbnailUrl;
 
 	}
-	
+
 	/**
-	 * Getter function for virtual attribute $imgFullPath
+	 * Getter function for virtual attribute $imgUrl
 	 *
 	 * @param <none> <none>
-	 * @return string full path name of business image
+	 * @return string url of business image
 	 *
 	 * @access public
 	 */
-	public function getImgFullPath()
+	public function getImgUrl()
 	{
-	     
-	    $imagesDirPath         = Yii::app()->request->baseUrl.'/uploads/images/business';
-	    $imagePath             = $imagesDirPath.DIRECTORY_SEPARATOR.$this->image;
-	    
-	    $this->imgFullPath = $imagePath;
-	     
-	    return $imagePath;
-	
+
+	    $imagesDirUrl         = Yii::app()->request->baseUrl.'/uploads/images/business';
+	    $imageUrl             = $imagesDirUrl.DIRECTORY_SEPARATOR.$this->image;
+
+	    $this->imgUrl = $imageUrl;
+
+	    return $imageUrl;
+
 	}
-	
+
 }
