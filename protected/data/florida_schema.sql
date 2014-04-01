@@ -526,7 +526,7 @@ ADD CONSTRAINT fk_user_event_event
      REFERENCES tbl_event(event_id);
           
 -- ---------------------------------------------------------------------
--- saved_search
+-- tbl_restaurant_certificat
 -- ---------------------------------------------------------------------
  
  DROP TABLE IF EXISTS `tbl_restaurant_certificate`;
@@ -794,11 +794,15 @@ ADD CONSTRAINT fk_business_activity_activity_id
  DROP TABLE IF EXISTS `tbl_search_log`;
 
  CREATE TABLE `tbl_search_log` (
-  `search_id` int(11) NOT NULL AUTO_INCREMENT,
-  `search_origin` varchar(255) NOT NULL DEFAULT '',
-  `search_details` text NOT NULL,
-  `search_count`         int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`search_id`)
+  `search_id`       int(11) NOT NULL AUTO_INCREMENT,
+  `search_origin`   varchar(255) NOT NULL DEFAULT '',
+  `search_details`  text NOT NULL,
+  `search_count`    int(11) NOT NULL DEFAULT 0,
+  `search_tag`      varchar(255) NOT NULL DEFAULT '',
+  `search_tag_type`  varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`search_id`),
+  UNIQUE KEY `unqkey_search_log_search_tag` (`search_tag`),
+  INDEX      `unqkey_search_log_search_origin` (`search_origin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---------------------------------------------------------------------
