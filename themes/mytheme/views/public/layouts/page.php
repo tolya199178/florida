@@ -32,7 +32,7 @@ body {
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
-    <!-- 
+    <!--
     <header>
     <div class="container-fluid">
         <div class="row-fluid">
@@ -47,7 +47,7 @@ body {
                 <div class="nav-collapse" id="header_menu">
                     < ? php $this->renderPartial('//layouts/header_navigation', array('cls' => "nav social-root pull-right")); ? >
                 </div>
-                <! - - nav-collapse  - - > 
+                <! - - nav-collapse  - - >
             </div>
         </div>
     </div>
@@ -72,7 +72,7 @@ body {
                     <li class="active"><a href="#">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="#contact">Concierge</a></li>
+                    <li><a href="<?php echo Yii::app()->createUrl('concierge/'); ?>">Concierge</a></li>
                     <li class="dropdown"><a href="#" class="dropdown-toggle"
                         data-toggle="dropdown">Cities<b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -94,7 +94,7 @@ body {
 
     <!-- container -->
     <div class="container-full">
-    
+
 
 <?php
         // /////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ body {
         // /////////////////////////////////////////////////////////////////////
         // The result of the render() is placed here.
         // /////////////////////////////////////////////////////////////////////
-        
+
 ?>
 
       <footer>
@@ -128,8 +128,8 @@ body {
 // Toolbar login
 
 $(document).ready(function(){
-	
-	
+
+
 	 $("#frmLogin").submit(function(){
 
 	    $.post('<?php echo Yii::app()->createUrl('webuser/account/login/'); ?>',
