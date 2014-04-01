@@ -7,6 +7,22 @@
  */
 class ProfileForm extends CFormModel
 {
+
+    public $user_id;
+    public $fldVerifyPassword;
+    public $date_of_birth;
+    public $mobile_carrier_id;
+    public $mobile_number;
+    public $hometown;
+    public $marital_status;
+    public $send_sms_notification;
+    public $my_info_permissions;
+    public $photos_permissions;
+    public $friends_permissions;
+    public $blogs_permissions;
+    public $travel_options_permissions;
+
+
 	public $user_name;
 	public $email;
 	public $first_name;
@@ -16,6 +32,8 @@ class ProfileForm extends CFormModel
 	public $password;
 	public $confirm_password;
 	public $places_want_to_visit;
+
+
 
 	/**
 	 * @var IdentityInterface cached object returned by @see getIdentity()

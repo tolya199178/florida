@@ -33,20 +33,20 @@
 
 class AccountController extends Controller
 {
-    
-    
+
+
     /**
      * @var string imagesDirPath Directory where Business images will be stored
      * @access private
      */
     private $imagesDirPath;
-    
+
     /**
      * @var string imagesDirPath Directory where Business image thumbnails will be stored
      * @access private
      */
     private $thumbnailsDirPath;
-    
+
     /**
      * @var string thumbnailWidth thumbnail width
      * @access private
@@ -57,7 +57,7 @@ class AccountController extends Controller
      * @access private
      */
     private $thumbnailHeight    = 100;
-    
+
     /**
      * Controller initailisation routines to set up the controller
      *
@@ -70,14 +70,14 @@ class AccountController extends Controller
     {
         $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business';
         $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business/thumbnails';
-    
+
         /*
          *     Small-s- 100px(width)
          *     Medum-m- 240px(width)
          *     Large-l- 600px(width)
          */
     }
-    
+
     /**
      * Register a new user
      *
@@ -89,30 +89,30 @@ class AccountController extends Controller
 	public function actionRegister()
 	{
         $formModel = new ProfileForm('register');
-        
+
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'profile-form') {
             echo CActiveForm::validate(array(
                 $model
             ));
             Yii::app()->end();
         }
-        
+
         if (isset($_POST['ProfileForm'])) {
-            
+
             $formModel->setAttributes($_POST['ProfileForm']);
             $formModel->user_name = $formModel->email;
-            
+
             if ($formModel->validate()) {
-                
+
                 // /////////////////////////////////////////////////////////////////
                 // Create a new user entry
                 // /////////////////////////////////////////////////////////////////
                 $userModel = new User();
                 $userModel->scenario = User::SCENARIO_REGISTER;
-                
+
                 // Copy form details
                 $userModel->setAttributes($_POST['ProfileForm']);
-                
+
                 // Add additional fields
                 $userModel->password            = $_POST['ProfileForm']['password'];
                 $userModel->fldVerifyPassword   = $_POST['ProfileForm']['confirm_password'];
@@ -121,60 +121,60 @@ class AccountController extends Controller
                 $userModel->status              = 'inactive';
                 $userModel->activation_status   = 'not_activated';
 
-                
+
                 // Create a verification code, before the entry is saved
                 $userModel->activation_code = HAccount::getVerificationCode(CHtml::encode($userModel->email));
-                
+
                 $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
-                
+
                 if ($userModel->validate() && $formModel->validate()) {
-                    
+
                     if ($userModel->save()) {
                         if (!empty($uploadedFile))
                         {
                             $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
                             $imagePath = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
-                            
+
                             if (! empty($uploadedFile))                         // check if uploaded file is set or not
                             {
                                 $uploadedFile->saveAs($imagePath);
                                 $userModel->image = $imageFileName;
-                            
+
                                 $this->createThumbnail($imageFileName);
-                            
+
                                 $userModel->save();
                             }
                         }
-                        
+
                         // Get the email message and subject
                         $emailMessage = HAccount::getEmailMessage('verification_email');
                         $emailSubject = HAccount::getEmailSubject('verification_email');
-                        
-                        
+
+
                         // Customise the email message
                         $emailMessage = HAccount::CustomiseMessage($emailMessage, $userModel->attributes);
-                        
-                        
+
+
                         // Send the message
                         HAccount::sendMessage($userModel->attributes['email'], $userModel->attributes['first_name'].' '.$userModel->attributes['last_name'], $emailSubject, $emailMessage);
 
-                        
-                        $this->render('register_thanks', array('model' => $formModel));                        
-                        
-                        
+
+                        $this->render('register_thanks', array('model' => $formModel));
+
+
                         Yii::app()->end();
-                        
+
                     } else {
                         Yii::app()->user->setFlash('error', "Error creating a business record.'");
                     }
                 }
             }
-        }   
-        
+        }
+
         $this->render('user_register', array('model' => $formModel));
-		
+
 	}
-	
+
 	/**
 	 * Process the user login action.
 	 * ...The function is normally invoked twice:
@@ -193,17 +193,17 @@ class AccountController extends Controller
 	public function actionLogin()
 	{
 	    $modelLoginForm = new LoginForm();
-	    
+
 	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
 
 	    // collect user input data
 	    if (isset($_POST['LoginForm'])) {
-	
+
 	        $modelLoginForm->attributes = $_POST['LoginForm'];
-	
+
 	        // validate user input and redirect to the previous page if valid
 	        if ($modelLoginForm->validate() && $modelLoginForm->login()) {
-	            
+
 	            // Send back a JSON request for Ajax submissions
 	            if (Yii::app()->request->isAjaxRequest == 1)
 	            {
@@ -212,14 +212,14 @@ class AccountController extends Controller
 	                    'authenticated'    => true,
 	                    'redirectUrl'      => Yii::app()->user->returnUrl,
 	                ));
-	                Yii::app()->end();  
+	                Yii::app()->end();
 	            }
-	
+
 	            // For normal page submissions, redirect
 	            $this->redirect(Yii::app()->user->returnUrl);
 	        }
 	        else {
-	            
+
 	            // Send back a JSON request for Ajax submissions
 	            if (Yii::app()->request->isAjaxRequest == 1)
 	            {
@@ -230,18 +230,18 @@ class AccountController extends Controller
 	                ));
 	                Yii::app()->end();
 	            }
-	            
+
 	            // For normal page submissions, redirect
 	            $this->redirect(Yii::app()->user->returnUrl);
-	            
+
 	        }
 	    }
-	
+
         // If we got here, then this is an invalid request. Die quitely
 	    throw new CHttpException(400,'Invalid Request.');
-	    
+
 	}
-	
+
 	/**
 	 * Process the user activation action.
 	 * ...This action is normally generated from an email that is sent to the
@@ -257,25 +257,25 @@ class AccountController extends Controller
 	 */
 	public function actionActivate()
 	{
-	    	    
+
 	    $actionvationCode  = Yii::app()->request->getParam('cde');
-	    
+
 	    // Find the corresponding user record.
 	    $userRecord = User::model()->findByAttributes(array('activation_code' => $actionvationCode));
-	    
+
 	    if ($userRecord === null)
 	    {
 	        throw new CHttpException(405,'There was a problem obtaining the user record.');
 	    }
-	    
+
 	    // If we are here, then we have a good record. Update the active status and save the entry.
 	    $userRecord->scenario              = User::SCENARIO_VALIDATION;
-	    
+
 	    $userRecord['activation_status']   = 'activated';
-	    
+
         if($userRecord->save())
         {
-            
+
             $this->render('welcome_validated_user', array('model' => $userRecord));
 
         }
@@ -283,10 +283,163 @@ class AccountController extends Controller
         {
             Yii::app()->user->setFlash('error', "Error activating your account.");
             $this->render('invalid_activation', array('model' => $userRecord));
-            
+
         }
-	    
-	    
+
+
 	}
-		
+
+	/**
+	 * Process the user profile edit action.
+	 * ...
+	 * ...The function is only available to logged in users. All other users are
+	 * ...directed to a login screen.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionManageprofile()
+	{
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Redirect non-logged in users to the login page
+	    // /////////////////////////////////////////////////////////////////////
+	    if (Yii::app()->user->isGuest)         // User is not logged in
+	    {
+            $this->redirect("login");
+	        Yii::app()->end();
+	    }
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get the login details from the WebUser component
+	    // /////////////////////////////////////////////////////////////////////
+        $userId = Yii::app()->user->id;
+
+        if ($userId === null)         // User is not known
+        {
+            $this->redirect("login");
+            Yii::app()->end();
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Load the user details
+        // /////////////////////////////////////////////////////////////////////
+        $userModel = User::model()->findByPk($userId);
+        if ($userModel === null) {
+            $this->redirect("login");
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Phew. If we made it here, then process the form request.
+        // /////////////////////////////////////////////////////////////////////
+
+
+	    $formModel = new ProfileForm;
+
+	    $formModel->user_id                      = $userModel->attributes['user_id'];
+
+	    $formModel->user_name                    = $userModel->attributes['user_name'];
+	    $formModel->email                        = $userModel->attributes['email'];
+	    $formModel->first_name                   = $userModel->attributes['first_name'];
+	    $formModel->last_name                    = $userModel->attributes['last_name'];
+	    $formModel->places_want_to_visit         = $userModel->attributes['places_want_to_visit'];
+
+	    $formModel->date_of_birth                = $userModel->attributes['date_of_birth'];
+	    $formModel->mobile_carrier_id            = $userModel->attributes['mobile_carrier_id'];
+	    $formModel->mobile_number                = $userModel->attributes['mobile_number'];
+	    $formModel->hometown                     = $userModel->attributes['hometown'];
+	    $formModel->marital_status               = $userModel->attributes['marital_status'];
+	    $formModel->send_sms_notification        = $userModel->attributes['send_sms_notification'];
+	    $formModel->my_info_permissions          = $userModel->attributes['my_info_permissions'];
+	    $formModel->photos_permissions           = $userModel->attributes['photos_permissions'];
+	    $formModel->friends_permissions          = $userModel->attributes['friends_permissions'];
+	    $formModel->blogs_permissions            = $userModel->attributes['blogs_permissions'];
+	    $formModel->travel_options_permissions   = $userModel->attributes['travel_options_permissions'];
+
+	  //  print_r($formModel);
+	 //   print_r($userModel);
+	   // exit;
+
+	    if (isset($_POST['ProfileForm'])) {
+
+	        $formModel->setAttributes($_POST['ProfileForm']);
+	        $formModel->user_name = $formModel->email;
+
+	        if ($formModel->validate()) {
+
+	            // /////////////////////////////////////////////////////////////////
+	            // Create a new user entry
+	            // /////////////////////////////////////////////////////////////////
+	            $userModel = new User();
+	            $userModel->scenario = User::SCENARIO_REGISTER;
+
+	            // Copy form details
+	            $userModel->setAttributes($_POST['ProfileForm']);
+
+	            // Add additional fields
+	            $userModel->password            = $_POST['ProfileForm']['password'];
+	            $userModel->fldVerifyPassword   = $_POST['ProfileForm']['confirm_password'];
+	            $userModel->created_by          = 1;
+	            $userModel->user_name           = $userModel->email;
+	            $userModel->status              = 'inactive';
+	            $userModel->activation_status   = 'not_activated';
+
+
+	            // Create a verification code, before the entry is saved
+	            $userModel->activation_code = HAccount::getVerificationCode(CHtml::encode($userModel->email));
+
+	            $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
+
+	            if ($userModel->validate() && $formModel->validate()) {
+
+	                if ($userModel->save()) {
+	                    if (!empty($uploadedFile))
+	                    {
+	                        $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
+	                        $imagePath = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
+
+	                        if (! empty($uploadedFile))                         // check if uploaded file is set or not
+	                        {
+	                            $uploadedFile->saveAs($imagePath);
+	                            $userModel->image = $imageFileName;
+
+	                            $this->createThumbnail($imageFileName);
+
+	                            $userModel->save();
+	                        }
+	                    }
+
+	                    // Get the email message and subject
+	                    $emailMessage = HAccount::getEmailMessage('verification_email');
+	                    $emailSubject = HAccount::getEmailSubject('verification_email');
+
+
+	                    // Customise the email message
+	                    $emailMessage = HAccount::CustomiseMessage($emailMessage, $userModel->attributes);
+
+
+	                    // Send the message
+	                    HAccount::sendMessage($userModel->attributes['email'], $userModel->attributes['first_name'].' '.$userModel->attributes['last_name'], $emailSubject, $emailMessage);
+
+
+	                    $this->render('register_thanks', array('model' => $formModel));
+
+
+	                    Yii::app()->end();
+
+	                } else {
+	                    Yii::app()->user->setFlash('error', "Error creating a business record.'");
+	                }
+	            }
+	        }
+	    }
+
+	    $this->render('user_profile', array('model' => $formModel));
+
+
+
+	}
+
 }

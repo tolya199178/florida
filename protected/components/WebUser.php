@@ -28,7 +28,7 @@ class WebUser extends CWebUser
     function getFirstName()
     {
         $userModel = $this->loadUser(Yii::app()->user->id);
-        return $userModel->firstname;
+        return $userModel->first_name;
     }
 
     function getFullName()
