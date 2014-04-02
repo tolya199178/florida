@@ -436,11 +436,8 @@ $('.cities .typeahead')
        source: numbers.ttAdapter()
        })
     .on('typeahead:selected', function(e, datum){
-     // debugger;
-         // $("#title").html(datum["value"]);
-       // alert(datum["city_name"]);
           doSearch()
-         });
+     });
 
 
   function doSearch() {
@@ -451,7 +448,6 @@ $('.cities .typeahead')
 
     debugger;
     var url         = '/concierge/dosearch/';
-    // alert(url);
 
     $.post(url,
     {
@@ -460,7 +456,6 @@ $('.cities .typeahead')
       withwhat:withwhat
     },
     function(data,status){
-      // alert("Data: " + data + "Status: " + status);
       $('#concierge_results').html(data);
 
     });
@@ -527,6 +522,12 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
                     <!-- Search results section -->
                     <div class="row">
+
+                        <div class="col-lg-12">
+<?php                       $this->widget('application.components.ConciergeToolbar'); ?>
+                        </div>
+
+
                         <div class="col-lg-12">
                             <div id='concierge_results'>
                             </div>
@@ -534,7 +535,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
                         </div>
                     </div>
-
+                    <!-- /.Search results section -->
 
 
 
