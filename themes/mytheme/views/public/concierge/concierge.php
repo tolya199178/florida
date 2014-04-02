@@ -410,6 +410,16 @@ input[name="play"]:checked ~ .video {
   z-index:999;
 }
 
+div.bootstrap-tagsinput {
+  width: 150px;
+  outline: none;
+  border: 0;
+  height:35px;
+}
+/* div.bootstrap-tagsinput > input{ */
+/*   width: 250px; */
+/* } */
+
 -->
 </style>
 
@@ -445,8 +455,6 @@ $('.cities .typeahead')
     var dowhat      = $("#dowhat").val();
     var withwhat    = $("#withwhat").val();
 
-
-    debugger;
     var url         = '/concierge/dosearch/';
 
     $.post(url,
@@ -508,14 +516,20 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                             </div>
                         </div>
 
-                        <div class="col-lg-8">
-                            <label for="dowhat" class="heading">I WANT TO &nbsp;&nbsp;&nbsp;</label>
-                            <div class="activities">
+                        <div class="col-lg-2">
+                                <label for="dowhat" class="heading">I WANT TO &nbsp;&nbsp;&nbsp;</label>
+                        </div>
+
+                        <div class="col-lg-6" style="border: 1px solid silver;">
+                            <div class="col-lg-3 col-lg-offset-0">
                                 <input class="form-control" name="dowhat" id="dowhat"  type="text" autocomplete="off" value="">
+                            </div>
+                            <div class="col-lg-3">
                                 <input class="form-control" name="withwhat" id="withwhat"  type="text" autocomplete="off" value="">
                             </div>
-
                         </div>
+
+
 
                     </div>
                     <!-- /.Search section -->
