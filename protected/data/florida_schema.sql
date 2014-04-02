@@ -801,7 +801,6 @@ ADD CONSTRAINT fk_business_activity_activity_id
   `search_tag`      varchar(255) NOT NULL DEFAULT '',
   `search_tag_type`  varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`search_id`),
-  UNIQUE KEY `unqkey_search_log_search_tag` (`search_tag`),
   INDEX      `unqkey_search_log_search_origin` (`search_origin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

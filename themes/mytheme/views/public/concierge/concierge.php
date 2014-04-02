@@ -40,8 +40,8 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
   padding-bottom: 10px;
   padding-left: 10px;
   box-shadow: #b0b0b0;
-  z-index: 21; 
-   
+  z-index: 21;
+
 }
 
 .rightpanel {
@@ -112,7 +112,7 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 .tt-suggestion p {
   margin: 0;
 }
-   
+
 .cities {
    float:right;
 }
@@ -248,7 +248,7 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
   top:32px;
 }
 
-.button-buy {   
+.button-buy {
 /*   background: #e74c3c; */
   text-align: center;
   line-height: 46px;
@@ -301,8 +301,8 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
   opacity:1;
 }
 
- .product:hover .more { 
-   opacity:1; 
+ .product:hover .more {
+   opacity:1;
  }
 
 .more {
@@ -416,7 +416,7 @@ input[name="play"]:checked ~ .video {
 <?php
 
 $local_list = City::model()->getListjson();
-        
+
 $script = <<<EOD
 
 // Load the city list for type ahead
@@ -425,10 +425,10 @@ var numbers = new Bloodhound({
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    local: {$local_list}
 });
- 
+
 // initialize the bloodhound suggestion engine
 numbers.initialize();
- 
+
 // instantiate the typeahead UI
 $('.cities .typeahead')
    .typeahead(null, {
@@ -442,15 +442,17 @@ $('.cities .typeahead')
           doSearch()
          });
 
-    
+
   function doSearch() {
     var where       = $("#city").val();
     var dowhat      = $("#dowhat").val();
     var withwhat    = $("#withwhat").val();
-    
+
+
+    debugger;
     var url         = '/concierge/dosearch/';
     // alert(url);
-    
+
     $.post(url,
     {
       where:where,
@@ -460,7 +462,7 @@ $('.cities .typeahead')
     function(data,status){
       // alert("Data: " + data + "Status: " + status);
       $('#concierge_results').html(data);
-    
+
     });
 
   }
@@ -468,11 +470,11 @@ $('.cities .typeahead')
     $('#dowhat').tagsinput({
     maxTags: 1
     });
-    
+
     $('#withwhat').tagsinput({
     maxTags: 1
     });
-    
+
     $("#dowhat").on("change", function() {
       doSearch()
     });
@@ -481,11 +483,11 @@ $('.cities .typeahead')
       doSearch()
     });
 
-    
+
 EOD;
-    
+
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
-    
+
 ?>
 
 <div class="container-full">
@@ -499,7 +501,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 </div>
             </div>
         </div>
-            
+
         <div class="col-lg-10 col-lg-offset-0">
                 <div id="mainpanel">
                     <!-- Search section -->
@@ -507,38 +509,38 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         <div class="col-lg-4">
                             <label for="city" class="heading">I AM IN &nbsp;&nbsp;&nbsp;</label>
                             <div class="cities">
-                                <input class="typeahead form-control" name="city" id="city"  type="text" autocomplete="off" value="" placeholder="I am in...">   
+                                <input class="typeahead form-control" name="city" id="city"  type="text" autocomplete="off" value="" placeholder="I am in...">
                             </div>
                         </div>
-                        
-                        <div class="col-lg-8">                        
+
+                        <div class="col-lg-8">
                             <label for="dowhat" class="heading">I WANT TO &nbsp;&nbsp;&nbsp;</label>
                             <div class="activities">
                                 <input class="form-control" name="dowhat" id="dowhat"  type="text" autocomplete="off" value="">
-                                <input class="form-control" name="withwhat" id="withwhat"  type="text" autocomplete="off" value="">   
+                                <input class="form-control" name="withwhat" id="withwhat"  type="text" autocomplete="off" value="">
                             </div>
-    
+
                         </div>
-                        
+
                     </div>
                     <!-- /.Search section -->
-                    
+
                     <!-- Search results section -->
                     <div class="row">
                         <div class="col-lg-12">
                             <div id='concierge_results'>
                             </div>
-    
-                        
+
+
                         </div>
                     </div>
-                    
-                    
-                    
-                
+
+
+
+
                 </div>
-        
-      
+
+
         </div>
     </div>
 </div>
