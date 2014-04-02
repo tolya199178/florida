@@ -8,6 +8,8 @@
  * @property string $search_origin
  * @property string $search_details
  * @property integer $search_count
+ * @property string $search_tag
+ * @property string $search_tag_type
  */
 /**
  * User activerecord model class provides a mechanism to keep data and their
@@ -42,6 +44,30 @@ class SearchLog extends CActiveRecord
 		return '{{search_log}}';
 	}
 
+	/**
+	 * Set rules for validation of model attributes. Each attribute is listed with its
+	 * ...associated rules. All attributes listed in the rules set forms a set of 'safe'
+	 * ...attributes that allow it to be used in massive assignment.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return array validation rules for model attributes.
+	 * @access public
+	 */
+	public function rules()
+	{
+
+		return array(
+			array('search_details',                              'required'),
+			array('search_count',                                'numerical', 'integerOnly'=>true),
+			array('search_origin, search_tag, search_tag_type',  'length', 'max'=>255),
+		    array('search_details',                              'length', 'max'=>4096),
+
+            // The following rule is used by search(). It only contains attributes that should be searched.
+			array('search_id, search_origin, search_details, search_count, search_tag, search_tag_type', 'safe', 'on'=>'search'),
+		);
+	}
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -65,6 +91,9 @@ class SearchLog extends CActiveRecord
 		$criteria->compare('search_id',       $this->search_id);
 		$criteria->compare('search_origin',   $this->search_origin,true);
 		$criteria->compare('search_details',  $this->search_details,true);
+		$criteria->compare('search_count',    $this->search_count);
+		$criteria->compare('search_tag',      $this->search_tag,true);
+		$criteria->compare('search_tag_type', $this->search_tag_type,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -77,7 +106,7 @@ class SearchLog extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return SearchLog the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
