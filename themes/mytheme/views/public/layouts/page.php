@@ -74,19 +74,41 @@ body {
                     <li><a href="#contact">Contact</a></li>
                     <li><a href="<?php echo Yii::app()->createUrl('concierge/'); ?>">Concierge</a></li>
                     <li class="dropdown"><a href="#" class="dropdown-toggle"
-                        data-toggle="dropdown">Cities<b class="caret"></b></a>
+                        data-toggle="dropdown">Businesses<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Add a business</a></li>
                             <li><a href="#">Claim your business</a></li>
-                            <li><a href="#">Report</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Nav header</li>
-                            <li><a href="#">Search</a></li>
-                            <li><a href="#">I want to...</a></li>
-                        </ul></li>
+                            <li><a href="#">Business Profile</a></li>
+                        </ul>
+                    </li>
+                </ul>
+<?php           if(!Yii::app()->user->isGuest) { ?>
+<?php
+    // TODO: Many menu items contain dummy links. This must be populated as supporting
+    // TODO: functionality is developed.
+?>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ><a href="#contact">Welcome <?php echo Yii::app()->user->getFirstName()?></a></li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle"
+                        data-toggle="dropdown">Manage Your Account<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?php echo Yii::app()->createUrl('webuser/account/manageprofile/'); ?>">Manage Profile</a></li>
+                            <li><a href="#changepassword">Change Password</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#friends">My friends</a></li>
+                            <li><a href="#invitations">Invitations</a></li>
+                            <li><a href="#discussions">Discussions</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#logout">Logout</a></li>
+                        </ul>
+                    </li>
                 </ul>
 
-                <?php if(Yii::app()->user->isGuest) {$this->widget('UserLogin');} ?>
+<?php           } ?>
+<?php           if(Yii::app()->user->isGuest) {$this->widget('UserLogin');} ?>
+
             </div>
             <!--/.navbar-collapse -->
         </div>
