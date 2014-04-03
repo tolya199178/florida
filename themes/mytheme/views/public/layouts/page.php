@@ -85,9 +85,9 @@ body {
                     </li>
                 </ul>
 <?php           if(!Yii::app()->user->isGuest) { ?>
-<?php 
+<?php
     // TODO: Many menu items contain dummy links. This must be populated as supporting
-    // TODO: functionality is developed. 
+    // TODO: functionality is developed.
 ?>
                 <ul class="nav navbar-nav navbar-right">
                     <li ><a href="#contact">Welcome <?php echo Yii::app()->user->getFirstName()?></a></li>
@@ -107,11 +107,7 @@ body {
                 </ul>
 
 <?php           } ?>
-
-
-                
-
-<?php               if(Yii::app()->user->isGuest) {$this->widget('UserLogin');} ?>
+<?php           if(Yii::app()->user->isGuest) {$this->widget('UserLogin');} ?>
 
             </div>
             <!--/.navbar-collapse -->
