@@ -159,4 +159,74 @@ class Category extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 * ...
+	 * ...Dropdown may send no selection as 0 or space, but table requires null
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+        if (empty($this->parent_id)) {
+            $this->parent_id = null;
+        }
+
+        return true;
+	}
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Functions Used to create a dropdown tree
+    // /////////////////////////////////////////////////////////////////////////
+    // TODO: Consider moving to a component class of its own.
+    private $listItems = array();
+
+    /**
+     * Create a tree dropdown based on the parent child relationships
+     *
+     * @param $parents  Array of Category models to draw list for
+     * @return array listitem with populated tree.
+     *
+     * @access public
+     */
+    public function makeDropDown($parents)
+    {
+        global $listItems;
+        $listItems = array();
+        $listItems['0'] = '-- Choose a Category --';
+        foreach ($parents as $parent) {
+
+            $listItems[$parent->category_id] = $parent->category_name;
+            $this->subDropDown($parent->categories);
+        }
+
+        return $listItems;
+    }
+
+    /**
+     * Create a tree dropdown based of a child
+     *
+     * @param $children  Array of children models to draw list for
+     * @param $space  String identation string
+     * @return array listitem with populated tree.
+     *
+     * @access private
+     */
+    private function subDropDown($children, $space = '---')
+    {
+        global $listItems;
+
+        foreach ($children as $child) {
+
+            $listItems[$child->category_id] = $space . $child->category_name;
+            $this->subDropDown($child->categories, $space . '---');
+        }
+    }
+
 }
