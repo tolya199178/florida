@@ -425,6 +425,26 @@ ADD CONSTRAINT fk_business_user_business
      FOREIGN KEY (business_id) 
      REFERENCES tbl_business(business_id);  
      
+
+-- ---------------------------------------------------------------------
+-- Category
+-- ---------------------------------------------------------------------
+ 
+DROP TABLE IF EXISTS `tbl_category`; 
+     
+CREATE TABLE `tbl_category` (
+  `category_id`             int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id`               int(11) DEFAULT NULL,
+  `category_name`           varchar(128) NOT NULL,
+  `category_description`    varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_category
+ADD CONSTRAINT fk_category_category_parent
+     FOREIGN KEY (parent_id) 
+     REFERENCES tbl_category(category_id);  
+ 
      
 -- ---------------------------------------------------------------------
 -- event
