@@ -31,7 +31,7 @@ class Category extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('category_name, category_description', 'required'),
+			array('category_name', 'required'),
 			array('parent_id', 'numerical', 'integerOnly'=>true),
 			array('category_name', 'length', 'max'=>128),
 			array('category_description', 'length', 'max'=>255),

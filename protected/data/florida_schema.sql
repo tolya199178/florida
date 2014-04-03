@@ -436,7 +436,7 @@ CREATE TABLE `tbl_category` (
   `category_id`             int(11) NOT NULL AUTO_INCREMENT,
   `parent_id`               int(11) DEFAULT NULL,
   `category_name`           varchar(128) NOT NULL,
-  `category_description`    varchar(255) NOT NULL,
+  `category_description`    varchar(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
