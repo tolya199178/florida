@@ -7,6 +7,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
 
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
 ?>
 <style>
 <!--
@@ -466,6 +467,8 @@ $('.cities .typeahead')
     function(data,status){
       $('#concierge_results').html(data);
 
+        $('input.rating').rating();
+
     });
 
   }
@@ -485,6 +488,8 @@ $('.cities .typeahead')
     $("#withwhat").on("change", function() {
       doSearch()
     });
+
+    // $('input.rating').rating();
 
 
 EOD;

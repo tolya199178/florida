@@ -14,7 +14,6 @@
         <div class="panel-body">
             <span class="business_description"><?php echo $data->business_description; ?></span>
 
-<!--             <div class='row'> -->
                 <div class="col-lg-12">
 
 
@@ -43,6 +42,9 @@
                             <div class="product-sale">$17</div>
                             <div class="product-prize">$36</div>
                             <div class="button-buy">
+<?php if (!Yii::app()->user->isGuest) { ?>
+                                <span class="label label-danger">Add to profile</span>
+<?php }?>
 <?php if ($data->claim_status == 'Unclaimed') { ?>
                                 <span class="label label-danger">Not claimed</span>
 <?php }?>
@@ -50,7 +52,6 @@
                                 <span class="label label-sucess">Featured</span>
 <?php }?>
 
-                                <span class="label label-warning">Advertiser</span>
                             </div>
 <!--                             <div class="add">Add</div> -->
                           </div>
@@ -79,10 +80,15 @@
                     </div>
 
                 </div>
-<!--             </div> -->
+
+<?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
+                <span><input type="number" name="your_awesome_parameter" id="some_id" class="rating" /></span>
+<?php } ?>
          </div>
 
     </div>
 
 
 </div>
+
+
