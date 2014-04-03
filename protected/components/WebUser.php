@@ -34,7 +34,7 @@ class WebUser extends CWebUser
     function getFullName()
     {
         $userModel = $this->loadUser(Yii::app()->user->id);
-        return $userModel->fullName();
+        return ($userModel->first_name . ' ' . $userModel->last_name);
     }
 
     function getRole()
@@ -71,7 +71,7 @@ class WebUser extends CWebUser
             return false;
         }
     }
-    
+
     // This is a function that checks the field 'role'
     // in the User model to be equal to constant defined in our User class
     // that means it's admin
@@ -89,7 +89,7 @@ class WebUser extends CWebUser
         }
     }
 
-    
+
     // Load user model.
     protected function loadUser($userId = null)
     {
