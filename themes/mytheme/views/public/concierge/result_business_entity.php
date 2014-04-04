@@ -12,7 +12,7 @@
         </div>
 
         <div class="panel-body">
-            <span class="business_description"><?php echo $data->business_description; ?></span>
+            <span class="business_description"><?php echo CHtml::Encode($data->business_description); ?></span>
 
                 <div class="col-lg-12">
 
@@ -37,10 +37,13 @@
                             <div class="sale">NEW</div>
                           </div>
                           <div class="info-block">
-                            <div class="product-title"><?php echo $data->business_name; ?></div>
-                            <div class="product-description"><?php echo $data->business_description; ?></div>
+                            <div class="product-title"><?php echo CHtml::Encode($data->business_name); ?></div>
+                            <div class="product-description"><?php echo CHtml::Encode($data->business_description); ?></div>
+                            <!--  TODO: Prices are hardcoded (POC only). Will be resolved when restaurant.com data comes online -->
                             <div class="product-sale">$17</div>
                             <div class="product-prize">$36</div>
+                            <!--  TODO: END: Prices are hardcoded (POC only). Will be resolved when restaurant.com data comes online -->
+
                             <div class="button-buy">
 <?php if (!Yii::app()->user->isGuest) { ?>
                                 <span class="label label-danger">Add to profile</span>
@@ -92,7 +95,7 @@
           if ($modelCategory != null)
           {
 ?>
-               <span class="label label-danger"><?php echo $modelCategory->category_name; ?></span>
+               <span class="label label-danger"><?php echo CHtml::Encode($modelCategory->category_name); ?></span>
 <?php
         }
 
