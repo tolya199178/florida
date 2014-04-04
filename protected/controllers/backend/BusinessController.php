@@ -8,7 +8,7 @@
  * Business Controller class to provide access to controller actions for clients.
  * The contriller action interfaces 'directly' with the Client. This controller
  * ...must therefore be responsible for input processing and response handling.
- * 
+ *
  * Usage:
  * ...Typical usage is from a web browser, by means of a URL
  * ...
@@ -30,19 +30,19 @@
  */
 class BusinessController extends BackEndController
 {
-    
+
     /**
      * @var string imagesDirPath Directory where Business images will be stored
      * @access private
      */
     private $imagesDirPath;
-    
+
     /**
      * @var string imagesDirPath Directory where Business image thumbnails will be stored
      * @access private
      */
     private $thumbnailsDirPath;
-    
+
     /**
      * @var string thumbnailWidth thumbnail width
      * @access private
@@ -66,15 +66,15 @@ class BusinessController extends BackEndController
     {
         $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business';
         $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business/thumbnails';
-        
+
         /*
          *     Small-s- 100px(width)
          *     Medum-m- 240px(width)
          *     Large-l- 600px(width)
          */
     }
-    
-    
+
+
 
     /**
      * Specify a list of filters to apply to action requests
@@ -91,7 +91,7 @@ class BusinessController extends BackEndController
 			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
-	
+
 	/**
 	 * Override CController access rules and provide base rules for derived class.
 	 * All derived classes will automatically inherit the access rules provided.
@@ -106,7 +106,7 @@ class BusinessController extends BackEndController
 	 */
     public function accessRules()
     {
-        
+
        // echo Yii::app()->user->isSuperAdmin();exit;
 
         return array(
@@ -115,16 +115,16 @@ class BusinessController extends BackEndController
                 'allow',
                 'expression' =>'Yii::app()->user->isSuperAdmin()',
                // 'actions'    =>array('create'),
-                
+
             ),
-            
+
             // delegate to business model methods to determine ownership
             array(
                 'allow',
                 'expression' =>'Yii::app()->user->isAdmin()',
                 'actions'    =>array('edit'),
             ),
-            
+
             // delegate to business model methods to determine ownership
             array(
                 'allow',
@@ -135,7 +135,7 @@ class BusinessController extends BackEndController
             array('deny'),
         );
 
-        
+
     }
 
 
@@ -144,10 +144,10 @@ class BusinessController extends BackEndController
 	 * ...The function is normally invoked twice:
 	 * ... - the (initial) GET request loads and renders the business details capture form
 	 * ... - the (subsequent) POST request saves the submitted post data as a Business record.
-	 * ...If the save (POST request) is successful, the default method (index()) is called.  
+	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
 	 * ...again with error messages from the Business validation (Business::rules())
-	 *  
+	 *
 	 * @param <none> <none>
 	 *
 	 * @return <none> <none>
@@ -155,45 +155,46 @@ class BusinessController extends BackEndController
 	 */
 	public function actionCreate()
 	{
-	    
+
 		$businessModel = new Business;
-	    	    
+
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
 	    // $this->performAjaxValidation($businessModel);
-	    
+
 	    if(isset($_POST['Business']))
 	    {
 
-	        $businessModel->attributes=$_POST['Business'];
-	        
+	        $businessModel->attributes             = $_POST['Business'];
+	        $businessModel->lstBusinessCategories  = $_POST['Business']['lstBusinessCategories'];
+
 	        $uploadedFile = CUploadedFile::getInstance($businessModel,'fldUploadImage');
 
 	        if($businessModel->save())
 	        {
 	            $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
 	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	            	                 
+
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
                     $uploadedFile->saveAs($imagePath);
                     $businessModel->image = $imageFileName;
-                    
+
                     $this->createThumbnail($imageFileName);
-                    
+
                     $businessModel->save();
                 }
-                
+
 	            $this->redirect(array('index'));
-	            	      
+
 	        }
 	        else {
                 Yii::app()->user->setFlash('error', "Error creating a business record.'");
 	        }
-	        
-	            
+
+
 	    }
-	    
+
 	    // Show the details screen
 	    $this->render('details',array(
 	        'model'=>$businessModel,
@@ -212,7 +213,7 @@ class BusinessController extends BackEndController
 	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
 	 * ...again with error messages from the Business validation (Business::rules())
-	 * 
+	 *
 	 * @param integer $business_id the ID of the model to be updated
 	 *
 	 * @return <none> <none>
@@ -220,11 +221,11 @@ class BusinessController extends BackEndController
 	 */
 	public function actionEdit($business_id)
 	{
-	    
-		$businessModel = Business::model()->findByPk($business_id);
+
+		$businessModel = Business::model()->findByPk((int) $business_id);
 		if($businessModel===null)
 		{
-		    throw new CHttpException(404,'The requested page does not exist.');		    
+		    throw new CHttpException(404,'The requested page does not exist.');
 		}
 
 
@@ -232,50 +233,61 @@ class BusinessController extends BackEndController
 		// TODO: Currently disabled as it breaks JQuery loading order
 		// $this->performAjaxValidation($businessModel);
 
+		// Get the list of business categories
+		$arrayBusinessCategories;
+		$lstBusinessCategories = BusinessCategory::model()->findAllByAttributes(array('business_id' => (int) $business_id));
+		foreach ($lstBusinessCategories as $itemBusinessCategory)
+		{
+		    $arrayBusinessCategory[] = $itemBusinessCategory->attributes['category_id'];
+		}
+		$businessModel->lstBusinessCategories = $arrayBusinessCategory;
+
 		if(isset($_POST['Business']))
 		{
             // Assign all fields from the form
-		    $businessModel->attributes=$_POST['Business'];
-		    
+		    $businessModel->attributes             = $_POST['Business'];
+
+		    $businessModel->lstBusinessCategories  = $_POST['Business']['lstBusinessCategories'];
+
 		    $uploadedFile = CUploadedFile::getInstance($businessModel,'fldUploadImage');
-		    
+
 		    // Make a note of the existing image file name. It will be deleted soon.
 		    $oldImageFileName = $businessModel->image;
-		    
+
 		    if(!empty($uploadedFile))  // check if uploaded file is set or not
 		    {
 		        // Save the image file name
 		        $businessModel->image = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
 		    }
-		    
+
 		    if($businessModel->save())
 		    {
-		         
+
 		        if(!empty($uploadedFile))  // check if uploaded file is set or not
 		        {
-		            
+
 		            $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
 		            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-		            
+
 		            // Remove existing images
 		            if (!empty($oldImageFileName))
 		            {
-		                $this->deleteImages($oldImageFileName);		                
+		                $this->deleteImages($oldImageFileName);
 		            }
 
 		            // Save the new uploaded image
 		            $uploadedFile->saveAs($imagePath);
-		    
+
 		            $this->createThumbnail($imageFileName);
 		        }
-		    
+
 		        $this->redirect(array('index'));
-		    
+
 		    }
 		    else {
 		        Yii::app()->user->setFlash('error', "Error creating a business record.'");
 		    }
-				
+
 		}
 
 		$this->render('details',array(
@@ -289,7 +301,7 @@ class BusinessController extends BackEndController
 	 * ...Currently, instead of physically deleting the entry, the record is
 	 * ...modified with the status fields set to 'deleted'
 	 * ...We also expect a JSON request only, and return a JSON string providing
-	 * ...outcome details. 
+	 * ...outcome details.
 	 *
 	 * @param <none> <none>
 	 *
@@ -298,24 +310,24 @@ class BusinessController extends BackEndController
 	 */
 	public function actionDelete()
 	{
-	    
+
 	    // TODO: add proper error message . iether flash or raiseerror. Might
 	    // be difficult when sending ajax response.
-	    
+
 	    // TODO: Only process ajax request
         $businessId = $_POST['business_id'];
-        $businessModel = Business::model()->findByPk($businessId);
-                
+        $businessModel = Business::model()->findByPk((int)$businessId);
+
         if ($businessModel == null)
         {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Invalid business"}';
             Yii::app()->end();
         }
-        
+
 
         $result = $businessModel->delete();
-                	    
+
         if ($result == false)
         {
             header("Content-type: application/json");
@@ -326,12 +338,12 @@ class BusinessController extends BackEndController
         {
             $this->deleteImages($businessModel->image);
         }
-        
-        
-        
+
+
+
         echo '{"result":"success", "message":""}';
         Yii::app()->end();
-         
+
 	}
 
 
@@ -350,7 +362,7 @@ class BusinessController extends BackEndController
 	    // Default action is to show all businesss.
 	    $this->redirect(array('list'));
 	}
-	
+
 
 	/**
 	 * Show all businesss. Renders the business listing view.
@@ -367,12 +379,12 @@ class BusinessController extends BackEndController
 	        'dataProvider'=>$dataProvider,
 	    ));
 	}
-	
+
 	/**
 	 * Generates a JSON encoded list of all businesss.
 	 * The output is customised for the datatables Jquery plugin.
 	 * http://www.datatables.net
-	 * 
+	 *
 	 * The table plugins send a request for a JSON list based on criteria
 	 * ...determined by default settings or business bahaviour.
 	 *
@@ -387,26 +399,26 @@ class BusinessController extends BackEndController
         // Create a Db Criteria to filter and customise the resulting results
         // /////////////////////////////////////////////////////////////////////
         $searchCriteria = new CDbCriteria;
-        
+
         // Paging criteria
         // Set defaults
         $limitStart 	           = isset($_POST['start'])?$_POST['start']:0;
         $limitItems 	           = isset($_POST['length'])?$_POST['length']:Yii::app()->params['PAGESIZEREC'];
-        
+
         $searchCriteria->limit 		 = $limitItems;
         $searchCriteria->offset 	 = $limitStart;
-                        
+
          if (isset($_POST['search']['value']) && (strlen($_POST['search']['value']) > 2))
-         {             
-             $searchCriteria->addSearchCondition('t.business_name', $_POST['search']['value'], true);                          
+         {
+             $searchCriteria->addSearchCondition('t.business_name', $_POST['search']['value'], true);
          }
-        
-        
+
+
         $business_list      = Business::model()->findAll($searchCriteria);
-        
+
         $rows_count 		= Business::model()->count($searchCriteria);;
         $total_records 		= Business::model()->count();
-       
+
         /*
          * Output
          */
@@ -415,7 +427,7 @@ class BusinessController extends BackEndController
             "iTotalDisplayRecords"  => $total_records,
             "aaData"                => array()
         );
-        
+
         foreach($business_list as $r){
 
             $row = array($r->attributes['business_id'],
@@ -433,7 +445,7 @@ class BusinessController extends BackEndController
         }
 
         echo json_encode($output);
-	    
+
 	}
 
 
@@ -453,7 +465,7 @@ class BusinessController extends BackEndController
 			Yii::app()->end();
 		}
 	}
-	
+
 	/**
 	 * Delete images for the business. Normally invoked when business is being deleted.
 	 *
@@ -466,22 +478,22 @@ class BusinessController extends BackEndController
 	{
         $imagePath          = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
         @unlink($imagePath);
-        
+
         $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
         @unlink($thumbnailPath);
 	}
-	
+
 	/**
 	 * Create a thumbnail image from the filename give, Store it in the thumnails folder.
 	 *
 	 * @param <none> <none>
-	 * 
+	 *
 	 * @return <none> <none>
 	 * @access public
 	 */
 	private function createThumbnail($imageFileName, $sizeWidth = 0, $sizeHeight = 0)
 	{
-	    
+
 	    if ($sizeWidth == 0)
 	    {
 	        $sizeWidth     = $this->thumbnailWidth;
@@ -490,19 +502,19 @@ class BusinessController extends BackEndController
 	    {
 	        $sizeHeight    = $this->thumbnailHeight;
 	    }
-	    
+
 	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 	    $imagePath         = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	    
+
 	    $imgThumbnail              = new Thumbnail;
 	    $imgThumbnail->PathImgOld  = $imagePath;
 	    $imgThumbnail->PathImgNew  = $thumbnailPath;
-	    
+
 	    $imgThumbnail->NewWidth    = $sizeWidth;
 	    $imgThumbnail->NewHeight   = $sizeHeight;
-	    
+
 	    $result = $imgThumbnail->create_thumbnail_images();
-	    
+
 	    if (!$result)
 	    {
 	        return false;
@@ -513,5 +525,5 @@ class BusinessController extends BackEndController
 	    }
 
 	}
-	
+
 }
