@@ -84,6 +84,20 @@
 <?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
                 <span><input type="number" name="your_awesome_parameter" id="some_id" class="rating" /></span>
 <?php } ?>
+
+<?php
+      foreach ($data->businessCategories as $business_category)
+      {
+          $modelCategory = Category::model()->findByPk($business_category->category_id);
+          if ($modelCategory != null)
+          {
+?>
+               <span class="label label-danger"><?php echo $modelCategory->category_name; ?></span>
+<?php
+        }
+
+      }
+?>
          </div>
 
     </div>
