@@ -45,6 +45,8 @@
  * @property User $createdBy
  * @property User $modifiedBy
  * @property User $addRequestProcessedBy
+ * @property BusinessActivity[] $businessActivities
+ * @property BusinessCategory[] $businessCategories
  * @property BusinessUser[] $businessUsers
  * @property RestaurantCertificate[] $restaurantCertificates
  */
@@ -96,6 +98,13 @@ class Business extends CActiveRecord
      */
     public $thumbnailUrl;
 
+    /**
+     *
+     * @var array list of assigned category (ids), fk to categories table
+     * @access public
+     */
+    public $lstBusinessCategories;
+
 
     /**
      * Get database table name associated with the model.
@@ -137,8 +146,6 @@ class Business extends CActiveRecord
 		    array('add_request_rejection_reason, claim_rejection_reason',        'length', 'max'=>255),
 
 		    array('business_activities',                                         'length', 'max'=>255),
-
-
 
 		    // ranges
 			array('business_allow_review,
@@ -182,6 +189,7 @@ class Business extends CActiveRecord
 			'modifiedBy'             => array(self::BELONGS_TO, 'User', 'modified_by'),
 			'addRequestProcessedBy'  => array(self::BELONGS_TO, 'User', 'add_request_processed_by'),
 		    'businessActivities'     => array(self::HAS_MANY,   'BusinessActivity', 'business_id'),
+		    'businessCategories'     => array(self::HAS_MANY,   'BusinessCategory', 'business_id'),
 			'businessUsers'          => array(self::HAS_MANY,   'BusinessUser', 'business_id'),
 			'restaurantCertificates' => array(self::HAS_MANY,   'RestaurantCertificate', 'business_id'),
 		);
@@ -325,6 +333,44 @@ class Business extends CActiveRecord
         // /////////////////////////////////////////////////////////////////
         $this->modified_time = new CDbExpression('NOW()');
         $this->modified_by   = Yii::app()->user->id;
+
+	    return parent::beforeSave();
+	}
+
+	/**
+	 * Runs just after the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * ...We save the assigned categories
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function afterSave() {
+
+	    $dbTransaction = Yii::app()->db->beginTransaction();;
+	    try
+	    {
+	            $modelBusinessCategory = BusinessCategory::model()->deleteAllByAttributes(array('business_id'=> $this->business_id));
+
+        	    foreach ($this->lstBusinessCategories as $businessCategoryId)
+        	    {
+                    $modelBusinessCategory = new BusinessCategory;
+                    $modelBusinessCategory->business_id = $this->business_id;
+                    $modelBusinessCategory->category_id = $businessCategoryId;
+
+                    $modelBusinessCategory->save();
+        	    }
+	            $dbTransaction->commit();
+	    }
+	    catch(Exception $e) // an exception is raised if a query fails
+	    {
+	        $dbTransaction->rollback();
+	        throw new CHttpException(405,'Something went wrong trying to replace business categories.');
+	    }
 
 	    return parent::beforeSave();
 	}

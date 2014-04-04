@@ -447,6 +447,32 @@ ADD CONSTRAINT fk_category_category_parent
  
      
 -- ---------------------------------------------------------------------
+-- Business Category
+-- ---------------------------------------------------------------------
+ 
+ DROP TABLE IF EXISTS `tbl_business_category`;
+  
+ CREATE TABLE `tbl_business_category` (
+  `business_category_id`    int(11) NOT NULL AUTO_INCREMENT,
+  `business_id`             int(11) NOT NULL,    -- fk to business
+  `category_id`             int(11) NOT NULL,    -- fk to user 
+  `primary_category`        enum('Y', 'N') DEFAULT 'N',
+  PRIMARY KEY        (`business_category_id`),
+  UNIQUE KEY         `idx_business_primary_category` (`business_id`,`category_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+  
+  
+ALTER TABLE tbl_business_category
+ADD CONSTRAINT fk_business_category_category
+     FOREIGN KEY (category_id) 
+     REFERENCES tbl_category(category_id)
+     
+     
+ALTER TABLE tbl_business_category
+ADD CONSTRAINT fk_business_category_business
+     FOREIGN KEY (business_id) 
+     REFERENCES tbl_business(business_id); 
+-- ---------------------------------------------------------------------
 -- event
 -- ---------------------------------------------------------------------
  DROP TABLE IF EXISTS `tbl_event`;
