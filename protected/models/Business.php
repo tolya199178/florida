@@ -45,6 +45,8 @@
  * @property User $createdBy
  * @property User $modifiedBy
  * @property User $addRequestProcessedBy
+ * @property BusinessActivity[] $businessActivities
+ * @property BusinessCategory[] $businessCategories
  * @property BusinessUser[] $businessUsers
  * @property RestaurantCertificate[] $restaurantCertificates
  */
@@ -187,6 +189,7 @@ class Business extends CActiveRecord
 			'modifiedBy'             => array(self::BELONGS_TO, 'User', 'modified_by'),
 			'addRequestProcessedBy'  => array(self::BELONGS_TO, 'User', 'add_request_processed_by'),
 		    'businessActivities'     => array(self::HAS_MANY,   'BusinessActivity', 'business_id'),
+		    'businessCategories'     => array(self::HAS_MANY,   'BusinessCategory', 'business_id'),
 			'businessUsers'          => array(self::HAS_MANY,   'BusinessUser', 'business_id'),
 			'restaurantCertificates' => array(self::HAS_MANY,   'RestaurantCertificate', 'business_id'),
 		);
