@@ -4,7 +4,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 
 -- ---------------------------------------------------------------------
--- places subscribed
+-- places user
 -- ---------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_user`;
 
@@ -425,7 +425,29 @@ ADD CONSTRAINT fk_business_user_business
      FOREIGN KEY (business_id) 
      REFERENCES tbl_business(business_id);  
      
+-- ---------------------------------------------------------------------
+-- User subscribed Businesses
+-- ---------------------------------------------------------------------
 
+  DROP TABLE IF EXISTS `tbl_subscribed_business`;
+  
+  CREATE TABLE `tbl_subscribed_business` (
+    `subscribed_business_id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `business_id` int(11) NOT NULL,
+  PRIMARY KEY (`subscribed_business_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+ALTER TABLE tbl_subscribed_business
+ADD CONSTRAINT fk_subscribed_business_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_subscribed_business
+ADD CONSTRAINT fk_subscribed_business_business
+     FOREIGN KEY (business_id) 
+     REFERENCES tbl_business(business_id);
+     
 -- ---------------------------------------------------------------------
 -- Category
 -- ---------------------------------------------------------------------
