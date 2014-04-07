@@ -822,7 +822,7 @@ COMMIT;
  CREATE TABLE `tbl_business_activity` (
   `business_activity_id`    int(11) NOT NULL AUTO_INCREMENT,
   `business_id`             int(11) NOT NULL,    -- fk to biz
-  `activity_id`             int(11) NOT NULL,    -- fk to activity 
+  `activity_id`             int(11) NOT NULL,    -- fk to activity  
   PRIMARY KEY        (`business_activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
@@ -836,6 +836,29 @@ ALTER TABLE tbl_business_activity
 ADD CONSTRAINT fk_business_activity_activity_id
      FOREIGN KEY (activity_id) 
      REFERENCES tbl_activity(activity_id);
+
+     
+-- ---------------------------------------------------------------------
+-- activity
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `tbl_activity_type`;
+
+ CREATE TABLE `tbl_activity_type` (
+    `activity_type_id`  int(11) NOT NULL AUTO_INCREMENT,
+    `keyword`           varchar(255) NOT NULL,
+    `activity_id`       int(11) NOT NULL,    -- fk to activity
+    `language`          varchar(8) NOT NULL DEFAULT 'en',
+    `related_words`     text,
+  PRIMARY KEY (`activity_type_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+  
+
+ALTER TABLE tbl_activity_type
+ADD CONSTRAINT fk_activity_type_activity_id
+     FOREIGN KEY (activity_id) 
+     REFERENCES tbl_activity(activity_id);
+       
 
 -- ---------------------------------------------------------------------
 -- CSV Import
