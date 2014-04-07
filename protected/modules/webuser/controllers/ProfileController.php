@@ -72,8 +72,10 @@ class ProfileController extends Controller
 		    else
 		    {
 		        // Add the business to the user's profile. Don't do anything if the user is already subscribed.
-		        $modelBusinessSubscription = SubscribedBusiness::model()->findByAttributes(array('user_id'=> Yii::app()->user->id, 'business_id' => $argBusinessId));
-		        if ($modelBusinessSubscription === null)
+		        // $modelBusinessSubscription = SubscribedBusiness::model()->findByAttributes(array('user_id'=> Yii::app()->user->id, 'business_id' => $argBusinessId));
+		        $boolSubscribedStatus = SubscribedBusiness::isSubcribed(Yii::app()->user->id,$argBusinessId);
+
+		        if ($boolSubscribedStatus === false)
 		        {
 		            $modelBusinessSubscription                  = new SubscribedBusiness;
                     $modelBusinessSubscription->user_id         = $userId;
@@ -92,7 +94,6 @@ class ProfileController extends Controller
 		        header('Content-Type: application/json');
 		        echo CJSON::encode($jsonResult);
 		        Yii::app()->end();
-
 
 		    }
 		}
