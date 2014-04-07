@@ -467,6 +467,30 @@ ADD CONSTRAINT fk_category_category_parent
      FOREIGN KEY (parent_id) 
      REFERENCES tbl_category(category_id);  
  
+-- ---------------------------------------------------------------------
+-- Business Rating
+-- ---------------------------------------------------------------------
+ 
+DROP TABLE IF EXISTS `tbl_business_rating`; 
+     
+CREATE TABLE `tbl_business_rating` (
+  `business_rating_id`      int(11) NOT NULL AUTO_INCREMENT,
+  `business_id`             int(11) NOT NULL,
+  `user_id`                 int(11) NOT NULL,
+  `rating`                  int(11) DEFAULT NULL,
+  PRIMARY KEY (`business_rating_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_business_rating
+ADD CONSTRAINT tbl_business_rating_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_business_rating
+ADD CONSTRAINT tbl_business_rating_business
+     FOREIGN KEY (business_id) 
+     REFERENCES tbl_business(business_id);
+ 
      
 -- ---------------------------------------------------------------------
 -- Business Category
