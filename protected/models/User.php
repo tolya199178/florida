@@ -63,6 +63,7 @@
  * @property SavedSearch[] $savedSearches
  * @property UserEvent[] $userEvents
  * @property SubscribedBusiness[] $subscribedBusinesses
+ * @property BusinessRating[] $businessRatings
  *
  */
 
@@ -241,6 +242,7 @@ class User extends CActiveRecord
 			'userEvents'         => array(self::HAS_MANY, 'UserEvent', 'user_id'),
 			'mobileCarrier'      => array(self::BELONGS_TO, 'MobileCarrier', 'mobile_carrier_id'),
 			'subscribedBusinesses' => array(self::HAS_MANY, 'SubscribedBusiness', 'user_id'),
+			'businessRatings'    => array(self::HAS_MANY, 'BusinessRating', 'user_id'),
 		);
     }
 
