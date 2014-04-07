@@ -822,7 +822,7 @@ COMMIT;
  CREATE TABLE `tbl_business_activity` (
   `business_activity_id`    int(11) NOT NULL AUTO_INCREMENT,
   `business_id`             int(11) NOT NULL,    -- fk to biz
-  `activity_id`             int(11) NOT NULL,    -- fk to activity 
+  `activity_id`             int(11) NOT NULL,    -- fk to activity  
   PRIMARY KEY        (`business_activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
