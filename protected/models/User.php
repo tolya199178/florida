@@ -62,7 +62,9 @@
  * @property PlacesVisited[] $placesVisiteds
  * @property SavedSearch[] $savedSearches
  * @property UserEvent[] $userEvents
- * 
+ * @property SubscribedBusiness[] $subscribedBusinesses
+ * @property BusinessRating[] $businessRatings
+ *
  */
 
 /**
@@ -84,7 +86,7 @@
  */
 class User extends CActiveRecord
 {
-    
+
     // /////////////////////////////////////////////////////////////////////////
     // Scenario constants
     // /////////////////////////////////////////////////////////////////////////
@@ -93,18 +95,18 @@ class User extends CActiveRecord
     const SCENARIO_FORGOT_PASSWORD  = 'forgot-password';
     const SCENARIO_LOGIN            = 'login';
     const SCENARIO_VALIDATION       = 'validation';
-    
+
     const USER_TYPE_SUPERADMIN      = 'superadmin';
     const USER_TYPE_ADMIN           = 'admin';
     const USER_TYPE_BUSINESS        = 'business_user';
     const USER_TYPE_USER            = 'user';
-    
-    
-    
+
+
+
     // /////////////////////////////////////////////////////////////////////////
     // Attributes to be used for form processing only
     // /////////////////////////////////////////////////////////////////////////
-    
+
     /**
      * Form only. Used to verify the password entered.
      *
@@ -115,8 +117,8 @@ class User extends CActiveRecord
      */
     public $fldVerifyPassword;
 
-    
-    
+
+
     /**
      * Get database table name associated with the model.
      *
@@ -145,29 +147,29 @@ class User extends CActiveRecord
     {
         // NOTE: you should only define rules for those attributes that will receive user inputs.
         return array(
-            
+
             // Mandatory rules
             array('user_name, email, first_name,
                    last_name',   'required'),
             array('password, user_name',            'required', 'on' => array(self::SCENARIO_CHANGE_PASSWORD,self::SCENARIO_LOGIN,self::SCENARIO_REGISTER)),
             array('activation_code',                'required', 'on' => self::SCENARIO_VALIDATION),
             array('email',                          'required', 'on' => self::SCENARIO_FORGOT_PASSWORD),
-            
+
             // Data types, sizes
             array('mobile_carrier_id',              'numerical', 'integerOnly'=>true),
-            array('user_name, email, password, 
-                   first_name, last_name, 
+            array('user_name, email, password,
+                   first_name, last_name,
                    activation_code, facebook_id,
-                   facebook_name, hometown, 
+                   facebook_name, hometown,
                    places_want_to_visit, image',    'length', 'max'=>255),
             array('mobile_number',                  'length', 'max'=>64),
-            
+
             array('email, user_name',               'email', 'checkMX'=>false),
-            
+
             array('email', 'unique'),
             array('user_name', 'unique'),
 
-            
+
             // ranges
             array('user_type',                      'in','range'=>array('superadmin','admin','user','business_user'),'allowEmpty'=>false),
             array('status',                         'in','range'=>array('inactive','active','deleted','banned'),'allowEmpty'=>false),
@@ -177,7 +179,7 @@ class User extends CActiveRecord
 
             array('registered_with_fb',             'in','range'=>array('Y','N'),'allowEmpty'=>false),
             array('loggedin_with_fb',               'in','range'=>array('Y','N'),'allowEmpty'=>false),
-            
+
             array('marital_status',                 'in','range'=>array('Married','Single','Unknown'),'allowEmpty'=>true),
             array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
             array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
@@ -189,14 +191,14 @@ class User extends CActiveRecord
 
             // compare entered and verified password. Only for change password and register screens.
             array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_REGISTER)),
-            
+
             array('date_of_birth', 'safe'),
-            
+
             // The following rule is used by search(). It only contains attributes that should be searched.
             array('user_id, user_name, email, first_name, last_name, user_type, status,
-                   created_by, modified_by, activation_code, activation_status, activation_time, 
-                   facebook_id, facebook_name, registered_with_fb, loggedin_with_fb, 
-                   login_status, last_login, mobile_number, mobile_carrier_id, send_sms_notification, 
+                   created_by, modified_by, activation_code, activation_status, activation_time,
+                   facebook_id, facebook_name, registered_with_fb, loggedin_with_fb,
+                   login_status, last_login, mobile_number, mobile_carrier_id, send_sms_notification,
                    date_of_birth, hometown, marital_status, places_want_to_visit',
                   'safe', 'on'=>'search'),
         );
@@ -239,6 +241,8 @@ class User extends CActiveRecord
 			'users1'             => array(self::HAS_MANY, 'User', 'created_by'),
 			'userEvents'         => array(self::HAS_MANY, 'UserEvent', 'user_id'),
 			'mobileCarrier'      => array(self::BELONGS_TO, 'MobileCarrier', 'mobile_carrier_id'),
+			'subscribedBusinesses' => array(self::HAS_MANY, 'SubscribedBusiness', 'user_id'),
+			'businessRatings'    => array(self::HAS_MANY, 'BusinessRating', 'user_id'),
 		);
     }
 
@@ -334,8 +338,8 @@ class User extends CActiveRecord
         $criteria->compare('date_of_birth',         $this->date_of_birth,true);
         $criteria->compare('hometown',              $this->hometown,true);
         $criteria->compare('marital_status',        $this->marital_status);
-        $criteria->compare('places_want_to_visit',  $this->places_want_to_visit,true);   
-        
+        $criteria->compare('places_want_to_visit',  $this->places_want_to_visit,true);
+
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
@@ -348,49 +352,49 @@ class User extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return User the static model class
-     * 
+     *
      * @access public
      */
     public static function model($className=__CLASS__)
     {
         return parent::model($className);
     }
-    
+
     /**
      * Runs just before the models save method is invoked. It provides a change to
      * ...further prepare the data for saving. The CActiveRecord (parent class)
      * ...beforeSave is called to process any raised events.
-     * 
+     *
      * @param <none> <none>
-     * @return boolean the decision to continue the save or not.  
+     * @return boolean the decision to continue the save or not.
      *
      * @access public
      */
     public function beforeSave() {
-        
+
         // /////////////////////////////////////////////////////////////////////
         // Some scenarios only require certain fields to be updated. We handle
         // ...this separately.
         // /////////////////////////////////////////////////////////////////////
-        
+
         if ($this->scenario == self::SCENARIO_LOGIN)
         {
             /** Login scenario */
             $this->last_login = new CDbExpression('NOW()');
         }
-        
+
         if ($this->scenario == self::SCENARIO_VALIDATION)
         {
             /** Account activation scenario */
-            
+
             if ($this->activation_status == 'activated')
             {
                 $this->activation_code = '';
                 $this->status          = 'active';
-                $this->activation_time = new CDbExpression('NOW()');                
+                $this->activation_time = new CDbExpression('NOW()');
             }
         }
-        
+
         if ( ($this->scenario == self::SCENARIO_CHANGE_PASSWORD) ||
              ($this->scenario == self::SCENARIO_REGISTER) ||
              ($this->scenario == 'insert') ||
@@ -398,23 +402,23 @@ class User extends CActiveRecord
            )
         {
             /** Password change scenario */
-        
+
             // /////////////////////////////////////////////////////////////////////
             // Encrypt the password. Only do this if the password is set
             // /////////////////////////////////////////////////////////////////////
             if (isset($this->password) && (!empty($this->password)))
             {
-                 
+
                 $salt              =  utf8_encode( mcrypt_create_iv(30) );
                 $password_hash     =  utf8_encode( crypt($this->user_name.$this->password, $salt) );
                 $this->password    =  $password_hash;
-            
+
             }
         }
-        
-    
+
+
         /** All other scenarios */
-                    
+
         // /////////////////////////////////////////////////////////////////////
         // Set the create time and user for new records
         // /////////////////////////////////////////////////////////////////////
@@ -427,15 +431,15 @@ class User extends CActiveRecord
         {
             $this->modified_by   = isset(Yii::app()->user->id)?Yii::app()->user->id:1;
         }
-        
+
         // /////////////////////////////////////////////////////////////////////
         // The modified log details is set for record creation and update
         // /////////////////////////////////////////////////////////////////////
         $this->modified_time = new CDbExpression('NOW()');
-    
+
         return parent::beforeSave();
     }
-    
+
     /**
      * Default scope which is applied to all seaches in the model. The default
      * ...scope is not honored when other scopes are applied. Should not be
@@ -452,10 +456,10 @@ class User extends CActiveRecord
             'condition'=>"status <> 'deleted'"
         );
     }
-    
+
     /**
      * Build an associative list of user type values.
-     * 
+     *
      * @param <none> <none>
      * @return array associatve list of user type values
      *
@@ -468,7 +472,7 @@ class User extends CActiveRecord
                      'user'             => 'User',
                      'business_user'    => 'Business User');
     }
-    
+
     /**
      * Build an associative list of user status values.
      *
@@ -478,13 +482,13 @@ class User extends CActiveRecord
      * @access public
      */
     public function listStatus() {
-    
+
         return array('inactive'     => 'Inactive',
                      'active'       => 'Active',
                      // 'deleted'      => 'Deleted',  Don't show this to the user
                      'banned'       => 'Banned');
     }
-    
+
     /**
      * Build an associative list of activation status values.
      *
@@ -494,10 +498,10 @@ class User extends CActiveRecord
      * @access public
      */
     public function listActivationStatus() {
-    
+
         return array('activated' => 'Activated', 'not_activated' => 'Not Activated');
     }
-    
+
     /**
      * Build an associative list of marital status values.
      *
@@ -507,10 +511,10 @@ class User extends CActiveRecord
      * @access public
      */
     public function listMaritalStatus() {
-    
+
         return array('Married' =>'Married', 'Single' => 'Single', 'Unknown' => 'Unknown');
     }
-    
+
     /**
      * Build an associative list of permission values.
      *
@@ -520,8 +524,8 @@ class User extends CActiveRecord
      * @access public
      */
     public function listPermissions() {
-    
+
         return array('none' => 'Do not share','friends' => 'My Friends', 'all' => 'Everybody');
     }
-    
+
 }
