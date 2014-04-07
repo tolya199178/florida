@@ -420,6 +420,14 @@ div.bootstrap-tagsinput {
 /*   width: 250px; */
 /* } */
 
+
+.result_button_link  {
+  color: #fff;
+}
+
+.add:hover {
+  color: #fff;
+}
 -->
 </style>
 
@@ -486,6 +494,34 @@ $('.cities .typeahead')
       doSearch()
     });
 
+    $('body').on('click', 'a.result_button_link', function(event) {
+
+        var url         = $(this).attr("href");
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: null,
+			dataType 	: 'json'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            var results = JSON.parse(data);
+
+            if (results.result == false)
+            {
+                alert(results.message);
+            }
+
+		});
+
+       event.preventDefault();
+       return false;
+
+
+    });
 
 EOD;
 
