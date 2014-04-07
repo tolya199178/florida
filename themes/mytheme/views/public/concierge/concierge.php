@@ -526,6 +526,38 @@ $('.cities .typeahead')
 
     });
 
+    $('body').on('change', '.rating', function() {
+
+        debugger;
+        alert("Changed: " + $(this).val());
+
+        var url = '/webuser/profile/reviewbusiness/';
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: {
+                             business_id:$(this).attr('rel'),
+                             rating:$(this).val()
+                          },
+			dataType 	: 'json'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            var results = JSON.parse(data);
+
+            if (results.result == false)
+            {
+                alert(results.message);
+            }
+
+		});
+
+    });
+
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);

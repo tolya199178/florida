@@ -1,7 +1,7 @@
 <?php
 // print_r($data->attributes);
 ?>
-<div class="col-lg-3">
+<div class="col-lg-4">
 
     <div class="panel panel-warning">
 
@@ -62,31 +62,13 @@
                         </div>
                       </div>
                       <input type="checkbox" name="play" id="play" /><label for="play"><span></span></label>
-                      <div class="jvideo">
-<?php               if(@GetImageSize('./'.$data->getThumbnailUrl()))
-                    {
-                        echo CHtml::image($data->getThumbnailUrl(), "Image", array('class'=>"product-img"));
-                    }
-                    else
-                    {
-                        echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg', "No image available", array('class'=>"product-img"));
-                    }
-?>
-                      </div>
-                       <div class="more"></div>
-                    <!--     <div class="nav"> -->
-                    <!--       <ul> -->
-                    <!--         <li>Share</li> -->
-                    <!--         <li>Info</li> -->
-                    <!--         <li>Seller</li> -->
-                    <!--       </ul> -->
-                    <!--     </div> -->
+
                     </div>
 
                 </div>
 
 <?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
-                <span><input type="number" name="your_awesome_parameter" id="some_id" class="rating" /></span>
+                <span><input type="number" name="your_awesome_parameter" id="some_id"  class="rating" rel="<?php echo $data->business_id; ?>" /></span>
 <?php } ?>
 
 <?php
