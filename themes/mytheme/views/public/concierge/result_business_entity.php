@@ -43,8 +43,12 @@
                             <div class="product-sale">$17</div>
                             <div class="product-prize">$36</div>
                             <div class="button-buy">
-<?php if ($data->claim_status == 'Unclaimed') { ?>
-                                <span class="label label-danger">Not claimed</span>
+
+<?php if ((!Yii::app()->user->isGuest) && (!SubscribedBusiness::isSubcribed(Yii::app()->user->id, $data->business_id)))  { ?>
+                                <span class="label label-danger"><?php echo CHtml::link('Add to profile', Yii::app()->createUrl('/webuser/profile/addbusiness', array('business_id' => $data->business_id  )), array('class' => 'result_button_link', 'rel' => $data->business_id)); ?></span>
+<?php }?>
+<?php if (!Yii::app()->user->isGuest) { ?>
+                                <span class="label label-danger">Connect to Friend</span>
 <?php }?>
 <?php if ($data->is_featured == 'Y') { ?>
                                 <span class="label label-sucess">Featured</span>
@@ -79,7 +83,37 @@
                     </div>
 
                 </div>
-<!--             </div> -->
+
+<?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
+                <span><input type="number" name="your_awesome_parameter" id="some_id" class="rating" /></span>
+<?php } ?>
+
+<?php
+      // Business categories
+      foreach ($data->businessCategories as $business_category)
+      {
+          $modelCategory = Category::model()->findByPk($business_category->category_id);
+          if ($modelCategory != null)
+          {
+?>
+               <span class="label label-sucess"><?php echo CHtml::Encode($modelCategory->category_name); ?></span>
+<?php
+        }
+
+      }
+?>
+
+<?php
+        // Keywords. stored as a comma seperated list
+        $lstKeywords = explode(",", CHTML::encode($data->business_keywords));
+        foreach ($lstKeywords as $keyword)
+        {
+?>
+              <span class="label label-danger"><?php echo $keyword; ?></span>
+<?php
+        }
+?>
+
          </div>
 
     </div>

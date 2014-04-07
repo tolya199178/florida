@@ -128,4 +128,22 @@ class SubscribedBusiness extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+
+	/**
+	 * Helper function to detirmine is a given user is already subscribed to a given business.
+	 *
+	 * @param integer $userId The user key  of the requested user
+	 * @param integer $businessId The business key of the requested user
+	 * @return boolean True if subscribed, false otherwise
+	 *
+	 * @access public
+	 */
+	public static function isSubcribed($userId, $businessId)
+	{
+	    $modelBusinessSubscription = SubscribedBusiness::model()->findByAttributes(array('user_id'=> $userId, 'business_id' => $businessId));
+	    return (($modelBusinessSubscription != null)?true:false);
+	}
+
+
 }
