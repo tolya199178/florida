@@ -7,6 +7,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
 
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
 ?>
 <style>
 <!--
@@ -474,6 +475,8 @@ $('.cities .typeahead')
     function(data,status){
       $('#concierge_results').html(data);
 
+        // $('input.rating').rating();
+
     });
 
   }
@@ -522,6 +525,79 @@ $('.cities .typeahead')
 
 
     });
+
+    $('body').on('change', '.rating', function() {
+
+        var url = '/webuser/profile/reviewbusiness/';
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: {
+                             business_id:$(this).attr('rel'),
+                             rating:$(this).val()
+                          },
+			dataType 	: 'json'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            var results = JSON.parse(data);
+
+            if (results.result == false)
+            {
+                alert(results.message);
+            }
+
+		});
+
+    });
+
+
+
+    // Business Review popover settings
+    var popOverSettings = {
+        placement: 'bottom',
+        container: 'body',
+        html: true,
+        selector: '[rel="review_popover"]',
+        content: function () {
+            var refid = $(this).attr('refid');
+            $('#review_business_id').val(refid);
+            return $('#review-box').html();
+        }
+    }
+
+    $('body').popover(popOverSettings);
+    // Hide
+    $('body').on('click', '.close-review', function() {
+          $('[rel="review_popover"]').popover('hide');
+    });
+
+
+    $('body').on('submit', '#review_form', function(event) {
+
+        event.preventDefault();
+
+        var form_values = $(this).serialize();
+        var url = '/webuser/profile/reviewbusiness/';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                   alert(data);
+               }
+        });
+
+        $('[rel="review_popover"]').popover('hide');
+        return false; // avoid to execute the actual submit of the form.
+    });
+
+
 
 EOD;
 
@@ -595,3 +671,21 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         </div>
     </div>
 </div>
+
+<!-- Review form popup -->
+            <div class="row" id="review-box" style="display:none;">
+                <div class="col-md-12">
+                    <form accept-charset="UTF-8" action="" method="post" id='review_form'>
+                        <input type='hidden' id="review_business_id" name="review_business_id">
+                        <textarea class="form-control animated" cols="50" id="review_text" name="review_text" placeholder="Enter your review here..." rows="5"></textarea>
+
+                        <span><input type="number" name="review_rating" id="review_rating"  class="rating" value='' /></span>
+
+                        <div class="text-right">
+                            <button class="close-review btn btn-error btn-lg" type="reset">Cancel</button>
+                            <button class="btn btn-success btn-lg" type="submit">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+<!-- /.Review form popup -->
