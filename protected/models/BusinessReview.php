@@ -1,13 +1,17 @@
 <?php
 
 /**
- * This is the model class for table "{{business_rating}}".
+ * This is the model class for table "{{business_review}}".
  *
- * The followings are the available columns in table '{{business_rating}}':
- * @property integer $business_rating_id
+ * The followings are the available columns in table '{{business_review}}':
+ * @property integer $business_review_id
  * @property integer $business_id
  * @property integer $user_id
- * @property integer $rating
+ * @property integer $review$rating
+ * @property string $review_text
+ * @property string $review_reply
+ * @property string $review_date
+ * @property string $publish_status
  *
  * The followings are the available model relations:
  * @property Business $business
@@ -19,11 +23,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $rating = BusinessRating::model()
+ * ...   $review = Businessreview::model()
  * ...or
- * ...   $rating = new BusinessRating;
+ * ...   $review = new Businessreview;
  * ...or
- * ...   $rating = new BusinessRating($scenario);
+ * ...   $review = new Businessreview($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -31,7 +35,7 @@
  * @package Components
  * @version 1.0
  */
-class BusinessRating extends CActiveRecord
+class Businessreview extends CActiveRecord
 {
 
     /**
@@ -44,7 +48,7 @@ class BusinessRating extends CActiveRecord
      */
 	public function tableName()
 	{
-		return '{{business_rating}}';
+		return '{{business_review}}';
 	}
 
 
@@ -65,7 +69,14 @@ class BusinessRating extends CActiveRecord
 			array('business_id, user_id',            'required'),
 			array('business_id, user_id, rating',    'numerical', 'integerOnly'=>true),
 
-			array('business_rating_id, business_id, user_id, rating', 'safe', 'on'=>'search'),
+		    array('review_text, review_reply',       'length', 'max'=>1024),
+
+		    array('publish_status',                  'in','range'=>array('Y','N'),'allowEmpty'=>false),
+
+		    // The following rule is used by search(). It only contains attributes that should be searched.
+
+		    array('business_review_id, business_id, user_id, review, rating, review_text, review_reply, review_date, publish_status', 'safe', 'on'=>'search'),
+
 		);
 	}
 
@@ -108,7 +119,7 @@ class BusinessRating extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('business_rating_id',  $this->business_rating_id);
+		$criteria->compare('business_review_id',  $this->business_review_id);
 		$criteria->compare('business_id',         $this->business_id);
 		$criteria->compare('user_id',             $this->user_id);
 		$criteria->compare('rating',              $this->rating);
@@ -119,11 +130,36 @@ class BusinessRating extends CActiveRecord
 	}
 
 	/**
+	 * Label set for attributes. Only required for attributes that appear on view/forms.
+	 * ...
+	 * Usage:
+	 *    echo $form->label($model, $attribute)
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return array customized attribute labels (name=>label)
+	 * @access public
+	 */
+	public function attributeLabels()
+	{
+	    return array(
+	        'business_review_id'   => 'Business Review',
+	        'business_id'          => 'Business',
+	        'user_id'              => 'User',
+	        'rating'               => 'Rating',
+	        'review_text'          => 'Review Text',
+	        'review_reply'         => 'Review Reply',
+	        'review_date'          => 'Review Date',
+	        'publish_status'       => 'Publish Status',
+	    );
+	}
+
+	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 *
 	 * @param string $className active record class name.
-	 * @return BusinessRating the static model class
+	 * @return Businessreview the static model class
 	 *
 	 * @access public
 	 */
