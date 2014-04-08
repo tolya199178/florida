@@ -69,12 +69,10 @@ class Photo extends CActiveRecord
 			array('caption, title',  'length', 'max'=>255),
 			array('path, thumbnail', 'length', 'max'=>512),
 
-			array('photo_type',      'in','range'=>array('Y','N'),'allowEmpty'=>false),
-
 		    // ranges
+		    array('photo_type',      'in','range'=>array('city', 'state', 'business', 'user', 'general', 'event'),'allowEmpty'=>false),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-
 			array('photo_id, photo_type, entity_id, caption, title, path', 'safe', 'on'=>'search'),
 		);
 	}
@@ -159,7 +157,7 @@ class Photo extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return Photo the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
