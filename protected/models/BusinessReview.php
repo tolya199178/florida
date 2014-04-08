@@ -35,7 +35,7 @@
  * @package Components
  * @version 1.0
  */
-class Businessreview extends CActiveRecord
+class BusinessReview extends CActiveRecord
 {
 
     /**
@@ -166,5 +166,38 @@ class Businessreview extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+
+	    $this->review_date = new CDbExpression('NOW()');
+
+	    return parent::beforeSave();
+	}
+
+	/**
+	 * Helper function to detirmine is a given user is already reviewed this business.
+	 *
+	 * @param integer $userId The user key  of the requested user
+	 * @param integer $businessId The business key of the requested user
+	 * @return boolean True if subscribed, false otherwise
+	 *
+	 * @access public
+	 */
+	public static function isReviewed($userId, $businessId)
+	{
+	    $modelBusinessReview = BusinessReview::model()->findByAttributes(array('user_id'=> $userId, 'business_id' => $businessId));
+	    return (($modelBusinessReview != null)?true:false);
 	}
 }

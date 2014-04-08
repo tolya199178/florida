@@ -107,5 +107,83 @@ class ProfileController extends Controller
 		}
 	}
 
+	/**
+	 * Adds a business review by the logged in user
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionReviewbusiness()
+	{
+
+	    $argBusinessId = (int) Yii::app()->request->getPost('business_id', null);
+	    $argRating     = (int) Yii::app()->request->getPost('rating', null);
+	    $argReview     = Yii::app()->request->getPost('review', null);
+
+	    $userId = Yii::app()->user->id;
+
+	    if ($userId === null)         // User is not known
+	    {
+	        $jsonResult = '{"result":false,"message":"This functionality is only avalable to logged in users."}';
+	        header('Content-Type: application/json');
+	        echo CJSON::encode($jsonResult);
+	        Yii::app()->end();
+	    }
+
+
+	    if ($argBusinessId)
+	    {
+	        $modelBusiness = Business::model()->findByPk($argBusinessId);
+
+	        if ($modelBusiness === null)
+	        {
+	            $jsonResult = '{"result":false,"message":"Something went wrong. The requested business could not be found."}';
+	            header('Content-Type: application/json');
+	            echo CJSON::encode($jsonResult);
+	            Yii::app()->end();
+	        }
+	        else
+	        {
+	            // Add the business review to the user's profile. Don't do anything if the user has already reviewed
+	            // ...the business, as a single review per business is allowed.
+
+	            $boolIsReviewed = BusinessReview::isReviewed(Yii::app()->user->id, $argBusinessId);
+
+	            if ($boolIsReviewed === false)
+	            {
+	                $modelBusinessReview                  = new Businessreview;
+	                $modelBusinessReview->user_id         = $userId;
+	                $modelBusinessReview->business_id     = $argBusinessId;
+	                $modelBusinessReview->rating          = $argRating;
+	                $modelBusinessReview->review_text     = filter_var($argReview, FILTER_SANITIZE_STRING);
+
+	                if (!($modelBusinessReview->save()))
+	                {
+	                    $jsonResult = '{"result":false,"message":"Something went wrong. The business review could not be saved."}';
+	                    header('Content-Type: application/json');
+	                    echo CJSON::encode($jsonResult);
+	                    Yii::app()->end();
+	                }
+	            }
+
+	            $jsonResult = '{"result":true,"message":"The business review has been added to your profile."}';
+	            header('Content-Type: application/json');
+	            echo CJSON::encode($jsonResult);
+	            Yii::app()->end();
+
+	        }
+	    }
+	    else
+	    {
+	        $jsonResult = '{"result":false,"message":"No business id was supplied."}';
+	        header('Content-Type: application/json');
+	        echo CJSON::encode($jsonResult);
+	        Yii::app()->end();
+
+	    }
+	}
+
 
 }
