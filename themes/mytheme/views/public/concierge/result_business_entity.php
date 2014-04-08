@@ -68,7 +68,10 @@
                 </div>
 
 <?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
-                <span><input type="number" name="your_awesome_parameter" id="some_id"  class="rating" rel="<?php echo $data->business_id; ?>" /></span>
+<!--             <span><input type="number" name="your_awesome_parameter" id="some_id"  class="rating" rel="<?php echo $data->business_id; ?>" /></span>  -->
+
+                <button class="pop-review-form" rel="review_popover" refid="<?php echo $data->business_id; ?>"  >Review</button>
+
 <?php } ?>
 
 <?php

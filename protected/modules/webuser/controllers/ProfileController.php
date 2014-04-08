@@ -118,9 +118,9 @@ class ProfileController extends Controller
 	public function actionReviewbusiness()
 	{
 
-	    $argBusinessId = (int) Yii::app()->request->getPost('business_id', null);
-	    $argRating     = (int) Yii::app()->request->getPost('rating', null);
-	    $argReview     = Yii::app()->request->getPost('review', null);
+	    $argBusinessId = (int) Yii::app()->request->getPost('review_business_id', null);
+	    $argRating     = (int) Yii::app()->request->getPost('review_rating', null);
+	    $argReview     = Yii::app()->request->getPost('review_text', null);
 
 	    $userId = Yii::app()->user->id;
 
@@ -146,27 +146,36 @@ class ProfileController extends Controller
 	        }
 	        else
 	        {
-	            // Add the business review to the user's profile. Don't do anything if the user has already reviewed
-	            // ...the business, as a single review per business is allowed.
+	            // Add the business review to the user's profile. Update the
+	            // ...review if the user has already reviewed the business, as a
+	            // ...single review per business per user is allowed.
 
-	            $boolIsReviewed = BusinessReview::isReviewed(Yii::app()->user->id, $argBusinessId);
-
-	            if ($boolIsReviewed === false)
+	            $modelBusinessReview = BusinessReview::model()->findByAttributes(array('user_id'=> Yii::app()->user->id, 'business_id' => $argBusinessId));
+	            if ($modelBusinessReview === null)
 	            {
-	                $modelBusinessReview                  = new Businessreview;
-	                $modelBusinessReview->user_id         = $userId;
-	                $modelBusinessReview->business_id     = $argBusinessId;
-	                $modelBusinessReview->rating          = $argRating;
-	                $modelBusinessReview->review_text     = filter_var($argReview, FILTER_SANITIZE_STRING);
-
-	                if (!($modelBusinessReview->save()))
-	                {
-	                    $jsonResult = '{"result":false,"message":"Something went wrong. The business review could not be saved."}';
-	                    header('Content-Type: application/json');
-	                    echo CJSON::encode($jsonResult);
-	                    Yii::app()->end();
-	                }
+	                $modelBusinessReview              = new Businessreview;
 	            }
+
+	            //$modelBusinessReview->user_id         = $userId;
+	            //$modelBusinessReview->business_id     = $argBusinessId;
+	            $modelBusinessReview->rating          = $argRating;
+	            $modelBusinessReview->review_text     = filter_var($argReview, FILTER_SANITIZE_STRING);
+
+	            if (!($modelBusinessReview->save()))
+	            {
+	                $jsonResult = '{"result":false,"message":"Something went wrong. The business review could not be saved."}';
+	                header('Content-Type: application/json');
+	                echo CJSON::encode($jsonResult);
+	                Yii::app()->end();
+	            }
+
+// 	            $boolIsReviewed = BusinessReview::isReviewed(Yii::app()->user->id, $argBusinessId);
+
+// 	            if ($boolIsReviewed === false)
+// 	            {
+// 	                $modelBusinessReview                  = new Businessreview;
+
+// 	            }
 
 	            $jsonResult = '{"result":true,"message":"The business review has been added to your profile."}';
 	            header('Content-Type: application/json');
