@@ -258,14 +258,14 @@ ADD CONSTRAINT fk_page_modified_by
      
 
 -- ---------------------------------------------------------------------
--- photo
+-- photo - for additional photos
 -- ---------------------------------------------------------------------
 
  DROP TABLE IF EXISTS `tbl_photo`;
 
  CREATE TABLE `tbl_photo` (
     `photo_id`        int(11) NOT NULL AUTO_INCREMENT,
-    `photo_type`      enum('city', 'state', 'location', 'user', 'general', 'site') DEFAULT 'general',
+    `photo_type`      enum('city', 'state', 'business', 'user', 'general', 'event') DEFAULT 'general',
     `entity_id`       int(11) NOT NULL, 
     `caption`         varchar(255) NOT NULL DEFAULT '',
     `title`           varchar(255) NOT NULL DEFAULT '',
