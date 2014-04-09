@@ -36,6 +36,7 @@
  * @property integer $event_views
  *
  * The followings are the available model relations:
+ * @property Business $eventBusiness
  * @property City $eventCity
  * @property User $createdBy
  * @property User $modifiedBy
@@ -61,7 +62,7 @@
  */
 class Event extends CActiveRecord
 {
-    
+
     /**
      *
      * @var string fldUploadImage Business image uploader.
@@ -96,8 +97,8 @@ class Event extends CActiveRecord
 	{
 
 		return array(
-		    
-		    // Mandatory rules		    
+
+		    // Mandatory rules
 			array('event_title, event_start_date,event_end_date,
 			       event_category_id, event_business_id,
 			       event_tag',                                            'required'),
@@ -110,13 +111,13 @@ class Event extends CActiveRecord
 		    array('event_street, event_start_time, event_end_time',       'length', 'max'=>512),
 		    array('event_phone_no',                                       'length', 'max'=>32),
 		    array('event_latitude, event_longitude',                      'length', 'max'=>10),
-		    
+
 		    // ranges
-		    array('is_featured, event_show_map, 
+		    array('is_featured, event_show_map,
 		           is_featured, is_popular',                     'in','range'=>array('Y','N'),'allowEmpty'=>true),
 			array('event_type',                                  'in','range'=>array('public', 'private', 'meetups'),'allowEmpty'=>true),
 		    array('event_status',                                'in','range'=>array('Inactive', 'Active','Closed', 'Cancelled'),'allowEmpty'=>true),
-		    
+
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('event_id, event_title, event_description, event_type,
 			       event_start_date, event_start_time, event_address1, event_address2,
@@ -138,6 +139,7 @@ class Event extends CActiveRecord
 	{
 
 		return array(
+		    'eventBusiness'      => array(self::BELONGS_TO,  'Business', 'event_business_id'),
 			'eventCity'          => array(self::BELONGS_TO,  'City', 'event_city_id'),
 			'createdBy'          => array(self::BELONGS_TO,  'User', 'created_by'),
 			'modifiedBy'         => array(self::BELONGS_TO,  'User', 'modified_by'),
@@ -250,14 +252,14 @@ class Event extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return Event the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
-	
+
 	/**
 	 * Runs just before the models save method is invoked. It provides a change to
 	 * ...further prepare the data for saving. The CActiveRecord (parent class)
@@ -270,8 +272,8 @@ class Event extends CActiveRecord
 	 */
 	public function beforeSave()
 	{
-	    
-	    
+
+
         // /////////////////////////////////////////////////////////////////
         // Set the create time and user for new records
         // /////////////////////////////////////////////////////////////////
@@ -279,15 +281,15 @@ class Event extends CActiveRecord
             $this->created_time = new CDbExpression('NOW()');
             $this->created_by   = Yii::app()->user->id;
         }
-        
+
         // /////////////////////////////////////////////////////////////////
         // The modified log details is set for record creation and update
         // /////////////////////////////////////////////////////////////////
         $this->modified_time = new CDbExpression('NOW()');
-        $this->modified_by   = Yii::app()->user->id;	
+        $this->modified_by   = Yii::app()->user->id;
 	    return parent::beforeSave();
 	}
-	
+
 	/**
 	 * Build an associative list of status values.
 	 *
@@ -298,13 +300,13 @@ class Event extends CActiveRecord
 	 */
 	public function listStatus()
 	{
-	
+
 	    return array('Inactive'    => 'Inactive',
 	                 'Active'      => 'Active',
 	                 'Closed'      => 'Closed',
 	        	     'Cancelled'   => 'Cancelled');
 	}
-	
+
 	/**
 	 * Build an associative list of event type values.
 	 *
@@ -315,7 +317,7 @@ class Event extends CActiveRecord
 	 */
 	public function listEventTypes()
 	{
-	
+
 	    // TODO: Confirm that meetups is out of scope
 	    // return array('public' =>'Public','private' => 'Private','meetups' => 'Meetups');
 	    return array('public' =>'Public','private' => 'Private');

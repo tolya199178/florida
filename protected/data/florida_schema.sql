@@ -597,7 +597,11 @@ ADD CONSTRAINT fk_event_modified_by
 	     FOREIGN KEY (event_city_id) 
 	     REFERENCES tbl_city(city_id);
      
- 
+    ALTER TABLE tbl_event
+    ADD CONSTRAINT fk_event_business
+         FOREIGN KEY (event_business_id) 
+         REFERENCES tbl_business(business_id);
+         
 -- ---------------------------------------------------------------------
 -- tbl_user_event
 -- ---------------------------------------------------------------------
