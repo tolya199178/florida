@@ -154,10 +154,11 @@ class ProfileController extends Controller
 	            if ($modelBusinessReview === null)
 	            {
 	                $modelBusinessReview              = new Businessreview;
+	                $modelBusinessReview->user_id         = $userId;
+	                $modelBusinessReview->business_id     = $argBusinessId;
 	            }
 
-	            //$modelBusinessReview->user_id         = $userId;
-	            //$modelBusinessReview->business_id     = $argBusinessId;
+
 	            $modelBusinessReview->rating          = $argRating;
 	            $modelBusinessReview->review_text     = filter_var($argReview, FILTER_SANITIZE_STRING);
 
