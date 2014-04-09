@@ -48,6 +48,7 @@
  * @property BusinessActivity[] $businessActivities
  * @property BusinessCategory[] $businessCategories
  * @property BusinessUser[] $businessUsers
+ * @property Event[] $events
  * @property RestaurantCertificate[] $restaurantCertificates
  * @property SubscribedBusiness[] $subscribedBusinesses
  * @property BusinessReviews[] $businessReviews
@@ -193,6 +194,7 @@ class Business extends CActiveRecord
 		    'businessActivities'     => array(self::HAS_MANY,   'BusinessActivity', 'business_id'),
 		    'businessCategories'     => array(self::HAS_MANY,   'BusinessCategory', 'business_id'),
 			'businessUsers'          => array(self::HAS_MANY,   'BusinessUser', 'business_id'),
+		    'events'                 => array(self::HAS_MANY,   'Event', 'event_business_id'),
 			'restaurantCertificates' => array(self::HAS_MANY,   'RestaurantCertificate', 'business_id'),
 		    'subscribedBusinesses'   => array(self::HAS_MANY,   'SubscribedBusiness', 'business_id'),
 		    'businessReviews'        => array(self::HAS_MANY,   'BusinessReview', 'business_id'),
