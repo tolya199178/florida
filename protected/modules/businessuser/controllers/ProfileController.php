@@ -33,7 +33,7 @@
 
 class ProfileController extends Controller
 {
-    
+
     /**
      * Displays the profile for the given Business id
      *
@@ -44,20 +44,25 @@ class ProfileController extends Controller
      */
 	public function actionShow()
 	{
-	    
+
 		$argBusinessId = (int) Yii::app()->request->getQuery('id', null);
-		
+
 		if ($argBusinessId)
 		{
 		    $modelBusiness = Business::model()->findByPk($argBusinessId);
-		    
+
 		    if ($modelBusiness === null)
 		    {
 		        throw new CHttpException(404,'No such user. The requested user page does not exist.');
 		    }
 		    else
 		    {
-        		$this->render('profile', array('model'=>$modelBusiness));
+		        // Get photos
+		        // TODO: We should look into implementing this woth relations.
+		        $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => $argBusinessId, 'photo_type' => 'business'));
+
+
+        		$this->render('profile', array('model'=>$modelBusiness, 'photos' => $listPhotos));
 		    }
 		}
 		else

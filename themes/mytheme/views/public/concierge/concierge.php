@@ -562,6 +562,9 @@ $('.cities .typeahead')
         container: 'body',
         html: true,
         selector: '[rel="review_popover"]',
+        callback: function() {
+            $('input.rating').rating();
+        },
         content: function () {
             var refid = $(this).attr('refid');
             $('#review_business_id').val(refid);
@@ -575,6 +578,13 @@ $('.cities .typeahead')
           $('[rel="review_popover"]').popover('hide');
     });
 
+    var tmp = $.fn.popover.Constructor.prototype.show;
+    $.fn.popover.Constructor.prototype.show = function () {
+        tmp.call(this);
+        if (this.options.callback) {
+            this.options.callback();
+        }
+    };
 
     $('body').on('submit', '#review_form', function(event) {
 
@@ -596,6 +606,13 @@ $('.cities .typeahead')
         $('[rel="review_popover"]').popover('hide');
         return false; // avoid to execute the actual submit of the form.
     });
+
+    // User click on single result picture.
+    $('body').on('click', '[name="play"]', function(event) {
+        debugger;
+
+    });
+
 
 
 

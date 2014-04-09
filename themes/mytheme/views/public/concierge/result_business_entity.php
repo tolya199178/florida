@@ -44,7 +44,10 @@
                             <div class="product-prize">$36</div>
                             <!--  TODO: END: Prices are hardcoded (POC only). Will be resolved when restaurant.com data comes online -->
 
+
                             <div class="button-buy">
+
+                                <span class="label label-lg label-danger"><?php echo CHtml::link('Details', Yii::app()->createUrl('businessuser/profile/show/', array('id' => $data->business_id  )), array('class' => 'details_button_link', 'rel' => $data->business_id)); ?></span>
 
 <?php if ((!Yii::app()->user->isGuest) && (!SubscribedBusiness::isSubcribed(Yii::app()->user->id, $data->business_id)))  { ?>
                                 <span class="label label-danger"><?php echo CHtml::link('Add to profile', Yii::app()->createUrl('/webuser/profile/addbusiness', array('business_id' => $data->business_id  )), array('class' => 'result_button_link', 'rel' => $data->business_id)); ?></span>
@@ -61,7 +64,7 @@
                           </div>
                         </div>
                       </div>
-                      <input type="checkbox" name="play" id="play" /><label for="play"><span></span></label>
+                      <input type="checkbox" name="play" class="play_button" /><label for="play"><span></span></label>
 
                     </div>
 
