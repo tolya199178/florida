@@ -442,4 +442,76 @@ class AccountController extends Controller
 
 	}
 
+	/**
+	 * Process the user login action via facebook
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionFblogin()
+	{
+
+	    // if the user is already logged in, there is no need to do anything.
+	    if (!Yii::app()->user->isGuest)         // User is already logged in
+	    {
+	        $this->redirect(Yii::app()->user->returnUrl);
+	        Yii::app()->end();
+	    }
+
+	    $objFacebook  = Yii::app()->getComponent('facebook');
+
+	    // Establish a connection to facebook
+	    $objFacebook->connect();
+
+	    $userIdentity = new FBIdentity("", "");
+	    if ($userIdentity->authenticate() != FBIdentity::ERROR_NONE)
+	    {
+
+	        $this->redirect($objFacebook->getLoginUrl());
+	    }
+	    else
+	    {
+
+	        // Otherwise we have a good login
+	        $loginDuration = 3600*24*30; // 30 days
+	        Yii::app()->user->login($userIdentity, $loginDuration);
+
+	        $this->redirect(Yii::app()->user->returnUrl);
+
+	    }
+
+
+
+
+	}
+
+	/**
+	 * Process the user login action via facebook
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionFblogout()
+	{
+	    // Load the component
+	    // TODO: figure why component is not autoloading.
+	    $objFacebook  = Yii::app()->getComponent('facebook');
+
+	    // Establish a connection to facebook
+	    $objFacebook->connect();
+	    $objFacebook->logout();
+
+	    Yii::app()->user->logout();
+
+	    if ($objFacebook->isLoggedIn())
+	    {
+	        $this->redirect($objFacebook->getLogoutUrl());
+
+	    }
+	}
+
 }

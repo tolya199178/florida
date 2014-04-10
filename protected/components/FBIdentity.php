@@ -53,6 +53,7 @@ class FBIdentity extends CUserIdentity
         // Establish a connection to facebook
         $objFacebook->connect();
 
+
         if ($objFacebook->isLoggedIn()) {
             // The user is logged in through facebook.
 
