@@ -927,6 +927,33 @@ ADD CONSTRAINT fk_activity_type_activity_id
   INDEX      `unqkey_search_log_search_origin` (`search_origin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+
+-- ---------------------------------------------------------------------
+-- my friend
+-- ---------------------------------------------------------------------
+  DROP TABLE IF EXISTS `tbl_my_friend`;
+  
+  CREATE TABLE `tbl_my_friend` (
+    `my_friend_id`      int(11) NOT NULL AUTO_INCREMENT,
+    `user_id`           int(11) NOT NULL,
+    `friend_id`         int(11) NOT NULL,
+    `created_time`      TIMESTAMP NOT NULL DEFAULT 0,
+    `connected_by`      varchar(255) default null comment 'Site, facebook, ...',
+  PRIMARY KEY (`my_friend_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+ALTER TABLE tbl_my_friend
+ADD CONSTRAINT my_friend_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_my_friend
+ADD CONSTRAINT my_friend_friend
+     FOREIGN KEY (friend_id) 
+     REFERENCES tbl_user(user_id);
+     
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
