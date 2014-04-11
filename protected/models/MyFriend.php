@@ -20,11 +20,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = MyFriend::model()
+ * ...   $fiend = MyFriend::model()
  * ...or
- * ...   $model = new MyFriend;
+ * ...   $fiend = new MyFriend;
  * ...or
- * ...   $model = new MyFriend($scenario);
+ * ...   $fiend = new MyFriend($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -63,13 +63,12 @@ class MyFriend extends CActiveRecord
 	{
 
 		return array(
-			array('user_id, friend_id', 'required'),
-			array('user_id, friend_id', 'numerical', 'integerOnly'=>true),
-			array('connected_by', 'length', 'max'=>255),
-			array('created_time', 'safe'),
+			array('user_id, friend_id',      'required'),
+			array('user_id, friend_id',      'numerical', 'integerOnly'=>true),
+			array('connected_by',            'length', 'max'=>255),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('my_friend_id, user_id, friend_id, created_time, connected_by', 'safe', 'on'=>'search'),
+			array('my_friend_id, user_id, friend_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -85,8 +84,8 @@ class MyFriend extends CActiveRecord
 	{
 
 		return array(
-			'friend'      => array(self::BELONGS_TO, 'User', 'friend_id'),
-			'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
+			'friend'         => array(self::BELONGS_TO, 'User', 'friend_id'),
+			'user'           => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -104,11 +103,11 @@ class MyFriend extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'my_friend_id'      => 'My Friend',
-			'user_id'      => 'User',
-			'friend_id'      => 'Friend',
-			'created_time'      => 'Created Time',
-			'connected_by'      => 'Connected By',
+			'my_friend_id'       => 'My Friend Id',
+			'user_id'            => 'User',
+			'friend_id'          => 'Friend',
+			'created_time'       => 'Created Time',
+			'connected_by'       => 'Connected By',
 		);
 	}
 
@@ -133,11 +132,11 @@ class MyFriend extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('my_friend_id',$this->my_friend_id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('friend_id',$this->friend_id);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('connected_by',$this->connected_by,true);
+		$criteria->compare('my_friend_id',    $this->my_friend_id);
+		$criteria->compare('user_id',         $this->user_id);
+		$criteria->compare('friend_id',       $this->friend_id);
+		$criteria->compare('created_time',    $this->created_time,true);
+		$criteria->compare('connected_by',    $this->connected_by,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
