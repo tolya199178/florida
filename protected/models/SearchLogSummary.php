@@ -4,7 +4,7 @@
  * This is the model class for table "{{search_log}}".
  *
  * The followings are the available columns in table '{{search_log}}':
- * @property integer $search_id
+ * @property integer $search_summaryid
  * @property string $search_origin
  * @property string $search_details
  * @property integer $search_count
@@ -28,7 +28,7 @@
  * @package Components
  * @version 1.0
  */
-class SearchLog extends CActiveRecord
+class SearchLogSummary extends CActiveRecord
 {
 
     /**
@@ -41,7 +41,7 @@ class SearchLog extends CActiveRecord
      */
 	public function tableName()
 	{
-		return '{{search_log}}';
+		return '{{search_log_summary}}';
 	}
 
 	/**
@@ -64,7 +64,7 @@ class SearchLog extends CActiveRecord
 		    array('search_details',                              'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('search_id, search_origin, search_details, search_count, search_tag, search_tag_type', 'safe', 'on'=>'search'),
+			array('search_summary_id, search_origin, search_details, search_count, search_tag, search_tag_type', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -88,12 +88,12 @@ class SearchLog extends CActiveRecord
 
 		$criteria = new CDbCriteria;
 
-		$criteria->compare('search_id',       $this->search_id);
-		$criteria->compare('search_origin',   $this->search_origin,true);
-		$criteria->compare('search_details',  $this->search_details,true);
-		$criteria->compare('search_count',    $this->search_count);
-		$criteria->compare('search_tag',      $this->search_tag,true);
-		$criteria->compare('search_tag_type', $this->search_tag_type,true);
+		$criteria->compare('search_summary_id',   $this->search_summary_id);
+		$criteria->compare('search_origin',       $this->search_origin,true);
+		$criteria->compare('search_details',      $this->search_details,true);
+		$criteria->compare('search_count',        $this->search_count);
+		$criteria->compare('search_tag',          $this->search_tag,true);
+		$criteria->compare('search_tag_type',     $this->search_tag_type,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -911,19 +911,19 @@ ADD CONSTRAINT fk_activity_type_activity_id
   
 
 -- ---------------------------------------------------------------------
--- Search log - quick log for all seaches
+-- Search log summary - quick log for all seaches
 -- ---------------------------------------------------------------------
 
- DROP TABLE IF EXISTS `tbl_search_log`;
+ DROP TABLE IF EXISTS `tbl_search_log_summary`;
 
- CREATE TABLE `tbl_search_log` (
-  `search_id`       int(11) NOT NULL AUTO_INCREMENT,
+ CREATE TABLE `tbl_search_log_summary` (
+  `search_summary_id`   int(11) NOT NULL AUTO_INCREMENT,
   `search_origin`   varchar(255) NOT NULL DEFAULT '',
   `search_details`  text NOT NULL,
   `search_count`    int(11) NOT NULL DEFAULT 0,
   `search_tag`      varchar(255) NOT NULL DEFAULT '',
   `search_tag_type`  varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`search_id`),
+  PRIMARY KEY (`search_summary_id`),
   INDEX      `unqkey_search_log_search_origin` (`search_origin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
