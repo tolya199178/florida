@@ -928,7 +928,26 @@ ADD CONSTRAINT fk_activity_type_activity_id
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
+-- ---------------------------------------------------------------------
+-- Search log history - detailed log for every search
+-- ---------------------------------------------------------------------
+ 
+ DROP TABLE IF EXISTS `tbl_search_history`;
+  
+ CREATE TABLE `tbl_search_history` (
+  `search_id`        int(11) NOT NULL AUTO_INCREMENT,
+  `user_id`          int(11) DEFAULT NULL,    -- fk to user
+  `user_location`    int(11) DEFAULT NULL,    -- fk to user
+  `created_time`     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `search_details` text NOT NULL DEFAULT '',       -- Serialised string with filter details
+  PRIMARY KEY (`search_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+  
+  
+ALTER TABLE tbl_search_history
+ADD CONSTRAINT fk_search_history_search_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);  
 -- ---------------------------------------------------------------------
 -- my friend
 -- ---------------------------------------------------------------------
