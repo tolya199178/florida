@@ -22,7 +22,7 @@ class ConciergeToolbar extends CWidget {
         $searchCriteria->limit      = 10;
         $searchCriteria->condition  = 'search_origin = "concierge" AND search_tag_type = "activity" ';
 
-        $listActivitySearch = SearchLog::model()->findAll($searchCriteria);
+        $listActivitySearch = SearchLogSummary::model()->findAll($searchCriteria);
 
         // Get the top 10 popular categories
         $searchCriteria = new CDbCriteria();
@@ -30,7 +30,7 @@ class ConciergeToolbar extends CWidget {
         $searchCriteria->limit      = 10;
         $searchCriteria->condition  = 'search_origin = "concierge" AND search_tag_type = "activity" ';
 
-        $listCategorySearch = SearchLog::model()->findAll($searchCriteria);
+        $listCategorySearch = SearchLogSummary::model()->findAll($searchCriteria);
 
         // Get the top 10 popular categories
         $searchCriteria = new CDbCriteria();
@@ -38,7 +38,7 @@ class ConciergeToolbar extends CWidget {
         $searchCriteria->limit      = 10;
         $searchCriteria->condition  = 'search_origin = "concierge" AND search_tag_type = "city" ';
 
-        $listCitySearch = SearchLog::model()->findAll($searchCriteria);
+        $listCitySearch = SearchLogSummary::model()->findAll($searchCriteria);
 
 
 
