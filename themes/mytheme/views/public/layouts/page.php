@@ -97,7 +97,7 @@ body {
                             <li><a href="<?php echo Yii::app()->createUrl('webuser/account/manageprofile/'); ?>">Manage Profile</a></li>
                             <li><a href="#changepassword">Change Password</a></li>
                             <li class="divider"></li>
-                            <li><a href="#friends">My friends</a></li>
+                            <li><a href="<?php echo Yii::app()->createUrl('myfriend/'); ?>">My friends</a></li>
                             <li><a href="#invitations">Invitations</a></li>
                             <li><a href="#discussions">Discussions</a></li>
                             <li class="divider"></li>

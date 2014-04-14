@@ -484,11 +484,19 @@ $('.cities .typeahead')
             var feed_update_list = source.find('#feedresult').html();
             $('#left_panel_feed').prepend(feed_update_list);
 
-    // debugger;
+            // debugger;
 
             last_timestamp = source.find('#last_timestamp').html();
 
-            $("time.timeago").timeago();
+//             if (last_timestamp === undefined)
+//             {
+//                 last_timestamp = -1;
+//             }
+//             else
+//             {
+                $("time.timeago").timeago();
+//             }
+
 
     	});
     }
@@ -507,6 +515,12 @@ $('.cities .typeahead')
     function ()
     {
        getLeftPanelFeeds();
+       if (last_timestamp === undefined)
+       {
+            clearInterval(auto_refresh);
+            last_timestamp = -1;
+       }
+
     }, (1000 * 60)); // refresh every 60 seconds
 
 

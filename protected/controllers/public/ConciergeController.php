@@ -334,9 +334,31 @@ class ConciergeController extends Controller
         }
         else
         {
+            // /////////////////////////////////////////////////////////////////
+            // First, get a list of all local friends
+            // /////////////////////////////////////////////////////////////////
             $lstMyFriends = MyFriend::model()->findAllByAttributes(array('user_id' => Yii::app()->user->id));
 
-            $this->renderPartial("left_panel_friend_list", array('model' => $lstMyFriends));
+            // /////////////////////////////////////////////////////////////////
+            // Now, get a list of the user's facebook friends
+            // /////////////////////////////////////////////////////////////////
+            // Load the component
+            // TODO: figure why component is not autoloading.
+            $objFacebook  = Yii::app()->getComponent('facebook');
+
+            // Establish a connection to facebook
+            $objFacebook->connect();
+
+            $lstMyOnlineFriends = array();
+            if ($objFacebook->isLoggedIn())
+            {
+                $lstMyOnlineFriends = $objFacebook->getFriendList();
+            }
+
+
+            $this->renderPartial("left_panel_friend_list", array('myLocalFriends'   => $lstMyFriends,
+                                                                 'myOnlineFriends'  => $lstMyOnlineFriends
+                                                                ));
             Yii::app()->end();
 
 

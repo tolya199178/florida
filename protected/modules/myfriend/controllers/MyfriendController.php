@@ -50,9 +50,7 @@ class MyfriendController extends Controller
 
 		if ($userId === null)         // User is not known
 		{
-		    $jsonResult = '{"result":false,"message":"This functionality is only avalable to logged in users."}';
-		    header('Content-Type: application/json');
-		    echo CJSON::encode($jsonResult);
+		    throw new CHttpException(400, 'This functionality is only avalable to logged in users.');
 		    Yii::app()->end();
 		}
 
@@ -62,6 +60,17 @@ class MyfriendController extends Controller
 
 		// Establish a connection to facebook
 		$objFacebook->connect();
+
+		if ($objFacebook->isLoggedIn())
+		{
+		      $objFacebook->getFriendList();
+		}
+		else
+		{
+		    throw new CHttpException(400, 'You must be logged in via facebook.');
+		    Yii::app()->end();
+
+		}
 
 
 	}
