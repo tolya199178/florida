@@ -8,6 +8,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
+
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/timeago/jquery.timeago.js', CClientScript::POS_END);
 ?>
 <style>
 <!--
@@ -459,6 +461,59 @@ $('.cities .typeahead')
      });
 
 
+    // /////////////////////////////////////////////////////////////////////////
+    // Fetch updated feeds and load the left panel
+    // /////////////////////////////////////////////////////////////////////////
+    var last_timestamp = 0;
+    function getLeftPanelFeeds()
+    {
+    	var url         = '/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
+
+    	$.ajax({
+    		type 		: 'GET',
+    		url 		: url,
+    	    data 		: null,
+    		dataType 	: 'html'
+    	})
+    	// using the done promise callback
+    	.done(function(data) {
+
+            var source = $('<div>' + data + '</div>');
+
+
+            var feed_update_list = source.find('#feedresult').html();
+            $('#left_panel_feed').prepend(feed_update_list);
+
+    // debugger;
+
+            last_timestamp = source.find('#last_timestamp').html();
+
+            $("time.timeago").timeago();
+
+    	});
+    }
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // On page load, load the left panel
+    // /////////////////////////////////////////////////////////////////////////
+    getLeftPanelFeeds();
+
+    // /////////////////////////////////////////////////////////////////////////
+    // On page load, load the left panel
+    // /////////////////////////////////////////////////////////////////////////
+
+    var auto_refresh = setInterval(
+    function ()
+    {
+       getLeftPanelFeeds();
+    }, (1000 * 60)); // refresh every 60 seconds
+
+
+
+
+
+
   function doSearch() {
     var where       = $("#city").val();
     var dowhat      = $("#dowhat").val();
@@ -630,6 +685,9 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="alert alert-warning">
                 <p>Follow your friends here now ! </p>
                     <p class="center"><a href="#" class="btn btn-info">Follow your friends here.</a></p>
+                </div>
+                <div id='left_panel_feed'>
+
                 </div>
             </div>
         </div>
