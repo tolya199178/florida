@@ -53,7 +53,7 @@
                                 <span class="label label-danger"><?php echo CHtml::link('Add to profile', Yii::app()->createUrl('/webuser/profile/addbusiness', array('business_id' => $data->business_id  )), array('class' => 'result_button_link', 'rel' => $data->business_id)); ?></span>
 <?php }?>
 <?php if (!Yii::app()->user->isGuest) { ?>
-                                <span class="label label-danger">Connect to Friend</span>
+                                <span class="label label-danger">Recomend to Friend</span>
 <?php }?>
 <?php if ($data->is_featured == 'Y') { ?>
                                 <span class="label label-sucess">Featured</span>

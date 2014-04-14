@@ -134,7 +134,8 @@ class ConciergeController extends Controller
      * @return <none> <none>
      * @access public
      */
-    public function actionDosearch() {
+    public function actionDosearch()
+    {
 
 
         $argDoWhat      = Yii::app()->request->getPost('dowhat', null);
@@ -266,6 +267,80 @@ class ConciergeController extends Controller
         $modelSearchHistory->save();
 
         $this->renderPartial('search_results_container',array('dataProvider'=>$dataProvider));
+
+    }
+
+    /**
+     * Generates a JSON encoded list of all citys.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionLoadpanel()
+    {
+        $reqPanel   = Yii::app()->request->getQuery("panel");
+        $reqPanel   = filter_var($reqPanel,FILTER_SANITIZE_STRING);
+
+        switch ($reqPanel)
+        {
+        	case 'left':
+        	    $this->loadLeftPanel();
+        	    break;
+        	case 'right':
+        	    break;
+    	    default:
+	            break;
+        }
+
+
+    }
+
+    /**
+     * Loads HTML feed for rendering in the left panel.
+     * ...-for not logged in users, anonymous actvity is displayed
+     * ...-for logged in users, initial load shows friends
+     * ...-for logged in users, after search load shows similar searches
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access private
+     */
+    private function  loadLeftPanel()
+    {
+
+        // /////////////////////////////////////////////////////////////////////
+        // For non logged in users, show anonymous activity
+        // For logged in users, show their friends
+        // /////////////////////////////////////////////////////////////////////
+        if (Yii::app()->user->isGuest)         // User is not logged in
+        {
+             $lastTimestamp = Yii::app()->request->getQuery("last_timestamp");
+
+             $dbCriteria = new CDbCriteria;
+             // TODO: Move the search limit to parameters file
+             $dbCriteria->condition = " unix_timestamp(created_time) > :lastTimestamp ";
+             $dbCriteria->params    = array(':lastTimestamp' => $lastTimestamp);
+             $dbCriteria->limit     = 100;
+             $dbCriteria->order     = 'created_time DESC';
+
+             $lstSearchLog = SearchHistory::model()->findAll($dbCriteria);
+
+             $this->renderPartial("left_panel_feed_activity", array('model' => $lstSearchLog));
+             Yii::app()->end();
+
+        }
+        else
+        {
+            $lstMyFriends = MyFriend::model()->findAllByAttributes(array('user_id' => Yii::app()->user->id));
+
+            $this->renderPartial("left_panel_friend_list", array('model' => $lstMyFriends));
+            Yii::app()->end();
+
+
+        }
 
     }
 }
