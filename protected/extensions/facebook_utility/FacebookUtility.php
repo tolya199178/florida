@@ -257,41 +257,40 @@ class FacebookUtility extends CApplicationComponent
      * @return array friend list
      *
      */
-    public function getFriendList($fbuserId, $appUser = false, $start = 0, $limit = 20)
+    public function getFriendList(/* $fbuserId, $appUser = false, $start = 0, $limit = 20 */)
     {
-        $this->fbuser = $fbuserId;
 
-        // Does the friends need to add the app to be qualified ? ;)
-           if ($appUser == false)
-           {
-               $usersArray = $this->handleFacebook->api_client->fql_query("SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = {$this->fbuser})");
+        try {
 
-           }
-           else
-           {
-               $usersArray = $this->handleFacebook->api_client->fql_query("SELECT uid FROM user WHERE has_added_app = 1 AND uid IN (SELECT uid2 FROM friend WHERE uid1 = {$this->fbuser})");
+            $userProfile = $this->handleFacebook->api('/me');
 
-           }
+            $userFriends = $this->handleFacebook->api('/me/friends');
 
-           if (empty($usersArray))
-           {
-           return array();
-           }
+            $accessToken = $this->handleFacebook->getAccessToken();
 
-           // Make an array of the friends
-           foreach ($usersArray as $user)
-           {
-               $users[] = $user['uid'];
-           }
+        } catch (FacebookApiException $e) {
+            // print_r($e);
+            $user = null;
 
-           // Put a limit of the friends if specified
-           if ($appUser && !empty($users) && $limit)
-           {
-               $users = array_slice($users, $start, $limit);
-           }
+        }
 
-           // Return the friend list
-           return $users;
+        return $userFriends['data'];
+
+//         $total_friends = count($user_friends['data']);
+
+//         echo 'Total friends: '.$total_friends.'.<br />';
+
+//         echo '<ul>';
+//         foreach ($user_friends["data"] as $value) {
+//             echo '<li>';
+//             echo '<div class="pic">';
+//             echo '<img src="https://graph.facebook.com/' . $value["id"] . '/picture"/>';
+//             echo '</div>';
+//             echo '<div class="picName">'.$value["name"].'</div>';
+//             echo '</li>';
+//         }
+//         echo '</ul>';
+
     }
 
     /**
