@@ -830,10 +830,12 @@ COMMIT;
  CREATE TABLE `tbl_business_activity` (
   `business_activity_id`    int(11) NOT NULL AUTO_INCREMENT,
   `business_id`             int(11) NOT NULL,    -- fk to biz
-  `activity_id`             int(11) NOT NULL,    -- fk to activity  
+  `activity_id`             int(11) NOT NULL,    -- fk to activity
+  `activity_type_id`        int(11) NOT NULL,    -- fk to activity_type
   PRIMARY KEY        (`business_activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
+-- alter table tbl_business_activity add column `activity_type_id` int(11) NOT NULL;
   
 ALTER TABLE tbl_business_activity
 ADD CONSTRAINT fk_business_activity_business_id
@@ -845,6 +847,10 @@ ADD CONSTRAINT fk_business_activity_activity_id
      FOREIGN KEY (activity_id) 
      REFERENCES tbl_activity(activity_id);
 
+ALTER TABLE tbl_business_activity
+ADD CONSTRAINT fk_business_activity_activity_type
+     FOREIGN KEY (activity_type_id) 
+     REFERENCES tbl_activity_type(activity_type_id);
      
 -- ---------------------------------------------------------------------
 -- activity
