@@ -365,4 +365,47 @@ class ConciergeController extends Controller
         }
 
     }
+
+    /**
+     * Fires off a search and returns all results to the client.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionGallery()
+    {
+
+        $argCityName  = Yii::app()->request->getPost('city', null);
+
+        // /////////////////////////////////////////////////////////////////////
+        //  Find city record from city name
+        // /////////////////////////////////////////////////////////////////////
+        if ($argCityName != null)
+        {
+            $cityModel = City::model()->findByAttributes(array('city_name' => $argCityName));
+            if ($cityModel != null)
+            {
+                $cityId = $cityModel->city_id;
+
+                // /////////////////////////////////////////////////////////////
+                // Get all photos for the city
+                // /////////////////////////////////////////////////////////////
+                $lstCityPhotos  = Photo::model()->findAllByAttributes(array('entity_id' => $cityId, 'photo_type' => 'city'));
+                if (count($lstCityPhotos) >0)
+                {
+                    $this->renderPartial('city_gallery', array('lstCityPhotos'=> $lstCityPhotos));
+                }
+
+                Yii::app()->end();
+
+            }
+
+        }
+
+
+
+
+    }
 }

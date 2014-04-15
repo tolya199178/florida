@@ -432,7 +432,32 @@ div.bootstrap-tagsinput {
   color: #fff;
 }
 -->
+
+
 </style>
+
+<!--  City gallery -->
+<style type="text/css">
+h2{
+    margin: 0;
+    color: #666;
+    padding-top: 90px;
+    font-size: 52px;
+    font-family: "trebuchet ms", sans-serif;
+}
+.item{
+    background: #333;
+    text-align: center;
+    height: 300px !important;
+}
+.carousel{
+    margin-top: 20px;
+}
+.bs-example{
+	margin: 20px;
+}
+</style>
+
 
 <?php
 
@@ -457,7 +482,8 @@ $('.cities .typeahead')
        source: numbers.ttAdapter()
        })
     .on('typeahead:selected', function(e, datum){
-          doSearch()
+          doSearch();
+          loadCityGallery();
      });
 
 
@@ -595,6 +621,28 @@ $('.cities .typeahead')
 
     });
 
+  function loadCityGallery() {
+    var where       = $("#city").val();
+
+    var dowhat      = $("#dowhat").val();
+    var withwhat    = $("#withwhat").val();
+
+    var url         = '/concierge/gallery/';
+
+    $.post(url,
+    {
+      city:where,
+    },
+    function(data,status){
+        $('#city_gallery').html(data);
+     $("#myCarousel").carousel({
+         interval : 5000,
+         pause: false
+     });
+    });
+
+  }
+
     $('body').on('change', '.rating', function() {
 
         var url = '/webuser/profile/reviewbusiness/';
@@ -683,6 +731,10 @@ $('.cities .typeahead')
     });
 
 
+     $("#myCarousel").carousel({
+         interval : 5000,
+         pause: false
+     });
 
 
 EOD;
@@ -740,6 +792,10 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
                         <div class="col-lg-12">
 <?php                       $this->widget('application.components.ConciergeToolbar'); ?>
+                        </div>
+
+                        <div class="col-lg-12" id='city_gallery'>
+                            <!--  City Gallery goes here -->
                         </div>
 
 
