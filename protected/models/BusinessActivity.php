@@ -7,19 +7,21 @@
  * @property integer $business_activity_id
  * @property integer $business_id
  * @property integer $activity_id
+ * @property integer $activity_type_id
  *
  * The followings are the available model relations:
+ * @property ActivityType $activityType
  * @property Activity $activity
  * @property Business $business
  */
 
 /**
- * User activerecord model class provides a mechanism to keep data and their
+ * BusinessActivity activerecord model class provides a mechanism to keep data and their
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...The table is a 'barebones' table and will not normally have a seperate UI
  * ...associated with it, therefore the absence of attributes and rules. The
- * ...typical usage for user input will be 'embedding' with the business screens. 
+ * ...typical usage for user input will be 'embedding' with the business screens.
  * ...
  * ...Usage:
  * ...   $business_activity = BusinessActivity::model()
@@ -62,8 +64,9 @@ class BusinessActivity extends CActiveRecord
 	{
 
 		return array(
-			'activity' => array(self::BELONGS_TO, 'Activity', 'activity_id'),
-			'business' => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'activity'       => array(self::BELONGS_TO, 'Activity', 'activity_id'),
+			'business'       => array(self::BELONGS_TO, 'Business', 'business_id'),
+		    'activityType'   => array(self::BELONGS_TO, 'ActivityType', 'activity_type_id'),
 		);
 	}
 
@@ -92,6 +95,7 @@ class BusinessActivity extends CActiveRecord
 		$criteria->compare('business_activity_id',$this->business_activity_id);
 		$criteria->compare('business_id',$this->business_id);
 		$criteria->compare('activity_id',$this->activity_id);
+		$criteria->compare('activity_type_id',$this->activity_type_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
