@@ -726,8 +726,6 @@ $('.cities .typeahead')
 
     // User click on single result picture.
     $('body').on('click', '[name="play"]', function(event) {
-        debugger;
-
     });
 
 
@@ -736,6 +734,29 @@ $('.cities .typeahead')
          pause: false
      });
 
+
+    $('body').on('click', '.concierge_activity_tag', function(event) {
+        var txtActivity = $(this).text();
+
+        // TODO: Find a way of calling this function from the widget
+    	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: null,
+			dataType 	: 'html'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            $('#concierge_toolbar_activitytype').html(data);
+
+		});
+
+
+    });
 
 EOD;
 
