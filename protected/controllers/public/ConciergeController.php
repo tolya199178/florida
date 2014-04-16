@@ -212,7 +212,6 @@ class ConciergeController extends Controller
 
         }
 
-
         $dataProvider = new CActiveDataProvider('Business',
             array(
                 'criteria'  => $seachCriteria,
@@ -222,79 +221,8 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Log the search summary
         // /////////////////////////////////////////////////////////////////////
-        $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argWhere));
+        $this->logSearch($argDoWhat, $argWithWhat, $argWhere);
 
-
-        if (!empty($argWhere))
-        {
-
-            // /////////////////////////////////////////////////////////////////////
-            // Log place - Insert search log (update if search already exists)
-            // /////////////////////////////////////////////////////////////////////
-            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argWhere));
-            if(!$modelSearchLogSummary)
-            {
-                $modelSearchLogSummary = new SearchLogSummary;
-            }
-            $modelSearchLogSummary->search_origin    = 'concierge';
-            $modelSearchLogSummary->search_tag       = $argWhere   ;
-            $modelSearchLogSummary->search_tag_type  = 'city';
-            $modelSearchLogSummary->search_details   = $serialisedSearchDetails;
-            $modelSearchLogSummary->search_count     = $modelSearchLogSummary->search_count + 1;
-            $modelSearchLogSummary->save();
-
-        }
-
-        if (!empty($argDoWhat))
-        {
-            // /////////////////////////////////////////////////////////////////////
-            // Log activity - Insert search log (update if search already exists)
-            // /////////////////////////////////////////////////////////////////////
-            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argDoWhat));
-            if(!$modelSearchLogSummary)
-            {
-                $modelSearchLogSummary = new SearchLogSummary;
-            }
-            $modelSearchLogSummary->search_origin    = 'concierge';
-            $modelSearchLogSummary->search_tag       = $argDoWhat;
-            $modelSearchLogSummary->search_tag_type  = 'activity';
-            $modelSearchLogSummary->search_details   = $serialisedSearchDetails;
-            $modelSearchLogSummary->search_count     = $modelSearchLogSummary->search_count + 1;
-            $modelSearchLogSummary->save();
-        }
-
-
-        if (!empty($argWithWhat))
-        {
-            // /////////////////////////////////////////////////////////////////////
-            // Log category - Insert search log (update if search already exists)
-            // /////////////////////////////////////////////////////////////////////
-            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argWithWhat));
-            if(!$modelSearchLogSummary)
-            {
-                $modelSearchLogSummary = new SearchLogSummary;
-            }
-
-            $modelSearchLogSummary->search_origin    = 'concierge';
-            $modelSearchLogSummary->search_tag       = $argWithWhat;
-            $modelSearchLogSummary->search_tag_type  = 'category';
-            $modelSearchLogSummary->search_details   = $serialisedSearchDetails;
-            $modelSearchLogSummary->search_count     = $modelSearchLogSummary->search_count + 1;
-            $modelSearchLogSummary->save();
-        }
-
-
-        // Save the search in the history log
-        $userId = Yii::app()->user->id;
-
-        $searchHistory = array('user_id'          => ((Yii::app()->user->id===null)?1:Yii::app()->user->id),
-                             'search_origin'      => 'concierge',
-                             'created_time'       => new CDbExpression('NOW()'),
-                             'search_details'     => $serialisedSearchDetails
-                             );
-        $modelSearchHistory  = new SearchHistory;
-        $modelSearchHistory->attributes  = $searchHistory;
-        $modelSearchHistory->save();
 
         $this->renderPartial('search_results_container',array('dataProvider'=>$dataProvider));
 
@@ -338,7 +266,7 @@ class ConciergeController extends Controller
      * @return <none> <none>
      * @access private
      */
-    private function  loadLeftPanel()
+    private function loadLeftPanel()
     {
 
         // /////////////////////////////////////////////////////////////////////
@@ -434,8 +362,93 @@ class ConciergeController extends Controller
 
         }
 
+    }
+
+    /**
+     * Logs the search.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    private function logSearch($argDoWhat, $argWithWhat, $argWhere)
+    {
+
+        $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argWhere));
 
 
+        if (!empty($argWhere))
+        {
+
+            // /////////////////////////////////////////////////////////////////////
+            // Log place - Insert search log (update if search already exists)
+            // /////////////////////////////////////////////////////////////////////
+            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argWhere));
+            if(!$modelSearchLogSummary)
+            {
+                $modelSearchLogSummary = new SearchLogSummary;
+            }
+            $modelSearchLogSummary->search_origin    = 'concierge';
+            $modelSearchLogSummary->search_tag       = $argWhere   ;
+            $modelSearchLogSummary->search_tag_type  = 'city';
+            $modelSearchLogSummary->search_details   = $serialisedSearchDetails;
+            $modelSearchLogSummary->search_count     = $modelSearchLogSummary->search_count + 1;
+            $modelSearchLogSummary->save();
+
+        }
+
+        if (!empty($argDoWhat))
+        {
+            // /////////////////////////////////////////////////////////////////////
+            // Log activity - Insert search log (update if search already exists)
+            // /////////////////////////////////////////////////////////////////////
+            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argDoWhat));
+            if(!$modelSearchLogSummary)
+            {
+                $modelSearchLogSummary = new SearchLogSummary;
+            }
+            $modelSearchLogSummary->search_origin    = 'concierge';
+            $modelSearchLogSummary->search_tag       = $argDoWhat;
+            $modelSearchLogSummary->search_tag_type  = 'activity';
+            $modelSearchLogSummary->search_details   = $serialisedSearchDetails;
+            $modelSearchLogSummary->search_count     = $modelSearchLogSummary->search_count + 1;
+            $modelSearchLogSummary->save();
+        }
+
+
+        if (!empty($argWithWhat))
+        {
+            // /////////////////////////////////////////////////////////////////////
+            // Log category - Insert search log (update if search already exists)
+            // /////////////////////////////////////////////////////////////////////
+            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argWithWhat));
+            if(!$modelSearchLogSummary)
+            {
+                $modelSearchLogSummary = new SearchLogSummary;
+            }
+
+            $modelSearchLogSummary->search_origin    = 'concierge';
+            $modelSearchLogSummary->search_tag       = $argWithWhat;
+            $modelSearchLogSummary->search_tag_type  = 'category';
+            $modelSearchLogSummary->search_details   = $serialisedSearchDetails;
+            $modelSearchLogSummary->search_count     = $modelSearchLogSummary->search_count + 1;
+            $modelSearchLogSummary->save();
+        }
+
+
+        // Save the search in the history log
+        $userId = Yii::app()->user->id;
+
+        $searchHistory = array('user_id'          => ((Yii::app()->user->id===null)?1:Yii::app()->user->id),
+            'search_origin'      => 'concierge',
+            'created_time'       => new CDbExpression('NOW()'),
+            'search_details'     => $serialisedSearchDetails
+        );
+        $modelSearchHistory  = new SearchHistory;
+        $modelSearchHistory->attributes  = $searchHistory;
+        $modelSearchHistory->save();
 
     }
+
 }
