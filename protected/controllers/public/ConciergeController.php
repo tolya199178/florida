@@ -140,15 +140,15 @@ class ConciergeController extends Controller
 
         $argDoWhat      = Yii::app()->request->getPost('dowhat', null);
         $argWithWhat    = Yii::app()->request->getPost('withwhat', null);
-        $argPlace       = Yii::app()->request->getPost('where', null);
+        $argWhere       = Yii::app()->request->getPost('where', null);
 
         // /////////////////////////////////////////////////////////////////////
         // If a place was entered, find the corresponding city id.
         // /////////////////////////////////////////////////////////////////////
         $cityId = 0;
-        if (!empty($argPlace))
+        if (!empty($argWhere))
         {
-            $modelCity  = City::model()->find(array('condition'=>'city_name=:city_name','params'=>array(':city_name' => $argPlace)));
+            $modelCity  = City::model()->find(array('condition'=>'city_name=:city_name','params'=>array(':city_name' => $argWhere)));
 
             if ($modelCity != null)
             {
@@ -156,15 +156,38 @@ class ConciergeController extends Controller
             }
         }
 
+        // /////////////////////////////////////////////////////////////////////
+        // We start  building the query for the search. The three important
+        // ...filters are :-
+        // ... - the city
+        // ... - the activity
+        // ... - the activity type
+        // ...The filters are not mandatory and all or at least one of the search
+        // ...filters may be supplied.
+        // /////////////////////////////////////////////////////////////////////
         $seachCriteria = new CDbCriteria;
 
+        $seachCriteria->limit = Yii::app()->params['PAGESIZEREC+'];
+
+        // /////////////////////////////////////////////////////////////////////
+        // A business is linked to business_activities which in turn is linked
+        // ...to activities and activity types.
+        // ...Activity types is actually a child or Activity, from a MDM view.
+        // ...However, for the performance purposes, the system records both
+        // ...Activity and Activity Type against the Business Activity
+        // ...So, operationally (used for classification)
+        // ...  Business -> Business Activity
+        // ...           -> Business Activity -> Activity
+        // ...           -> Business Activity -> Activity Types
+        // ...and from a model
+        // ...  Actvity -> Activity type
+        // /////////////////////////////////////////////////////////////////////
         $seachCriteria->with = array('businessActivities',
-                                     'businessActivities.activity');
+                                     'businessActivities.activity',
+                                     'businessActivities.activityType',
+                                    );
 
         $seachCriteria->together = true;
-
-
-        // $seachCriteria->select = array('business_name');
 
         if (!empty($cityId))
         {
@@ -174,13 +197,20 @@ class ConciergeController extends Controller
         if (!empty($argDoWhat))
         {
             $seachCriteria->compare('activity.keyword', $argDoWhat);
+// NOTE: OR, if we want direct match
 //             $seachCriteria->condition = "activity.keyword=:activity";
 //             $seachCriteria->params = array(':activity' => $argDoWhat);
 
         }
 
+        if (!empty($argWithWhat))
+        {
+            $seachCriteria->compare('activityType.keyword', $argWithWhat);
+// NOTE: OR, if we want direct match
+//             $seachCriteria->condition = "activity.keyword=:activity";
+//             $seachCriteria->params = array(':activity' => $argDoWhat);
 
-        $seachCriteria->limit = Yii::app()->params['PAGESIZEREC+'];
+        }
 
 
         $dataProvider = new CActiveDataProvider('Business',
@@ -192,22 +222,22 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Log the search summary
         // /////////////////////////////////////////////////////////////////////
-        $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argPlace));
+        $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argWhere));
 
 
-        if (!empty($argPlace))
+        if (!empty($argWhere))
         {
 
             // /////////////////////////////////////////////////////////////////////
             // Log place - Insert search log (update if search already exists)
             // /////////////////////////////////////////////////////////////////////
-            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argPlace));
+            $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argWhere));
             if(!$modelSearchLogSummary)
             {
                 $modelSearchLogSummary = new SearchLogSummary;
             }
             $modelSearchLogSummary->search_origin    = 'concierge';
-            $modelSearchLogSummary->search_tag       = $argPlace   ;
+            $modelSearchLogSummary->search_tag       = $argWhere   ;
             $modelSearchLogSummary->search_tag_type  = 'city';
             $modelSearchLogSummary->search_details   = $serialisedSearchDetails;
             $modelSearchLogSummary->search_count     = $modelSearchLogSummary->search_count + 1;
