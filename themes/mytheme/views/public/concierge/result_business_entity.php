@@ -40,9 +40,10 @@
                             <div class="product-title"><?php echo CHtml::Encode($data->business_name); ?></div>
                             <div class="product-description"><?php echo CHtml::Encode($data->business_description); ?></div>
                             <!--  TODO: Prices are hardcoded (POC only). Will be resolved when restaurant.com data comes online -->
-                            <div class="product-sale">$17</div>
-                            <div class="product-prize">$36</div>
-                            <!--  TODO: END: Prices are hardcoded (POC only). Will be resolved when restaurant.com data comes online -->
+<!--  TODO: These are currently placeholders. Must be populated once restauramt.com data is available -->
+                            <span class="product-sale">$17</span>
+                            <span class="product-prize">$36</span>
+<!--  TODO: END: Prices are hardcoded (POC only). Will be resolved when restaurant.com data comes online -->
 
 
                             <div class="button-buy">
@@ -55,9 +56,18 @@
 <?php if (!Yii::app()->user->isGuest) { ?>
                                 <span class="label label-danger">Recomend to Friend</span>
 <?php }?>
+<?php if (!Yii::app()->user->isGuest) { ?>
+                                <span class="label label-danger invite_friends">Invite my Friends</span>
+<?php }?>
 <?php if ($data->is_featured == 'Y') { ?>
                                 <span class="label label-sucess">Featured</span>
 <?php }?>
+<?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
+<!--             <span><input type="number" name="your_awesome_parameter" id="some_id"  class="rating" rel="<?php echo $data->business_id; ?>" /></span>  -->
+
+                <button class="pop-review-form" rel="review_popover" refid="<?php echo $data->business_id; ?>"  >Review</button>
+
+<?php } ?>
 
                             </div>
 <!--                             <div class="add">Add</div> -->
@@ -69,13 +79,6 @@
                     </div>
 
                 </div>
-
-<?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
-<!--             <span><input type="number" name="your_awesome_parameter" id="some_id"  class="rating" rel="<?php echo $data->business_id; ?>" /></span>  -->
-
-                <button class="pop-review-form" rel="review_popover" refid="<?php echo $data->business_id; ?>"  >Review</button>
-
-<?php } ?>
 
 <?php
 

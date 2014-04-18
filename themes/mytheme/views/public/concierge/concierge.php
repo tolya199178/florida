@@ -28,7 +28,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   padding-left: 10px;
   box-shadow: #b0b0b0;
   z-index: 20;
+  overflow-x:auto;
 }
+
 
 #mainpanel {
   background-color: white;
@@ -44,6 +46,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   padding-left: 10px;
   box-shadow: #b0b0b0;
   z-index: 21;
+  overflow-x:auto;
 
 }
 
@@ -254,13 +257,13 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 .button-buy {
 /*   background: #e74c3c; */
   text-align: center;
-  line-height: 46px;
+/*   line-height: 46px; */
   font-weight: 700;
   color: #fff;
   border: 0px solid #c0392b;
   border-bottom-width: 2px;
 /*   width:70px; */
-  height:44px;
+/*   height:44px; */
   bottom:15px;
   left:15px;
   cursor:pointer;
@@ -448,7 +451,7 @@ h2{
 .item{
     background: #333;
     text-align: center;
-    height: 300px !important;
+    height: 450px !important;
 }
 .carousel{
     margin-top: 20px;
@@ -556,6 +559,22 @@ $('.cities .typeahead')
     var dowhat      = $("#dowhat").val();
     var withwhat    = $("#withwhat").val();
 
+    if ((dowhat == "") && (withwhat == ""))
+    {
+        $('#concierge_results').html("");
+        return;
+    }
+
+    if (withwhat == "")
+    {
+        $('#concierge_toolbar_activitytype').html("");
+    }
+
+    if (dowhat == "")
+    {
+        $('#concierge_toolbar_activity').html("");
+    }
+
     var url         = '/concierge/dosearch/';
 
     $.post(url,
@@ -566,7 +585,7 @@ $('.cities .typeahead')
     },
     function(data,status){
       $('#concierge_results').html(data);
-
+        $('#city_gallery').html(data);
         // $('input.rating').rating();
 
     });
