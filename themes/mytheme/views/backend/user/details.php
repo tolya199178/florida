@@ -41,11 +41,11 @@ function changeUserType(userType)
 }
 </style>
 
-    <h3>Update User: <?php echo $model->first_name.' '.$model->last_name.' (ID:'.$model->user_id.')'; ?></h3>
+    <h3>Update User: <?php echo CHtml::encode($model->first_name).' '.CHtml::encode($model->last_name).' (ID:'.$model->user_id.')'; ?></h3>
     <!-- Nav tabs -->
     <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Manage Business</a>
+            <a class="navbar-brand" href="#">Manage User</a>
         </div>
         <div>
             <div class="navbar-form navbar-left" role="search">
@@ -188,7 +188,7 @@ function changeUserType(userType)
         <div class="form-group">
             <?php echo $form->labelEx($model,'created_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::textField('UserReadOnly[createdBy]', $model->createdBy->user_name, array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[createdBy]', CHtml::encode($model->createdBy->user_name), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>
 	</div>
@@ -206,7 +206,7 @@ function changeUserType(userType)
         <div class="form-group">
             <?php echo $form->labelEx($model,'modified_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', $model->modifiedBy->user_name, array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', CHtml::encode($model->modifiedBy->user_name), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>
 	</div>
@@ -312,6 +312,32 @@ function changeUserType(userType)
             </div>
         </div>
 	</div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'fldUploadImage',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo CHtml::activeFileField($model,'fldUploadImage',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'fldUploadImage'); ?>
+            </div>
+        </div>
+	</div>
+
+<?php if (!empty($model->image)) { ?>
+	<div class="row">
+        <div class="form-group">
+            <span class="col-sm-2 control-label">Current Image</span>
+            <div class="col-sm-4">
+                <div style="border: 1px solid #066A75; padding: 3px; width:  150px; height: 150px   ; " id="left">
+                    <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$model->image,
+                                            "Image",
+                                            array('width'=>150, 'height'=>150))); ?>
+                </div>
+            </div>
+        </div>
+	</div>
+<?php } ?>
+
 
   </div>
   <!--  End User Contact Tab -->
@@ -463,15 +489,6 @@ function changeUserType(userType)
             </div>
     	</div>
 
-    	<div class="row">
-            <div class="form-group">
-                <?php echo $form->labelEx($model,'image',array('class'=>"col-sm-2 control-label")); ?>
-                <div class="col-sm-4">
-                    <?php echo $form->textField($model,'image',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
-                    <?php echo $form->error($model,'image'); ?>
-                </div>
-            </div>
-        </div>
     </div>
     <!-- end profile settings for type user -->
 
