@@ -65,7 +65,7 @@ function changeUserType(userType)
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'user-form',
-    'htmlOptions' => array('role' => 'form', /* 'class' => "form-horizontal" */),
+    'htmlOptions'           => array('role' => 'form', 'enctype' => 'multipart/form-data'/* 'class' => "form-horizontal" */),
 	'enableAjaxValidation'=>false,
 )); ?>
 
