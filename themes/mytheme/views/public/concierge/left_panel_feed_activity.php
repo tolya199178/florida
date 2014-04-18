@@ -22,7 +22,7 @@
                         <p>
                             <?php
                             if (Yii::app()->user->isGuest) {
-                                echo 'Someone from '.CHtml::encode($search_results['where'])
+                                echo 'Someone from '.CHtml::encode($search_results['where']);
                             }
                             else
                             {

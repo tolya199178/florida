@@ -482,7 +482,6 @@ $('.cities .typeahead')
        source: numbers.ttAdapter()
        })
     .on('typeahead:selected', function(e, datum){
-          doSearch();
           loadCityGallery();
      });
 
@@ -509,8 +508,6 @@ $('.cities .typeahead')
 
             var feed_update_list = source.find('#feedresult').html();
             $('#left_panel_feed').prepend(feed_update_list);
-
-            // debugger;
 
             last_timestamp = source.find('#last_timestamp').html();
 
@@ -716,7 +713,7 @@ $('.cities .typeahead')
                data: $(this).serialize(),
                success: function(data)
                {
-                   alert(data);
+                    ;
                }
         });
 
@@ -735,6 +732,12 @@ $('.cities .typeahead')
      });
 
 
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Concierge toolbar actions
+    // /////////////////////////////////////////////////////////////////////////
+    // Handler for (popular) activity click
+    // Response is to display related activity types
     $('body').on('click', '.concierge_activity_tag', function(event) {
         var txtActivity = $(this).text();
 
@@ -754,6 +757,22 @@ $('.cities .typeahead')
             $('#concierge_toolbar_activitytype').html(data);
 
 		});
+
+
+    });
+
+    // Handler for (popular) activity type clicks
+    // Response is to display related activity types
+    $('body').on('click', '.concierge_activitytype_tag', function(event) {
+        var txtActivity = $(this).text();
+
+
+// BUG : The two statements are triggering two doSearch() calls
+// BUG : Perhaps the answer lies here :
+// BUG : http://stackoverflow.com/questions/21336457/bootstrap-tags-input-how-to-bind-function-to-event-itemadded-and-itemremoved/21336824#21336824
+alert('Bug alert: 2 doSearch() calls triggered. FIXME.');
+        $('#withwhat').tagsinput('remove', $("#withwhat").val());
+        $('#withwhat').tagsinput('add', txtActivity);
 
 
     });
