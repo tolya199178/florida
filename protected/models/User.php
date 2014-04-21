@@ -117,6 +117,12 @@ class User extends CActiveRecord
      */
     public $fldVerifyPassword;
 
+    /**
+     *
+     * @var string fldUploadImage User image uploader.
+     * @access public
+     */
+    public $fldUploadImage;
 
 
     /**
@@ -161,13 +167,17 @@ class User extends CActiveRecord
                    first_name, last_name,
                    activation_code, facebook_id,
                    facebook_name, hometown,
-                   places_want_to_visit, image',    'length', 'max'=>255),
+                   places_want_to_visit',    'length', 'max'=>255),
             array('mobile_number',                  'length', 'max'=>64),
 
             array('email, user_name',               'email', 'checkMX'=>false),
 
             array('email', 'unique'),
             array('user_name', 'unique'),
+
+            // Form only attributes.
+            array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+
 
 
             // ranges
@@ -408,10 +418,7 @@ class User extends CActiveRecord
             // /////////////////////////////////////////////////////////////////////
             if (isset($this->password) && (!empty($this->password)))
             {
-
-                $salt              =  utf8_encode( mcrypt_create_iv(30) );
-                $password_hash     =  utf8_encode( crypt($this->user_name.$this->password, $salt) );
-                $this->password    =  $password_hash;
+                $this->password    =  CPasswordHelper::hashPassword($this->password);
 
             }
         }
