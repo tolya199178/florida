@@ -4,17 +4,15 @@ class m140227_133110_create_admin_user extends CDbMigration
 {
 	public function up()
 	{
-	    
+
 	    $user_name         = 'admin@florida.com';
 	    $user_password     = 'crikey3';
-	    
-	    $salt              =  utf8_encode( mcrypt_create_iv(30) );
-	    $password_hash     =  utf8_encode( crypt($user_name.$user_password, $salt) );
-	    
-	    
+
+	    $password_hash     =  CPasswordHelper::hashPassword($user_password);
+
 	    $this->execute( "SET foreign_key_checks = 0");
-	    
-	    $this->insert('tbl_user', 
+
+	    $this->insert('tbl_user',
 	        array( 'user_name'             => $user_name,
 	    	       'email'                 => $user_name,
 	               'password'              => $password_hash,
@@ -25,7 +23,7 @@ class m140227_133110_create_admin_user extends CDbMigration
 	               'activation_status'     => 'activated',
 	             )
 	    );
-	    
+
 	    $this->execute( "SET foreign_key_checks = 1");
 
 	}
