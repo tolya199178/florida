@@ -271,56 +271,21 @@ class ConciergeController extends Controller
 
         // /////////////////////////////////////////////////////////////////////
         // For non logged in users, show anonymous activity
-        // For logged in users, show their friends
+        // For logged in users, show user details
         // /////////////////////////////////////////////////////////////////////
-        if (Yii::app()->user->isGuest)         // User is not logged in
-        {
-             $lastTimestamp = Yii::app()->request->getQuery("last_timestamp");
+        $lastTimestamp = Yii::app()->request->getQuery("last_timestamp");
 
-             $dbCriteria = new CDbCriteria;
-             // TODO: Move the search limit to parameters file
-             $dbCriteria->condition = " unix_timestamp(created_time) > :lastTimestamp ";
-             $dbCriteria->params    = array(':lastTimestamp' => $lastTimestamp);
-             $dbCriteria->limit     = 100;
-             $dbCriteria->order     = 'created_time DESC';
+        $dbCriteria = new CDbCriteria;
+        // TODO: Move the search limit to parameters file
+        $dbCriteria->condition = " unix_timestamp(created_time) > :lastTimestamp ";
+        $dbCriteria->params    = array(':lastTimestamp' => $lastTimestamp);
+        $dbCriteria->limit     = 100;
+        $dbCriteria->order     = 'created_time DESC';
 
-             $lstSearchLog = SearchHistory::model()->findAll($dbCriteria);
+        $lstSearchLog = SearchHistory::model()->findAll($dbCriteria);
 
-             $this->renderPartial("left_panel_feed_activity", array('model' => $lstSearchLog));
-             Yii::app()->end();
-
-        }
-        else
-        {
-            // /////////////////////////////////////////////////////////////////
-            // First, get a list of all local friends
-            // /////////////////////////////////////////////////////////////////
-            $lstMyFriends = MyFriend::model()->findAllByAttributes(array('user_id' => Yii::app()->user->id));
-
-            // /////////////////////////////////////////////////////////////////
-            // Now, get a list of the user's facebook friends
-            // /////////////////////////////////////////////////////////////////
-            // Load the component
-            // TODO: figure why component is not autoloading.
-            $objFacebook  = Yii::app()->getComponent('facebook');
-
-            // Establish a connection to facebook
-            $objFacebook->connect();
-
-            $lstMyOnlineFriends = array();
-            if ($objFacebook->isLoggedIn())
-            {
-                $lstMyOnlineFriends = $objFacebook->getFriendList();
-            }
-
-
-            $this->renderPartial("left_panel_friend_list", array('myLocalFriends'   => $lstMyFriends,
-                                                                 'myOnlineFriends'  => $lstMyOnlineFriends
-                                                                ));
-            Yii::app()->end();
-
-
-        }
+        $this->renderPartial("left_panel_feed_activity", array('model' => $lstSearchLog));
+        Yii::app()->end();
 
     }
 
