@@ -418,10 +418,7 @@ class User extends CActiveRecord
             // /////////////////////////////////////////////////////////////////////
             if (isset($this->password) && (!empty($this->password)))
             {
-
-                $salt              =  utf8_encode( mcrypt_create_iv(30) );
-                $password_hash     =  utf8_encode( crypt($this->user_name.$this->password, $salt) );
-                $this->password    =  $password_hash;
+                $this->password    =  CPasswordHelper::hashPassword($this->password);
 
             }
         }
