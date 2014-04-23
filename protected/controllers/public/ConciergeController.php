@@ -30,6 +30,9 @@
  * @package Controllers
  * @version 1.0
  */
+
+Yii::import("application.modules.webuser.components.HAccount");
+
 class ConciergeController extends Controller
 {
 
@@ -119,7 +122,6 @@ class ConciergeController extends Controller
          }
           header('Content-type: application/json');
 
-         // echo json_encode($listResults);
          echo CJSON::encode($listResults);
 
 
@@ -435,9 +437,130 @@ class ConciergeController extends Controller
 
 
 
-        exit;
+        Yii::app()->end();
 
-        //  $this->render('concierge');
+    }
+
+    /**
+     * Returns the list of friends to allow invitation.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionInvitefriends()
+    {
+
+        $businessId = $reqPanel   = Yii::app()->request->getQuery("business");
+
+        // /////////////////////////////////////////////////////////////////////
+        // First, get a list of all local friends
+        // /////////////////////////////////////////////////////////////////////
+        $lstMyFriends = MyFriend::model()->with('friend')->findAllByAttributes(array(
+            'user_id' => Yii::app()->user->id
+        ));
+
+// TODO: We may not need to connect to Facebook at this stage.
+//         // /////////////////////////////////////////////////////////////////////
+//         // Now, get a list of the user's facebook friends
+//         // /////////////////////////////////////////////////////////////////////
+//         // Load the component
+//         // TODO: figure why component is not autoloading.
+//         $objFacebook = Yii::app()->getComponent('facebook');
+
+//         // Establish a connection to facebook
+//         $objFacebook->connect();
+
+//         $lstMyOnlineFriends = array();
+//         if ($objFacebook->isLoggedIn()) {
+//             $lstMyOnlineFriends = $objFacebook->getFriendList();
+//         }
+// TODO: We may not need to connect to Facebook at this stage.
+
+        $this->renderPartial("invite_friend_list", array(
+            'myLocalFriends' => $lstMyFriends,
+            'myOnlineFriends' => array(),
+            'business_id'   => $businessId
+        ));
+    }
+
+    /**
+     * Sends invitations to list of selected friends.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionSendfriendinvitations()
+    {
+
+        $argBusinessId          = Yii::app()->request->getPost('business_id', null);
+        $argBusinessId          = filter_var($argBusinessId,FILTER_SANITIZE_NUMBER_INT);
+
+        $argInvitationList      = Yii::app()->request->getPost('invitation_list', array());
+
+        $argMeetingDateTime     = Yii::app()->request->getPost('meeting_date_time', null);
+
+        $argMessage             = Yii::app()->request->getPost('my_message', null);
+        $argMessage             = filter_var($argMessage,FILTER_SANITIZE_STRING);
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the business entry
+        // /////////////////////////////////////////////////////////////////////
+        $modelBusiness          = Business::model()->with('businessCity')->findByPk( $argBusinessId );
+        if ($modelBusiness === null)
+        {
+            header('Content-type: application/json');
+            echo CJSON::encode(array(
+                                    'result' => false,
+                                    'message' => 'Cannot locate selected business '.$argBusinessId
+                               ));
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the email message template
+        // /////////////////////////////////////////////////////////////////////
+        $emailMessage = HAccount::getEmailMessage('invite friends');
+        $emailSubject = HAccount::getEmailSubject('invite friends');
+
+        // /////////////////////////////////////////////////////////////////////
+        // Fetch the list of all invited friends
+        // /////////////////////////////////////////////////////////////////////
+        $dbCriteria = new CDbCriteria;
+
+        $lstFriends = User::model()->findAllByPk($argInvitationList);
+
+        foreach ($lstFriends as $itemMyFriend)
+        {
+            // Customise the email message
+            $emailAttributes = array();
+            $emailAttributes['friend_name']         = $itemMyFriend->first_name;
+            $emailAttributes['venue']               = $modelBusiness->business_name;
+            $emailAttributes['address']             = $modelBusiness->business_address1."\n".
+                                                      $modelBusiness->business_address2."\n".
+                                                      $modelBusiness->businessCity->city_name;
+            $emailAttributes['meeting_date_time']   = $argMeetingDateTime;
+            $emailAttributes['my_message']          = $argMessage;
+            $emailAttributes['venue_url']           = Yii::app()->createAbsoluteUrl('businessuser/profile/show/', array('id' => $modelBusiness->business_id  ));
+            $emailAttributes['my_name']             = Yii::app()->user->getFirstName();
+
+            $customisedEmailMessage = HAccount::CustomiseMessage($emailMessage, $emailAttributes);
+
+
+            // Send the message
+            HAccount::sendMessage($itemMyFriend->email, $itemMyFriend->first_name.' '.$itemMyFriend->last_name, $emailSubject, $emailMessage);
+
+        }
+
+        header('Content-type: application/json');
+        echo CJSON::encode(array(
+            'result' => true,
+            'message' => 'Invitations sent.'
+        ));
+
+
     }
 
 }

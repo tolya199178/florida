@@ -10,6 +10,12 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/timeago/jquery.timeago.js', CClientScript::POS_END);
+
+
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', CClientScript::POS_END);
+
+
 ?>
 <style>
 <!--
@@ -69,7 +75,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
           border-radius: 8px;
   outline: none;
 }
-
+-
 .typeahead {
   background-color: #fff;
 }
@@ -459,6 +465,10 @@ h2{
 .bs-example{
 	margin: 20px;
 }
+
+
+.invited {border:solid 3px red}
+
 </style>
 
 
@@ -773,7 +783,14 @@ $('.cities .typeahead')
 		// using the done promise callback
 		.done(function(data) {
 
+    debugger;
+
+            // Populate the list of linked activity types
             $('#concierge_toolbar_activitytype').html(data);
+
+            // Clear the activity selecttion and use the clicked one
+//             $('#dowhat').tagsinput('remove', $("#dowhat").val());
+//             $('#dowhat').tagsinput('add', txtActivity);
 
 		});
 
@@ -783,17 +800,104 @@ $('.cities .typeahead')
     // Handler for (popular) activity type clicks
     // Response is to display related activity types
     $('body').on('click', '.concierge_activitytype_tag', function(event) {
-        var txtActivity = $(this).text();
+        var txtActivityType = $(this).text();
 
 
 // BUG : The two statements are triggering two doSearch() calls
 // BUG : Perhaps the answer lies here :
 // BUG : http://stackoverflow.com/questions/21336457/bootstrap-tags-input-how-to-bind-function-to-event-itemadded-and-itemremoved/21336824#21336824
-alert('Bug alert: 2 doSearch() calls triggered. FIXME.');
+// alert('Bug alert: 2 doSearch() calls triggered. FIXME.');
         $('#withwhat').tagsinput('remove', $("#withwhat").val());
-        $('#withwhat').tagsinput('add', txtActivity);
+        $('#withwhat').tagsinput('add', txtActivityType);
 
 
+    });
+
+    $('body').on('click', '.myfriend', function(event) {
+        var $$          = $(this)
+        var user_id     = $(this).attr('rel');
+
+
+        if( !$$.is('.invited')){
+            $$.addClass('invited');
+            $('#my_friend_'+user_id).prop('checked', true);
+        } else {
+            $$.removeClass('invited');
+            $('#my_friend_'+user_id).prop('checked', false);
+
+        }
+    })
+
+    // ////////////////////////////////////////////////////
+    // Wizard
+    // ///////////////////////////////////////////////////////
+
+    $('body').on('click', '.wiz-next-nav', function(event) {
+
+        $(".step-1").hide();
+        $(".step-2").show();
+
+        $(".wiz-prev-nav").show();
+        $(".wiz-finish-nav").show();
+        $(".wiz-next-nav").hide();
+
+        return false;
+    });
+
+    $('body').on('click', '.wiz-prev-nav', function(event) {
+
+        $(".step-2").hide();
+        $(".step-1").show();
+
+        $(".wiz-prev-nav").hide();
+        $(".wiz-next-nav").show();
+        $(".wiz-finish-nav").hide();
+
+
+        return false;
+    });
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Time picker
+    // /////////////////////////////////////////////////////////////////////////
+    $('body').on('click', '.form_datetime', function(event) {
+       // debugger
+         $(".form_datetime")
+         .datetimepicker({
+        format: "dd MM yyyy - HH:ii p",
+        todayBtn: true,
+        todayHighlight:true
+        })
+        .on('changeDate', function(ev){
+            //debugger;
+            // $(this).hide();
+            // if (ev.date.valueOf() < date-start-display.valueOf()){ };
+        })
+    });
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Invite my friends invitation
+    // /////////////////////////////////////////////////////////////////////////
+    $('body').on('submit', '#frmInviteMyFriends', function(event) {
+
+        event.preventDefault();
+
+        var form_values = $(this).serialize();
+
+        var url = '/concierge/sendfriendinvitations/';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                    $('#inviteMyFriends').modal('hide');
+               }
+        });
+
+        return false; // avoid to execute the actual submit of the form.
     });
 
 EOD;
@@ -801,6 +905,13 @@ EOD;
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
 
 ?>
+
+<!-- Modal -->
+<div class="modal fade" id="inviteMyFriends" tabindex="-1" role="dialog" aria-labelledby="inviteMyFriendsLabel" aria-hidden="true">
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 
 <div class="container-full">
 

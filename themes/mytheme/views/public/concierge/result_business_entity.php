@@ -54,10 +54,7 @@
                                 <span class="label label-danger"><?php echo CHtml::link('Add to profile', Yii::app()->createUrl('/webuser/profile/addbusiness', array('business_id' => $data->business_id  )), array('class' => 'result_button_link', 'rel' => $data->business_id)); ?></span>
 <?php }?>
 <?php if (!Yii::app()->user->isGuest) { ?>
-                                <span class="label label-danger">Recomend to Friend</span>
-<?php }?>
-<?php if (!Yii::app()->user->isGuest) { ?>
-                                <span class="label label-danger invite_friends">Invite my Friends</span>
+                                <a class="label label-lg label-info" data-toggle="modal" href="/concierge/invitefriends/business/<?php echo $data->business_id; ?>" data-target="#inviteMyFriends">Invite My Friends</a>
 <?php }?>
 <?php if ($data->is_featured == 'Y') { ?>
                                 <span class="label label-sucess">Featured</span>
