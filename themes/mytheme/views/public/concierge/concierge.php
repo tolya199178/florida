@@ -616,6 +616,13 @@ $('.cities .typeahead')
 
         var txtActivity      = $("#dowhat").val();
 
+        if (txtActivity.length == 0)
+        {
+            $('#withwhat').tagsinput('remove', $("#withwhat").val());
+            return;
+        }
+
+
         // TODO: Find a way of calling this function from the widget
     	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
 
@@ -629,20 +636,10 @@ $('.cities .typeahead')
 		// using the done promise callback
 		.done(function(data) {
 
-            if (data.length > 0)
-            {
+            // Populate the list of linked activity types
+            $('#concierge_toolbar_activitytype').html(data);
 
-                // Populate the list of linked activity types
-                $('#concierge_toolbar_activitytype').html(data);
-
-                $('#withwhat').tagsinput('focus');
-
-                // Clear the activity selecttion and use the clicked one
-    //             $('#dowhat').tagsinput('remove', $("#dowhat").val());
-    //             $('#dowhat').tagsinput('add', txtActivity);
-
-            }
-
+            $('#withwhat').tagsinput('focus');
 
 		});
     });
