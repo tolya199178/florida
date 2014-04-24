@@ -496,6 +496,7 @@ $('.cities .typeahead')
        })
     .on('typeahead:selected', function(e, datum){
           loadCityGallery();
+          $('#dowhat').tagsinput('focus');
      });
 
 
@@ -577,12 +578,12 @@ $('.cities .typeahead')
 
     if (withwhat == "")
     {
-        $('#concierge_toolbar_activitytype').html("");
+    //    $('#concierge_toolbar_activitytype').html("");
     }
 
     if (dowhat == "")
     {
-        $('#concierge_toolbar_activity').html("");
+    //    $('#concierge_toolbar_activity').html("");
     }
 
     var url         = '/concierge/dosearch/';
@@ -611,10 +612,43 @@ $('.cities .typeahead')
     });
 
     $("#dowhat").on("change", function() {
-      doSearch()
+      doSearch();
+
+        var txtActivity      = $("#dowhat").val();
+
+        // TODO: Find a way of calling this function from the widget
+    	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: null,
+			dataType 	: 'html'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            if (data.length > 0)
+            {
+
+                // Populate the list of linked activity types
+                $('#concierge_toolbar_activitytype').html(data);
+
+                $('#withwhat').tagsinput('focus');
+
+                // Clear the activity selecttion and use the clicked one
+    //             $('#dowhat').tagsinput('remove', $("#dowhat").val());
+    //             $('#dowhat').tagsinput('add', txtActivity);
+
+            }
+
+
+		});
     });
 
     $("#withwhat").on("change", function() {
+      $( "#city" ).focus();
       doSearch()
     });
 
@@ -631,6 +665,7 @@ $('.cities .typeahead')
 		})
 		// using the done promise callback
 		.done(function(data) {
+
 
             var results = JSON.parse(data);
 
@@ -862,7 +897,8 @@ $('.cities .typeahead')
          .datetimepicker({
         format: "dd MM yyyy - HH:ii p",
         todayBtn: true,
-        todayHighlight:true
+        todayHighlight:true,
+     autoclose: true
         })
         .on('changeDate', function(ev){
             // $(this).hide();
