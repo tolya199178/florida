@@ -428,6 +428,14 @@ div.bootstrap-tagsinput {
   border: 0;
   height:35px;
 }
+
+#dowhen {
+  width: 150px;
+  outline: none;
+  border: 0;
+  height:35px;
+}
+
 /* div.bootstrap-tagsinput > input{ */
 /*   width: 250px; */
 /* } */
@@ -645,7 +653,7 @@ $('.cities .typeahead')
     });
 
     $("#withwhat").on("change", function() {
-      $( "#city" ).focus();
+      $( "#dowhen" ).focus();
       doSearch()
     });
 
@@ -928,6 +936,14 @@ $('.cities .typeahead')
         $(this).removeData('bs.modal');
     });
 
+    $('#dowhen').datetimepicker({
+            format: "dd MM yyyy",
+            autoclose: true,
+            todayBtn: true,
+            minView: "month",
+            initialDate: null
+    });
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
@@ -992,6 +1008,11 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                             <div class="col-lg-3">
                                 <input class="form-control" name="withwhat" id="withwhat"  type="text" autocomplete="off" value="">
                             </div>
+                            <div class="col-lg-3">
+                                <input type="text" value="" id="dowhen" data-date-format="yyyy-mm-dd">
+                            </div>
+
+
                         </div>
 
 
