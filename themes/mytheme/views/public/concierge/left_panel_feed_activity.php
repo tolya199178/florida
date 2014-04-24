@@ -31,9 +31,10 @@
 
                             ?>
                             <?php
-                                echo CHtml::link(CHtml::encode($search_results['dowhat']), $search_results['dowhat']). ' ' .
-                                     CHtml::link(CHtml::encode($search_results['withwhat']), $search_results['withwhat']). ' in ' .
-                                     CHtml::link(CHtml::encode($search_results['where']), $search_results['where'])
+                            echo CHtml::encode($search_results['dowhat']). ' ' .
+                                 CHtml::encode($search_results['withwhat']). ' in ' .
+                                 CHtml::encode($search_results['where']);
+
                             ?>
                         </p>
                         <p><small><time class="timeago" datetime="<?php echo $value->created_time; ?>"></time></small> </p>
