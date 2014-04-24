@@ -783,8 +783,6 @@ $('.cities .typeahead')
 		// using the done promise callback
 		.done(function(data) {
 
-    debugger;
-
             // Populate the list of linked activity types
             $('#concierge_toolbar_activitytype').html(data);
 
@@ -816,7 +814,6 @@ $('.cities .typeahead')
     $('body').on('click', '.myfriend', function(event) {
         var $$          = $(this)
         var user_id     = $(this).attr('rel');
-
 
         if( !$$.is('.invited')){
             $$.addClass('invited');
@@ -861,7 +858,6 @@ $('.cities .typeahead')
     // Time picker
     // /////////////////////////////////////////////////////////////////////////
     $('body').on('click', '.form_datetime', function(event) {
-       // debugger
          $(".form_datetime")
          .datetimepicker({
         format: "dd MM yyyy - HH:ii p",
@@ -869,9 +865,7 @@ $('.cities .typeahead')
         todayHighlight:true
         })
         .on('changeDate', function(ev){
-            //debugger;
             // $(this).hide();
-            // if (ev.date.valueOf() < date-start-display.valueOf()){ };
         })
     });
 
@@ -879,6 +873,20 @@ $('.cities .typeahead')
     // /////////////////////////////////////////////////////////////////////////
     // Invite my friends invitation
     // /////////////////////////////////////////////////////////////////////////
+    // Launch the modal when the invite friends link is clicked
+    $('body').on('click', '.launch-modal', function(e) {
+
+        var remote = $(this).attr("data-href");
+
+        $("#modalInviteMyFriends").modal({
+
+            keyboard: false,
+            remote: remote
+
+        });
+    });
+
+    // Submit the modal form and close the modal
     $('body').on('submit', '#frmInviteMyFriends', function(event) {
 
         event.preventDefault();
@@ -893,11 +901,16 @@ $('.cities .typeahead')
                data: $(this).serialize(),
                success: function(data)
                {
-                    $('#inviteMyFriends').modal('hide');
+                    $('#modalInviteMyFriends').modal('hide');
                }
         });
 
         return false; // avoid to execute the actual submit of the form.
+    });
+
+    // Clear the modal each time
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
     });
 
 EOD;
@@ -906,11 +919,25 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
 ?>
 
+
 <!-- Modal -->
-<div class="modal fade" id="inviteMyFriends" tabindex="-1" role="dialog" aria-labelledby="inviteMyFriendsLabel" aria-hidden="true">
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+<div class="modal fade" id="modalInviteMyFriends" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 <div class="container-full">

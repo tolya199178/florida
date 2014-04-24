@@ -550,7 +550,7 @@ class ConciergeController extends Controller
 
 
             // Send the message
-            HAccount::sendMessage($itemMyFriend->email, $itemMyFriend->first_name.' '.$itemMyFriend->last_name, $emailSubject, $emailMessage);
+            HAccount::sendMessage($itemMyFriend->email, $itemMyFriend->first_name.' '.$itemMyFriend->last_name, $emailSubject, $customisedEmailMessage);
 
         }
 
