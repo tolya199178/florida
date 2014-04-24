@@ -805,27 +805,9 @@ $('.cities .typeahead')
     $('body').on('click', '.concierge_activity_tag', function(event) {
         var txtActivity = $(this).text();
 
-        // TODO: Find a way of calling this function from the widget
-    	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
-
-		// process the form. Note that there is no data send as posts arguements.
-		$.ajax({
-			type 		: 'POST',
-			url 		: url,
-		    data 		: null,
-			dataType 	: 'html'
-		})
-		// using the done promise callback
-		.done(function(data) {
-
-            // Populate the list of linked activity types
-            $('#concierge_toolbar_activitytype').html(data);
-
-            // Clear the activity selecttion and use the clicked one
-//             $('#dowhat').tagsinput('remove', $("#dowhat").val());
-//             $('#dowhat').tagsinput('add', txtActivity);
-
-		});
+        $('#dowhat').tagsinput('remove', $("#dowhat").val());
+        $('#dowhat').tagsinput('add', txtActivity);
+        $('#withwhat').tagsinput('remove', $("#withwhat").val());
 
 
     });
