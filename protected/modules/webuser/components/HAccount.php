@@ -26,7 +26,7 @@
 
 class HAccount
 {
-    
+
 
     /**
      * Create a random verify code to be used for account validation. Use the email
@@ -39,15 +39,15 @@ class HAccount
      */
     public function getVerificationCode($toEmailAddress)
     {
-        
+
 		$encodedEmailAddress      = urlencode($toEmailAddress);
 		$specialString 			  = 'datacraft?'.time();
 		$verificationCode         = md5($encodedEmailAddress.$specialString);
-		
+
 		return $verificationCode;
 
     }
-    
+
     /**
      * Sends an email message.
      *
@@ -61,7 +61,7 @@ class HAccount
      */
     public function sendMessage($toEmailAddress = null, $toName = null, $msgSubject, $msgContent)
     {
-        
+
         if (empty($toEmailAddress) || empty($toName))
         {
             return false;
@@ -78,24 +78,24 @@ class HAccount
 				'MIME-Version: 1.0',
 				'Content-type: text/html; charset=iso-8859-1'
 		);
-		
+
 
 		Yii::app()->email->send($fromEmailAdddress, $toEmailAddress, $msgSubject, $msgContent, $messageHeaders);
 
-    
+
     }
-    
-    /* 
+
+    /*
     /**
      * Utility function to substitute values in a template.
-     * 
+     *
      * ...Template variables are enclosed with braces. For example :-
      * ...  'Hello. {your_name}. How are you today?'
      * ...The replacement values is an associative array with the replacement
      * ...key as the index key. For example.
      * ... $replacement_value['your_name'} = 'Tom'
-     * ...The resulting string is 
-     * ...  'Hello. Tom. How are you today?' 
+     * ...The resulting string is
+     * ...  'Hello. Tom. How are you today?'
      *
      * @param $messageContent string The template to be converted
      * @param $replacementValuesList array Associative list of replacement values
@@ -105,24 +105,24 @@ class HAccount
      */
     public function CustomiseMessage($messageContent, $replacementValuesList)
     {
-        
+
         $tagPersonalisation 		= array();
         $valuePersonalisation 		= array();
-        
+
         if (preg_match_all("/{(.*?)}/", $messageContent, $m)) {
-                    
+
             foreach ($m[1] as $i => $varname) {
-                $tagPersonalisation[]   = $m[0][$i];        
-                $valuePersonalisation[] = $replacementValuesList[$varname]; 
+                $tagPersonalisation[]   = $m[0][$i];
+                $valuePersonalisation[] = $replacementValuesList[$varname];
             }
         }
-                
+
         $convertedMessage = str_replace($tagPersonalisation, $valuePersonalisation, $messageContent);
-        
+
         return $convertedMessage;
     }
-    
-    
+
+
     /**
      * Retrieves the message from a given Email template.
      *
@@ -141,13 +141,13 @@ class HAccount
         {
             return null;
         }
-        
+
         $messageContent       = $modelMailTemplate->attributes['msg'];
-        
+
         return $messageContent;
 
     }
-    
+
     /**
      * Retrieves the message subject from a given Email template.
      *
@@ -166,12 +166,12 @@ class HAccount
         {
             return null;
         }
-    
+
         $messageSubject       = $modelMailTemplate->attributes['subject'];
-    
+
         return $messageSubject;
-    
+
     }
-    
-    
+
+
 }

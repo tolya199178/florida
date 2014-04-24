@@ -10,6 +10,12 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/timeago/jquery.timeago.js', CClientScript::POS_END);
+
+
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', CClientScript::POS_END);
+
+
 ?>
 <style>
 <!--
@@ -28,7 +34,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   padding-left: 10px;
   box-shadow: #b0b0b0;
   z-index: 20;
+  overflow-x:auto;
 }
+
 
 #mainpanel {
   background-color: white;
@@ -44,6 +52,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   padding-left: 10px;
   box-shadow: #b0b0b0;
   z-index: 21;
+  overflow-x:auto;
 
 }
 
@@ -66,7 +75,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
           border-radius: 8px;
   outline: none;
 }
-
+-
 .typeahead {
   background-color: #fff;
 }
@@ -254,13 +263,13 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 .button-buy {
 /*   background: #e74c3c; */
   text-align: center;
-  line-height: 46px;
+/*   line-height: 46px; */
   font-weight: 700;
   color: #fff;
   border: 0px solid #c0392b;
   border-bottom-width: 2px;
 /*   width:70px; */
-  height:44px;
+/*   height:44px; */
   bottom:15px;
   left:15px;
   cursor:pointer;
@@ -448,7 +457,7 @@ h2{
 .item{
     background: #333;
     text-align: center;
-    height: 300px !important;
+    height: 450px !important;
 }
 .carousel{
     margin-top: 20px;
@@ -456,6 +465,10 @@ h2{
 .bs-example{
 	margin: 20px;
 }
+
+
+.invited {border:solid 3px red}
+
 </style>
 
 
@@ -483,6 +496,7 @@ $('.cities .typeahead')
        })
     .on('typeahead:selected', function(e, datum){
           loadCityGallery();
+          $('#dowhat').tagsinput('focus');
      });
 
 
@@ -556,6 +570,22 @@ $('.cities .typeahead')
     var dowhat      = $("#dowhat").val();
     var withwhat    = $("#withwhat").val();
 
+    if ((dowhat == "") && (withwhat == ""))
+    {
+        $('#concierge_results').html("");
+        return;
+    }
+
+    if (withwhat == "")
+    {
+    //    $('#concierge_toolbar_activitytype').html("");
+    }
+
+    if (dowhat == "")
+    {
+    //    $('#concierge_toolbar_activity').html("");
+    }
+
     var url         = '/concierge/dosearch/';
 
     $.post(url,
@@ -566,7 +596,7 @@ $('.cities .typeahead')
     },
     function(data,status){
       $('#concierge_results').html(data);
-
+        $('#city_gallery').html(data);
         // $('input.rating').rating();
 
     });
@@ -582,10 +612,40 @@ $('.cities .typeahead')
     });
 
     $("#dowhat").on("change", function() {
-      doSearch()
+      doSearch();
+
+        var txtActivity      = $("#dowhat").val();
+
+        if (txtActivity.length == 0)
+        {
+            $('#withwhat').tagsinput('remove', $("#withwhat").val());
+            return;
+        }
+
+
+        // TODO: Find a way of calling this function from the widget
+    	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: null,
+			dataType 	: 'html'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            // Populate the list of linked activity types
+            $('#concierge_toolbar_activitytype').html(data);
+
+            $('#withwhat').tagsinput('focus');
+
+		});
     });
 
     $("#withwhat").on("change", function() {
+      $( "#city" ).focus();
       doSearch()
     });
 
@@ -602,6 +662,7 @@ $('.cities .typeahead')
 		})
 		// using the done promise callback
 		.done(function(data) {
+
 
             var results = JSON.parse(data);
 
@@ -741,22 +802,9 @@ $('.cities .typeahead')
     $('body').on('click', '.concierge_activity_tag', function(event) {
         var txtActivity = $(this).text();
 
-        // TODO: Find a way of calling this function from the widget
-    	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
-
-		// process the form. Note that there is no data send as posts arguements.
-		$.ajax({
-			type 		: 'POST',
-			url 		: url,
-		    data 		: null,
-			dataType 	: 'html'
-		})
-		// using the done promise callback
-		.done(function(data) {
-
-            $('#concierge_toolbar_activitytype').html(data);
-
-		});
+        $('#dowhat').tagsinput('remove', $("#dowhat").val());
+        $('#dowhat').tagsinput('add', txtActivity);
+        $('#withwhat').tagsinput('remove', $("#withwhat").val());
 
 
     });
@@ -764,17 +812,120 @@ $('.cities .typeahead')
     // Handler for (popular) activity type clicks
     // Response is to display related activity types
     $('body').on('click', '.concierge_activitytype_tag', function(event) {
-        var txtActivity = $(this).text();
+        var txtActivityType = $(this).text();
 
 
 // BUG : The two statements are triggering two doSearch() calls
 // BUG : Perhaps the answer lies here :
 // BUG : http://stackoverflow.com/questions/21336457/bootstrap-tags-input-how-to-bind-function-to-event-itemadded-and-itemremoved/21336824#21336824
-alert('Bug alert: 2 doSearch() calls triggered. FIXME.');
+// alert('Bug alert: 2 doSearch() calls triggered. FIXME.');
         $('#withwhat').tagsinput('remove', $("#withwhat").val());
-        $('#withwhat').tagsinput('add', txtActivity);
+        $('#withwhat').tagsinput('add', txtActivityType);
 
 
+    });
+
+    $('body').on('click', '.myfriend', function(event) {
+        var $$          = $(this)
+        var user_id     = $(this).attr('rel');
+
+        if( !$$.is('.invited')){
+            $$.addClass('invited');
+            $('#my_friend_'+user_id).prop('checked', true);
+        } else {
+            $$.removeClass('invited');
+            $('#my_friend_'+user_id).prop('checked', false);
+
+        }
+    })
+
+    // ////////////////////////////////////////////////////
+    // Wizard
+    // ///////////////////////////////////////////////////////
+
+    $('body').on('click', '.wiz-next-nav', function(event) {
+
+        $(".step-1").hide();
+        $(".step-2").show();
+
+        $(".wiz-prev-nav").show();
+        $(".wiz-finish-nav").show();
+        $(".wiz-next-nav").hide();
+
+        return false;
+    });
+
+    $('body').on('click', '.wiz-prev-nav', function(event) {
+
+        $(".step-2").hide();
+        $(".step-1").show();
+
+        $(".wiz-prev-nav").hide();
+        $(".wiz-next-nav").show();
+        $(".wiz-finish-nav").hide();
+
+
+        return false;
+    });
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Time picker
+    // /////////////////////////////////////////////////////////////////////////
+    $('body').on('click', '.form_datetime', function(event) {
+         $(".form_datetime")
+         .datetimepicker({
+        format: "dd MM yyyy - HH:ii p",
+        todayBtn: true,
+        todayHighlight:true,
+     autoclose: true
+        })
+        .on('changeDate', function(ev){
+            // $(this).hide();
+        })
+    });
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Invite my friends invitation
+    // /////////////////////////////////////////////////////////////////////////
+    // Launch the modal when the invite friends link is clicked
+    $('body').on('click', '.launch-modal', function(e) {
+
+        var remote = $(this).attr("data-href");
+
+        $("#modalInviteMyFriends").modal({
+
+            keyboard: false,
+            remote: remote
+
+        });
+    });
+
+    // Submit the modal form and close the modal
+    $('body').on('submit', '#frmInviteMyFriends', function(event) {
+
+        event.preventDefault();
+
+        var form_values = $(this).serialize();
+
+        var url = '/concierge/sendfriendinvitations/';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                    $('#modalInviteMyFriends').modal('hide');
+               }
+        });
+
+        return false; // avoid to execute the actual submit of the form.
+    });
+
+    // Clear the modal each time
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
     });
 
 EOD;
@@ -782,6 +933,27 @@ EOD;
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
 
 ?>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalInviteMyFriends" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <div class="container-full">
 
