@@ -919,6 +919,8 @@ ADD CONSTRAINT fk_activity_type_activity_id
 -- ---------------------------------------------------------------------
 -- BusinessDB Import
 -- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `businessdb_import`;
+
  CREATE TABLE `businessdb_import` (
   `﻿ID` varchar(16) DEFAULT NULL,
   `source` varchar(8) DEFAULT NULL,
@@ -944,6 +946,14 @@ ADD CONSTRAINT fk_activity_type_activity_id
   `gogo_Source_URL` varchar(132) DEFAULT NULL,
   `manta_source_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `businessdb_import` ADD COLUMN `record_id` int(11) unsigned PRIMARY KEY AUTO_INCREMENT;
+ALTER TABLE `businessdb_import` ADD COLUMN source_filename varchar(255);
+ALTER TABLE `businessdb_import` ADD COLUMN date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `businessdb_import` ADD COLUMN import_date  DATETIME;
+ALTER TABLE `businessdb_import` ADD COLUMN sync_date  DATETIME;
+ALTER TABLE `businessdb_import` ADD COLUMN import_comment TEXT;
+ALTER TABLE `businessdb_import` ADD COLUMN sync_comment TEXT;
 
 
 -- ---------------------------------------------------------------------
