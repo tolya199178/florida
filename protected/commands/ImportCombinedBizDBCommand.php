@@ -18,8 +18,9 @@ class ImportCombinedBizDBCommand extends CConsoleCommand
             $handle = fopen($csvFileName, "r");
             $row = 1;
 
-            while ( ($data = fgetcsv($handle) ) !== FALSE )
+            while ( ($data = fgetcsv($handle, null, "\t") ) !== FALSE )
             {
+
                 $number_of_fields = count($data);
                 if ($row == 1)
                 {
@@ -37,9 +38,16 @@ class ImportCombinedBizDBCommand extends CConsoleCommand
                         $data_array[$header_array[$c]] = $data[$c];
                     }
 
-                    $objHotel = new HotelImport;
-                    $objHotel->attributes = $data_array;
-                    $objHotel->save();
+                    $objBusiness = new BusinessdbImport();
+                    $objBusiness->attributes = $data_array;
+                    $objBusiness->date_created = new CDbExpression('NOW()');
+                    if ($objBusiness->save() === false)
+                    {
+                        echo 'Error saving record #'.($row-1)."\n";
+                        print_r($objBusiness->getErrors());
+                        print_r($objBusiness->attributes);
+                        exit;
+                    }
 
                 }
                 $row++;
@@ -48,7 +56,8 @@ class ImportCombinedBizDBCommand extends CConsoleCommand
 
             $transaction->commit();
         } catch (Exception $error) {
-            print_r($objHotel);
+            print_r($objBusiness);
+            print_r($error);
             $transaction->rollback();
         }
 
@@ -62,7 +71,7 @@ class ImportCombinedBizDBCommand extends CConsoleCommand
     {
         $usage = <<<EOD
 Florida.com CSV Business Import Utility (cli) (Version : 1.00)
-Usage: yiic ImportBusinessCSV [filename] [overwrite]
+Usage: yiic ImportCombinedBizDB [filename] [overwrite]
 
 where :
 -filename	  {filename} - Path to CSV file to import
