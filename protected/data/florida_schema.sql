@@ -917,6 +917,36 @@ ADD CONSTRAINT fk_activity_type_activity_id
   
 
 -- ---------------------------------------------------------------------
+-- BusinessDB Import
+-- ---------------------------------------------------------------------
+ CREATE TABLE `businessdb_import` (
+  `﻿ID` varchar(16) DEFAULT NULL,
+  `source` varchar(8) DEFAULT NULL,
+  `company_name` varchar(64) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `zip` varchar(32) DEFAULT NULL,
+  `phone` varchar(32) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `latitude` varchar(16) DEFAULT NULL,
+  `longitude` varchar(16) DEFAULT NULL,
+  `TableID` varchar(16) DEFAULT NULL,
+  `TP` varchar(32) DEFAULT NULL,
+  `zip5` varchar(8) DEFAULT NULL,
+  `manta_Category` varchar(255) DEFAULT NULL,
+  `manta_SubCategory` varchar(255) DEFAULT NULL,
+  `manta_industry` varchar(255) DEFAULT NULL,
+  `old_db_sic` varchar(255) DEFAULT NULL,
+  `old_db_category` varchar(255) DEFAULT NULL,
+  `gogo_category` varchar(64) DEFAULT NULL,
+  `gogo_Subcategory` varchar(64) DEFAULT NULL,
+  `gogo_Source_URL` varchar(132) DEFAULT NULL,
+  `manta_source_url` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ---------------------------------------------------------------------
 -- Search log summary - quick log for all seaches
 -- ---------------------------------------------------------------------
 
