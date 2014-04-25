@@ -917,6 +917,46 @@ ADD CONSTRAINT fk_activity_type_activity_id
   
 
 -- ---------------------------------------------------------------------
+-- BusinessDB Import
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `businessdb_import`;
+
+ CREATE TABLE `businessdb_import` (
+  `﻿ID` varchar(32) DEFAULT NULL,
+  `source` varchar(32) DEFAULT NULL,
+  `company_name` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `zip` varchar(32) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `latitude` varchar(32) DEFAULT NULL,
+  `longitude` varchar(32) DEFAULT NULL,
+  `TableID` varchar(32) DEFAULT NULL,
+  `TP` varchar(32) DEFAULT NULL,
+  `zip5` varchar(32) DEFAULT NULL,
+  `manta_Category` varchar(255) DEFAULT NULL,
+  `manta_SubCategory` varchar(255) DEFAULT NULL,
+  `manta_industry` varchar(255) DEFAULT NULL,
+  `old_db_sic` varchar(255) DEFAULT NULL,
+  `old_db_category` varchar(255) DEFAULT NULL,
+  `gogo_category` varchar(255) DEFAULT NULL,
+  `gogo_Subcategory` varchar(255) DEFAULT NULL,
+  `gogo_Source_URL` varchar(255) DEFAULT NULL,
+  `manta_source_url` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `businessdb_import` ADD COLUMN `record_id` int(11) unsigned PRIMARY KEY AUTO_INCREMENT;
+ALTER TABLE `businessdb_import` ADD COLUMN source_filename varchar(255);
+ALTER TABLE `businessdb_import` ADD COLUMN date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `businessdb_import` ADD COLUMN import_date  DATETIME;
+ALTER TABLE `businessdb_import` ADD COLUMN sync_date  DATETIME;
+ALTER TABLE `businessdb_import` ADD COLUMN import_comment TEXT;
+ALTER TABLE `businessdb_import` ADD COLUMN sync_comment TEXT;
+
+
+-- ---------------------------------------------------------------------
 -- Search log summary - quick log for all seaches
 -- ---------------------------------------------------------------------
 
