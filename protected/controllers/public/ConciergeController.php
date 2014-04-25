@@ -191,29 +191,47 @@ class ConciergeController extends Controller
 
         $seachCriteria->together = true;
 
+        // /////////////////////////////////////////////////////////////////////
+        // Restrict the search to a specific city, if a city filter is supplied.
+        // /////////////////////////////////////////////////////////////////////
         if (!empty($cityId))
         {
             $seachCriteria->compare('business_city_id', $cityId);
         }
 
+        // /////////////////////////////////////////////////////////////////////
+        // Build the WHERE clause for the activity filter. The activity table is
+        // ...searched by matching the keyword and related word sets to the
+        // ...activity keyword filter
+        // /////////////////////////////////////////////////////////////////////
         if (!empty($argDoWhat))
         {
-            $seachCriteria->compare('activity.keyword', $argDoWhat);
-// NOTE: OR, if we want direct match
-//             $seachCriteria->condition = "activity.keyword=:activity";
-//             $seachCriteria->params = array(':activity' => $argDoWhat);
-
+            $seachCriteria->addCondition( "FIND_IN_SET(:activity_keyword_tag,`activity`.keyword) OR
+                                           FIND_IN_SET(:activity_related_word_tag,`activity`.related_words)"
+                                        );
+            $seachCriteria->params       = array_merge($seachCriteria->params,
+                                                       array(':activity_keyword_tag'=>$argDoWhat,
+                                                             ':activity_related_word_tag'=>$argDoWhat));
         }
 
+        // /////////////////////////////////////////////////////////////////////
+        // Build the WHERE clause for the activity type filter. The activitytype
+        // ...table is searched by matching the keyword and related word sets
+        // ...to the activity keyword filter
+        // /////////////////////////////////////////////////////////////////////
         if (!empty($argWithWhat))
         {
-            $seachCriteria->compare('activityType.keyword', $argWithWhat);
-// NOTE: OR, if we want direct match
-//             $seachCriteria->condition = "activity.keyword=:activity";
-//             $seachCriteria->params = array(':activity' => $argDoWhat);
-
+            $seachCriteria->addCondition( "FIND_IN_SET(:activity_type_keyword_tag,`activityType`.keyword) OR
+                                           FIND_IN_SET(:activity_type_related_word_tag,`activityType`.related_words)"
+            );
+            $seachCriteria->params       = array_merge($seachCriteria->params,
+                                                       array(':activity_type_keyword_tag'=>$argWithWhat,
+                                                             ':activity_type_related_word_tag'=>$argWithWhat));
         }
 
+        // /////////////////////////////////////////////////////////////////////
+        // Submit the query
+        // /////////////////////////////////////////////////////////////////////
         $dataProvider = new CActiveDataProvider('Business',
             array(
                 'criteria'  => $seachCriteria,
