@@ -14,7 +14,20 @@
                             }
                             else
                             {
-                                echo CHtml::image($value->user->image, "Image", array('width'=>50, 'height'=>50));
+
+                                if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$value->user->image))
+                                {
+                                    echo CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$value->user->image,
+                                        CHtml::encode($value->user->first_name).' '.CHtml::encode($value->user->last_name),
+                                        array("width"=>"50px" ,"height"=>"50px") );
+                                }
+                                else
+                                {
+                                    echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg',
+                                        CHtml::encode($value->user->first_name).' '.CHtml::encode($value->user->last_name),
+                                        array("width"=>"50px" ,"height"=>"50px") );
+                                }
+
                             }
                         ?>
                     </div>
@@ -26,7 +39,14 @@
                             }
                             else
                             {
-                                echo CHtml::link($value->user->first_name, Yii::app()->createUrl('/webuser/profile/show'), array('id' => $value->user->user_id));
+                                if ($value->user->user_id == 1)
+                                {
+                                    echo 'Someone from '.CHtml::encode($search_results['where']);
+                                }
+                                else
+                                {
+                                    echo CHtml::link($value->user->first_name, Yii::app()->createUrl('/webuser/profile/show'), array('id' => $value->user->user_id));
+                                }
                             }
 
                             ?>
