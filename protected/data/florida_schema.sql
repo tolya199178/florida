@@ -148,6 +148,9 @@ ADD CONSTRAINT fk_city_state
 
 -- alter  table tbl_city  change city_name city_name varchar(512) NOT NULL DEFAULT '';
 -- alter  table tbl_city  change city_alternate_name city_alternate_name varchar(512) NOT NULL DEFAULT '';
+
+ALTER TABLE tbl_city ADD COLUMN `latitude`  DECIMAL (10,8)  DEFAULT NULL;
+ALTER TABLE tbl_city ADD COLUMN `longitude` DECIMAL (10,8)  DEFAULT NULL;
      
 -- ---------------------------------------------------------------------
 -- City Admin User
