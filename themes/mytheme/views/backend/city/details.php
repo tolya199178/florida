@@ -24,7 +24,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 </style>
 
     <h3>Update City: <?php echo $model->city_name; ?></h3>
-        
+
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'city-form',
@@ -37,12 +37,12 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
     <?php if($model->hasErrors()) {  ?>
         <div class="alert alert-danger">
-        	<?php echo $form->errorSummary($model); ?>	
+        	<?php echo $form->errorSummary($model); ?>
         </div>
     <?php } ?>
 
 
-    <?php echo $form->hiddenField($model,'city_id'); ?>    
+    <?php echo $form->hiddenField($model,'city_id'); ?>
 
 
 	<div class="row">
@@ -51,8 +51,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
             <div class="col-sm-4">
                 <?php echo $form->textField($model,'city_name',array('class'=>"form-control")); ?>
                 <?php echo $form->error($model,'city_name'); ?>
-            </div>        
-        </div>	
+            </div>
+        </div>
 	</div>
 
 	<div class="row">
@@ -62,9 +62,9 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <?php echo $form->textField($model,'city_alternate_name',array('class'=>"form-control")); ?>
                 <?php echo $form->error($model,'city_alternate_name'); ?>
             </div>
-        </div>	
+        </div>
 	</div>
-	
+
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'is_featured',array('class'=>"col-sm-2 control-label")); ?>
@@ -72,9 +72,9 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <?php echo $form->error($model,'is_featured'); ?>
                 <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
             </div>
-        </div>	
+        </div>
 	</div>
-	
+
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'city_alternate_name',array('class'=>"col-sm-2 control-label")); ?>
@@ -82,41 +82,61 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <?php echo $form->textField($model,'city_alternate_name',array('class'=>"form-control")); ?>
                 <?php echo $form->error($model,'city_alternate_name'); ?>
             </div>
-        </div>	
+        </div>
 	</div>
-	
+
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'description',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-10">                
+            <div class="col-sm-10">
                 <?php $this->widget('application.extensions.editor.CKkceditor',array(
     				"model"=>$model,                # Data-Model
     				"attribute"=>'description',         	# Attribute in the Data-Model
     				"height"=>'300px',
     				"width"=>'90%',
     			    ) );
-                ?>    
+                ?>
                 <?php echo $form->error($model,'description'); ?>
             </div>
-        </div>	
+        </div>
 	</div>
-	
+
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'more_information',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-10">                
+            <div class="col-sm-10">
                 <?php $this->widget('application.extensions.editor.CKkceditor',array(
     				"model"=>$model,                # Data-Model
     				"attribute"=>'more_information',         	# Attribute in the Data-Model
     				"height"=>'300px',
     				"width"=>'90%',
     			    ) );
-                ?>    
+                ?>
                 <?php echo $form->error($model,'more_information'); ?>
             </div>
-        </div>	
+        </div>
 	</div>
-	
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'latitude',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'latitude',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'latitude'); ?>
+            </div>
+        </div>
+	</div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'longitude',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'longitude',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'longitude'); ?>
+            </div>
+        </div>
+	</div>
+
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'image',array('class'=>"col-sm-2 control-label")); ?>
@@ -124,9 +144,9 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <?php echo CHtml::activeFileField($model,'image',array('class'=>"form-control")); ?>
                 <?php echo $form->error($model,'image'); ?>
             </div>
-        </div>	
+        </div>
 	</div>
-	
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save', array('class'=>"btn btn-default")); ?>
 	</div>

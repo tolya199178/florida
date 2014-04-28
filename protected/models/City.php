@@ -14,6 +14,8 @@
  * @property string $description
  * @property string $more_information
  * @property string $image
+ * @property string $latitude
+ * @property string $longitude
  *
  * The followings are the available model relations:
  * @property Business[] $businesses
@@ -42,7 +44,7 @@
  */
 class City extends CActiveRecord
 {
-    
+
     /**
      * Get database table name associated with the model.
      *
@@ -70,20 +72,23 @@ class City extends CActiveRecord
 	{
 
 		return array(
-		    
+
 		    // Mandatory rules
 			array('description, more_information',     'required'),
-		    
+
 		    // Data types, sizes
 			array('state_id', 'numerical',                       'integerOnly'=>true),
 		    array('city_name', 'length',                         'max'=>512),
 			array('city_alternate_name',                         'length', 'max'=>1024),
 			array('time_zone',                                   'length', 'max'=>50),
-		    
+
 		    // ranges
 			array('is_featured, isactive',                       'in','range'=>array('Y','N'),'allowEmpty'=>false),
-		    
+
 			array('image',                                        'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+
+		    array('latitude',                                    'numerical',  'min'=>-90,  'max'=>90),
+		    array('longitude',                                   'numerical',  'min'=>-180, 'max'=>180),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('city_id, city_name, city_alternate_name,
@@ -135,6 +140,8 @@ class City extends CActiveRecord
 			'description'            => 'Description',
 			'more_information'       => 'More Information',
 			'image'                  => 'Image',
+		    'latitude'               => 'Latitude',
+		    'longitude'              => 'Longitude',
 		);
 	}
 
@@ -165,6 +172,8 @@ class City extends CActiveRecord
 		$criteria->compare('is_featured',             $this->is_featured,true);
 		$criteria->compare('isactive',                $this->isactive,true);
 		$criteria->compare('description',             $this->description,true);
+		$criteria->compare('latitude',                $this->latitude,true);
+		$criteria->compare('longitude',               $this->longitude,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -177,14 +186,14 @@ class City extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return City the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
-	
+
 	/**
 	 * Runs just before the models save method is invoked. It provides a change to
 	 * ...further prepare the data for saving. The CActiveRecord (parent class)
@@ -196,13 +205,13 @@ class City extends CActiveRecord
 	 * @access public
 	 */
 	public function beforeSave() {
-	    
+
 	    // Force the state to be the first entry in the country table.
 	    // Used for forced implemantations where state details are hidden or implied.
 	    if ($this->isNewRecord) {
-	        
+
 	        $stateModel = State::model()->findByAttributes(array('state_name' => Yii::app()->params['STATE']));
-	        
+
 	        if ($stateModel === null) {
 	            $this->state_id = 1;
 	        }
@@ -211,20 +220,20 @@ class City extends CActiveRecord
 	        }
 	    }
 
-	
+
 	    return parent::beforeSave();
 	}
-	
+
 	/* Get List of City Array Data */
 	public static function getCity($order = "city_name",$byAutoSearch=0) {
 	    $order = array('order' => $order);
 	    $models = self::model()->findAll($order);
-	    
+
 	    $_rtnData = CHtml::listData($models, 'city_id', 'city_name');
 	    return $byAutoSearch ? array_values($_rtnData) : $_rtnData;
-	
+
 	}
-	
+
 	/**
 	 * Generates a JSON encoded list of all citys.
 	 *
@@ -234,31 +243,31 @@ class City extends CActiveRecord
 	 * @access public
 	 */
 	public function getListjson() {
-	     
-	
-	
+
+
+
 	    // /////////////////////////////////////////////////////////////////////
 	    // Create a Db Criteria to filter and customise the resulting results
 	    // /////////////////////////////////////////////////////////////////////
 	    $searchCriteria = new CDbCriteria;
-	     
+
 	    $cityList          = City::model()->findAll($searchCriteria);
-	
-	     
-	     
+
+
+
 	    $listResults = array();
-	
+
 	    foreach($cityList as $recCity){
 	         $listResults[] = array('city_name' => $recCity->attributes['city_name']);
 	       // $listResults[] = $recCity->attributes['city_name'];
 	    }
 	    // header('Content-type: application/json');
-	
+
 	    // echo json_encode($listResults);
 	    return CJSON::encode($listResults);
-	
-	
-	
+
+
+
 	}
-	
+
 }
