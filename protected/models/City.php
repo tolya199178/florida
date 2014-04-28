@@ -87,7 +87,8 @@ class City extends CActiveRecord
 
 			array('image',                                        'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
-		    array('latitude, longitude', 'length', 'max'=>16),
+		    array('latitude',                                    'numerical',  'min'=>-90,  'max'=>90),
+		    array('longitude',                                   'numerical',  'min'=>-180, 'max'=>180),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('city_id, city_name, city_alternate_name,
