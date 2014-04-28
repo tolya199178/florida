@@ -3,39 +3,60 @@
 
     <div id='feedresult'>
             <?php foreach ($model as $value) { ?>
-                <?php $search_results = unserialize($value->search_details); ?>
+                <?php
+                    $search_results = unserialize($value->search_details);
+
+                    $doWhat                     = CHtml::encode($search_results['dowhat']);
+                    $doWithWhat                 = CHtml::encode($search_results['withwhat']);
+                    $doWhere                    = CHtml::encode($search_results['where']);
+
+                    if (Yii::app()->user->isGuest) {
+                        $searchUserImage        = Yii::app()->theme->baseUrl."/resources/images/anon_user.png";
+                        $searchUserName         = 'Someone';
+                        $searchUserFullName     = 'Someone';
+                        $searchUserLocation     = CHtml::encode($search_results['where']);
+                    }
+                    else
+                    {
+                        // Anonymous user searches are logged with userid = 1
+                        if ($value->user->user_id == 1)
+                        {
+                            $searchUserImage    = Yii::app()->theme->baseUrl."/resources/images/anon_user.png";
+                            $searchUserName     = 'Someone';
+                            $searchUserFullName = 'Someone';
+                            $searchUserLocation = CHtml::encode($search_results['where']);
+                        }
+                        else
+                        {
+                            if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$value->user->image))
+                            {
+                               $searchUserImage = Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$value->user->image;
+                            }
+                            else
+                            {
+                                $searchUserImage = Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg';
+                            }
+
+                            $searchUserName     = CHtml::link($value->user->first_name, Yii::app()->createUrl('/webuser/profile/show'), array('id' => $value->user->user_id));
+                            $searchUserFullName = CHtml::encode($value->user->first_name).' '.CHtml::encode($value->user->last_name);
+                            $searchUserLocation = '';
+                        }
+                    }
+
+                ?>
                 <div class="row">
 
                     <div class=col-lg-2>
                         <?php
-
-                            if (Yii::app()->user->isGuest) {
-                                echo CHtml::image(Yii::app()->theme->baseUrl."/resources/images/anon_user.png", "Image", array('width'=>50, 'height'=>50));
-                            }
-                            else
-                            {
-                                echo CHtml::image($value->user->image, "Image", array('width'=>50, 'height'=>50));
-                            }
+                            echo CHtml::image($searchUserImage, $searchUserFullName, array('width'=>50, 'height'=>50));
                         ?>
                     </div>
                     <div class="col-lg-10">
                         <p>
-                            <?php
-                            if (Yii::app()->user->isGuest) {
-                                echo 'Someone from '.CHtml::encode($search_results['where']);
-                            }
-                            else
-                            {
-                                echo CHtml::link($value->user->first_name, 'fff') . ' searched for <br/>';
-                            }
-
-                            ?>
-                            <?php
-                            echo CHtml::encode($search_results['dowhat']). ' ' .
-                                 CHtml::encode($search_results['withwhat']). ' in ' .
-                                 CHtml::encode($search_results['where']);
-
-                            ?>
+                            <?php echo $searchUserName;?>
+                            <?php echo (!empty($searchUserLocation)?' from '.$searchUserLocation:'');?>
+                            searched for <br/>
+                            <?php echo $doWhat.' '.$doWithWhat. ' in ' .$doWhere; ?>
                         </p>
                         <p><small><time class="timeago" datetime="<?php echo $value->created_time; ?>"></time></small> </p>
                     </div>
