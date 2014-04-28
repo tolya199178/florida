@@ -26,10 +26,11 @@
                             }
                             else
                             {
-                                echo CHtml::link($value->user->first_name, 'fff') . ' searched for <br/>';
+                                echo CHtml::link($value->user->first_name, Yii::app()->createUrl('/webuser/profile/show'), array('id' => $value->user->user_id));
                             }
 
                             ?>
+                            searched for <br/>
                             <?php
                             echo CHtml::encode($search_results['dowhat']). ' ' .
                                  CHtml::encode($search_results['withwhat']). ' in ' .

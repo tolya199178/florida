@@ -195,5 +195,23 @@ class ProfileController extends Controller
 	    }
 	}
 
+	/**
+	 * View the public profile of the user
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionShow()
+	{
+
+	    // TODO: Placeholder function (so that link testing does not break system)
+	    // TODO: Functionality will be added in later version
+	    	    throw new CHttpException(404,'TODO: This function is not ready for testing and must be coded.');
+
+
+	}
+
 
 }
