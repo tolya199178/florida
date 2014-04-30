@@ -958,6 +958,35 @@ ALTER TABLE `businessdb_import` ADD COLUMN sync_date  DATETIME;
 ALTER TABLE `businessdb_import` ADD COLUMN import_comment TEXT;
 ALTER TABLE `businessdb_import` ADD COLUMN sync_comment TEXT;
 
+-- ---------------------------------------------------------------------
+-- Manta, Gogobot Import
+-- ---------------------------------------------------------------------
+CREATE TABLE `imported_business` (
+  `ID1` int(11) DEFAULT NULL,
+  `ID` int(11) DEFAULT NULL,
+  `source` tinytext,
+  `company_name` tinytext,
+  `address` tinytext,
+  `city` tinytext,
+  `zip` tinytext,
+  `phone` tinytext,
+  `email` tinytext,
+  `website` tinytext,
+  `manta_category` tinytext,
+  `manta_subcategory` tinytext,
+  `manta_industry` tinytext,
+  `old_db_sic` tinytext,
+  `old_db_category` tinytext,
+  `gogo_category` tinytext,
+  `gogo_subcategory` tinytext,
+  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT NULL,
+  `gogo_source_url` tinytext,
+  `manta_source_url` tinytext,
+  `TableID` int(11) DEFAULT NULL,
+  `TP` tinytext,
+  `zip5` tinytext
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 -- ---------------------------------------------------------------------
 -- Search log summary - quick log for all seaches
