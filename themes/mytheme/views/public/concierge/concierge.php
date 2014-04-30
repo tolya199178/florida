@@ -709,6 +709,9 @@ $('.cities .typeahead')
 
   }
 
+  // Load the default city on page load
+  loadCityGallery();
+
     $('body').on('change', '.rating', function() {
 
         var url = '/webuser/profile/reviewbusiness/';
@@ -993,7 +996,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         <div class="col-lg-4">
                             <label for="city" class="heading">I AM IN &nbsp;&nbsp;&nbsp;</label>
                             <div class="cities">
-                                <input class="typeahead form-control" name="city" id="city"  type="text" autocomplete="off" value="" placeholder="I am in...">
+                                <input class="typeahead form-control" name="city" id="city"  type="text" autocomplete="off" value="<?php echo $data['city']; ?>" placeholder="I am in...">
                             </div>
                         </div>
 
