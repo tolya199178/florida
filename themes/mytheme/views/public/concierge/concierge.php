@@ -711,6 +711,8 @@ $('.cities .typeahead')
 
   // Load the default city on page load
   loadCityGallery();
+  $('#dowhat').tagsinput('focus');
+
 
     $('body').on('change', '.rating', function() {
 
