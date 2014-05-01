@@ -400,7 +400,8 @@ ADD CONSTRAINT fk_business_city
   --`business_verify_code` int(11) DEFAULT NULL,
   --`business_verified` tinyint(2) DEFAULT '0',
 
-
+ALTER TABLE tbl_business ADD COLUMN `latitude`  DECIMAL (10,8)  DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `longitude` DECIMAL (10,8)  DEFAULT NULL;
 
 -- ---------------------------------------------------------------------
 -- Business User

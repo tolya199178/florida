@@ -37,6 +37,8 @@
  * @property string $activation_code
  * @property string $activation_status
  * @property string $activation_time
+ * @property string $latitude
+ * @property string $longitude
  *
  *
  * The followings are the available model relations:
@@ -150,6 +152,9 @@ class Business extends CActiveRecord
 
 		    array('business_activities',                                         'length', 'max'=>255),
 
+		    array('latitude',                                                     'numerical',  'min'=>-90,  'max'=>90),
+		    array('longitude',                                                    'numerical',  'min'=>-180, 'max'=>180),
+
 		    // ranges
 			array('business_allow_review,
 			       business_allow_rating, is_active,
@@ -240,6 +245,8 @@ class Business extends CActiveRecord
 			'is_closed'                          => 'Is Closed',
 			'activation_code'                    => 'Activation Code',
 			'activation_status'                  => 'Activation Status',
+		    'latitude'                           => 'Latitude',
+		    'longitude'                          => 'Longitude',
 		);
 	}
 
@@ -294,6 +301,8 @@ class Business extends CActiveRecord
 		$criteria->compare('activation_code',                 $this->activation_code,true);
 		$criteria->compare('activation_status',               $this->activation_status);
 		$criteria->compare('activation_time',                 $this->activation_time,true);
+		$criteria->compare('latitude',                        $this->latitude,true);
+		$criteria->compare('longitude',                       $this->longitude,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
