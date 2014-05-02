@@ -340,14 +340,14 @@ class Business extends CActiveRecord
         // /////////////////////////////////////////////////////////////////
         if ($this->isNewRecord) {
             $this->created_time = new CDbExpression('NOW()');
-            $this->created_by   = Yii::app()->user->id;
+            $this->created_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
         }
 
         // /////////////////////////////////////////////////////////////////
         // The modified log details is set for record creation and update
         // /////////////////////////////////////////////////////////////////
         $this->modified_time = new CDbExpression('NOW()');
-        $this->modified_by   = Yii::app()->user->id;
+        $this->modified_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
 
 	    return parent::beforeSave();
 	}
