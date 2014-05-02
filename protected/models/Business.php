@@ -371,14 +371,18 @@ class Business extends CActiveRecord
 	    {
 	            $modelBusinessCategory = BusinessCategory::model()->deleteAllByAttributes(array('business_id'=> $this->business_id));
 
-        	    foreach ($this->lstBusinessCategories as $businessCategoryId)
-        	    {
-                    $modelBusinessCategory = new BusinessCategory;
-                    $modelBusinessCategory->business_id = $this->business_id;
-                    $modelBusinessCategory->category_id = $businessCategoryId;
+	            if (isset($this->lstBusinessCategories) && (count($this->lstBusinessCategories) > 0))
+	            {
+	                foreach ($this->lstBusinessCategories as $businessCategoryId)
+	                {
+	                    $modelBusinessCategory = new BusinessCategory;
+	                    $modelBusinessCategory->business_id = $this->business_id;
+	                    $modelBusinessCategory->category_id = $businessCategoryId;
 
-                    $modelBusinessCategory->save();
-        	    }
+	                    $modelBusinessCategory->save();
+	                }
+	            }
+
 	            $dbTransaction->commit();
 	    }
 	    catch(Exception $e) // an exception is raised if a query fails
