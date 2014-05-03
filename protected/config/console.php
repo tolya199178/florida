@@ -17,6 +17,7 @@ return array(
 					'username' => 'root',
 					'password' => 'bluebell',
 					'charset' => 'utf8',
+			        'tablePrefix' => 'tbl_',
 					'enableParamLogging' => true,
 			),
 		'log'=>array(
