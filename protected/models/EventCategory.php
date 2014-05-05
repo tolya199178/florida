@@ -154,4 +154,25 @@ class EventCategory extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 * ...
+	 * ...Dropdown may send no selection as 0 or space, but table requires null
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+	    if (empty($this->parent_id)) {
+	        $this->parent_id = null;
+	    }
+
+	    return true;
+	}
 }
