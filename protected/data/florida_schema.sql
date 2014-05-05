@@ -630,6 +630,24 @@ ADD CONSTRAINT fk_user_event_event
      REFERENCES tbl_event(event_id);
           
 -- ---------------------------------------------------------------------
+-- event category
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_event_category`;
+
+CREATE TABLE `tbl_event_category` (
+  `category_id`             int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id`               int(11) DEFAULT NULL,
+  `category_name`           varchar(128) NOT NULL,
+  `category_description`    varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_event_category
+ADD CONSTRAINT fk_event_category_category_parent
+     FOREIGN KEY (parent_id) 
+     REFERENCES tbl_event_category(category_id);
+
+-- ---------------------------------------------------------------------
 -- tbl_restaurant_certificat
 -- ---------------------------------------------------------------------
  
