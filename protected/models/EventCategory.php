@@ -84,8 +84,8 @@ class EventCategory extends CActiveRecord
 	{
 
 		return array(
-			'parent'      => array(self::BELONGS_TO, 'EventCategory', 'parent_id'),
-			'eventCategories'      => array(self::HAS_MANY, 'EventCategory', 'parent_id'),
+			'parent'                 => array(self::BELONGS_TO, 'EventCategory', 'parent_id'),
+			'eventCategories'        => array(self::HAS_MANY, 'EventCategory', 'parent_id'),
 		);
 	}
 
@@ -103,10 +103,10 @@ class EventCategory extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'category_id'      => 'Category',
-			'parent_id'      => 'Parent',
-			'category_name'      => 'Category Name',
-			'category_description'      => 'Category Description',
+			'category_id'            => 'Category',
+			'parent_id'              => 'Parent',
+			'category_name'          => 'Category Name',
+			'category_description'   => 'Category Description',
 		);
 	}
 
@@ -131,10 +131,10 @@ class EventCategory extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('category_id',$this->category_id);
-		$criteria->compare('parent_id',$this->parent_id);
-		$criteria->compare('category_name',$this->category_name,true);
-		$criteria->compare('category_description',$this->category_description,true);
+		$criteria->compare('category_id',             $this->category_id);
+		$criteria->compare('parent_id',               $this->parent_id);
+		$criteria->compare('category_name',           $this->category_name,true);
+		$criteria->compare('category_description',    $this->category_description,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
