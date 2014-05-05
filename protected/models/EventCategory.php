@@ -175,4 +175,52 @@ class EventCategory extends CActiveRecord
 
 	    return true;
 	}
+
+	// /////////////////////////////////////////////////////////////////////////
+	// Functions Used to create a dropdown tree
+	// /////////////////////////////////////////////////////////////////////////
+	// TODO: Consider moving to a component class of its own.
+	private $listItems = array();
+
+	/**
+	 * Create a tree dropdown based on the parent child relationships
+	 *
+	 * @param $parents  Array of Category models to draw list for
+	 * @return array listitem with populated tree.
+	 *
+	 * @access public
+	*/
+	public function makeDropDown($parents)
+	{
+	    global $listItems;
+	    $listItems = array();
+	    $listItems['0'] = '-- Choose a Category --';
+	    foreach ($parents as $parent) {
+
+	        $listItems[$parent->category_id] = $parent->category_name;
+	        $this->subDropDown($parent->categories);
+	    }
+
+	    return $listItems;
+	}
+
+	/**
+	 * Create a tree dropdown based of a child
+	 *
+	 * @param $children  Array of children models to draw list for
+	 * @param $space  String identation string
+	 * @return array listitem with populated tree.
+	 *
+	 * @access private
+	 */
+	private function subDropDown($children, $space = '---')
+	{
+	    global $listItems;
+
+	    foreach ($children as $child) {
+
+	        $listItems[$child->category_id] = $space . $child->category_name;
+	        $this->subDropDown($child->categories, $space . '---');
+	    }
+	}
 }
