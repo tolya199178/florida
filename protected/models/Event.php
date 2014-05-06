@@ -34,6 +34,8 @@
  * @property string $event_status
  * @property string $cost
  * @property integer $event_views
+ * @property string $external_event_source
+ * @property string $external_event_id
  *
  * The followings are the available model relations:
  * @property Business $eventBusiness
@@ -111,6 +113,7 @@ class Event extends CActiveRecord
 		    array('event_street, event_start_time, event_end_time',       'length', 'max'=>512),
 		    array('event_phone_no',                                       'length', 'max'=>32),
 		    array('event_latitude, event_longitude',                      'length', 'max'=>10),
+		    array('external_event_source, external_event_id',             'length', 'max'=>255),
 
 		    // ranges
 		    array('is_featured, event_show_map,
@@ -123,7 +126,8 @@ class Event extends CActiveRecord
 			       event_start_date, event_start_time, event_address1, event_address2,
 			       event_street, event_city_id, event_phone_no,
 			       event_category_id, event_business_id,event_tag, created_time, created_by,
-			       modified_by, is_featured, is_popular, event_status, cost, event_views', 'safe', 'on'=>'search'),
+			       modified_by, is_featured, is_popular, event_status, cost, event_views,
+			       external_event_source, external_event_id',             'safe', 'on'=>'search'),
 		);
 	}
 
@@ -187,6 +191,8 @@ class Event extends CActiveRecord
 			'event_status'           => 'Event Status',
 			'cost'                   => 'Cost',
 			'event_views'            => 'Event Views',
+		    'external_event_source'  => 'External Event Source',
+		    'external_event_id'      => 'External Event',
 		);
 	}
 
@@ -240,6 +246,8 @@ class Event extends CActiveRecord
 		$criteria->compare('event_status',        $this->event_status,true);
 		$criteria->compare('cost',                $this->cost,true);
 		$criteria->compare('event_views',         $this->event_views);
+		$criteria->compare('external_event_source',$this->external_event_source);
+		$criteria->compare('external_event_id',   $this->external_event_id,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
