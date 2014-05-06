@@ -1009,7 +1009,33 @@ CREATE TABLE `imported_business` (
   `TableID` int(11) DEFAULT NULL,
   `TP` tinytext,
   `zip5` tinytext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ---------------------------------------------------------------------
+-- Ticket Network Events
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `tbl_tn_event`;
+
+ CREATE TABLE `tbl_tn_event` (
+  `tn_event_id`             int(11) NOT NULL AUTO_INCREMENT,
+  `tn_id`                   int(11) NOT NULL,
+  `tn_child_category_id`    int(11),
+  `tn_parent_category_id`   int(11),
+  `tn_grandchild_category_id`  int(11),
+  `tn_city`                 varchar(255),
+  `tn_state_id`             int(11),
+  `tn_state_name`           varchar(255),
+  `tn_country_id`           int(11),
+  `tn_date`                 varchar(255),
+  `tn_display_date`         varchar(255),
+  `tn_interactive_map_url`  varchar(512),
+  `tn_event_name`           varchar(512),
+  `tn_venue`                varchar(255),
+  `tn_venue_id`             int(11),
+  `tn_venue_configuration_id`   int(11),
+  PRIMARY KEY (`tn_event_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---------------------------------------------------------------------
 -- Search log summary - quick log for all seaches
