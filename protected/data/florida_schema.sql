@@ -579,7 +579,11 @@ ADD CONSTRAINT fk_business_category_business
   
   `cost`                varchar(255) DEFAULT NULL, 
     
-  `event_views`         integer(11) DEFAULT '0', 
+  `event_views`         integer(11) DEFAULT '0',
+  
+  `external_event_source` varchar(255) DEFAULT NULL,
+  `external_event_id`   varchar(64) DEFAULT NULL,
+
     
   PRIMARY KEY (`event_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
