@@ -63,14 +63,14 @@ require_once ('tnwsConstants.php');
 			}
 			unset($client);
 			return $eventDetails;
-			
+
 		}
 	}
 }
 function searchEventsDetailsArray($keyWordParams) {
 	$resultString = '';
 	$keyWordParams['websiteConfigID'] = WEB_CONF_ID;
-	
+
 	if($keyWordParams['searchTerms']) {
 		$client = new SoapClient(WSDL);
 		$result = $client->__soapCall('SearchEvents', array('parameters' => $keyWordParams));
@@ -79,7 +79,7 @@ function searchEventsDetailsArray($keyWordParams) {
 			print_r($result);
 			echo '</pre>';
 		}
-		
+
 		$eventDetails="";
 		if(empty($result)){
 			echo "No results match the specified terms";
@@ -95,7 +95,7 @@ function searchEventsDetailsArray($keyWordParams) {
 			}
 			unset($client);
 			return $eventDetails;
-			
+
 		}
 	}
 }
@@ -140,7 +140,7 @@ function getAllEventDetailsArray($param) {
 				}else{
 					$resultsObj=$result->GetEventsResult->Event;
 				}
-				
+
 				$eTickCount;
 				if(is_array($resultObj)){
 					foreach($resultsObj as $k => $v){
@@ -149,7 +149,9 @@ function getAllEventDetailsArray($param) {
 						$eTickCount++;
 					}
 				}else if(is_object($resultsObj)){
-					return $resultsObj;
+					global $eTickCount;
+					$eventDetails[$eTickCount]=$resultsObj;
+					$eTickCount++;
 				}
 			}
 			unset($client);
@@ -394,11 +396,11 @@ function getEventsCompressed($param) {
 }function getHighInventoryPerformers($param) {
 	$resultString = '';
 	/* params=
-		websiteConfigID: 
-		numReturned: 
-		parentCategoryID: 
-		childCategoryID: 
-		grandchildCategoryID: 
+		websiteConfigID:
+		numReturned:
+		parentCategoryID:
+		childCategoryID:
+		grandchildCategoryID:
 	*/
 	$param['websiteConfigID'] = WEB_CONF_ID;
 	$param['numReturned'] = HIGH_INVENTORY_PERFORMERS_LENGTH;
@@ -559,11 +561,11 @@ function getSublevelCategories($param){
 }
 function getTickets($param) {
 	/*  param list	 websiteConfigID:	 numberOfRecords:	 eventID:	 lowPrice:	 highPrice:	 ticketGroupID:	 mandatoryCreditCard:	 requestedSplit:	 sortColumn:	 sortDescending:	 */	$resultString = '';	$param['websiteConfigID'] = WEB_CONF_ID;	$param['numberOfRecords'] = TICKET_PAGINATION;	$parametersExist = false;	$paramkeys = array_keys($param);	for($a = 2; $a < count($param); $a++) {		if($param[$paramkeys[$a]]) {			$parametersExist = true;			break;		}	}
-	
+
 	//die(var_dump($param));
-		if($parametersExist) {		$client = new SoapClient(WSDL);		$result = $client -> __soapCall('GetTickets', array('parameters' => $param));
+	if($parametersExist) {		$client = new SoapClient(WSDL);		$result = $client -> __soapCall('GetTickets', array('parameters' => $param));
 		//var_dump($result);
-				if(is_soap_fault($result)) {			echo '<h2>Fault</h2><pre>';			print_r($result);			echo '</pre>';		}
+		if(is_soap_fault($result)) {			echo '<h2>Fault</h2><pre>';			print_r($result);			echo '</pre>';		}
 		$paramTickets="";		unset($client);		if(empty($result->GetTicketsResult->TicketGroup)){			return "No tickets exist for that event";		}else {
 			for($q=0;$q<count($result->GetTicketsResult->TicketGroup);$q++){//
 				$resultsObj=$result->GetTicketsResult->TicketGroup[$q];

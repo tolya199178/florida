@@ -5,7 +5,7 @@
  * @credit to ask at nilpo dot com - http://www.php.net/manual/en/language.exceptions.php
  */
 
-namespace \Jwx\Exception;
+// namespace \Jwx\Exception;
 
 abstract class CustomException extends Exception implements ExceptionInterface
 {
