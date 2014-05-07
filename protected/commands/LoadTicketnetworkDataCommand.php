@@ -171,6 +171,7 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
                     $eventModel->tn_country_id              = $eventDetails->CountryID;
                     $eventModel->tn_date                    = $eventDetails->Date;
                     $eventModel->tn_display_date            = $eventDetails->DisplayDate;
+                    $eventModel->tn_map_url                 = $eventDetails->MapURL;
                     $eventModel->tn_interactive_map_url     = $eventDetails->InteractiveMapURL;
                     $eventModel->tn_event_name              = $eventDetails->Name;
                     $eventModel->tn_venue                   = $eventDetails->Venue;
@@ -184,13 +185,6 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
                         print_r($eventModel->getErrors());
 
                     }
-
-                    // Unmapped
-                    // [Clicks] => 0
-                    // [IsWomensEvent] =>
-                    // [MapURL] => http://seatics.tickettransaction.com/47_DolphinsStadium_EndStage_tn.jpg
-
-
 
                 }
 
