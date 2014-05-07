@@ -579,7 +579,11 @@ ADD CONSTRAINT fk_business_category_business
   
   `cost`                varchar(255) DEFAULT NULL, 
     
-  `event_views`         integer(11) DEFAULT '0', 
+  `event_views`         integer(11) DEFAULT '0',
+  
+  `external_event_source` varchar(255) DEFAULT NULL,
+  `external_event_id`   varchar(64) DEFAULT NULL,
+
     
   PRIMARY KEY (`event_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -629,6 +633,24 @@ ADD CONSTRAINT fk_user_event_event
      FOREIGN KEY (event_id) 
      REFERENCES tbl_event(event_id);
           
+-- ---------------------------------------------------------------------
+-- event category
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_event_category`;
+
+CREATE TABLE `tbl_event_category` (
+  `category_id`             int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id`               int(11) DEFAULT NULL,
+  `category_name`           varchar(128) NOT NULL,
+  `category_description`    varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_event_category
+ADD CONSTRAINT fk_event_category_category_parent
+     FOREIGN KEY (parent_id) 
+     REFERENCES tbl_event_category(category_id);
+
 -- ---------------------------------------------------------------------
 -- tbl_restaurant_certificat
 -- ---------------------------------------------------------------------
@@ -987,7 +1009,34 @@ CREATE TABLE `imported_business` (
   `TableID` int(11) DEFAULT NULL,
   `TP` tinytext,
   `zip5` tinytext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ---------------------------------------------------------------------
+-- Ticket Network Events
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `tbl_tn_event`;
+
+ CREATE TABLE `tbl_tn_event` (
+  `tn_event_id`             int(11) NOT NULL AUTO_INCREMENT,
+  `tn_id`                   int(11) NOT NULL,
+  `tn_child_category_id`    int(11),
+  `tn_parent_category_id`   int(11),
+  `tn_grandchild_category_id`  int(11),
+  `tn_city`                 varchar(255),
+  `tn_state_id`             int(11),
+  `tn_state_name`           varchar(255),
+  `tn_country_id`           int(11),
+  `tn_date`                 varchar(255),
+  `tn_display_date`         varchar(255),
+  `tn_map_url`              varchar(512),
+  `tn_interactive_map_url`  varchar(512),
+  `tn_event_name`           varchar(512),
+  `tn_venue`                varchar(255),
+  `tn_venue_id`             int(11),
+  `tn_venue_configuration_id`   int(11),
+  PRIMARY KEY (`tn_event_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---------------------------------------------------------------------
 -- Search log summary - quick log for all seaches
