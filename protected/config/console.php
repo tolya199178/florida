@@ -20,19 +20,34 @@ return array(
 			        'tablePrefix' => 'tbl_',
 					'enableParamLogging' => true,
 			),
-		'log'=>array(
-			'class'=>'CLogRouter',
-			'routes'=>array(
-				array(
-					'class'=>'CFileLogRoute',
-					'levels'=>'error, warning',
-				),
-			),
-		),
+        'log'=>array(
+            'class'=>'CLogRouter',
+            'routes'=>array(
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'info, vardump',
+                    'logFile'=>'console_info',
+                    'maxLogFiles'=>10
+                ),
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'trace',
+                    'logFile'=>'console_info',
+                    'maxLogFiles'=>10,
+                    'categories'=>'system.db.CDbCommand'
+                ),
+                array(
+                    'class'=>'CFileLogRoute',
+                    'levels'=>'trace, error, warning',
+                ),
+            ),
+        ),
 
 	),
     'import'=>array(
         'application.models.*',
         'application.components.*',
+        'application.extensions.ticket-network.*',
+        'application.extensions.ticket-network.src.Exception.*',
     ),
 );

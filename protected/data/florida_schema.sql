@@ -1029,6 +1029,7 @@ CREATE TABLE `imported_business` (
   `tn_country_id`           int(11),
   `tn_date`                 varchar(255),
   `tn_display_date`         varchar(255),
+  `tn_map_url`              varchar(512),
   `tn_interactive_map_url`  varchar(512),
   `tn_event_name`           varchar(512),
   `tn_venue`                varchar(255),

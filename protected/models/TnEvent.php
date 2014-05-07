@@ -16,6 +16,7 @@
  * @property string $tn_date
  * @property string $tn_display_date
  * @property string $tn_interactive_map_url
+ * @property string $tn_map_url
  * @property string $tn_event_name
  * @property string $tn_venue
  * @property integer $tn_venue_id
@@ -75,10 +76,13 @@ class TnEvent extends CActiveRecord
 			       tn_grandchild_category_id, tn_state_id, tn_country_id,
 			       tn_venue_id, tn_venue_configuration_id',      'numerical', 'integerOnly'=>true),
 			array('tn_city, tn_state_name, tn_date, tn_display_date,tn_venue', 'length', 'max'=>255),
-			array('tn_interactive_map_url, tn_event_name', 'length', 'max'=>512),
+			array('tn_interactive_map_url, tn_map_url, tn_event_name', 'length', 'max'=>512),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('tn_event_id, tn_id, tn_child_category_id, tn_parent_category_id, tn_grandchild_category_id, tn_city, tn_state_id, tn_state_name, tn_country_id, tn_date, tn_display_date, tn_interactive_map_url, tn_event_name, tn_venue, tn_venue_id, tn_venue_configuration_id', 'safe', 'on'=>'search'),
+			array('tn_event_id, tn_id, tn_child_category_id, tn_parent_category_id, tn_grandchild_category_id,
+			       tn_city, tn_state_id, tn_state_name, tn_country_id, tn_date, tn_display_date,
+			       tn_interactive_map_url, tn_map_url, tn_event_name, tn_venue, tn_venue_id,
+			       tn_venue_configuration_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -107,6 +111,7 @@ class TnEvent extends CActiveRecord
 			'tn_country_id'              => 'Ticket Network Country',
 			'tn_date'                    => 'Ticket Network Date',
 			'tn_display_date'            => 'Ticket Network Display Date',
+		    'tn_map_url'                 => 'Ticket Network Map Url',
 			'tn_interactive_map_url'     => 'Ticket Network Interactive Map Url',
 			'tn_event_name'              => 'Ticket Network Event Name',
 			'tn_venue'                   => 'Ticket Network Venue',
@@ -146,6 +151,7 @@ class TnEvent extends CActiveRecord
 		$criteria->compare('tn_country_id',               $this->tn_country_id);
 		$criteria->compare('tn_date',                     $this->tn_date,true);
 		$criteria->compare('tn_display_date',             $this->tn_display_date,true);
+		$criteria->compare('tn_map_url',                  $this->tn_map_url,true);
 		$criteria->compare('tn_interactive_map_url',      $this->tn_interactive_map_url,true);
 		$criteria->compare('tn_event_name',               $this->tn_event_name,true);
 		$criteria->compare('tn_venue',                    $this->tn_venue,true);
