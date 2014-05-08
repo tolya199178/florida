@@ -650,6 +650,9 @@ ALTER TABLE tbl_event_category
 ADD CONSTRAINT fk_event_category_category_parent
      FOREIGN KEY (parent_id) 
      REFERENCES tbl_event_category(category_id);
+     
+ALTER TABLE tbl_event_category ADD COLUMN `search_tags`  text  DEFAULT NULL;
+
 
 -- ---------------------------------------------------------------------
 -- tbl_restaurant_certificat

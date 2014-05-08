@@ -8,6 +8,7 @@
  * @property integer $parent_id
  * @property string $category_name
  * @property string $category_description
+ * @property string $search_tags
  *
  * The followings are the available model relations:
  * @property EventCategory $parent
@@ -66,9 +67,10 @@ class EventCategory extends CActiveRecord
 			array('parent_id', 'numerical', 'integerOnly'=>true),
 			array('category_name', 'length', 'max'=>128),
 			array('category_description', 'length', 'max'=>255),
+		    array('search_tags', 'length', 'max'=>1024),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('category_id, parent_id, category_name, category_description', 'safe', 'on'=>'search'),
+			array('category_id, parent_id, category_name, category_description, search_tags', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -107,6 +109,7 @@ class EventCategory extends CActiveRecord
 			'parent_id'              => 'Parent',
 			'category_name'          => 'Category Name',
 			'category_description'   => 'Category Description',
+		    'search_tags'            => 'Search Keywords',
 		);
 	}
 
@@ -135,6 +138,7 @@ class EventCategory extends CActiveRecord
 		$criteria->compare('parent_id',               $this->parent_id);
 		$criteria->compare('category_name',           $this->category_name,true);
 		$criteria->compare('category_description',    $this->category_description,true);
+		$criteria->compare('search_tags',             $this->search_tags,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
