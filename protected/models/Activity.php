@@ -8,6 +8,7 @@
  * @property string $keyword
  * @property string $language
  * @property string $related_words
+ * @property string $event_categories
  */
 
 /**
@@ -56,23 +57,24 @@ class Activity extends CActiveRecord
 	public function rules()
 	{
 
-		
+
 		return array(
 		    // Mandatory rules
 		    array('keyword',         'required'),
-		    
+
 		    // Data types, sizes
 			array('keyword',         'length', 'max'=>255),
 		    array('language',        'default', 'value'=>'en'),
 			array('language',        'length', 'max'=>8),
-		    
-		    array('related_words',   'length', 'max'=>1024),
+
+		    array('related_words,
+		           event_categories','length', 'max'=>1024),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('activity_id, keyword, language, related_words', 'safe', 'on'=>'search'),
+			array('activity_id, keyword, language, related_words, event_categories', 'safe', 'on'=>'search'),
 		);
 	}
-	
+
     /**
      * Set rules for the relation of this record model to other record models.
      *
@@ -108,6 +110,7 @@ class Activity extends CActiveRecord
 			'keyword'        => 'Keyword',
 			'language'       => 'Language',
 			'related_words'  => 'Related Words (separate by comma)',
+		    'event_categories'=> 'Event Categories (separate by comma)',
 		);
 	}
 
@@ -135,6 +138,7 @@ class Activity extends CActiveRecord
 		$criteria->compare('keyword',         $this->keyword,true);
 		$criteria->compare('language',        $this->language,true);
 		$criteria->compare('related_words',   $this->related_words,true);
+		$criteria->compare('event_categories',$this->event_categories,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -147,7 +151,7 @@ class Activity extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return Activity the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
@@ -159,22 +163,22 @@ class Activity extends CActiveRecord
      * Generates a JSON encoded list of all activities.
      *
      * @param <none> <none>
-     *            
+     *
      * @return <none> <none>
      * @access public
      */
     public function getListjson()
     {
-        
+
         // /////////////////////////////////////////////////////////////////////
         // Create a Db Criteria to filter and customise the resulting results
         // /////////////////////////////////////////////////////////////////////
         $searchCriteria = new CDbCriteria();
-        
+
         $lstActivity = Activity::model()->findAll($searchCriteria);
-        
+
         $listResults = array();
-        
+
         foreach ($lstActivity as $recActivity) {
             // $listResults[] = array('keyword' => $recActivity->attributes['keyword']);
             $listResults[] = $recActivity->attributes['keyword'];
@@ -183,5 +187,5 @@ class Activity extends CActiveRecord
 
         return CJSON::encode($listResults);
     }
-	
+
 }
