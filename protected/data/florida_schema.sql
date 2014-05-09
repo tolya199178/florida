@@ -1018,7 +1018,7 @@ CREATE TABLE `imported_business` (
 -- ---------------------------------------------------------------------
 -- Restaurant.com imports
 -- ---------------------------------------------------------------------
- DROP TABLE IF EXISTS `tbl_tn_event`;
+ DROP TABLE IF EXISTS `restaurant_import`;
 
 
 CREATE TABLE restaurant_import
@@ -1064,6 +1064,16 @@ CREATE TABLE restaurant_import
 , WARRANTY      VARCHAR(64)
 , STANDARDSHIPPINGCOST VARCHAR(32)
 );
+
+ALTER TABLE `restaurant_import` ADD COLUMN `record_id` int(11) unsigned PRIMARY KEY AUTO_INCREMENT;
+ALTER TABLE `restaurant_import` ADD COLUMN source_filename varchar(255);
+ALTER TABLE `restaurant_import` ADD COLUMN date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `restaurant_import` ADD COLUMN import_date  DATETIME;
+ALTER TABLE `restaurant_import` ADD COLUMN sync_date  DATETIME;
+ALTER TABLE `restaurant_import` ADD COLUMN import_comment TEXT;
+ALTER TABLE `restaurant_import` ADD COLUMN sync_comment TEXT;
+ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL;
+
 -- ---------------------------------------------------------------------
 -- Ticket Network Events
 -- ---------------------------------------------------------------------
