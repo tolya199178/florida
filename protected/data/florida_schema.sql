@@ -1016,6 +1016,55 @@ CREATE TABLE `imported_business` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---------------------------------------------------------------------
+-- Restaurant.com imports
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_tn_event`;
+
+
+CREATE TABLE restaurant_import
+(
+  PROGRAMNAME   VARCHAR(255)
+, PROGRAMURL    VARCHAR(255)
+, CATALOGNAME   VARCHAR(255)
+, LASTUPDATED   VARCHAR(32)
+, NAME          VARCHAR(255)
+, KEYWORDS      TEXT
+, DESCRIPTION   TEXT
+, SKU           VARCHAR(32)
+, MANUFACTURER  VARCHAR(32)
+, MANUFACTURERID VARCHAR(32)
+, UPC           VARCHAR(32)
+, ISBN          VARCHAR(32)
+, CURRENCY      VARCHAR(6)
+, SALEPRICE     VARCHAR(32)
+, PRICE         VARCHAR(32)
+, RETAILPRICE   VARCHAR(32)
+, FROMPRICE     VARCHAR(32)
+, BUYURL        VARCHAR(255)
+, IMPRESSIONURL VARCHAR(255)
+, IMAGEURL      VARCHAR(255)
+, ADVERTISERCATEGORY VARCHAR(64)
+, THIRDPARTYID  VARCHAR(32)
+, THIRDPARTYCATEGORY VARCHAR(64)
+, AUTHOR        VARCHAR(64)
+, ARTIST        VARCHAR(64)
+, TITLE         VARCHAR(32)
+, PUBLISHER     VARCHAR(64)
+, LABEL         VARCHAR(64)
+, FORMAT        VARCHAR(32)
+, SPECIAL       VARCHAR(32)
+, GIFT          VARCHAR(32)
+, PROMOTIONALTEXT VARCHAR(255)
+, STARTDATE     VARCHAR(32)
+, ENDDATE       VARCHAR(32)
+, OFFLINE       VARCHAR(32)
+, ONLINE        VARCHAR(32)
+, INSTOCK       VARCHAR(8)
+, `CONDITION`   VARCHAR(64)
+, WARRANTY      VARCHAR(64)
+, STANDARDSHIPPINGCOST VARCHAR(32)
+);
+-- ---------------------------------------------------------------------
 -- Ticket Network Events
 -- ---------------------------------------------------------------------
 
