@@ -361,7 +361,10 @@ class ConciergeController extends Controller
     /**
      * Logs the search.
      *
-     * @param <none> <none>
+     * @param $argDoWhat string Activity search rule
+     * @param $argWithWhat string ActivityType search rule
+     * @param $argWhere string Location search rule
+     * @param $argWhen string Date search rule
      *
      * @return <none> <none>
      * @access public
