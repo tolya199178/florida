@@ -44,6 +44,14 @@
  * @property string $CONDITION
  * @property string $WARRANTY
  * @property string $STANDARDSHIPPINGCOST
+ * @property string $record_id
+ * @property string $source_filename
+ * @property string $date_created
+ * @property string $import_date
+ * @property string $sync_date
+ * @property string $import_comment
+ * @property string $sync_comment
+ * @property integer $sync_business_id
  */
 
  /**
@@ -94,12 +102,14 @@ class RestaurantImport extends CActiveRecord
 	{
 
 		return array(
-			array('PROGRAMNAME, PROGRAMURL, CATALOGNAME, NAME, BUYURL, IMPRESSIONURL, IMAGEURL, PROMOTIONALTEXT', 'length', 'max'=>255),
+		    array('date_created', 'required'),
+		    array('sync_business_id', 'numerical', 'integerOnly'=>true),
+			array('PROGRAMNAME, PROGRAMURL, CATALOGNAME, NAME, BUYURL, IMPRESSIONURL, IMAGEURL, PROMOTIONALTEXT, source_filename', 'length', 'max'=>255),
 			array('LASTUPDATED, SKU, MANUFACTURER, MANUFACTURERID, UPC, ISBN, SALEPRICE, PRICE, RETAILPRICE, FROMPRICE, THIRDPARTYID, TITLE, FORMAT, SPECIAL, GIFT, STARTDATE, ENDDATE, OFFLINE, ONLINE, STANDARDSHIPPINGCOST', 'length', 'max'=>32),
 			array('CURRENCY', 'length', 'max'=>6),
 			array('ADVERTISERCATEGORY, THIRDPARTYCATEGORY, AUTHOR, ARTIST, PUBLISHER, LABEL, CONDITION, WARRANTY', 'length', 'max'=>64),
 			array('INSTOCK', 'length', 'max'=>8),
-			array('KEYWORDS, DESCRIPTION', 'safe'),
+			array('KEYWORDS, DESCRIPTION, import_date, sync_date, import_comment, sync_comment', 'safe'),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('PROGRAMNAME, PROGRAMURL, CATALOGNAME, LASTUPDATED, NAME, KEYWORDS, DESCRIPTION, SKU, MANUFACTURER, MANUFACTURERID, UPC, ISBN, CURRENCY, SALEPRICE, PRICE, RETAILPRICE, FROMPRICE, BUYURL, IMPRESSIONURL, IMAGEURL, ADVERTISERCATEGORY, THIRDPARTYID, THIRDPARTYCATEGORY, AUTHOR, ARTIST, TITLE, PUBLISHER, LABEL, FORMAT, SPECIAL, GIFT, PROMOTIONALTEXT, STARTDATE, ENDDATE, OFFLINE, ONLINE, INSTOCK, CONDITION, WARRANTY, STANDARDSHIPPINGCOST', 'safe', 'on'=>'search'),
