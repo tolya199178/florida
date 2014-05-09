@@ -650,6 +650,9 @@ ALTER TABLE tbl_event_category
 ADD CONSTRAINT fk_event_category_category_parent
      FOREIGN KEY (parent_id) 
      REFERENCES tbl_event_category(category_id);
+     
+ALTER TABLE tbl_event_category ADD COLUMN `search_tags`  text  DEFAULT NULL;
+
 
 -- ---------------------------------------------------------------------
 -- tbl_restaurant_certificat
@@ -842,11 +845,12 @@ COMMIT;
     `activity_id`     int(11) NOT NULL AUTO_INCREMENT,
     `keyword`         varchar(255) NOT NULL,
     `language`        varchar(8) NOT NULL DEFAULT 'en',
-    `related_words`   text,
+    `related_words`   text
   PRIMARY KEY (`activity_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
 
+  ALTER TABLE tbl_activity ADD COLUMN `event_categories`  varchar(1024) DEFAULT NULL;
 -- ---------------------------------------------------------------------
 -- Business Activity
 -- ---------------------------------------------------------------------

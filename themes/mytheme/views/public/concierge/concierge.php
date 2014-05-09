@@ -577,6 +577,7 @@ $('.cities .typeahead')
     var where       = $("#city").val();
     var dowhat      = $("#dowhat").val();
     var withwhat    = $("#withwhat").val();
+    var dowhen      = $('#dowhentimestamp').val();
 
     if ((dowhat == "") && (withwhat == ""))
     {
@@ -600,7 +601,8 @@ $('.cities .typeahead')
     {
       where:where,
       dowhat:dowhat,
-      withwhat:withwhat
+      withwhat:withwhat,
+      dowhen:dowhen
     },
     function(data,status){
       $('#concierge_results').html(data);
@@ -947,6 +949,11 @@ $('.cities .typeahead')
             todayBtn: true,
             minView: "month",
             initialDate: null
+    })
+    .on('changeDate', function(ev){
+        var datetime = ev.date.valueOf();
+        $('#dowhentimestamp').val(datetime)
+        doSearch();
     });
 
 EOD;
@@ -1015,6 +1022,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                             </div>
                             <div class="col-lg-3">
                                 <input type="text" value="" id="dowhen" data-date-format="yyyy-mm-dd">
+                                <input type="hidden" value="" id="dowhentimestamp">
                             </div>
 
 

@@ -14,3 +14,12 @@
             ));
             ?>
     </div>
+
+    <div class="row">
+
+            <?php
+
+                $this->renderPartial('result_event_details', array('data' => $listEvent));
+
+            ?>
+    </div>
