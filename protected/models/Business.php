@@ -147,7 +147,7 @@ class Business extends CActiveRecord
 		    array('business_name, business_email, business_website, add_request_rejection_reason, claim_rejection_reason, activation_code', 'length', 'max'=>255),
 			array('business_zipcode, business_phone, business_phone_ext',        'length', 'max'=>16),
 		    array('business_address1, business_address2, business_description,
-		           business_keywords',  'length', 'max'=>1024),
+		           business_keywords',  'length', 'max'=>4096),
 		    array('add_request_rejection_reason, claim_rejection_reason',        'length', 'max'=>255),
 
 		    array('business_activities',                                         'length', 'max'=>255),
