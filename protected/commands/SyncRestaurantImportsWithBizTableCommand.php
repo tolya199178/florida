@@ -125,11 +125,11 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
                 $cityId = $recCity->city_id;
             }
 
-            $recBusiness->business_name                     = $recImportedBusiness->NAME;
-            $recBusiness->business_address1                 = $additionData[0];
-            $recBusiness->business_address2                 = $additionData[1];
+            $recBusiness->business_name                     = trim($recImportedBusiness->NAME);
+            $recBusiness->business_address1                 = trim($additionData[0]);
+            $recBusiness->business_address2                 = trim($additionData[1]);
             $recBusiness->business_city_id                  = $cityId;
-            $recBusiness->business_zipcode                  = $recImportedBusiness->MANUFACTURERID;
+            $recBusiness->business_zipcode                  = (int) $recImportedBusiness->MANUFACTURERID;
             $recBusiness->business_phone_ext                = null;
             $recBusiness->business_phone                    = null;
             $recBusiness->business_email                    = null;
@@ -144,8 +144,8 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             $recBusiness->is_active                         = 'Y';
             $recBusiness->is_featured                       = 'N';
             $recBusiness->is_closed                         = 'N';
-            $recBusiness->latitude                          = $gpsCoOrdinates[0];
-            $recBusiness->longitude                         = $gpsCoOrdinates[1];
+            $recBusiness->latitude                          = trim($gpsCoOrdinates[0]);
+            $recBusiness->longitude                         = trim($gpsCoOrdinates[1]);
 
 
             // NOTE: The following fields from the business tables are not set
@@ -283,8 +283,8 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
 
             // Add the main category
             $categoryModel                          = new Category;
-            $categoryModel->category_name           = $bizCategory;
-            $categoryModel->category_description    = 'Restaurant > '. $bizCategory;
+            $categoryModel->category_name           = trim($bizCategory);
+            $categoryModel->category_description    = 'Restaurant > '. trim($bizCategory);
             $categoryModel->parent_id               = $parentCategoryId;
 
             $categoryModel->save();
@@ -385,7 +385,7 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
 
             // Add the main category
             $activityModel                          = new Activity;
-            $activityModel->keyword                 = $bizActivity;
+            $activityModel->keyword                 = trim($bizActivity);
             $activityModel->language                = 'en';
             $activityModel->related_words           = null;
             $activityModel->event_categories        = null;
@@ -437,7 +437,7 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
 
             // Add the main category
             $activityTypeModel                          = new ActivityType;
-            $activityTypeModel->keyword                 = $bizActivityType;
+            $activityTypeModel->keyword                 = trim($bizActivityType);
             $activityTypeModel->language                = 'en';
             $activityTypeModel->related_words           = null;
             $activityTypeModel->activity_id             = $bizActivityId;
