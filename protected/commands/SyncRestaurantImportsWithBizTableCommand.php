@@ -62,6 +62,8 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             // Check if the business exists by checking the biz name
             // ...and location? and ??  // TODO: Check with Client
             // ////////////////////////////////////////////////////////////////
+            echo 'Processing inport rec #'.$recordsProcessed.' : '.$recImportedBusiness->NAME;
+
             $recBusiness = Business::model()->findByAttributes(
                                 array('business_name' => $recImportedBusiness->NAME
                            ));
@@ -69,8 +71,10 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             // Do not process an existing business record
             if ($recBusiness != null)
             {
+                echo ' ... Record already exists. Ignoring'."\n";
                 continue;
             }
+            echo ' ... Addding new business record'."\n";
 
             // ////////////////////////////////////////////////////////////////
             // If we are here, then we have a new record to be added.
@@ -101,12 +105,19 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             $additionData       = explode(",", $recImportedBusiness->KEYWORDS);
             $gpsCoOrdinates     = explode(",", $recImportedBusiness->PROMOTIONALTEXT);
 
+            // The categories are provided as
+            // ...Gift Certificates > Restaurants > [Category]
+            $categoryData       = explode(">", $recImportedBusiness->THIRDPARTYCATEGORY);
+            $bizCategory        = $categoryData[2];
+
 
 
             $recCity   = City::model()->findByAttributes(array('city_name' => $recImportedBusiness->MANUFACTURER));
             if ($recCity === null)
             {
                 $cityId = null;
+                echo "\t".'*** WARNING: No match for city name '.$recImportedBusiness->MANUFACTURER.'. Setting city name to NULL ***'."\n";
+
             }
             else
             {
@@ -158,10 +169,10 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
                     $recordsSuccessfull++;
 
                     // /////////////////////////////////////////////////////////
-                    // Add the business categories
+                    // Add the business categories. Parent category is fixed
+                    // ...to 'Restaurant'
                     // /////////////////////////////////////////////////////////
-                    $this->assignCategory($recBusiness->business_id, $recImportedBusiness->manta_category, $recImportedBusiness->manta_subcategory);
-                    $this->assignCategory($recBusiness->business_id, $recImportedBusiness->gogo_category, $recImportedBusiness->gogo_subcategory);
+                    $this->assignCategory($recBusiness->business_id, $bizCategory, 'Restaurant');
 
                 }
                 else
@@ -191,42 +202,60 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
     /**
      * Assign the category to the business.
      *
-     * @param <none> <none>
+     * @param $businessId int Business table PK
+     * @param $bizCategory string Business category to assign
+     * @param $parentCategory string Business parent category category
      *
-     * @return array validation rules for model attributes.
-     * @access public
+     * @return int categoryId assigned
+     * @access private
      */
-    private function assignCategory($businessId, $bizCategory, $bizSubCategory)
+    private function assignCategory($businessId, $bizCategory, $parentCategory = null)
     {
 
-        $categoryId = $this->getCategory($bizCategory, $bizSubCategory);
+        // Get, or add the parent category
+        if ($parentCategory != null)
+        {
+            $parentCategoryId = $this->getCategory($parentCategory, null);
+        }
+        else
+        {
+            $parentCategoryId = null;
+        }
+
+
+        // Now, get or add the business category
+        $categoryId = $this->getCategory($bizCategory, $parentCategoryId);
 
         if ($categoryId)
         {
+            // Assign the category to the business
             $modelBusinessCategory  = new BusinessCategory;
             $modelBusinessCategory->business_id     = $businessId;
             $modelBusinessCategory->category_id     = $categoryId;
 
             if ($modelBusinessCategory->save() === false)
             {
-                echo 'Error saving record #'.($recordsProcessed)."\n";
+                echo 'Error saving business category record #'.($recordsProcessed)."\n";
                 print_r($recBusiness->getErrors());
                 print_r($recBusiness->attributes);
+                return null;
             }
         }
 
+        return $categoryId;
 
     }
 
     /**
      * Get the category record. Add the category if it does not exist.
      *
-     * @param <none> <none>
+     * @param $bizCategory string The Business category to search (and add if not exist)
+     * @param $parentCategoryId int Business parent category id to use
      *
-     * @return array validation rules for model attributes.
-     * @access public
+     * @return int categoryId The PK of the located (or newly added) Category;
+     * @access private
      */
-    private function getCategory($bizCategory, $bizSubCategory)
+    private function getCategory($bizCategory, $parentCategoryId = null)
     {
 
         if (empty($bizCategory))
@@ -234,19 +263,24 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             return null;
         }
 
-        // Fetch the category$bizCategory
+        // Search for the category, and add it if not exist.
+
+
+
+        // Fetch the category $bizCategory
         $categoryModel = Category::model()->findByAttributes(array('category_name' => $bizCategory));
 
         // If the category does not exist, add it
         if ($categoryModel === null)
         {
 
-            echo "Add new category $bizCategory\n";
+            echo "Adding new category $bizCategory\n";
 
             // Add the main category
             $categoryModel                          = new Category;
             $categoryModel->category_name           = $bizCategory;
-            $categoryModel->category_description    = $bizCategory;
+            $categoryModel->category_description    = 'Restaurant > '. $bizCategory;
+            $categoryModel->parent_id               = $parentCategoryId;
 
             $categoryModel->save();
             if ($categoryModel->save() === false)
@@ -254,33 +288,14 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
                 echo 'Error saving category record'."\n";
                 print_r($categoryModel->getErrors());
                 print_r($categoryModel->attributes);
+                return null;
             }
-            $categoryId                             = $categoryModel->category_id;
-
-
-            if (!empty($bizSubCategory))
-            {
-                // Add the sub-category
-                echo "Add new subcategory $bizSubCategory\n";
-
-                $categoryModel                          = new Category;
-                $categoryModel->category_name           = $bizSubCategory;
-                $categoryModel->category_description    = $bizSubCategory;
-                $categoryModel->parent_id               = $categoryId;
-
-                $categoryModel->save();
-                if ($categoryModel->save() === false)
-                {
-                    echo 'Error saving category record'."\n";
-                    print_r($categoryModel->getErrors());
-                    print_r($categoryModel->attributes);
-                }
-            }
-
-
-
 
         }
+
+        $categoryId                                 = $categoryModel->category_id;
+        return $categoryId;
+
 
     }
 
