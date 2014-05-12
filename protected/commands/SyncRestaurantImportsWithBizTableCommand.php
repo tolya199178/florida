@@ -92,8 +92,6 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             // ////////////////////////////////////////////////////////////////
             $recBusiness = new Business;
 
-//             print_r($recImportedBusiness->attributes);
-//             continue;
 
             // /////////////////////////////////////////////////////////////////
             // The KEYWORDS field from the imported record is futher broken down
@@ -129,7 +127,7 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
 
             $recBusiness->business_name                     = $recImportedBusiness->NAME;
             $recBusiness->business_address1                 = $additionData[0];
-            $recBusiness->business_address2                 = $additionData[0];
+            $recBusiness->business_address2                 = $additionData[1];
             $recBusiness->business_city_id                  = $cityId;
             $recBusiness->business_zipcode                  = $recImportedBusiness->MANUFACTURERID;
             $recBusiness->business_phone_ext                = null;
@@ -173,6 +171,13 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
                     // ...to 'Restaurant'
                     // /////////////////////////////////////////////////////////
                     $this->assignCategory($recBusiness->business_id, $bizCategory, 'Restaurant');
+
+                    // /////////////////////////////////////////////////////////
+                    // Assign the activity to the business. All restuarants will
+                    // ...have an activity of 'eat'. The category will be
+                    // ...the activity type.
+                    // /////////////////////////////////////////////////////////
+                    $this->assignActivity($recBusiness->business_id, 'Eat', $bizCategory);
 
                 }
                 else
@@ -236,8 +241,8 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             if ($modelBusinessCategory->save() === false)
             {
                 echo 'Error saving business category record #'.($recordsProcessed)."\n";
-                print_r($recBusiness->getErrors());
-                print_r($recBusiness->attributes);
+                print_r($modelBusinessCategory->getErrors());
+                print_r($modelBusinessCategory->attributes);
                 return null;
             }
         }
@@ -296,6 +301,160 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
         $categoryId                                 = $categoryModel->category_id;
         return $categoryId;
 
+
+    }
+
+    /**
+     * Assign the activity to the business.
+     *
+     * @param $businessId int Business table PK
+     * @param $bizActivity string Business activity to assign
+     * @param $bizActivityType string Business activity type to assign
+     *
+     * @return int bizActvityId assigned
+     * @access private
+     */
+    private function assignActivity($businessId, $bizActivity = 'eat', $bizActivityType = null)
+    {
+
+        // Do not proceed with the activity type is not provided
+        if ($bizActivityType === null)
+        {
+            return null;
+        }
+        if (empty($bizActivityType))
+        {
+            return null;
+        }
+
+        // Read the activity if it exists, otherwise create it
+        $activityId = $this->getActivity($bizActivity, null);
+
+
+        // Now, get or add the activity type
+        $activityTypeId = $this->getActivityType($bizActivityType, $activityId);
+
+        if ($activityTypeId)
+        {
+            // Assign the activity to the business
+            $modelBusinessActivity  = new BusinessActivity();
+            $modelBusinessActivity->business_id         = $businessId;
+            $modelBusinessActivity->activity_id         = $activityId;
+            $modelBusinessActivity->activity_type_id    = $activityTypeId;
+
+            if ($modelBusinessActivity->save() === false)
+            {
+                echo 'Error saving business activity record #'.($recordsProcessed)."\n";
+                print_r($modelBusinessActivity->getErrors());
+                print_r($modelBusinessActivity->attributes);
+                return null;
+            }
+        }
+
+        return $activityId;
+
+    }
+
+    /**
+     * Get the activity record. Add the activity if it does not exist.
+     *
+     * @param $bizActivity string Business activity to assign
+     *
+     * @return int activityId The PK of the located (or newly added) Activity;
+     * @access private
+     */
+    private function getActivity($bizActivity = null)
+    {
+
+        if (empty($bizActivity))
+        {
+            return null;
+        }
+
+        // Search for the activity, and add it if not exist.
+
+
+        // Fetch the activity $bizActivity
+        $activityModel = Activity::model()->findByAttributes(array('keyword' => $bizActivity));
+
+        // If the category does not exist, add it
+        if ($activityModel === null)
+        {
+
+            echo "Adding new activity $bizActivity\n";
+
+            // Add the main category
+            $activityModel                          = new Activity;
+            $activityModel->keyword                 = $bizActivity;
+            $activityModel->language                = 'en';
+            $activityModel->related_words           = null;
+            $activityModel->event_categories        = null;
+
+            $activityModel->save();
+            if ($activityModel->save() === false)
+            {
+                echo 'Error saving activity record'."\n";
+                print_r($activityModel->getErrors());
+                print_r($activityModel->attributes);
+                return null;
+            }
+
+        }
+
+        $actvityId                                 = $activityModel->activity_id;
+        return $actvityId;
+
+    }
+
+    /**
+     * Get the activity type record. Add the activitytype if it does not exist.
+     *
+     * @param $bizActivityType string Business activity to assign
+     * @param $bizActivityId int activityId to assign
+     *
+     * @return int activityTypeId The PK of the located (or newly added) ActivityType;
+     * @access private
+     */
+    private function getActivityType($bizActivityType = null, $bizActivityId = null)
+    {
+
+        if (empty($bizActivityType))
+        {
+            return null;
+        }
+
+        // Search for the activitytype, and add it if not exist.
+
+
+        // Fetch the activity $bizActivityType
+        $activityTypeModel = ActivityType::model()->findByAttributes(array('keyword' => $bizActivityType));
+
+        // If the category does not exist, add it
+        if ($activityTypeModel === null)
+        {
+
+            echo "Adding new activity $bizActivityType\n";
+
+            // Add the main category
+            $activityTypeModel                          = new ActivityType;
+            $activityTypeModel->keyword                 = $bizActivityType;
+            $activityTypeModel->language                = 'en';
+            $activityTypeModel->related_words           = null;
+            $activityTypeModel->activity_id             = $bizActivityId;
+
+            $activityTypeModel->save();
+            if ($activityTypeModel->save() === false)
+            {
+            echo 'Error saving category record'."\n";
+                print_r($activityTypeModel->getErrors());
+                print_r($activityTypeModel->attributes);
+                return null;
+            }
+
+            }
+
+            $actvityTypeId                              = $activityTypeModel->activity_type_id;
+            return $actvityTypeId;
 
     }
 
