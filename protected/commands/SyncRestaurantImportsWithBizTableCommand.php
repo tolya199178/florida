@@ -127,7 +127,7 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
 
             $recBusiness->business_name                     = $recImportedBusiness->NAME;
             $recBusiness->business_address1                 = $additionData[0];
-            $recBusiness->business_address2                 = $additionData[0];
+            $recBusiness->business_address2                 = $additionData[1];
             $recBusiness->business_city_id                  = $cityId;
             $recBusiness->business_zipcode                  = $recImportedBusiness->MANUFACTURERID;
             $recBusiness->business_phone_ext                = null;
@@ -241,8 +241,8 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             if ($modelBusinessCategory->save() === false)
             {
                 echo 'Error saving business category record #'.($recordsProcessed)."\n";
-                print_r($recBusiness->getErrors());
-                print_r($recBusiness->attributes);
+                print_r($modelBusinessCategory->getErrors());
+                print_r($modelBusinessCategory->attributes);
                 return null;
             }
         }
