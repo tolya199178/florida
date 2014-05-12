@@ -12,7 +12,6 @@
         </div>
 
         <div class="panel-body">
-            <span class="business_description"><?php echo CHtml::Encode($data->business_description); ?></span>
 
                 <div class="col-lg-12">
 
