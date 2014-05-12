@@ -375,7 +375,7 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
 
 
         // Fetch the activity $bizActivity
-        $activityModel = Activity::model()->findByAttributes(array('keyword' => $bizActivity));
+        $activityModel = Activity::model()->findByAttributes(array('keyword' => trim($bizActivity)));
 
         // If the category does not exist, add it
         if ($activityModel === null)
@@ -427,7 +427,7 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
 
 
         // Fetch the activity $bizActivityType
-        $activityTypeModel = ActivityType::model()->findByAttributes(array('keyword' => $bizActivityType));
+        $activityTypeModel = ActivityType::model()->findByAttributes(array('keyword' => trim($bizActivityType)));
 
         // If the category does not exist, add it
         if ($activityTypeModel === null)
