@@ -84,44 +84,13 @@ class ConciergeController extends Controller
 	public function actionIndex()
 	{
 
-	    // TODO: This need to go into the system settings
-	    // TODO: User test data until the city database is properly populated
-	    // $defaultCityList   = array('Miami', 'Palm Beach', 'Key West');
-	    $defaultCityList   = array('Johannesburg');
-	    $defaultCityKey    = array_rand($defaultCityList, 1);
-	    $defaultCity       = $defaultCityList[$defaultCityKey];
+        $myLocation = $this->getMyLocation();
 
-	    // Get the local IP address, If this is a private IP, change it to the default.
-	    // ...This should only happen in a dev environment.
-	    $isPrivateIP = !filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE);
-	    if ($isPrivateIP) {
-	        $myIpAddress   = Yii::app()->params['DEFAULT_IP_ADDRESS'];
-	    }
-	    else
-	    {
-	        $myIpAddress   = $_SERVER['REMOTE_ADDR'];
-	    }
+      //  exit;
 
-	    // Get my current location
-	    $myLocation = Yii::app()->geoip->lookupLocation($myIpAddress);
-	    $myLocationDetails = $myLocation->aData;
-
-	    print "city: " . $myLocation->city . ", " . $myLocation->regionName . ", " . $myLocation->countryName;
-	    print "lat: " . $myLocation->latitude . ", long: " . $myLocation->longitude;
-
-	    // /////////////////////////////////////////////////////////////////////
-	    // Find the city in our own list of city
-	    // /////////////////////////////////////////////////////////////////////
-        $cityModel      = City::model()->findByAttributes(array('city_name' => $myLocation->city));
-
-        if ($cityModel === null)
-        {
-            $myCity         = $defaultCity;
-            $cityModel      = City::model()->findByAttributes(array('city_name' => $myCity));
-        }
 
 	    $conciergeData = array();
-	    $conciergeData['city'] = $cityModel->city_name;
+	    $conciergeData['city'] = $myLocation->city_name;
 
 
 		// renders the view file 'protected/views/site/index.php'
@@ -738,6 +707,77 @@ LIMIT 0 , $numberOfResults
                         ->queryAll();
 
         return $listEvent;
+
+    }
+
+    /**
+     * Determines the users location based on the IP address, or assign the
+     * ...default city for the user.
+     *
+     * @param <none> <none>
+     *
+     * @return cityModel City{} model of the user's location
+     * @access public
+     */
+    private function getMyLocation()
+    {
+
+        // TODO: This need to go into the system settings
+        // TODO: User test data until the city database is properly populated
+        // $defaultCityList   = array('Miami', 'Palm Beach', 'Key West');
+        $defaultCityList   = array('Miami');
+        $defaultCityKey    = array_rand($defaultCityList, 1);
+        $defaultCity       = $defaultCityList[$defaultCityKey];
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the local IP address, If this is a private IP, change it to the
+        // ...default. This should only happen in a dev environment.
+        // /////////////////////////////////////////////////////////////////////
+        $isPrivateIP = !filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE);
+
+        if ($isPrivateIP) {
+
+            $myCity = $defaultCity;
+
+        }
+        else
+        {
+            // Find the user location based the IP address
+            $myIpAddress        = $_SERVER['REMOTE_ADDR'];
+
+            // Get my current location
+            $myLocation         = Yii::app()->geoip->lookupLocation($myIpAddress);
+            $myLocationDetails  = $myLocation->aData;
+
+            $myCity = $myLocation->city;
+
+            // /////////////////////////////////////////////////////////////////
+            // If the user is not local to a florida address, assign the user to
+            // ...a default location
+            // /////////////////////////////////////////////////////////////////
+            if (($myLocation->countryName != 'United States') || ($myLocation->regionName != 'Florida'))
+            {
+                $myCity = $defaultCity;
+            }
+
+        }
+
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Find the home city in our own list of city. If the city is not found,
+        // ...set it to the default city
+        // /////////////////////////////////////////////////////////////////////
+        $cityModel      = City::model()->findByAttributes(array('city_name' => $myCity));
+
+        if ($cityModel === null)
+        {
+            $myCity         = $defaultCity;
+            $cityModel      = City::model()->findByAttributes(array('city_name' => $myCity));
+        }
+
+        return $cityModel;
 
     }
 
