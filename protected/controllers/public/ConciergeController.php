@@ -83,10 +83,20 @@ class ConciergeController extends Controller
      */
 	public function actionIndex()
 	{
+
+        $myLocation = $this->getMyLocation();
+
+      //  exit;
+
+
+	    $conciergeData = array();
+	    $conciergeData['city'] = $myLocation->city_name;
+
+
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
 
-		$this->render('concierge');
+		$this->render('concierge', array('data' => $conciergeData));
 	}
 
     /**
@@ -592,6 +602,41 @@ class ConciergeController extends Controller
 
     }
 
+    private function getNearestCity($posLatitude, $posLongitude)
+    {
+
+        $existing = Yii::app()->db->createCommand()
+        ->select("* ,  6371.04 * acos( cos( pi( ) /2 - radians( 90 - Latitude) )
+                                      *cos( pi( ) /2 - radians( 90 - '$posLatitude' )
+                                     ) *
+                                  cos( radians(Longitude) - radians( '$posLongitude' ) )
+                                    + sin( pi( ) /2 - radians( 90 - Latitude) )
+                                    * sin( pi( ) /2 - radians( 90 - '$posLatitude' ) )
+                                    ) AS Distance")
+        ->from('tbl_city')
+        ->limit('0, 10')
+        ->group('city_id')
+        ->having('')
+        ->queryRow();
+
+        /*
+         * SELECT * , 6371.04 * acos( cos( pi( ) /2 - radians( 90 - Latitude) )
+* cos( pi( ) /2 - radians( 90 - '$latitude' ) ) * cos( radians(
+Longitude) - radians( '$longitude' ) ) + sin( pi( ) /2 - radians( 90
+- Latitude) ) * sin( pi( ) /2 - radians( 90 - '$latitude' ) ) ) AS
+Distance
+FROM MyLocations
+WHERE ( 6371.04 * acos( cos( pi( ) /2 - radians( 90 - Latitude) ) *
+cos( pi( ) /2 - radians( 90 - '$latitude' ) ) * cos( radians(
+Longitude) - radians( '$longitude' ) ) + sin( pi( ) /2 - radians( 90
+- Latitude) ) * sin( pi( ) /2 - radians( 90 - '$latitude' ) ) ) <1 )
+GROUP BY one_id HAVING dist < '$radius'
+ORDER BY Distance
+LIMIT 0 , $numberOfResults
+         */
+
+    }
+
     /**
      * Searches the local event listing using the search criteria entered by the user.
      *
@@ -662,6 +707,78 @@ class ConciergeController extends Controller
                         ->queryAll();
 
         return $listEvent;
+
+    }
+
+    /**
+     * Determines the users location based on the IP address, or assign the
+     * ...default city for the user.
+     *
+     * @param <none> <none>
+     *
+     * @return cityModel City{} model of the user's location
+     * @access public
+     */
+    private function getMyLocation()
+    {
+
+        // TODO: This need to go into the system settings
+        // TODO: User test data until the city database is properly populated
+        // $defaultCityList   = array('Miami', 'Palm Beach', 'Key West');
+        $defaultCityList   = array('Miami');
+        $defaultCityKey    = array_rand($defaultCityList, 1);
+        $defaultCity       = $defaultCityList[$defaultCityKey];
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the local IP address, If this is a private IP, change it to the
+        // ...default. This should only happen in a dev environment.
+        // /////////////////////////////////////////////////////////////////////
+        $isPrivateIP = !filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE);
+
+        if ($isPrivateIP) {
+
+            $myCity = $defaultCity;
+
+        }
+        else
+        {
+            // Find the user location based the IP address
+            $myIpAddress        = $_SERVER['REMOTE_ADDR'];
+
+            // Get my current location
+            $myLocation         = Yii::app()->geoip->lookupLocation($myIpAddress);
+            $myLocationDetails  = $myLocation->aData;
+
+            $myCity = $myLocation->city;
+
+            // /////////////////////////////////////////////////////////////////
+            // If the user is not local to a florida address, assign the user to
+            // ...a default location
+            // /////////////////////////////////////////////////////////////////
+            if (($myLocation->countryName != 'United States') || ($myLocation->regionName != 'Florida'))
+            {
+                $myCity = $defaultCity;
+            }
+
+        }
+
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Find the home city in our own list of city. If the city is not found,
+        // ...set it to the default city
+        // /////////////////////////////////////////////////////////////////////
+        $cityModel      = City::model()->findByAttributes(array('city_name' => $myCity));
+
+        if ($cityModel === null)
+        {
+            $myCity         = $defaultCity;
+            $cityModel      = City::model()->findByAttributes(array('city_name' => $myCity));
+        }
+
+        return $cityModel;
+
     }
 
 }

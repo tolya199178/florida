@@ -22,12 +22,12 @@
 
 
 return array(
-    
+
     // -------------------------------------------------------------------------
     // Site identifier
     // -------------------------------------------------------------------------
     'SITE_NAME' => 'Florida.com',
-    
+
 
     // -------------------------------------------------------------------------
     // Locale Settings
@@ -37,8 +37,10 @@ return array(
     'CURRENCY_CODE'     => 'USD',
     'CURRENCY_SYMBOL'   => '$',
     'DATE_FORMAT'       => 'MM-DD-YYYY',
-    
-    
+
+    'DEFAULT_IP_ADDRESS' => '131.94.186.10',      // Hellllooo, Miami !!!!
+
+
 
     // -------------------------------------------------------------------------
     // Email settings
@@ -47,9 +49,9 @@ return array(
     'SITE_MAIL_UNAME'       => 'kamatchi.pandian@optisolbusiness.com',
     'SITE_MAIL_PWD'         => 'jkp7707',
     'SITE_SMTPHOST'         => 'secure.emailsrvr.com',
-    'SITE_SMTPPORT'         => '465', // Port: 465 or 587 
+    'SITE_SMTPPORT'         => '465', // Port: 465 or 587
     'MAILSENDBY'            => 1, //if 1 send by phpmailer function || if 2 send by SMTP  || if 3 dont send the mail
-    
+
     'EMAIL_TEMPLATE_PATH'   => 'mailtemplates/',
     'EMAILHEADERIMAGE'      => '',
     'SITE_FROMEMAIL'        => 'noreply@Florida.com',
@@ -57,22 +59,22 @@ return array(
     'SITE_INFOEMAIL'        => 'info@Florida.com',
     'SITE_SUPPORTEMAIL'     => 'support@Florida.com',
     'SITE_AlERTMAIL'        => 'alert@Florida.com',
-    
-    
+
+
     // -------------------------------------------------------------------------
     // Facebook application API details
     // -------------------------------------------------------------------------
     'SITE_FB_URL'       => 'https://www.facebook.com/floridasandbox',
     'FB_APPID'          =>'580601078622835',//479986035449690
-    
+
     // -------------------------------------------------------------------------
     // Twitter API details
     // -------------------------------------------------------------------------
     'SITE_TW_URL'       => 'https://twitter.com/',
     // TODO: Account settings ?
-    
 
-    
+
+
     // -------------------------------------------------------------------------
     // PayPal API details
     // -------------------------------------------------------------------------
@@ -82,7 +84,7 @@ return array(
     'PAYPALBUSINESSEMAIL' => 'jkp.ph_1359131919_biz@gmail.com',
     'PAYPALCURRENCYCODE' => 'USD',
     // TODO: Account settings ? Merchant account
-    
+
 
     // -------------------------------------------------------------------------
     // Priceline details
@@ -99,12 +101,12 @@ return array(
     // Misc
     // -------------------------------------------------------------------------
 
-    
+
     'PAGESIZEREC' => 20,
-    
+
     //'SITE_GPLUS_URL' => 'https://plus.google.com/u/0/+',
     'SEC_SIG' => "flo{rida$@#obs%^@~~",
-    
+
     'SITE_PHNO' => '000-000-0000',
     'LOGO_PATH' => "http://sandbox.florida.com/assets2/img/logo-v1.png",
     'PROF_IMG_PATH' => "profile_image/",
@@ -113,7 +115,7 @@ return array(
     'COOKIE_NAME' => 'florida_user',
     'COOKIE_PWD' => 'florida_pwd',
 
-    
+
 
     //Ticket Net work
     'SITE_IP' => '209.208.92.70',
@@ -129,8 +131,8 @@ return array(
     //TicketNetwork
     'TN_URL' => "https://tickettransaction2.com/Checkout.aspx?brokerid={brokerid}&sitenumber={sitenumber}&tgid={tgid}&treq=1&evtID={evtID}&price={price}&SessionId={SessionId}",
     'WSDL' => "http://tnwebservices.ticketnetwork.com/tnwebservice/v3.2/TNWebServiceStringInputs.asmx?WSDL",
-    
-    
+
+
     //Version
     'VERSION' => '1.0',
     'SYSTEM_USER' =>'careers,support'
