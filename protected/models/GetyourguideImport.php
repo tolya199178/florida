@@ -80,108 +80,11 @@ class GetyourguideImport extends CActiveRecord
 			array('prices_description, source_filename', 'length', 'max'=>255),
 			array('rating', 'length', 'max'=>16),
 			array('url, language', 'length', 'max'=>32),
-			array('abstract, categories, destination, pictures, import_date, sync_date, import_comment, sync_comment', 'safe'),
+			array('abstract, categories, destination, pictures, import_date, sync_date, import_comment, sync_comment',  'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('getyourguide_external_id, last_modification_datetime, title, abstract, categories, destination, price, prices_description, rating, pictures, url, language, record_id, source_filename, date_created, import_date, sync_date, import_comment, sync_comment', 'safe', 'on'=>'search'),
 		);
-	}
-
-	/**
-	 * Set rules for the relation of this record model to other record models.
-	 *
-	 * @param <none> <none>
-	 *
-	 * @return array relational rules.
-	 * @access public
-	 */
-	public function relations()
-	{
-
-		return array(
-		);
-	}
-
-	/**
-	 * Label set for attributes. Only required for attributes that appear on view/forms.
-	 * ...
-	 * Usage:
-	 *    echo $form->label($model, $attribute)
-	 *
-	 * @param <none> <none>
-	 *
-	 * @return array customized attribute labels (name=>label)
-	 * @access public
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'getyourguide_external_id'      => 'Getyourguide External',
-			'last_modification_datetime'      => 'Last Modification Datetime',
-			'title'      => 'Title',
-			'abstract'      => 'Abstract',
-			'categories'      => 'Categories',
-			'destination'      => 'Destination',
-			'price'      => 'Price',
-			'prices_description'      => 'Prices Description',
-			'rating'      => 'Rating',
-			'pictures'      => 'Pictures',
-			'url'      => 'Url',
-			'language'      => 'Language',
-			'record_id'      => 'Record',
-			'source_filename'      => 'Source Filename',
-			'date_created'      => 'Date Created',
-			'import_date'      => 'Import Date',
-			'sync_date'      => 'Sync Date',
-			'import_comment'      => 'Import Comment',
-			'sync_comment'      => 'Sync Comment',
-		);
-	}
-
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     *
-     * Typical usecase:
-     * - Initialize the model fields with values from filter form.
-     * - Execute this method to get CActiveDataProvider instance which will filter
-     * models according to data in model fields.
-     * - Pass data provider to CGridView, CListView or any similar widget.
-     *
-     * @param <none> <none>
-     *
-     * @return CActiveDataProvider the data provider that can return the models
-     *         ...based on the search/filter conditions.
-     * @access public
-     */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('getyourguide_external_id',$this->getyourguide_external_id);
-		$criteria->compare('last_modification_datetime',$this->last_modification_datetime,true);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('abstract',$this->abstract,true);
-		$criteria->compare('categories',$this->categories,true);
-		$criteria->compare('destination',$this->destination,true);
-		$criteria->compare('price',$this->price,true);
-		$criteria->compare('prices_description',$this->prices_description,true);
-		$criteria->compare('rating',$this->rating,true);
-		$criteria->compare('pictures',$this->pictures,true);
-		$criteria->compare('url',$this->url,true);
-		$criteria->compare('language',$this->language,true);
-		$criteria->compare('record_id',$this->record_id,true);
-		$criteria->compare('source_filename',$this->source_filename,true);
-		$criteria->compare('date_created',$this->date_created,true);
-		$criteria->compare('import_date',$this->import_date,true);
-		$criteria->compare('sync_date',$this->sync_date,true);
-		$criteria->compare('import_comment',$this->import_comment,true);
-		$criteria->compare('sync_comment',$this->sync_comment,true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
 	}
 
     /**
