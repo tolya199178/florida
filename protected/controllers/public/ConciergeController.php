@@ -292,7 +292,6 @@ class ConciergeController extends Controller
         // Search the event categories from the search keywords
 
         $listEvent = $this->searchEvents($argDoWhat, $argWithWhat, $argWhere, $argWhen);
-
         $this->renderPartial('search_results_container', array('dataProvider'       => $dataProvider,
                                                                'listEvent'          => $listEvent));
 
