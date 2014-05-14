@@ -22,11 +22,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = GetyourguideProduct::model()
+ * ...   $tour = GetyourguideProduct::model()
  * ...or
- * ...   $model = new GetyourguideProduct;
+ * ...   $tour = new GetyourguideProduct;
  * ...or
- * ...   $model = new GetyourguideProduct($scenario);
+ * ...   $tour = new GetyourguideProduct($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -75,24 +75,10 @@ class GetyourguideProduct extends CActiveRecord
 		    array('gyg_last_modify_time',                        'length', 'max'=>64),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('product_id, gyg_id, gyg_last_modify_time, gyg_title, gyg_abstract, gyg_destination_list, gyg_price, gyg_price_description, gyg_rating, gyg_url, gyg_language', 'safe', 'on'=>'search'),
+			array('product_id, gyg_id, gyg_last_modify_time, gyg_title, gyg_abstract, gyg_price, gyg_price_description, gyg_rating, gyg_url, gyg_language', 'safe', 'on'=>'search'),
 		);
 	}
 
-	/**
-	 * Set rules for the relation of this record model to other record models.
-	 *
-	 * @param <none> <none>
-	 *
-	 * @return array relational rules.
-	 * @access public
-	 */
-	public function relations()
-	{
-
-		return array(
-		);
-	}
 
 	/**
 	 * Label set for attributes. Only required for attributes that appear on view/forms.
@@ -108,17 +94,17 @@ class GetyourguideProduct extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'product_id'      => 'Product',
-			'gyg_id'      => 'Gyg',
-			'gyg_last_modify_time'      => 'Gyg Last Modify Time',
-			'gyg_title'      => 'Gyg Title',
-			'gyg_abstract'      => 'Gyg Abstract',
-			'gyg_destination_list'      => 'Gyg Destination List',
-			'gyg_price'      => 'Gyg Price',
+			'product_id'                 => 'Product',
+			'gyg_id'                     => 'Gyg',
+			'gyg_last_modify_time'       => 'Gyg Last Modify Time',
+			'gyg_title'                  => 'Gyg Title',
+			'gyg_abstract'               => 'Gyg Abstract',
+			'gyg_destination_list'       => 'Gyg Destination List',
+			'gyg_price'                  => 'Gyg Price',
 			'gyg_price_description'      => 'Gyg Price Description',
-			'gyg_rating'      => 'Gyg Rating',
-			'gyg_url'      => 'Gyg Url',
-			'gyg_language'      => 'Gyg Language',
+			'gyg_rating'                 => 'Gyg Rating',
+			'gyg_url'                    => 'Gyg Url',
+			'gyg_language'               => 'Gyg Language',
 		);
 	}
 
@@ -143,17 +129,15 @@ class GetyourguideProduct extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('product_id',$this->product_id,true);
-		$criteria->compare('gyg_id',$this->gyg_id);
-		$criteria->compare('gyg_last_modify_time',$this->gyg_last_modify_time,true);
-		$criteria->compare('gyg_title',$this->gyg_title,true);
-		$criteria->compare('gyg_abstract',$this->gyg_abstract,true);
-		$criteria->compare('gyg_destination_list',$this->gyg_destination_list,true);
-		$criteria->compare('gyg_price',$this->gyg_price,true);
-		$criteria->compare('gyg_price_description',$this->gyg_price_description,true);
-		$criteria->compare('gyg_rating',$this->gyg_rating,true);
-		$criteria->compare('gyg_url',$this->gyg_url,true);
-		$criteria->compare('gyg_language',$this->gyg_language,true);
+		$criteria->compare('product_id',              $this->product_id,true);
+		$criteria->compare('gyg_id',                  $this->gyg_id);
+		$criteria->compare('gyg_last_modify_time',    $this->gyg_last_modify_time,true);
+		$criteria->compare('gyg_title',               $this->gyg_title,true);
+		$criteria->compare('gyg_abstract',            $this->gyg_abstract,true);
+		$criteria->compare('gyg_price_description',   $this->gyg_price_description,true);
+		$criteria->compare('gyg_rating',              $this->gyg_rating,true);
+		$criteria->compare('gyg_url',                 $this->gyg_url,true);
+		$criteria->compare('gyg_language',            $this->gyg_language,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
