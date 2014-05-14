@@ -1136,9 +1136,9 @@ ALTER TABLE `getyourguide_import` ADD COLUMN sync_comment TEXT;
 -- ---------------------------------------------------------------------
 -- Getyourguide Local storage
 -- ---------------------------------------------------------------------
- DROP TABLE IF EXISTS `getyourguide_product`;
+ DROP TABLE IF EXISTS `tbl_getyourguide_product`;
 
- CREATE TABLE `getyourguide_product` (
+ CREATE TABLE `tbl_getyourguide_product` (
   `product_id`                  int(11) unsigned AUTO_INCREMENT,
   `gyg_id`                      INT(32) NOT NULL,
   `gyg_last_modify_time`        DATETIME,

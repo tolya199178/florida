@@ -48,7 +48,7 @@ class GetyourguideProduct extends CActiveRecord
      */
 	public function tableName()
 	{
-		return 'getyourguide_product';
+		return '{{getyourguide_product}}';
 	}
 
     /**
