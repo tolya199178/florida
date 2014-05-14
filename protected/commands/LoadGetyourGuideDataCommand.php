@@ -29,7 +29,7 @@ class LoadGetyourGuideDataCommand extends CConsoleCommand
         date_default_timezone_set('America/New_York');
 
         // Show the help screen and exit is the user requests
-        if (($args[0] == '-h') || ($args[0] == '--help'))
+        if (isset($args[0]) && (($args[0] == '-h') || ($args[0] == '--help')))
         {
             $this->showUsage();
             exit();
@@ -102,11 +102,10 @@ class LoadGetyourGuideDataCommand extends CConsoleCommand
 
         if (isset($userOptions['tours']) && ($userOptions['tours'] == 'yes'))
         {
-            $productResults     = $this->sendGetRequest('https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=product_list&where=london&offset=50');
+            $productResults     = $this->sendGetRequest('https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=product_list&where=florida&max_results=1000&availability_range=6');
             $productXmlResults  = simplexml_load_string($productResults);
             $allProduct         = $this->simpleXMLToArray($productXmlResults);
             $listProduct        = $allProduct['products']['product'];
-
 
             $recordsProcessed       = 0;
             $recordsSuccessfull     = 0;
@@ -134,6 +133,11 @@ class LoadGetyourGuideDataCommand extends CConsoleCommand
                 // ...categories in a serialised form in the import table.
                 // //////////////////////////////////////////////////////////////
                 $listCategories     = array();
+
+                if (is_array($itemProduct['rating']))
+                {
+                    $itemProduct['rating'] = 0;
+                }
 
                 $importRecord->last_modification_datetime   = trim($itemProduct['last_modification']['datetime']);
                 $importRecord->getyourguide_external_id     = (int) $itemProduct['id'];
