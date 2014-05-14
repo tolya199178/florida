@@ -1120,7 +1120,7 @@ ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL
   `prices_description` varchar(255) DEFAULT NULL,
   `rating` varchar(16) DEFAULT NULL,
   `pictures` TEXT DEFAULT NULL,
-  `url` varchar(32) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `language` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
