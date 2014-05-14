@@ -77,9 +77,9 @@ class GetyourguideImport extends CActiveRecord
 			array('getyourguide_external_id', 'numerical', 'integerOnly'=>true),
 			array('last_modification_datetime', 'length', 'max'=>64),
 			array('title, price', 'length', 'max'=>1024),
-			array('prices_description, source_filename', 'length', 'max'=>255),
+			array('prices_description, source_filename, url', 'length', 'max'=>255),
 			array('rating', 'length', 'max'=>16),
-			array('url, language', 'length', 'max'=>32),
+			array('language', 'length', 'max'=>32),
 			array('abstract, categories, destination, pictures, import_date, sync_date, import_comment, sync_comment',  'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
