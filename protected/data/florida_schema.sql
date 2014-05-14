@@ -1101,6 +1101,43 @@ ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL
   PRIMARY KEY (`tn_event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+
+
+-- ---------------------------------------------------------------------
+-- Getyourguide Imports
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `getyourguide_import`;
+
+ CREATE TABLE `getyourguide_import` (
+  `getyourguide_external_id` INT(32) NOT NULL,
+  `last_modification_datetime` varchar(64) DEFAULT NULL,
+  `title` varchar(1024) DEFAULT NULL,
+  `abstract` TEXT NULL,
+  `categories` TEXT DEFAULT NULL,
+  `destination` TEXT DEFAULT NULL,
+  `price` varchar(1024) DEFAULT NULL,
+  `prices_description` varchar(255) DEFAULT NULL,
+  `rating` varchar(16) DEFAULT NULL,
+  `pictures` TEXT DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `language` varchar(32) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `getyourguide_import` ADD COLUMN `record_id` int(11) unsigned PRIMARY KEY AUTO_INCREMENT;
+ALTER TABLE `getyourguide_import` ADD COLUMN source_filename varchar(255);
+ALTER TABLE `getyourguide_import` ADD COLUMN date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `getyourguide_import` ADD COLUMN import_date  DATETIME;
+ALTER TABLE `getyourguide_import` ADD COLUMN sync_date  DATETIME;
+ALTER TABLE `getyourguide_import` ADD COLUMN import_comment TEXT;
+ALTER TABLE `getyourguide_import` ADD COLUMN sync_comment TEXT;
+
+
+
+
+
+
+
 -- ---------------------------------------------------------------------
 -- Search log summary - quick log for all seaches
 -- ---------------------------------------------------------------------
