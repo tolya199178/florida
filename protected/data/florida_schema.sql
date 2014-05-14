@@ -1133,7 +1133,26 @@ ALTER TABLE `getyourguide_import` ADD COLUMN import_comment TEXT;
 ALTER TABLE `getyourguide_import` ADD COLUMN sync_comment TEXT;
 
 
+-- ---------------------------------------------------------------------
+-- Getyourguide Local storage
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `getyourguide_product`;
 
+ CREATE TABLE `getyourguide_product` (
+  `product_id`                  int(11) unsigned AUTO_INCREMENT,
+  `gyg_id`                      INT(32) NOT NULL,
+  `gyg_last_modify_time`        DATETIME,
+  `gyg_title`                   varchar(1024) DEFAULT NULL,
+  `gyg_abstract`                TEXT NULL,
+  `gyg_destination_list`        TEXT DEFAULT NULL,
+  `gyg_price`                   varchar(255) DEFAULT NULL,
+  `gyg_price_description`       varchar(255) DEFAULT NULL,
+  `gyg_rating`                  varchar(16) DEFAULT NULL,
+  `gyg_url`                     varchar(255) DEFAULT NULL,
+  `gyg_language`                varchar(32) DEFAULT NULL,
+  PRIMARY   KEY (`product_id`),
+  UNIQUE    KEY `unqkey_gyg_id` (`gyg_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
