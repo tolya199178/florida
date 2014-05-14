@@ -71,7 +71,7 @@ class GetyourguideProduct extends CActiveRecord
 			array('gyg_price, gyg_price_description, gyg_url',   'length', 'max'=>255),
 			array('gyg_rating',                                  'length', 'max'=>16),
 			array('gyg_language',                                'length', 'max'=>32),
-			array('gyg_abstract',                                'length', 'max'=>32),
+			array('gyg_abstract',                                'length', 'max'=>4096),
 		    array('gyg_last_modify_time',                        'length', 'max'=>64),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
