@@ -22,6 +22,9 @@
  * @version 1.0
  */
 
+define ('SAVE_PHOTO_URL',       '1');
+define ('SAVE_PHOTO_LOCALLY',   '2');
+
 
 class SyncPriceLineImportsCommand extends CConsoleCommand
 {
@@ -38,6 +41,32 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
      */
     public function run($args)
     {
+
+        // Show the help screen and exit is the user requests
+        if (isset($args[0]) && (($args[0] == '-h') || ($args[0] == '--help')))
+        {
+            $this->showUsage();
+            exit();
+        }
+
+        // Process the command line options
+        $resolvedArgs = $this->resolveRequest($args);
+        $userOptions = $resolvedArgs[1];
+
+        // Set default options or override them from the command line
+        $photoSaveMethod = SAVE_PHOTO_URL;
+        if (isset($userOptions['photo']) && ($userOptions['photo'] == 'image'))
+        {
+            $photoSaveMethod = SAVE_PHOTO_LOCALLY;
+        }
+
+
+        $optionOverwrite = false;
+        if (isset($userOptions['overwrite']) && ($userOptions['overwrite'] == 'yes'))
+        {
+            echo '*** Running in OVERWRITE MODE ***'."\n";
+            $optionOverwrite = true;
+        }
 
         $recordsProcessed       = 0;
         $recordsSuccessfull     = 0;
@@ -74,16 +103,28 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
 
             // Do not process an existing business record
             if ($itemBusiness != null) {
-                echo ' Record already exists with ID '.$itemBusiness->business_id.'. Ignoring.'."\n";
-                continue;
+                echo ' Record already exists with ID '.$itemBusiness->business_id.'.';
+
+                if ($optionOverwrite)
+                {
+                    echo 'Updating.'."\n";
+                }
+                else
+                {
+                    echo 'Ignoring.'."\n";
+                    continue;
+                }
+            }
+            else
+            {
+                echo ' ... Adding new business record' . "\n";
+
+                // /////////////////////////////////////////////////////////////////
+                // The record has not been processed. Create a new record and save.
+                // /////////////////////////////////////////////////////////////////
+                $itemBusiness = new Business();
             }
 
-            echo ' ... Adding new business record' . "\n";
-
-            // /////////////////////////////////////////////////////////////////
-            // The record has not been processed. Create a new record and save.
-            // /////////////////////////////////////////////////////////////////
-            $itemBusiness = new Business();
 
             // /////////////////////////////////////////////////////////////////
             // Find the city record where the city is located. Do this my
@@ -146,25 +187,66 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
 
             try {
 
-                if ($itemBusiness->save()) {
+                // /////////////////////////////////////////////////////////////
+                // Write, or overwrite the record if overwrite mode
+                // /////////////////////////////////////////////////////////////
+                if ( ($itemBusiness->isNewRecord) ||
+                     ((!$itemBusiness->isNewRecord) && ($optionOverwrite)) )
+                {
 
-                    $recordsSuccessfull ++;
+                    if ($itemBusiness->save()) {
 
-                    // /////////////////////////////////////////////////////////
-                    // Assign the activity to the business. All hotels will
-                    // ...have an activity of 'stay'.
-                    // /////////////////////////////////////////////////////////
-                    $this->assignActivity($itemBusiness->business_id, 'Stay');
+                        $recordsSuccessfull ++;
+
+                        // /////////////////////////////////////////////////////////
+                        // Assign the activity to the business. All hotels will
+                        // ...have an activity of 'stay'.
+                        // /////////////////////////////////////////////////////////
+                        $this->assignActivity($itemBusiness->business_id, 'Stay');
+
+                        // /////////////////////////////////////////////////////////
+                        // Store the photo details.
+                        // /////////////////////////////////////////////////////////
+                        $listImportedPhotos = Yii::app()->db->createCommand()
+                        ->select('')
+                        ->from('florida.affiliate_data_ABT-hotel_photo_v3 image')
+                        ->where('image.hotelid_ppn = :hotelid_ppn',
+                            array(':hotelid_ppn'=>$itemHotel['hotelid_ppn']))
+                            ->QueryAll();
+
+                        foreach ($listImportedPhotos as $itemPhotos)
+                        {
+
+                            $recPhoto  = new Photo;
+                            $recPhoto->photo_type   = 'business';
+                            $recPhoto->entity_id    = $itemBusiness->business_id;
+                            $recPhoto->caption      = null;
+                            $recPhoto->title        = null;
+                            $recPhoto->path         = $itemPhotos['photo_url'];
+                            $recPhoto->thumbnail    = null;
+
+                            if ($recPhoto->save() === false)
+                            {
+                                echo '*** Unexpected error saving photo data. Continuing...';
+                                print_r($itemBusiness->getErrors());
+                            }
+
+                        }
 
 
+                    } else {
+                        echo 'Error saving record #' . ($recordsProcessed) . "\n";
+                        print_r($itemBusiness->getErrors());
+                        print_r($itemBusiness->attributes);
+                        Yii::app()->end();
+                    }
 
-
-                } else {
-                    echo 'Error saving record #' . ($recordsProcessed) . "\n";
-                    print_r($itemBusiness->getErrors());
-                    print_r($itemBusiness->attributes);
-                    Yii::app()->end();
                 }
+                else
+                {
+                    echo 'Record #'.($recordsProcessed).' not saved (safe mode).'."\n";
+                }
+
             } catch (Exception $error) {
                 print_r($itemBusiness);
                 print_r($error);
@@ -177,6 +259,21 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
         echo "\n\nFinished.\nLoaded $recordsProcessed records.\nSucessful loads : $recordsSuccessfull\n";
         Yii::app()->end();
 
+    }
+
+    private function showUsage()
+    {
+        $usage = <<<EOD
+Florida.com Priceline Import Utility (cli) (Version : 1.00)
+Usage: yiic SyncPriceLineImports [options]
+
+where :
+--photo=url|image       - Option to either save remote image URL, or copy image locally. Default is {url}
+--overwrite=yes|no      - Option to overwrite hotel data. Default is {no}.
+\n
+EOD;
+
+        echo $usage;
     }
 
     /**
