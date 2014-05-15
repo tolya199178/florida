@@ -30,6 +30,29 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
 {
 
     /**
+     * @var string imagesDirPath Directory where Business images will be stored
+     * @access private
+     */
+    private $imagesDirPath;
+
+    /**
+     * @var string imagesDirPath Directory where Business image thumbnails will be stored
+     * @access private
+     */
+    private $thumbnailsDirPath;
+
+    /**
+     * @var string thumbnailWidth thumbnail width
+     * @access private
+     */
+    private $thumbnailWidth     = 100;
+    /**
+     * @var string thumbnailWidth thumbnail width
+     * @access private
+     */
+    private $thumbnailHeight    = 100;
+
+    /**
      * Command main function.
      * This function will run automatically once the CConsoleCommand environment
      * ...is initialised
@@ -67,6 +90,10 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
             echo '*** Running in OVERWRITE MODE ***'."\n";
             $optionOverwrite = true;
         }
+
+        $systemRoot                 = Yii::app()->getBasePath().DIRECTORY_SEPARATOR.'..';
+        $this->imagesDirPath        = $systemRoot.'/uploads/images/business';
+        $this->thumbnailsDirPath    = $systemRoot.'/uploads/images/business/thumbnails';
 
         $recordsProcessed       = 0;
         $recordsSuccessfull     = 0;
@@ -205,6 +232,22 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
                         $this->assignActivity($itemBusiness->business_id, 'Stay');
 
                         // /////////////////////////////////////////////////////////
+                        // Save image locally, if option is set
+                        // /////////////////////////////////////////////////////////
+                        if ($photoSaveMethod == SAVE_PHOTO_LOCALLY)
+                        {
+
+                            $imageFileName  = $this->saveImageFromURL($itemBusiness->image, $itemBusiness->business_id);
+
+                            $this->createThumbnail($imageFileName);
+
+                            // Save the business record (agaim)
+                            $itemBusiness->image = $imageFileName;
+                            $itemBusiness->save();
+
+                        }
+
+                        // /////////////////////////////////////////////////////////
                         // Store the photo details.
                         // /////////////////////////////////////////////////////////
                         $listImportedPhotos = Yii::app()->db->createCommand()
@@ -217,19 +260,42 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
                         foreach ($listImportedPhotos as $itemPhotos)
                         {
 
+                            if ($photoSaveMethod == SAVE_PHOTO_LOCALLY)
+                            {
+
+                                $imageFileName  = $this->saveImageFromURL($itemPhotos['photo_url'], $itemBusiness->business_id);
+
+                                $this->createThumbnail($imageFileName);
+
+                            }
+                            else
+                            {
+                                $imageFileName  = $itemPhotos['photo_url'];
+                            }
+
                             $recPhoto  = new Photo;
                             $recPhoto->photo_type   = 'business';
                             $recPhoto->entity_id    = $itemBusiness->business_id;
                             $recPhoto->caption      = null;
                             $recPhoto->title        = null;
-                            $recPhoto->path         = $itemPhotos['photo_url'];
+                            $recPhoto->path         = $imageFileName;
                             $recPhoto->thumbnail    = null;
 
                             if ($recPhoto->save() === false)
                             {
                                 echo '*** Unexpected error saving photo data. Continuing...';
                                 print_r($itemBusiness->getErrors());
+
+                                // Delete the file from local store.
+                                if (($photoSaveMethod == SAVE_PHOTO_LOCALLY) &&
+                                   (!empty($imageFileName) && (!empty($imageFileName))))
+                                {
+                                    $this->deleteImages($imageFileName);
+                                }
+
                             }
+
+
 
                         }
 
@@ -513,6 +579,95 @@ EOD;
         $actvityTypeId = $activityTypeModel->activity_type_id;
         return $actvityTypeId;
     }
+
+    /**
+     * Create a thumbnail image from the filename give, Store it in the thumnails folder.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    private function createThumbnail($imageFileName, $sizeWidth = 0, $sizeHeight = 0)
+    {
+
+        if ($sizeWidth == 0)
+        {
+            $sizeWidth     = $this->thumbnailWidth;
+        }
+        if ($sizeHeight == 0)
+        {
+            $sizeHeight    = $this->thumbnailHeight;
+        }
+
+        $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+        $imagePath         = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
+        $imgThumbnail              = new Thumbnail;
+        $imgThumbnail->PathImgOld  = $imagePath;
+        $imgThumbnail->PathImgNew  = $thumbnailPath;
+
+        $imgThumbnail->NewWidth    = $sizeWidth;
+        $imgThumbnail->NewHeight   = $sizeHeight;
+
+        $result = $imgThumbnail->create_thumbnail_images();
+
+        if (!$result)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+    }
+
+    /**
+     * Delete images for the business. Normally invoked when business is being deleted.
+     *
+     * @param string $imageFileName the name of the file
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    private function deleteImages($imageFileName)
+    {
+        $imagePath          = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+        @unlink($imagePath);
+
+        $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+        @unlink($thumbnailPath);
+    }
+
+    /**
+     * Save image file locally, from URL
+     *
+     * @param string $mageURL the url to the image file
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    private function saveImageFromURL($imageURL, $businessId)
+    {
+
+        $photoFileName  = basename($imageURL);
+
+        $imageFileName  = 'business-'.$businessId.'-'.$photoFileName;
+        $imagePath      = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
+        $resCurl = curl_init($imageURL);
+        $fpImage = fopen($imagePath, 'wb');
+
+        curl_setopt($resCurl, CURLOPT_FILE, $fpImage);
+        curl_setopt($resCurl, CURLOPT_HEADER, 0);
+        curl_exec($resCurl);
+        curl_close($resCurl);
+        fclose($fpImage);
+
+        return $imageFileName;
+    }
+
 
 }
 
