@@ -163,7 +163,7 @@ class Business extends CActiveRecord
 		    array('latitude',                                                     'numerical',  'min'=>-90,  'max'=>90),
 		    array('longitude',                                                    'numerical',  'min'=>-180, 'max'=>180),
 
-		    array('star_rating, room_count',                                      'numerical', 'integerOnly'=>true),
+		    array('room_count',                                                   'numerical', 'integerOnly'=>true),
 		    array('low_rate',                                                     'numerical'),
 		    array('business_type',                                                'length', 'max'=>128),
 		    array('opening_time, closing_time',                                   'length', 'max'=>255),

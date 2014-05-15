@@ -413,8 +413,10 @@ ALTER TABLE tbl_business ADD COLUMN `low_rate`      double        DEFAULT NULL;
 ALTER TABLE tbl_business ADD COLUMN `room_count`    int(11)       DEFAULT NULL;
 ALTER TABLE tbl_business ADD COLUMN `opening_time`  VARCHAR(255)  DEFAULT NULL;
 ALTER TABLE tbl_business ADD COLUMN `closing_time`  VARCHAR(255 ) DEFAULT NULL;
-	ALTER TABLE tbl_business ADD COLUMN `import_reference`  VARCHAR(255) DEFAULT NULL;
-	ALTER TABLE tbl_business ADD COLUMN `import_source`    VARCHAR(255) DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `import_reference`  VARCHAR(255) DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `import_source`    VARCHAR(255) DEFAULT NULL;
+
+ALTER TABLE tbl_business CHANGE COLUMN `star_rating` `star_rating`  double         DEFAULT NULL;
 
 
 -- ---------------------------------------------------------------------
