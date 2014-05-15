@@ -151,11 +151,14 @@ class SyncPriceLineImportsCommand extends CConsoleCommand
                     $recordsSuccessfull ++;
 
                     // /////////////////////////////////////////////////////////
-                    // Assign the activity to the business. All restuarants will
-                    // ...have an activity of 'eat'. The category will be
-                    // ...the activity type.
+                    // Assign the activity to the business. All hotels will
+                    // ...have an activity of 'stay'.
                     // /////////////////////////////////////////////////////////
                     $this->assignActivity($itemBusiness->business_id, 'Stay');
+
+
+
+
                 } else {
                     echo 'Error saving record #' . ($recordsProcessed) . "\n";
                     print_r($itemBusiness->getErrors());
