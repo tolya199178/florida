@@ -403,6 +403,22 @@ ADD CONSTRAINT fk_business_city
 ALTER TABLE tbl_business ADD COLUMN `latitude`  DECIMAL (10,8)  DEFAULT NULL;
 ALTER TABLE tbl_business ADD COLUMN `longitude` DECIMAL (10,8)  DEFAULT NULL;
 
+
+-- --------
+--  Changes to capture hotels as businesses (as opposed to using seperate table)
+-- --------
+ALTER TABLE tbl_business ADD COLUMN `business_type` VARCHAR(128)  DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `star_rating`   INT(2)        DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `low_rate`      double        DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `room_count`    int(11)       DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `opening_time`  VARCHAR(255)  DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `closing_time`  VARCHAR(255 ) DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `import_reference`  VARCHAR(255) DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `import_source`    VARCHAR(255) DEFAULT NULL;
+
+ALTER TABLE tbl_business CHANGE COLUMN `star_rating` `star_rating`  double         DEFAULT NULL;
+
+
 -- ---------------------------------------------------------------------
 -- Business User
 -- ---------------------------------------------------------------------

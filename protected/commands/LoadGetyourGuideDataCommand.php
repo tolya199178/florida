@@ -54,7 +54,7 @@ class LoadGetyourGuideDataCommand extends CConsoleCommand
         }
         if (isset($userOptions['overwrite']) && ($userOptions['overwrite'] == 'yes'))
         {
-            $optionOverwrite == true;
+            $optionOverwrite = true;
         }
         else
         {
