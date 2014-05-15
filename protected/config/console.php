@@ -49,5 +49,6 @@ return array(
         'application.components.*',
         'application.extensions.ticket-network.*',
         'application.extensions.ticket-network.src.Exception.*',
+        'application.extensions.Thumbnail',
     ),
 );
