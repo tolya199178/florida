@@ -39,6 +39,12 @@
  * @property string $activation_time
  * @property string $latitude
  * @property string $longitude
+ * @property string $business_type
+ * @property integer $star_rating
+ * @property double $low_rate
+ * @property integer $room_count
+ * @property string $opening_time
+ * @property string $closing_time
  *
  *
  * The followings are the available model relations:
@@ -155,6 +161,11 @@ class Business extends CActiveRecord
 		    array('latitude',                                                     'numerical',  'min'=>-90,  'max'=>90),
 		    array('longitude',                                                    'numerical',  'min'=>-180, 'max'=>180),
 
+		    array('star_rating, room_count',                                      'numerical', 'integerOnly'=>true),
+		    array('low_rate',                                                     'numerical'),
+		    array('business_type',                                                'length', 'max'=>128),
+		    array('opening_time, closing_time',                                   'length', 'max'=>255),
+
 		    // ranges
 			array('business_allow_review,
 			       business_allow_rating, is_active,
@@ -174,7 +185,8 @@ class Business extends CActiveRecord
 			       created_by, modified_by, add_request_processing_status, add_request_processing_time,
 			       add_request_processed_by, add_request_rejection_reason, claim_status, claim_processing_time,
 			       claimed_by, claim_rejection_reason, is_active, is_featured, is_closed, activation_code,
-			       activation_status, activation_time', 'safe', 'on'=>'search'),
+			       activation_status, activation_time, star_rating, room_count, business_type
+			       low_rate, opening_time, closing_time', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -247,6 +259,12 @@ class Business extends CActiveRecord
 			'activation_status'                  => 'Activation Status',
 		    'latitude'                           => 'Latitude',
 		    'longitude'                          => 'Longitude',
+		    'business_type'                      => 'Business Type',
+		    'star_rating'                        => 'Star Rating',
+		    'low_rate'                           => 'Low Rate',
+		    'room_count'                         => 'Room Count',
+		    'opening_time'                       => 'Opening Time',
+		    'closing_time'                       => 'Closing Time',
 		);
 	}
 
@@ -303,6 +321,12 @@ class Business extends CActiveRecord
 		$criteria->compare('activation_time',                 $this->activation_time,true);
 		$criteria->compare('latitude',                        $this->latitude,true);
 		$criteria->compare('longitude',                       $this->longitude,true);
+		$criteria->compare('business_type',                   $this->business_type,true);
+		$criteria->compare('star_rating',                     $this->star_rating);
+		$criteria->compare('low_rate',                        $this->low_rate);
+		$criteria->compare('room_count',                      $this->room_count);
+		$criteria->compare('opening_time',                    $this->opening_time,true);
+		$criteria->compare('closing_time',                    $this->closing_time,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
