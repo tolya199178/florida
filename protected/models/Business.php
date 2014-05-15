@@ -45,6 +45,8 @@
  * @property integer $room_count
  * @property string $opening_time
  * @property string $closing_time
+ * @property string $import_reference
+ * @property string $import_source
  *
  *
  * The followings are the available model relations:
@@ -165,6 +167,7 @@ class Business extends CActiveRecord
 		    array('low_rate',                                                     'numerical'),
 		    array('business_type',                                                'length', 'max'=>128),
 		    array('opening_time, closing_time',                                   'length', 'max'=>255),
+		    array('import_reference, import_source',                              'length', 'max'=>255),
 
 		    // ranges
 			array('business_allow_review,
@@ -265,6 +268,8 @@ class Business extends CActiveRecord
 		    'room_count'                         => 'Room Count',
 		    'opening_time'                       => 'Opening Time',
 		    'closing_time'                       => 'Closing Time',
+		    'import_reference'                   => 'Import Reference',
+		    'import_source'                      => 'Import Source',
 		);
 	}
 
@@ -327,6 +332,8 @@ class Business extends CActiveRecord
 		$criteria->compare('room_count',                      $this->room_count);
 		$criteria->compare('opening_time',                    $this->opening_time,true);
 		$criteria->compare('closing_time',                    $this->closing_time,true);
+		$criteria->compare('import_reference',                $this->import_reference);
+		$criteria->compare('import_source',                   $this->import_source);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
