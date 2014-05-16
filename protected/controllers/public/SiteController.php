@@ -8,7 +8,7 @@
 /**
  * Site Controller class to provide access to controller actions for general
  * ...rendering of site. The contriller action interfaces 'directly' with the
- * ...Client, and must therefore be responsible for input processing and 
+ * ...Client, and must therefore be responsible for input processing and
  * ...response handling.
  *
  * Usage:
@@ -39,7 +39,7 @@ class SiteController extends Controller
      * @return string $layout the location of the layout page.
      *
      */
-	public 	$layout='//layouts/page';
+	public 	$layout='//layouts/front';
 
     /**
      * Specify class-based actions. Specifies external (files or other classes
@@ -70,7 +70,7 @@ class SiteController extends Controller
     /**
      * Default action for the controller. Invoked when an action is not
      * ....explicitly requested by users.
-     * 
+     *
      * Does not perform any processing. Redirects to the desired action instead.
      *
      * @param <none> <none>
@@ -98,7 +98,7 @@ class SiteController extends Controller
      */
     public function actionError()
     {
-        
+
         if ($error = Yii::app()->errorHandler->error) {
 
             // /////////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ class SiteController extends Controller
 	 * ... - the (initial) GET request loads and renders the login form
 	 * ... - the (subsequent) POST request processes the login request.
 	 * ...If the save (POST request) is successful, the user is directed back to
-	 * ...the calling url  
+	 * ...the calling url
 	 * ...If the save (POST request) is not successful, the login form is shown
 	 * ...again with error messages from the loginform validation (Loginform::rules())
      *
@@ -137,7 +137,7 @@ class SiteController extends Controller
     public function actionLogin()
     {
         $model = new LoginForm();
-        
+
         // if it is ajax validation request
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
             $errors = CActiveForm::validate($model);
@@ -146,15 +146,15 @@ class SiteController extends Controller
                 Yii::app()->end();
             }
         }
-        
+
         // collect user input data
         if (isset($_POST['LoginForm'])) {
-            
+
             $model->attributes = $_POST['LoginForm'];
-            
+
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
-                
+
                 if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
                     echo CJSON::encode(array(
                         'authenticated' => true,
@@ -163,14 +163,14 @@ class SiteController extends Controller
                     ));
                     Yii::app()->end();
                 }
-                
+
                 $this->redirect(Yii::app()->user->returnUrl);
             }
         }
-        
+
         // display the login form with a different layout to the site.
         $this->layout = '//layouts/blank';
-        
+
         $this->render('login', array(
             'model' => $model
         ));
