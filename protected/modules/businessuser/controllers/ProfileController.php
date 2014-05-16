@@ -62,7 +62,7 @@ class ProfileController extends Controller
 		        $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => $argBusinessId, 'photo_type' => 'business'));
 
 
-        		$this->render('profile', array('model'=>$modelBusiness, 'photos' => $listPhotos));
+        		$this->render('profile_modal', array('model'=>$modelBusiness, 'photos' => $listPhotos));
 		    }
 		}
 		else
