@@ -12,8 +12,11 @@
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width">
 
+<?php
+?>
+
 <link rel="stylesheet"
-    href="<?php echo Yii::app()->theme->baseUrl; ?>/resources/css/bootstrap.min.css">
+    href="<?php echo Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-3.1.1/dist/css/bootstrap.min.css'; ?>">
 <style>
 body {
 	padding-top: 50px;
