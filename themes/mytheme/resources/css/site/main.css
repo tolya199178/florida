@@ -4,7 +4,7 @@
    Author's custom styles
    ========================================================================== */
 
-
+/*
 navbar {
   background-image: url("../../img/site/nav.jpg");	
 }
@@ -37,14 +37,14 @@ div.navbar.navbar-fixed-top.header
   color: #fff;
   font-size: 20px;
   float: left;
-  /* margin: -10px 0; */
+  /o margin: -10px 0; o/
   display: block;
   line-height: normal;
   height: 35px;
   margin-left:-170px; 
   
   opacity:0.4;
-filter:alpha(opacity=40); /* For IE8 and earlier */
+filter:alpha(opacity=40); /o For IE8 and earlier o/
   
 }
 
@@ -69,6 +69,45 @@ filter:alpha(opacity=40); /* For IE8 and earlier */
 .navbar-nav > li > a {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
 }
+
+*/
+.navbar-inverse { background-color: #F5F507;  background-image: url("../../img/site/nav.jpg");height:30px;}
+.navbar-inverse .navbar-nav>.active>a:hover,.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { background-color: #F5F507}
+.navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background-color: #F5F507}
+.dropdown-menu { background-color: #FFFFFF}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #428BCA}
+.navbar-inverse { border-color: #080808}
+.navbar-inverse .navbar-brand { color: #000000}
+.navbar-inverse .navbar-brand:hover { color: #FFFFFF}
+.navbar-inverse .navbar-nav>li>a { color: #2E2E2E}
+.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { color: #FF450D}
+.navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { color: #2E2E2E}
+.navbar-inverse .navbar-nav>.active>a:hover, .navbar-inverse .navbar-nav>.active>a:focus { color: #FF450D}
+.dropdown-menu>li>a { color: #333333}
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #FFFFFF}
+.navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999}
+.navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF}
+.navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999}
+.navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF}
+
+
+
+ a.navbar-brand > img {
+  color: #fff;
+  font-size: 20px;
+  float: left;
+  /* margin: -10px 0; */
+  display: block;
+  line-height: normal;
+  height: 35px;
+  margin-left:-170px; 
+  
+  opacity:0.4;
+filter:alpha(opacity=40); /o For IE8 and earlier o/
+  
+}
+
+
 
 
 body  {
