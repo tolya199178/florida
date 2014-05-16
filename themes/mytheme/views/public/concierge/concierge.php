@@ -479,6 +479,30 @@ h2{
 
 </style>
 
+<<style>
+<!--
+/* Business details modal */
+#modalBusinessDetailsxyz {
+	width: 1000px; /* SET THE WIDTH OF THE MODAL */
+	/*margin: -250px 0 0 -45px; */ /* CHANGE MARGINS TO ACCOMODATE THE NEW WIDTH (original = margin: -250px 0 0 -280px;) */
+	max-height: 500px; /* adjust height to taste */ overflow-y: scroll;
+}
+
+
+#modalBusinessDetailsXYZ .modal-bodyXYZ {
+/* 	max-height: 400px; */
+ max-height: 400px; /* adjust height to taste */ overflow-y: scroll;
+}
+
+#modalBusinessDetailsXYZ {
+	margin: 100px 0 0 180px; /* PLAY THE WITH THE VALUES TO SEE GET THE DESIRED EFFECT */
+}
+
+
+
+-->
+</style>
+
 
 <?php
 
@@ -956,6 +980,22 @@ $('.cities .typeahead')
         doSearch();
     });
 
+    // /////////////////////////////////////////////////////////////////////////
+    // Business Details modal show
+    // /////////////////////////////////////////////////////////////////////////
+    // Launch the business details modal when the details link is clicked
+    $('body').on('click', '.details_button_link', function(e) {
+
+        var remote = $(this).attr("data-href");
+
+        $("#modalBusinessDetails").modal({
+
+            keyboard: true,
+            remote: remote
+
+        });
+    });
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
@@ -963,13 +1003,32 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 ?>
 
 
-<!-- Modal -->
+<!-- Modal Invite Friends -->
 <div class="modal fade" id="modalInviteMyFriends" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Business Details -->
+<div class="modal fade" id="modalBusinessDetails" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="titleBusinessDetails">Modal title</h4>
       </div>
       <div class="modal-body">
 
