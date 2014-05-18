@@ -10,6 +10,18 @@
     padding-right:3px;
 }
 
+.panel-body
+{
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+}
+
+.panel {
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
 
 /* Full height left hand panel */
 </style>
@@ -1111,11 +1123,11 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
             <div class="panel panel-primary margin-top-10">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-center">
+                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-">
                             <label for="city" class="heading">I AM IN
                                 &nbsp;&nbsp;&nbsp;</label>
                         </div>
-                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <div class="cities">
                                 <input class="typeahead form-control" name="city"
                                     id="city" type="text" autocomplete="off"
@@ -1152,8 +1164,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
                 </div>
             </div>
-            <!--                 <hr> -->
-            <div class="row margin-top-10">
+
+            <div class="row margin-top-3">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -1164,7 +1176,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                     </div>
                 </div>
             </div>
-            <!--                 <hr class="hr-sm"> -->
+
 
 
 
