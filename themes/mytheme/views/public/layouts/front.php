@@ -153,11 +153,10 @@
 <!--     <script src="Carousel%20Template%20for%20Bootstrap_files/bootstrap.js"></script> -->
 <!--     <script src="Carousel%20Template%20for%20Bootstrap_files/holder.js"></script> -->
 
-    <script>window.jQuery || document.write('<script src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/js/vendor/jquery-1.10.1.min.js"><\/script>');</script>
 
-    <script>
-        src="<?php echo Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-3.1.1/dist/js/bootstrap.min.js'; ?>"></script>
+    <script type="text/javascript"
+        src="<?php echo Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-3.1.1/dist/js/bootstrap.min.js'; ?>" />
     </script>
-
 
 </body></html>
