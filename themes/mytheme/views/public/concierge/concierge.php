@@ -660,10 +660,9 @@ $('.cities .typeahead')
       dowhen:dowhen
     },
     function(data,status){
-      $('#concierge_results').html(data);
-        $('#city_gallery').html(data);
-        // $('input.rating').rating();
 
+      $('#concierge_results').html(data);
+        $('#city_gallery').html("");
     });
 
   }
