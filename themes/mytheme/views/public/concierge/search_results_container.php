@@ -1,18 +1,25 @@
     <div class="row">
 
-            <?php
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="panel panel-default margin-top-10">
+				<div class="panel-heading">
+					<h3>Featured guesthouse destinations</h3>
+				</div>
 
-            $this->widget(  'zii.widgets.CListView', array(
-                            'id'            => 'bizprofiles',
-                            'dataProvider'  => $dataProvider,
-                            'itemView'      => 'result_business_entity',
-                            'itemsTagName'  => 'div',
-                            'itemsCssClass' => 'row',
-                             // NOTE: We may not need this 'template'    => '{pager}{items}',
-                            'emptyText'     => '<label class="heading">No Business available !</label>',
+				<div class="row margin-top-10">
 
-            ));
-            ?>
+                    <?php
+
+                        foreach ($model as $objBusiness)
+                        {
+                            $this->renderPartial('result_business_entity', array('data'              => $objBusiness));
+                        }
+
+                    ?>
+
+				</div>
+			</div>
+		</div>
     </div>
 
     <div class="row">

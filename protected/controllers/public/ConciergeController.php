@@ -42,7 +42,7 @@ class ConciergeController extends Controller
      * @return string $layout the location of the layout page.
      *
      */
-	public 	$layout='//layouts/page';
+	public 	$layout='//layouts/front';
 
     /**
      * Specify class-based actions. Specifies external (files or other classes
@@ -181,8 +181,6 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         $seachCriteria = new CDbCriteria;
 
-        $seachCriteria->limit = Yii::app()->params['PAGESIZEREC+'];
-
         // /////////////////////////////////////////////////////////////////////
         // A business is linked to business_activities which in turn is linked
         // ...to activities and activity types.
@@ -244,11 +242,27 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Submit the query
         // /////////////////////////////////////////////////////////////////////
-        $dataProvider = new CActiveDataProvider('Business',
-            array(
-                'criteria'  => $seachCriteria,
-            )
-        );
+        // BUG: Yii is not handling this query well and is returning different
+        // BUG: ...results if we add a limit clause.
+        // BUG: It appears the only way to handle this is to write a manual
+        // BUG: ...SQL statement
+        // BUG: eg, https://github.com/yiisoft/yii/issues/1846
+        //
+        // $seachCriteria->limit = Yii::app()->params['PAGESIZEREC'];
+
+//         $dataProvider = new CActiveDataProvider('Business',
+//             array(
+//                 'criteria'  => $seachCriteria,
+//                  'pagination'=> array(
+//                      'pageSize'=>Yii::app()->params['PAGESIZEREC'],
+//                  ),
+//             )
+//         );
+
+
+
+        $listBusiness = Business::model()->findAll($seachCriteria);
+
 
         // /////////////////////////////////////////////////////////////////////
         // Log the search summary
@@ -261,7 +275,7 @@ class ConciergeController extends Controller
         // Search the event categories from the search keywords
 
         $listEvent = $this->searchEvents($argDoWhat, $argWithWhat, $argWhere, $argWhen);
-        $this->renderPartial('search_results_container', array('dataProvider'       => $dataProvider,
+        $this->renderPartial('search_results_container', array('model'              => $listBusiness,
                                                                'listEvent'          => $listEvent));
 
     }
