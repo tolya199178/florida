@@ -1,3 +1,22 @@
+<style>
+
+/* Remove gutter */
+/* .row .col:not (:first-child ),.row .col:not (:last-child ) { */
+/* 	padding-right: 0px; */
+/* 	padding-left: 0px; */
+/* } */
+.col {
+    padding-left:3px;
+    padding-right:3px;
+}
+
+
+/* Full height left hand panel */
+</style>
+
+
+
+
 <?php
 /**
  * @package default
@@ -479,7 +498,7 @@ h2{
 
 </style>
 
-<<style>
+<style>
 <!--
 /* Business details modal */
 #modalBusinessDetailsxyz {
@@ -1042,100 +1061,164 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 </div><!-- /.modal -->
 
 
-<div class="container-full">
-
+    <!-- Main concierge page .container -->
     <div class="row">
-        <div class="col-lg-2">
-            <div id="sidebar"  >
-                <div class="alert alert-warning">
-                <p>Follow your friends here now ! </p>
-                    <p class="center"><a href="#" class="btn btn-info">Follow your friends here.</a></p>
-                </div>
-                <div id='left_panel_feed'>
+        <!-- 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> -->
+        <!-- 			<ol class="breadcrumb"> -->
+        <!-- 			  <li><a href="#">Home</a></li> -->
+        <!-- 			  <li class="active">Category</li> -->
+        <!-- 			</ol> -->
+        <!-- 		</div> -->
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 col">
+
+
+            <div class="panel panel-default margin-top-10">
+                <div class="panel-heading">
+
+
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            <h4>
+                                <p>Follow your friends here now !</p>
+                                <p class="center">
+                                    <a href="#" class="btn btn-info">Follow your
+                                        friends here.</a>
+                                </p>
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div id='left_panel_feed'>
+                                        <!-- Left panel feed here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
 
                 </div>
             </div>
         </div>
+        <!-- /Main blocks left side -->
 
-        <div class="col-lg-10 col-lg-offset-0">
-                <div id="mainpanel">
-                    <!-- Search section -->
+        <!-- Teasers right side wrapper col-->
+        <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 gradient-bg pull-left col">
+            <!-- ADDS PANEL-->
+            <div class="panel panel-primary margin-top-10">
+                <div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-4">
-                            <label for="city" class="heading">I AM IN &nbsp;&nbsp;&nbsp;</label>
+                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-center">
+                            <label for="city" class="heading">I AM IN
+                                &nbsp;&nbsp;&nbsp;</label>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
                             <div class="cities">
-                                <input class="typeahead form-control" name="city" id="city"  type="text" autocomplete="off" value="<?php echo $data['city']; ?>" placeholder="I am in...">
+                                <input class="typeahead form-control" name="city"
+                                    id="city" type="text" autocomplete="off"
+                                    value="<?php echo $data['city']; ?>"
+                                    placeholder="I am in...">
                             </div>
                         </div>
-
-                        <div class="col-lg-2">
-                                <label for="dowhat" class="heading">I WANT TO &nbsp;&nbsp;&nbsp;</label>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+                            <input class="form-control" name="dowhat" id="dowhat"  type="text" autocomplete="off" value="">
                         </div>
-
-                        <div class="col-lg-6" style="border: 1px solid silver;">
-                            <div class="col-lg-3 col-lg-offset-0">
-                                <input class="form-control" name="dowhat" id="dowhat"  type="text" autocomplete="off" value="">
-                            </div>
-                            <div class="col-lg-3">
-                                <input class="form-control" name="withwhat" id="withwhat"  type="text" autocomplete="off" value="">
-                            </div>
-                            <div class="col-lg-3">
-                                <input type="text" value="" id="dowhen" data-date-format="yyyy-mm-dd">
-                                <input type="hidden" value="" id="dowhentimestamp">
-                            </div>
-
-
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+                            <input class="form-control" name="withwhat" id="withwhat"  type="text" autocomplete="off" value="">
                         </div>
-
-
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+                            <input type="text" value="" id="dowhen" data-date-format="yyyy-mm-dd">
+                            <input type="hidden" value="" id="dowhentimestamp">
+                        </div>
 
                     </div>
-                    <!-- /.Search section -->
-
-                    <!-- Search results section -->
-                    <div class="row">
-
-                        <div class="col-lg-12">
-<?php                       $this->widget('application.components.ConciergeToolbar'); ?>
-                        </div>
-
-                        <div class="col-lg-12" id='city_gallery'>
-                            <!--  City Gallery goes here -->
-                        </div>
-
-
-                        <div class="col-lg-12">
-                            <div id='concierge_results'>
-                            </div>
-
-
-                        </div>
-                    </div>
-                    <!-- /.Search results section -->
-
-
-
-                </div>
-
-
-        </div>
-    </div>
-</div>
-
-<!-- Review form popup -->
-            <div class="row" id="review-box" style="display:none;">
-                <div class="col-md-12">
-                    <form accept-charset="UTF-8" action="" method="post" id='review_form'>
-                        <input type='hidden' id="review_business_id" name="review_business_id">
-                        <textarea class="form-control animated" cols="50" id="review_text" name="review_text" placeholder="Enter your review here..." rows="5"></textarea>
-
-                        <span><input type="number" name="review_rating" id="review_rating"  class="rating" value='' /></span>
-
-                        <div class="text-right">
-                            <button class="close-review btn btn-error btn-lg" type="reset">Cancel</button>
-                            <button class="btn btn-success btn-lg" type="submit">Save</button>
-                        </div>
-                    </form>
                 </div>
             </div>
-<!-- /.Review form popup -->
+            <!-- / ADDS PANEL-->
+
+            <div class="panel panel-primary margin-top-10">
+                <div class="panel-body">
+                    <div class="row">
+
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+    <?php                       $this->widget('application.components.ConciergeToolbar'); ?>
+
+                                </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+                    </div>
+
+                </div>
+            </div>
+            <!--                 <hr> -->
+            <div class="row margin-top-10">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div id='city_gallery'>
+                                <!--  City Gallery goes here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--                 <hr class="hr-sm"> -->
+
+
+
+            <!-- RESULTS -->
+            <div class="panel panel-primary margin-top-10">
+                <div class="panel-body">
+                    <div class="row">
+
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+
+                            <div id='concierge_results'>
+                                <!-- Business results go here -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- ./RESULTS -->
+
+
+
+
+
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <a class="btn btn-warning btn-sm" href="#" title=""
+                        style="margin-top: 20px;"><i class="icon-angle-left"></i>
+                        Back to search results</a>
+                </div>
+                <!-- Pagination -->
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <ul class="pagination pull-right">
+                        <li class="disabled"><a href="#">Previous</a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">Next</a></li>
+                    </ul>
+                </div>
+                <!-- /Pagination -->
+
+
+
+
+
+            </div>
+        </div>
+        <!-- /Main blog .container -->
+        <!-- Marketing messaging and featurettes
+                ================================================== -->
+        <!-- Wrap the rest of the page in another container to center all the content. -->
+        <hr>
+
+        <!-- /.container-->
+    </div>

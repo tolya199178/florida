@@ -42,7 +42,7 @@ class ConciergeController extends Controller
      * @return string $layout the location of the layout page.
      *
      */
-	public 	$layout='//layouts/page';
+	public 	$layout='//layouts/front';
 
     /**
      * Specify class-based actions. Specifies external (files or other classes
