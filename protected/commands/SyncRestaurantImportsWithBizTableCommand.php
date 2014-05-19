@@ -74,7 +74,7 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
                 echo ' ... Record already exists. Ignoring'."\n";
                 continue;
             }
-            echo ' ... Addding new business record'."\n";
+            echo ' ... Adding new business record'."\n";
 
             // ////////////////////////////////////////////////////////////////
             // If we are here, then we have a new record to be added.
@@ -146,6 +146,8 @@ class SyncRestaurantImportsWithBizTableCommand extends CConsoleCommand
             $recBusiness->is_closed                         = 'N';
             $recBusiness->latitude                          = trim($gpsCoOrdinates[0]);
             $recBusiness->longitude                         = trim($gpsCoOrdinates[1]);
+            $recBusiness->import_reference                 = $recImportedBusiness->record_id;
+            $recBusiness->import_source                    = 'restaurant.com';
 
 
             // NOTE: The following fields from the business tables are not set
