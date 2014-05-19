@@ -516,26 +516,26 @@ h2{
 </style>
 
 <style>
-<!--
-/* Business details modal */
-#modalBusinessDetailsxyz {
-	width: 1000px; /* SET THE WIDTH OF THE MODAL */
-	/*margin: -250px 0 0 -45px; */ /* CHANGE MARGINS TO ACCOMODATE THE NEW WIDTH (original = margin: -250px 0 0 -280px;) */
-	max-height: 500px; /* adjust height to taste */ overflow-y: scroll;
+
+/* .modal.large { */
+/*     width: 1200; /* respsonsive width */ */
+/*     margin-left:-40%; /* width/2) */ */
+/* } */
+
+.modal {
+  width: 80%; /* desired relative width */
+  left: 5%; /* (100%-width)/2 */
+  /* place center */
+  margin-left:auto;
+  margin-right:auto;
 }
 
-
-#modalBusinessDetailsXYZ .modal-bodyXYZ {
-/* 	max-height: 400px; */
- max-height: 400px; /* adjust height to taste */ overflow-y: scroll;
+@media screen and (min-width: 768px) {
+    .biz-details-modal {
+        width: 70%;
+        /* either % (e.g. 60%) or px (400px) */
+    }
 }
-
-#modalBusinessDetailsXYZ {
-	margin: 100px 0 0 180px; /* PLAY THE WITH THE VALUES TO SEE GET THE DESIRED EFFECT */
-}
-
-
-
 -->
 </style>
 
@@ -1058,6 +1058,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<?php /*
 <!-- Modal Business Details -->
 <div class="modal fade" id="modalBusinessDetails" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
   <div class="modal-dialog">
@@ -1076,6 +1077,28 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+*/
+?>
+<div class="modal fade" id="modalBusinessDetails" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
+    <div class="modal-dialog biz-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <h4 class="modal-title" id="titleBusinessDetails">Business Details</h4>
+
+            </div>
+            <div class="modal-body"><div class="te"></div></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
 
 
     <!-- Main concierge page .container -->
