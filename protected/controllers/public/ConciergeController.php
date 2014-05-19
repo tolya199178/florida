@@ -325,7 +325,12 @@ class ConciergeController extends Controller
         // For non logged in users, show anonymous activity
         // For logged in users, show user details
         // /////////////////////////////////////////////////////////////////////
-        $lastTimestamp = Yii::app()->request->getQuery("last_timestamp");
+        $lastTimestamp = Yii::app()->request->getQuery("last_timestamp", null);
+
+        if (($lastTimestamp === null) OR ((int) $lastTimestamp == 0))
+        {
+            $lastTimestamp = strtotime("-1 week");
+        }
 
         $dbCriteria = new CDbCriteria;
         // TODO: Move the search limit to parameters file
