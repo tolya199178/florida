@@ -8,7 +8,7 @@
  * Event Controller class to provide access to controller actions for clients.
  * The contriller action interfaces 'directly' with the Client. This controller
  * ...must therefore be responsible for input processing and response handling.
- * 
+ *
  * Usage:
  * ...Typical usage is from a web browser, by means of a URL
  * ...
@@ -30,19 +30,19 @@
  */
 class EventController extends BackEndController
 {
-    
+
     /**
      * @var string imagesDirPath Directory where Event images will be stored
      * @access private
      */
     private $imagesDirPath;
-    
+
     /**
      * @var string imagesDirPath Directory where Event image thumbnails will be stored
      * @access private
      */
     private $thumbnailsDirPath;
-    
+
     /**
      * @var string thumbnailWidth thumbnail width
      * @access private
@@ -66,15 +66,15 @@ class EventController extends BackEndController
     {
         $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/event';
         $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/event/thumbnails';
-        
+
         /*
          *     Small-s- 100px(width)
          *     Medum-m- 240px(width)
          *     Large-l- 600px(width)
          */
     }
-    
-    
+
+
 
     /**
      * Specify a list of filters to apply to action requests
@@ -91,7 +91,7 @@ class EventController extends BackEndController
 			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
-	
+
 	/**
 	 * Override CController access rules and provide base rules for derived class.
 	 * All derived classes will automatically inherit the access rules provided.
@@ -106,7 +106,7 @@ class EventController extends BackEndController
 	 */
     public function accessRules()
     {
-        
+
        // echo Yii::app()->user->isSuperAdmin();exit;
 
         return array(
@@ -115,16 +115,16 @@ class EventController extends BackEndController
                 'allow',
                 'expression' =>'Yii::app()->user->isSuperAdmin()',
                // 'actions'    =>array('create'),
-                
+
             ),
-            
+
             // delegate to event model methods to determine ownership
             array(
                 'allow',
                 'expression' =>'EventAdmin::model()->userHasDelegation(Yii::app()->request->getQuery("event_id"))',
                 'actions'    =>array('edit'),
             ),
-            
+
             // delegate to event model methods to determine ownership
             array(
                 'allow',
@@ -135,7 +135,7 @@ class EventController extends BackEndController
             array('deny'),
         );
 
-        
+
     }
 
 
@@ -144,10 +144,10 @@ class EventController extends BackEndController
 	 * ...The function is normally invoked twice:
 	 * ... - the (initial) GET request loads and renders the event details capture form
 	 * ... - the (subsequent) POST request saves the submitted post data as a Event record.
-	 * ...If the save (POST request) is successful, the default method (index()) is called.  
+	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
 	 * ...again with error messages from the Event validation (Event::rules())
-	 *  
+	 *
 	 * @param <none> <none>
 	 *
 	 * @return <none> <none>
@@ -155,45 +155,45 @@ class EventController extends BackEndController
 	 */
 	public function actionCreate()
 	{
-	    
+
 		$eventModel = new Event;
-	    	    
+
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
 	    // $this->performAjaxValidation($eventModel);
-	    
+
 	    if(isset($_POST['Event']))
 	    {
 
 	        $eventModel->attributes=$_POST['Event'];
-	        
+
 	        $uploadedFile = CUploadedFile::getInstance($eventModel,'fldUploadImage');
 
 	        if($eventModel->save())
 	        {
 	            $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
 	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	            	                 
+
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
                     $uploadedFile->saveAs($imagePath);
-                    $eventModel->image = $imageFileName;
-                    
+                    $eventModel->event_photo = $imageFileName;
+
                     $this->createThumbnail($imageFileName);
-                    
+
                     $eventModel->save();
                 }
-                
+
 	            $this->redirect(array('index'));
-	            	      
+
 	        }
 	        else {
                 Yii::app()->user->setFlash('error', "Error creating a event record.'");
 	        }
-	        
-	            
+
+
 	    }
-	    
+
 	    // Show the details screen
 	    $this->render('details',array(
 	        'model'=>$eventModel,
@@ -212,7 +212,7 @@ class EventController extends BackEndController
 	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
 	 * ...again with error messages from the Event validation (Event::rules())
-	 * 
+	 *
 	 * @param integer $event_id the ID of the model to be updated
 	 *
 	 * @return <none> <none>
@@ -220,11 +220,11 @@ class EventController extends BackEndController
 	 */
 	public function actionEdit($event_id)
 	{
-	    
+
 		$eventModel = Event::model()->findByPk($event_id);
 		if($eventModel===null)
 		{
-		    throw new CHttpException(404,'The requested page does not exist.');		    
+		    throw new CHttpException(404,'The requested page does not exist.');
 		}
 
 
@@ -236,46 +236,46 @@ class EventController extends BackEndController
 		{
             // Assign all fields from the form
 		    $eventModel->attributes=$_POST['Event'];
-		    
+
 		    $uploadedFile = CUploadedFile::getInstance($eventModel,'fldUploadImage');
-		    
+
 		    // Make a note of the existing image file name. It will be deleted soon.
-		    $oldImageFileName = $eventModel->image;
-		    
+		    $oldImageFileName = $eventModel->event_photo;
+
 		    if(!empty($uploadedFile))  // check if uploaded file is set or not
 		    {
 		        // Save the image file name
-		        $eventModel->image = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
+		        $eventModel->event_photo = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
 		    }
-		    
+
 		    if($eventModel->save())
 		    {
-		         
+
 		        if(!empty($uploadedFile))  // check if uploaded file is set or not
 		        {
-		            
+
 		            $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
 		            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-		            
+
 		            // Remove existing images
 		            if (!empty($oldImageFileName))
 		            {
-		                $this->deleteImages($oldImageFileName);		                
+		                $this->deleteImages($oldImageFileName);
 		            }
 
 		            // Save the new uploaded image
 		            $uploadedFile->saveAs($imagePath);
-		    
+
 		            $this->createThumbnail($imageFileName);
 		        }
-		    
+
 		        $this->redirect(array('index'));
-		    
+
 		    }
 		    else {
 		        Yii::app()->user->setFlash('error', "Error creating a event record.'");
 		    }
-				
+
 		}
 
 		$this->render('details',array(
@@ -289,7 +289,7 @@ class EventController extends BackEndController
 	 * ...Currently, instead of physically deleting the entry, the record is
 	 * ...modified with the status fields set to 'deleted'
 	 * ...We also expect a JSON request only, and return a JSON string providing
-	 * ...outcome details. 
+	 * ...outcome details.
 	 *
 	 * @param <none> <none>
 	 *
@@ -298,24 +298,24 @@ class EventController extends BackEndController
 	 */
 	public function actionDelete()
 	{
-	    
+
 	    // TODO: add proper error message . iether flash or raiseerror. Might
 	    // be difficult when sending ajax response.
-	    
+
 	    // TODO: Only process ajax request
         $eventId = $_POST['event_id'];
         $eventModel = Event::model()->findByPk($eventId);
-                
+
         if ($eventModel == null)
         {
             header("Content-type: application/json");
             echo '{"result":"fail", "message":"Invalid event"}';
             Yii::app()->end();
         }
-        
+
 
         $result = $eventModel->delete();
-                	    
+
         if ($result == false)
         {
             header("Content-type: application/json");
@@ -326,12 +326,12 @@ class EventController extends BackEndController
         {
             $this->deleteImages($eventModel->image);
         }
-        
-        
-        
+
+
+
         echo '{"result":"success", "message":""}';
         Yii::app()->end();
-         
+
 	}
 
 
@@ -350,7 +350,7 @@ class EventController extends BackEndController
 	    // Default action is to show all events.
 	    $this->redirect(array('list'));
 	}
-	
+
 
 	/**
 	 * Show all events. Renders the event listing view.
@@ -367,12 +367,12 @@ class EventController extends BackEndController
 	        'dataProvider'=>$dataProvider,
 	    ));
 	}
-	
+
 	/**
 	 * Generates a JSON encoded list of all events.
 	 * The output is customised for the datatables Jquery plugin.
 	 * http://www.datatables.net
-	 * 
+	 *
 	 * The table plugins send a request for a JSON list based on criteria
 	 * ...determined by default settings or event bahaviour.
 	 *
@@ -387,26 +387,26 @@ class EventController extends BackEndController
         // Create a Db Criteria to filter and customise the resulting results
         // /////////////////////////////////////////////////////////////////////
         $searchCriteria = new CDbCriteria;
-        
+
         // Paging criteria
         // Set defaults
         $limitStart 	           = isset($_POST['start'])?$_POST['start']:0;
         $limitItems 	           = isset($_POST['length'])?$_POST['length']:Yii::app()->params['PAGESIZEREC'];
-        
+
         $searchCriteria->limit 		 = $limitItems;
         $searchCriteria->offset 	 = $limitStart;
-                        
+
          if (isset($_POST['search']['value']) && (strlen($_POST['search']['value']) > 2))
-         {             
-             $searchCriteria->addSearchCondition('t.event_name', $_POST['search']['value'], true);                          
+         {
+             $searchCriteria->addSearchCondition('t.event_name', $_POST['search']['value'], true);
          }
-        
-        
+
+
         $event_list      = Event::model()->findAll($searchCriteria);
-        
+
         $rows_count 		= Event::model()->count($searchCriteria);;
         $total_records 		= Event::model()->count();
-       
+
         /*
          * Output
          */
@@ -415,26 +415,25 @@ class EventController extends BackEndController
             "iTotalDisplayRecords"  => $total_records,
             "aaData"                => array()
         );
-        
+
         foreach($event_list as $r){
-            
+
             $row = array($r->attributes['event_id'],
-                         $r->attributes['event_name'],
-                         $r->attributes['event_name'],
-                         $r->attributes['event_name'],
-                         $r->attributes['event_email'],
-                         $r->attributes['event_phone'],
-                         $r->attributes['event_city_id'],
+                         $r->attributes['event_title'],
+                         $r->attributes['event_description'],
+                         $r->attributes['event_type'],
+                         $r->attributes['event_start_date'],
+                         $r->attributes['event_end_date'],
                          ''
                         );
             $output['aaData'][] = $row;
 
         }
-        
-         
+
+
         echo json_encode($output);
-	    
-	    
+
+
 	}
 
 
@@ -454,7 +453,7 @@ class EventController extends BackEndController
 			Yii::app()->end();
 		}
 	}
-	
+
 	/**
 	 * Delete images for the event. Normally invoked when event is being deleted.
 	 *
@@ -467,22 +466,22 @@ class EventController extends BackEndController
 	{
         $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
         @unlink($imagePath);
-        
+
         $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
         @unlink($thumbnailPath);
 	}
-	
+
 	/**
 	 * Create a thumbnail image from the filename give, Store it in the thumnails folder.
 	 *
 	 * @param <none> <none>
-	 * 
+	 *
 	 * @return <none> <none>
 	 * @access public
 	 */
 	private function createThumbnail($imageFileName, $sizeWidth = 0, $sizeHeight = 0)
 	{
-	    
+
 	    if ($sizeWidth == 0)
 	    {
 	        $sizeWidth     = $this->thumbnailWidth;
@@ -491,19 +490,19 @@ class EventController extends BackEndController
 	    {
 	        $sizeHeight    = $this->thumbnailHeight;
 	    }
-	    
+
 	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 	    $imagePath         = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	    
+
 	    $imgThumbnail              = new Thumbnail;
 	    $imgThumbnail->PathImgOld  = $imagePath;
 	    $imgThumbnail->PathImgNew  = $thumbnailPath;
-	    
+
 	    $imgThumbnail->NewWidth    = $sizeWidth;
 	    $imgThumbnail->NewHeight   = $sizeHeight;
-	    
+
 	    $result = $imgThumbnail->create_thumbnail_images();
-	    
+
 	    if (!$result)
 	    {
 	        return false;
@@ -514,5 +513,5 @@ class EventController extends BackEndController
 	    }
 
 	}
-	
+
 }
