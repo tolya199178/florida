@@ -42,7 +42,6 @@
 
                                                             <div class="button-buy">
 
-                                                                <span class="label label-lg label-danger"><?php echo CHtml::link('Details', Yii::app()->createUrl('businessuser/profile/show/', array('id' => $data->business_id  )), array('class' => 'details_button_link', 'rel' => $data->business_id, 'href')); ?></span>
                                                                 <span class="label label-lg label-danger"><?php echo CHtml::link('Details', "#modalInviteMyFriends", array('class' => 'details_button_link', 'rel' => $data->business_id, 'data-href' => Yii::app()->createUrl('businessuser/profile/show/', array('id' => $data->business_id  )))); ?></span>
 
                                 <?php if ((!Yii::app()->user->isGuest) && (!SubscribedBusiness::isSubcribed(Yii::app()->user->id, $data->business_id)))  { ?>
@@ -70,6 +69,11 @@
 
 
                                                 </div>
+<?php /*
+// TODO: This is commented out because it does not match the UI.
+ * TODO: I will retain the code here, because it be re-instated, depending on
+ * TODO: What the final design will look like
+ * TODO: =================================================================================
                                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                     <?php
 
@@ -98,6 +102,9 @@
                                                             }
                                                     ?>
                                                 </div>
+* TODO: =================================================================================
+*/
+?>
 
 
                                             </div>

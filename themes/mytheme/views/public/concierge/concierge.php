@@ -479,6 +479,11 @@ div.bootstrap-tagsinput {
 .add:hover {
   color: #fff;
 }
+
+/* Hide on page load */
+#panel_search_details {
+    display:none;
+}
 -->
 
 
@@ -660,8 +665,8 @@ $('.cities .typeahead')
       dowhen:dowhen
     },
     function(data,status){
-
-      $('#concierge_results').html(data);
+        $('#panel_search_details').show();
+        $('#concierge_results').html(data);
         $('#city_gallery').html("");
     });
 
@@ -1026,6 +1031,7 @@ $('.cities .typeahead')
         });
     });
 
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
@@ -1150,6 +1156,23 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
             </div>
             <!-- / ADDS PANEL-->
 
+            <!-- PANEL: Search Criteria and 'Save Search Button' -->
+            <div class="panel panel-primary margin-top-10" id='panel_search_details'>
+                <div class="panel-body">
+                    <div class="row">
+
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                            <!--  SAVED SEARCH CRITERIA GOES HERE -->
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                            <a class="btn btn-warning btn-sm" href="#" title=""
+                                style="margin-top: 20px;"><i class="icon-angle-left"></i>
+                                Save Search</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="panel panel-primary margin-top-10">
                 <div class="panel-body">
                     <div class="row">
@@ -1205,22 +1228,6 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         style="margin-top: 20px;"><i class="icon-angle-left"></i>
                         Back to search results</a>
                 </div>
-                <!-- Pagination -->
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                    <ul class="pagination pull-right">
-                        <li class="disabled"><a href="#">Previous</a></li>
-                        <li class="active"><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">Next</a></li>
-                    </ul>
-                </div>
-                <!-- /Pagination -->
-
-
-
 
 
             </div>
