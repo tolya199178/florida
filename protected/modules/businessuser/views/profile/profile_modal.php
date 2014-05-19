@@ -71,6 +71,13 @@
               display:none;
           }
       }
+
+@media screen and (min-width: 768px) {
+    .biz-details-modal {
+        width: 70%;
+        /* either % (e.g. 60%) or px (400px) */
+    }
+}
   </style>
 
  <?php
@@ -242,6 +249,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
 ?>
 
+<?php
+/*
     <!-- Thumnbail modal popup -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -271,17 +280,20 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
             </div>
 <!-- /.Review form popup -->
 
+*/
+?>
+
 
 
 <form action="#" class="form-horizontal"  role="form" id="frmBizProfile" method="post">
    <input type="hidden" id="business_id" name="business_id"  value="<?php echo $model->attributes['business_id']; ?>" /><br/>
 
 
-   <div class="modal-dialog">
+   <div class="modal-dialog biz-details-modal">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                 <h4 class="modal-title">Invite My Friends</h4>
+                 <h4 class="modal-title">Business Details</h4>
 
             </div>
             <div class="modal-body">
@@ -482,10 +494,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-primary wiz-prev-nav pull-left">Previous</button>
-            <button type="button" class="btn btn-primary wiz-next-nav  pull-left">Next</button>
             <button type="button" class="btn btn-default wiz-close-nav " data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary wiz-finish-nav">Send invitation</button>
+            <button type="submit" class="btn btn-primary wiz-finish-nav">OK</button>
             </div>
         </div>
         <!-- /.modal-content -->

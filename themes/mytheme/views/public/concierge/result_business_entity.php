@@ -42,7 +42,12 @@
 
                                                             <div class="button-buy">
 
-                                                                <span class="label label-lg label-danger"><?php echo CHtml::link('Details', "#modalInviteMyFriends", array('class' => 'details_button_link', 'rel' => $data->business_id, 'data-href' => Yii::app()->createUrl('businessuser/profile/show/', array('id' => $data->business_id  )))); ?></span>
+                                                                <span class="label label-lg label-danger">
+                                                                    <a data-toggle="modal"
+                                                                       href="<?php echo Yii::app()->createUrl('businessuser/profile/show/', array('id' => $data->business_id  )); ?>"
+                                                                       data-target="#modalBusinessDetails">Details!</a>
+                                                                </span>
+
 
                                 <?php if ((!Yii::app()->user->isGuest) && (!SubscribedBusiness::isSubcribed(Yii::app()->user->id, $data->business_id)))  { ?>
                                                                 <span class="label label-danger"><?php echo CHtml::link('Add to profile', Yii::app()->createUrl('/webuser/profile/addbusiness', array('business_id' => $data->business_id  )), array('class' => 'result_button_link', 'rel' => $data->business_id)); ?></span>
