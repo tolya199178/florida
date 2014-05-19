@@ -45,6 +45,23 @@
 				   -moz-linear-gradient(bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, 0)) 1 100%;
 		}
 
+
+        @media (min-width:992px) {
+            .row {
+                position: relative;
+            }
+            #left_panel {
+                position: absolute;
+                height: 100%;
+                overflow:auto;
+            }
+            #main_panel {
+                margin-left: 25%; /* Or float:right; */
+                        position: relative;
+
+            }
+        }
+
 	</style>
 
 		<link href="Carousel%20Template%20for%20Bootstrap_files/font-awesome.css" rel="stylesheet">
