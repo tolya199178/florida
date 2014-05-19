@@ -402,6 +402,11 @@ class ConciergeController extends Controller
 
         $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argWhere, 'when'=> $argWhen));
 
+        // /////////////////////////////////////////////////////////////////////
+        // Save the search to the Session
+        // /////////////////////////////////////////////////////////////////////
+        Yii::app()->session['saved_search'] = $serialisedSearchDetails;
+
 
         if (!empty($argWhere))
         {
@@ -468,6 +473,8 @@ class ConciergeController extends Controller
         $searchHistory = array('user_id'          => ((Yii::app()->user->id===null)?1:Yii::app()->user->id),
             'search_origin'      => 'concierge',
             'created_time'       => new CDbExpression('NOW()'),
+            'filter_activity'    => $argDoWhat,
+            'filter_activitytype'   => $argWithWhat,
             'search_details'     => $serialisedSearchDetails
         );
         $modelSearchHistory  = new SearchHistory;

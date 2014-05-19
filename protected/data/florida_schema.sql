@@ -1206,6 +1206,9 @@ ALTER TABLE `getyourguide_import` ADD COLUMN sync_comment TEXT;
   PRIMARY KEY (`search_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
+ALTER TABLE `tbl_search_history` ADD COLUMN filter_activity varchar(255);
+ALTER TABLE `tbl_search_history` ADD COLUMN filter_activitytype varchar(255);
+  
   
 ALTER TABLE tbl_search_history
 ADD CONSTRAINT fk_search_history_search_user

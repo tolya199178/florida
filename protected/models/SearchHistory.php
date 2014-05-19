@@ -9,6 +9,8 @@
  * @property integer $user_location
  * @property string $created_time
  * @property string $search_details
+ * @property string $filter_activity
+ * @property string $filter_activitytype
  *
  * The followings are the available model relations:
  * @property User $user
@@ -67,9 +69,10 @@ class SearchHistory extends CActiveRecord
 
 		    // Data types, field lengths
 			array('user_id, user_location',          'numerical', 'integerOnly'=>true),
+		    array('filter_activity, filter_activitytype',     'length', 'max'=>255),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('search_id, user_id, created_time', 'safe', 'on'=>'search'),
+			array('search_id, user_id, created_time, filter_activity, filter_activitytype', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -108,6 +111,8 @@ class SearchHistory extends CActiveRecord
 			'user_location'      => 'User Location',
 			'created_time'       => 'Created Time',
 			'search_details'     => 'Search Details',
+		    'filter_activity'    => 'Filter Activity',
+		    'filter_activitytype' => 'Filter Activitytype',
 		);
 	}
 
@@ -137,6 +142,8 @@ class SearchHistory extends CActiveRecord
 		$criteria->compare('user_location',   $this->user_location);
 		$criteria->compare('created_time',    $this->created_time,true);
 		$criteria->compare('search_details',  $this->search_details,true);
+		$criteria->compare('filter_activity', $this->filter_activity,true);
+		$criteria->compare('filter_activitytype', $this->filter_activitytype,true)
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
