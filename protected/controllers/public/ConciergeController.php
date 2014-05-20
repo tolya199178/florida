@@ -705,7 +705,9 @@ LIMIT 0 , $numberOfResults
     {
 
         // /////////////////////////////////////////////////////////////////////
-        // Search for the list of activities related to the user search
+        // Search for the list of activities related to the user search. We want
+        // ...to match the user search and extract the event_category from the
+        // ...activity table.
         // /////////////////////////////////////////////////////////////////////
 
         $activitySearchCriteria = new CDbCriteria();
@@ -746,6 +748,8 @@ LIMIT 0 , $numberOfResults
             $listEventCategory[] = 'other';
         }
 
+        $listEventCategory = array_map('trim', $listEventCategory);
+
         // /////////////////////////////////////////////////////////////////////
         // We list all events that match the list of search categories.
         // /////////////////////////////////////////////////////////////////////
@@ -753,10 +757,10 @@ LIMIT 0 , $numberOfResults
         $listEvent = Yii::app()->db->createCommand()
                         ->select("t.*, tne.*")
                         ->from('tbl_event t')
-                        ->leftJoin('tbl_tn_event tne', 'tne.tn_event_id = t.event_id')
+                        ->leftJoin('tbl_tn_event tne', 'tne.tn_id = t.external_event_id')
                         ->leftJoin('tbl_event_category ec', 'ec.category_id = tne.tn_parent_category_id')
                         ->where('external_event_source = "ticketnetwork"')
-                        ->andWhere(array('in', 'ec.category_name', $listEventCategory))
+                        ->andWhere(array('in', 'TRIM(ec.category_name)', $listEventCategory))
                         ->queryAll();
 
         return $listEvent;

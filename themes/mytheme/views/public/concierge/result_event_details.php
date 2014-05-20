@@ -1,18 +1,33 @@
-<?php foreach ($data as $eventItem) { ?>
-    <div class="col-md-4 unstyled results">
-        <div class="box article">
-            <table class="_ws_ajax_events">
-                <tr>
-                    <td>
-                        <h4>
+						<!-- COUNTRY ITEM -->
+
+							<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+								<div class="thumbnail">
+
+                                    <div class="panel panel-warning">
+                                        <div class="panel-heading">
                             <?php
                             $str = strlen($eventItem['event_title']) < 45 ? $eventItem['event_title'] : substr($eventItem['event_title'], 0, 41) . "...";
                             $url = array("/booking/getmyticket", 'id' => $eventItem['event_id']);
                             echo CHtml::link($str, $url, array("title" => $eventItem['event_title']))
                             ?>
-                        </h4>
-                    </td>
-                </tr>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="event_detail">
+
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+            <table class="_ws_ajax_events">
+                <tr>
+<!--                     <td> -->
+<!--                         <h4> -->
+                            <?php
+//                             $str = strlen($eventItem['event_title']) < 45 ? $eventItem['event_title'] : substr($eventItem['event_title'], 0, 41) . "...";
+//                             $url = array("/booking/getmyticket", 'id' => $eventItem['event_id']);
+//                             echo CHtml::link($str, $url, array("title" => $eventItem['event_title']))
+//                             ?>
+<!--                         </h4> -->
+<!--                     </td> -->
+<!--                 </tr> -->
                 <tr>
                     <td colspan="2">
                         <?php
@@ -37,6 +52,18 @@
                     </td>
                 </tr>
             </table>
-        </div>
-    </div>
-<?php } ?>
+                                                </div>
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+								</div>
+
+							</div>
+							<!-- /COUNTRY ITEM -->
+
+
