@@ -73,8 +73,8 @@
       }
 
 @media screen and (min-width: 768px) {
-    .biz-details-modal {
-        width: 70%;
+    .biz-details-modal1 {
+        width: 100%;
         /* either % (e.g. 60%) or px (400px) */
     }
 }
@@ -289,7 +289,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
    <input type="hidden" id="business_id" name="business_id"  value="<?php echo $model->attributes['business_id']; ?>" /><br/>
 
 
-   <div class="modal-dialog biz-details-modal">
+   <div class="modal-dialog biz-details-modal1">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
