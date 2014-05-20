@@ -587,21 +587,12 @@ $('.cities .typeahead')
 
             var source = $('<div>' + data + '</div>');
 
-
             var feed_update_list = source.find('#feedresult').html();
             $('#left_panel_feed').prepend(feed_update_list);
 
             last_timestamp = source.find('#last_timestamp').html();
 
-//             if (last_timestamp === undefined)
-//             {
-//                 last_timestamp = -1;
-//             }
-//             else
-//             {
-                $("time.timeago").timeago();
-//             }
-
+            $("time.timeago").timeago();
 
     	});
     }
@@ -657,6 +648,7 @@ $('.cities .typeahead')
 
     var url         = '/concierge/dosearch/';
 
+
     $.post(url,
     {
       where:where,
@@ -668,6 +660,9 @@ $('.cities .typeahead')
         $('#panel_search_details').show();
         $('#concierge_results').html(data);
         $('#city_gallery').html("");
+        $('#left_panel_feed').html("");
+        getLeftPanelFeeds();
+
     });
 
   }
@@ -1102,7 +1097,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
 
     <!-- Main concierge page .container -->
-    <div class="row">
+    <div class="row  fill">
         <!-- 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> -->
         <!-- 			<ol class="breadcrumb"> -->
         <!-- 			  <li><a href="#">Home</a></li> -->
@@ -1110,7 +1105,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <!-- 			</ol> -->
         <!-- 		</div> -->
 
-        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 col">
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 col" id="left_panel">
 
 
             <div class="panel panel-default margin-top-10">
@@ -1146,7 +1141,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <!-- /Main blocks left side -->
 
         <!-- Teasers right side wrapper col-->
-        <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 gradient-bg pull-left col">
+        <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 gradient-bg pull-left col" id="main_panel">
             <!-- ADDS PANEL-->
             <div class="panel panel-primary margin-top-10">
                 <div class="panel-body">
