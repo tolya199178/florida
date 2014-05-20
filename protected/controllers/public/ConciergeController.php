@@ -84,10 +84,13 @@ class ConciergeController extends Controller
 	public function actionIndex()
 	{
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // Clear search
+	    // /////////////////////////////////////////////////////////////////////
+
+	    unset(Yii::app()->session['last_saved_search_id']);
+
         $myLocation = $this->getMyLocation();
-
-      //  exit;
-
 
 	    $conciergeData = array();
 	    $conciergeData['city'] = $myLocation->city_name;
@@ -304,7 +307,6 @@ class ConciergeController extends Controller
 	            break;
         }
 
-
     }
 
     /**
@@ -332,12 +334,37 @@ class ConciergeController extends Controller
             $lastTimestamp = strtotime("-1 week");
         }
 
+
+        // /////////////////////////////////////////////////////////////////////
+        // For 'new' feeds' show recent activity for all users. A 'new' feed is
+        // ...a page load where a search has not been submitted yet.
+        // For 'old' feeds' show similar search activity. A feed is 'old' once
+        // ...a user has submitted a search (the last search history id is
+        // ...stored in session.
+        // /////////////////////////////////////////////////////////////////////
+
         $dbCriteria = new CDbCriteria;
         // TODO: Move the search limit to parameters file
         $dbCriteria->condition = " unix_timestamp(created_time) > :lastTimestamp ";
         $dbCriteria->params    = array(':lastTimestamp' => $lastTimestamp);
         $dbCriteria->limit     = 100;
         $dbCriteria->order     = 'created_time DESC';
+
+        if (isset(Yii::app()->session['last_saved_search_id']))
+        {
+
+            $lastSearch = SavedSearch::model()->findByPk(Yii::app()->session['last_saved_search_id']);
+
+            if ($lastSearch != null)
+            {
+                $dbCriteria->addCondition(' filter_activity = :filter_activity AND filter_activitytype = :filter_activitytype ');
+                $dbCriteria->params    = array_merge($dbCriteria->params, array(':filter_activity' => $lastSearch->filter_activity,
+                                                                                ':filter_activitytype' => $lastSearch->filter_activitytype
+                                                     ));
+            }
+
+        }
+
 
         $lstSearchLog = SearchHistory::model()->findAll($dbCriteria);
 
@@ -401,11 +428,6 @@ class ConciergeController extends Controller
     {
 
         $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argWhere, 'when'=> $argWhen));
-
-        // /////////////////////////////////////////////////////////////////////
-        // Save the search to the Session
-        // /////////////////////////////////////////////////////////////////////
-        Yii::app()->session['saved_search'] = $serialisedSearchDetails;
 
 
         if (!empty($argWhere))
@@ -480,6 +502,11 @@ class ConciergeController extends Controller
         $modelSearchHistory  = new SearchHistory;
         $modelSearchHistory->attributes  = $searchHistory;
         $modelSearchHistory->save();
+
+        // /////////////////////////////////////////////////////////////////////
+        // Save the search to the Session
+        // /////////////////////////////////////////////////////////////////////
+        Yii::app()->session['last_saved_search_id'] = $modelSearchHistory->search_id;
 
     }
 

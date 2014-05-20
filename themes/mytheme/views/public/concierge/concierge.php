@@ -587,21 +587,12 @@ $('.cities .typeahead')
 
             var source = $('<div>' + data + '</div>');
 
-
             var feed_update_list = source.find('#feedresult').html();
             $('#left_panel_feed').prepend(feed_update_list);
 
             last_timestamp = source.find('#last_timestamp').html();
 
-//             if (last_timestamp === undefined)
-//             {
-//                 last_timestamp = -1;
-//             }
-//             else
-//             {
-                $("time.timeago").timeago();
-//             }
-
+            $("time.timeago").timeago();
 
     	});
     }
@@ -657,6 +648,7 @@ $('.cities .typeahead')
 
     var url         = '/concierge/dosearch/';
 
+
     $.post(url,
     {
       where:where,
@@ -668,6 +660,9 @@ $('.cities .typeahead')
         $('#panel_search_details').show();
         $('#concierge_results').html(data);
         $('#city_gallery').html("");
+        $('#left_panel_feed').html("");
+        getLeftPanelFeeds();
+
     });
 
   }

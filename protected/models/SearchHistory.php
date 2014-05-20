@@ -143,7 +143,7 @@ class SearchHistory extends CActiveRecord
 		$criteria->compare('created_time',    $this->created_time,true);
 		$criteria->compare('search_details',  $this->search_details,true);
 		$criteria->compare('filter_activity', $this->filter_activity,true);
-		$criteria->compare('filter_activitytype', $this->filter_activitytype,true)
+		$criteria->compare('filter_activitytype', $this->filter_activitytype,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
