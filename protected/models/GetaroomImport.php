@@ -88,7 +88,7 @@ class GetaroomImport extends CActiveRecord
 			array('thumbnail_filename, title, uuid, market',     'length', 'max'=>1024),
 
 			array('short_description, sanitized_description, amenity,
-			       import_comment, sync_comment,                 'length', 'max'=>4096),
+			       import_comment, sync_comment',                'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('lat, lng, location_city, location_country, location_state, location_street, location_zip, permalink, rating, review_rating, short_description, thumbnail_filename, time_zone, title, uuid, sanitized_description, market, amenity, record_id, source_filename, date_created, import_date, sync_date, import_comment, sync_comment', 'safe', 'on'=>'search'),
