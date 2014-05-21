@@ -898,6 +898,7 @@ ADD CONSTRAINT fk_business_activity_activity_type
      FOREIGN KEY (activity_type_id) 
      REFERENCES tbl_activity_type(activity_type_id);
      
+alter  table tbl_business_activity change `activity_type_id` `activity_type_id` int(11) DEFAULT NULL;
 -- ---------------------------------------------------------------------
 -- activity
 -- ---------------------------------------------------------------------
