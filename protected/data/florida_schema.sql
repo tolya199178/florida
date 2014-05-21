@@ -1171,6 +1171,41 @@ ALTER TABLE `getyourguide_import` ADD COLUMN sync_comment TEXT;
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+-- ---------------------------------------------------------------------
+-- Get-a-room Imports
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `getaroom_import`;
+
+ CREATE TABLE `getaroom_import` (
+  `lat`                 varchar(32) NOT NULL,
+  `lng`                 varchar(32) NOT NULL,
+  `location_city`       varchar(255) DEFAULT NULL,
+  `location_country`    varchar(255) DEFAULT NULL,
+  `location_state`      varchar(255) DEFAULT NULL,
+  `location_street`     varchar(255) DEFAULT NULL,
+  `location_zip`        varchar(255) DEFAULT NULL,
+  `permalink`           varchar(255) DEFAULT NULL,
+  `rating`              varchar(255) DEFAULT NULL,
+  `review_rating`       varchar(255) DEFAULT NULL,
+  
+  `short_description`   TEXT DEFAULT NULL,
+  `thumbnail_filename`  varchar(1024) DEFAULT NULL,
+  `time_zone`           varchar(255) DEFAULT NULL,
+  `title`               varchar(1024) DEFAULT NULL,
+  `uuid`                varchar(1024) DEFAULT NULL,
+  
+  `sanitized_description`   TEXT DEFAULT NULL,
+  `market`              varchar(1024) DEFAULT NULL,
+  `amenity`             TEXT DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `getaroom_import` ADD COLUMN `record_id` int(11) unsigned PRIMARY KEY AUTO_INCREMENT;
+ALTER TABLE `getaroom_import` ADD COLUMN source_filename varchar(255);
+ALTER TABLE `getaroom_import` ADD COLUMN date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `getaroom_import` ADD COLUMN import_date  DATETIME;
+ALTER TABLE `getaroom_import` ADD COLUMN sync_date  DATETIME;
+ALTER TABLE `getaroom_import` ADD COLUMN import_comment TEXT;
+ALTER TABLE `getaroom_import` ADD COLUMN sync_comment TEXT;
 
 
 -- ---------------------------------------------------------------------
