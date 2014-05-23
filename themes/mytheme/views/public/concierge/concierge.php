@@ -544,6 +544,9 @@ h2{
 
 $local_list = City::model()->getListjson();
 
+$baseUrl = $this->createAbsoluteUrl('/');
+
+
 $script = <<<EOD
 
 // Load the city list for type ahead
@@ -630,23 +633,52 @@ $('.cities .typeahead')
     var withwhat    = $("#withwhat").val();
     var dowhen      = $('#dowhentimestamp').val();
 
+    var search_report = 'YOU SEARCHED';
+
     if ((dowhat == "") && (withwhat == ""))
     {
         $('#concierge_results').html("");
         return;
     }
 
-    if (withwhat == "")
-    {
-    //    $('#concierge_toolbar_activitytype').html("");
-    }
-
     if (dowhat == "")
     {
     //    $('#concierge_toolbar_activity').html("");
     }
+    else
+    {
+        search_report += ' TO ' + dowhat;
+    }
+
+    if (withwhat == "")
+    {
+    //    $('#concierge_toolbar_activitytype').html("");
+    }
+    else
+    {
+        search_report += ' ' + withwhat;
+    }
+
+    if (where != "")
+    {
+        search_report += ' IN '+ where;
+    }
+
+    if (dowhen != "")
+    {
+        var formattedDate = $('#dowhen').val();
+        search_report += ' ON '+ formattedDate;
+    }
 
     var url         = '/concierge/dosearch/';
+
+    $("#search_criteria_dowhat").val(dowhat);
+
+
+    $("#report_search").html(search_report);
+
+
+
 
 
     $.post(url,
@@ -1026,6 +1058,24 @@ $('.cities .typeahead')
         });
     });
 
+    // /////////////////////////////////////////////////////////////////////////
+    // Save Current Search
+    // /////////////////////////////////////////////////////////////////////////
+    // save the current save for the user.
+    $('body').on('click', '#save_search', function(e) {
+
+        url = '$baseUrl/concierge/savesearch/';
+
+        $.post(url, null,
+        function(data,status){
+            $('#panel_search_details').show();
+            $('#concierge_results').html(data);
+            $('#city_gallery').html("");
+            $('#left_panel_feed').html("");
+            getLeftPanelFeeds();
+
+        });
+    });
 
 EOD;
 
@@ -1173,32 +1223,44 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 </div>
             </div>
             <!-- / ADDS PANEL-->
+<?php if (!Yii::app()->user->isGuest) { ?>
 
             <!-- PANEL: Search Criteria and 'Save Search Button' -->
             <div class="panel panel-primary margin-top-10" id='panel_search_details'>
                 <div class="panel-body">
                     <div class="row">
 
-                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 text">
+                            <input type='hidden' id='search_criteria_dowhat'>
+                            <input type='hidden' id='search_criteria_withwhat'>
+                            <input type='hidden' id='search_criteria_where'>
+                            <input type='hidden' id='search_criteria_when'>
                             <!--  SAVED SEARCH CRITERIA GOES HERE -->
+                            <div id='report_search'></div>
                         </div>
-                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <a class="btn btn-warning btn-sm" href="#" title=""
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text">
+                            <a id="save_search" class="btn btn-warning btn-sm" href="#" title=""
                                 style="margin-top: 20px;"><i class="icon-angle-left"></i>
                                 Save Search</a>
+
+                            <a id="choose_new_search" class="btn btn-info btn-sm" href="#" title=""
+                                style="margin-top: 20px;"><i class="icon-angle-left"></i>
+                                Change Search</a>
+
                         </div>
                     </div>
                 </div>
             </div>
+<?php } ?>
+
 
             <div class="panel panel-primary margin-top-10">
                 <div class="panel-body">
                     <div class="row">
 
                         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-    <?php                       $this->widget('application.components.ConciergeToolbar'); ?>
-
-                                </div>
+ <?php                       $this->widget('application.components.ConciergeToolbar'); ?>
+                        </div>
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
                     </div>
 
