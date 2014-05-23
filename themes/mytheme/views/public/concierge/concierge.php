@@ -577,7 +577,7 @@ $('.cities .typeahead')
     var last_timestamp = 0;
     function getLeftPanelFeeds()
     {
-    	var url         = '/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
+    	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
 
     	$.ajax({
     		type 		: 'GET',
@@ -670,7 +670,7 @@ $('.cities .typeahead')
         search_report += ' ON '+ formattedDate;
     }
 
-    var url         = '/concierge/dosearch/';
+    var url         = '$baseUrl/concierge/dosearch/';
 
     $("#search_criteria_dowhat").val(dowhat);
 
@@ -720,7 +720,7 @@ $('.cities .typeahead')
 
 
         // TODO: Find a way of calling this function from the widget
-    	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
+    	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
 
 		// process the form. Note that there is no data send as posts arguements.
 		$.ajax({
@@ -781,7 +781,7 @@ $('.cities .typeahead')
     var dowhat      = $("#dowhat").val();
     var withwhat    = $("#withwhat").val();
 
-    var url         = '/concierge/gallery/';
+    var url         = '$baseUrl/concierge/gallery/';
 
     $.post(url,
     {
@@ -1009,7 +1009,7 @@ $('.cities .typeahead')
 
         var form_values = $(this).serialize();
 
-        var url = '/concierge/sendfriendinvitations/';
+        var url = '$baseUrl/concierge/sendfriendinvitations/';
 
         $.ajax({
                type: "POST",
