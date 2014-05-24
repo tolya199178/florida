@@ -301,7 +301,10 @@ ADD CONSTRAINT fk_page_modified_by
 ALTER TABLE tbl_saved_search
 ADD CONSTRAINT fk_saved_search_user
      FOREIGN KEY (user_id) 
-     REFERENCES tbl_user(user_id);    
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE `tbl_saved_search` ADD COLUMN filter_activity varchar(255);
+ALTER TABLE `tbl_saved_search` ADD COLUMN filter_activitytype varchar(255);
      
 -- ---------------------------------------------------------------------
 -- business

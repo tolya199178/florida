@@ -544,6 +544,9 @@ h2{
 
 $local_list = City::model()->getListjson();
 
+$baseUrl = $this->createAbsoluteUrl('/');
+
+
 $script = <<<EOD
 
 // Load the city list for type ahead
@@ -574,7 +577,7 @@ $('.cities .typeahead')
     var last_timestamp = 0;
     function getLeftPanelFeeds()
     {
-    	var url         = '/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
+    	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
 
     	$.ajax({
     		type 		: 'GET',
@@ -630,23 +633,52 @@ $('.cities .typeahead')
     var withwhat    = $("#withwhat").val();
     var dowhen      = $('#dowhentimestamp').val();
 
+    var search_report = 'YOU SEARCHED';
+
     if ((dowhat == "") && (withwhat == ""))
     {
         $('#concierge_results').html("");
         return;
     }
 
-    if (withwhat == "")
-    {
-    //    $('#concierge_toolbar_activitytype').html("");
-    }
-
     if (dowhat == "")
     {
     //    $('#concierge_toolbar_activity').html("");
     }
+    else
+    {
+        search_report += ' TO ' + dowhat;
+    }
 
-    var url         = '/concierge/dosearch/';
+    if (withwhat == "")
+    {
+    //    $('#concierge_toolbar_activitytype').html("");
+    }
+    else
+    {
+        search_report += ' ' + withwhat;
+    }
+
+    if (where != "")
+    {
+        search_report += ' IN '+ where;
+    }
+
+    if (dowhen != "")
+    {
+        var formattedDate = $('#dowhen').val();
+        search_report += ' ON '+ formattedDate;
+    }
+
+    var url         = '$baseUrl/concierge/dosearch/';
+
+    $("#search_criteria_dowhat").val(dowhat);
+
+
+    $("#report_search").html(search_report);
+
+
+
 
 
     $.post(url,
@@ -688,7 +720,7 @@ $('.cities .typeahead')
 
 
         // TODO: Find a way of calling this function from the widget
-    	var url         = '/concierge/loadactivitytype/activity/' + txtActivity;
+    	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
 
 		// process the form. Note that there is no data send as posts arguements.
 		$.ajax({
@@ -749,7 +781,7 @@ $('.cities .typeahead')
     var dowhat      = $("#dowhat").val();
     var withwhat    = $("#withwhat").val();
 
-    var url         = '/concierge/gallery/';
+    var url         = '$baseUrl/concierge/gallery/';
 
     $.post(url,
     {
@@ -977,7 +1009,7 @@ $('.cities .typeahead')
 
         var form_values = $(this).serialize();
 
-        var url = '/concierge/sendfriendinvitations/';
+        var url = '$baseUrl/concierge/sendfriendinvitations/';
 
         $.ajax({
                type: "POST",
@@ -1024,6 +1056,59 @@ $('.cities .typeahead')
             remote: remote
 
         });
+    });
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Save Current Search
+    // /////////////////////////////////////////////////////////////////////////
+    // save the current save for the user.
+    $('body').on('click', '#save_search', function(e) {
+
+        url = '$baseUrl/concierge/savesearch/';
+
+        $.post(url, null,
+        function(data,status){
+            $('#panel_search_details').show();
+            $('#concierge_results').html(data);
+            $('#city_gallery').html("");
+            $('#left_panel_feed').html("");
+            getLeftPanelFeeds();
+
+        });
+    });
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Load Current Search
+    // /////////////////////////////////////////////////////////////////////////
+    // save the current save for the user.
+    $('body').on('click', '.saved_search_item', function(e) {
+
+        url = '$baseUrl/concierge/getsavedsearchjson/';
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: { saved_search_id:$(this).attr('rel') },
+			dataType 	: 'json'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            if (data.result == false)
+            {
+                alert(data.message);
+            }
+            var savedSearch = data.search.search_details;
+
+            $('#dowhat').tagsinput('remove', $("#dowhat").val());
+            $('#dowhat').tagsinput('add', savedSearch.dowhat);
+            $('#withwhat').tagsinput('remove', $("#withwhat").val());
+            $('#withwhat').tagsinput('add', savedSearch.withwhat);
+            $("#city").val(savedSearch.where);
+
+		});
+
     });
 
 
@@ -1173,32 +1258,56 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 </div>
             </div>
             <!-- / ADDS PANEL-->
+<?php if (!Yii::app()->user->isGuest) { ?>
 
             <!-- PANEL: Search Criteria and 'Save Search Button' -->
             <div class="panel panel-primary margin-top-10" id='panel_search_details'>
                 <div class="panel-body">
                     <div class="row">
 
-                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 text">
+                            <input type='hidden' id='search_criteria_dowhat'>
+                            <input type='hidden' id='search_criteria_withwhat'>
+                            <input type='hidden' id='search_criteria_where'>
+                            <input type='hidden' id='search_criteria_when'>
                             <!--  SAVED SEARCH CRITERIA GOES HERE -->
+                            <div id='report_search'></div>
                         </div>
-                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <a class="btn btn-warning btn-sm" href="#" title=""
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text">
+                            <a id="save_search" class="btn btn-warning btn-sm" href="#" title=""
                                 style="margin-top: 20px;"><i class="icon-angle-left"></i>
                                 Save Search</a>
+
+                            <div class="dropdown btn-group">
+                                <a class="btn dropdown-toggle btn-info" data-toggle="dropdown" href="#">
+                                    Change your Search
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" id='saved_search_list'>
+<?php                               foreach ($data['saved_searches'] as $saved_search) { ?>
+                                        <li><a class='saved_search_item' href="#" rel='<?php echo (int) $saved_search['search_id']; ?>'>
+                                            <?php echo CHtml::encode($saved_search['search_name']); ?>
+                                        </a>
+<?php                               } ?>
+                                    </li>
+                                </ul>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
             </div>
+<?php } ?>
+
 
             <div class="panel panel-primary margin-top-10">
                 <div class="panel-body">
                     <div class="row">
 
                         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-    <?php                       $this->widget('application.components.ConciergeToolbar'); ?>
-
-                                </div>
+ <?php                       $this->widget('application.components.ConciergeToolbar'); ?>
+                        </div>
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
                     </div>
 

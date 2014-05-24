@@ -90,10 +90,32 @@ class ConciergeController extends Controller
 
 	    unset(Yii::app()->session['last_saved_search_id']);
 
+	    // Get the user's location
         $myLocation = $this->getMyLocation();
 
+        // Pre-load the list of cities
 	    $conciergeData = array();
 	    $conciergeData['city'] = $myLocation->city_name;
+
+	    // Get the users saved search list
+	    if (!Yii::app()->user->isGuest)
+	    {
+	        // $listSavedSearch = SavedSearch::model()->findAllByAttributes(array('user_id' => Yii::app()->user->id));
+
+	        $listSavedSearch = Yii::app()->db->createCommand()
+                                	         ->select("*")
+                                	         ->from('tbl_saved_search')
+                                	         ->where('user_id = :user_id', array(':user_id' => Yii::app()->user->id))
+                                	         ->queryAll();
+	    }
+	    else
+	    {
+	        $listSavedSearch = array();
+	    }
+
+	    $conciergeData['saved_searches'] = $listSavedSearch;
+
+
 
 
 		// renders the view file 'protected/views/site/index.php'
@@ -110,8 +132,8 @@ class ConciergeController extends Controller
      * @return <none> <none>
      * @access public
      */
-    public function actionPrefecthlistall() {
-
+    public function actionPrefecthlistall()
+    {
 
 
         // /////////////////////////////////////////////////////////////////////
@@ -120,13 +142,6 @@ class ConciergeController extends Controller
         $searchCriteria = new CDbCriteria;
 
         $cityList          = City::model()->findAll($searchCriteria);
-
-//         if ($cityList){
-//             header('Content-type: application/json');
-//             echo CJSON::encode($cityList);
-//         }
-
-
 
          $listResults = array();
 
@@ -138,6 +153,56 @@ class ConciergeController extends Controller
          echo CJSON::encode($listResults);
 
 
+
+    }
+
+    /**
+     * Generates a JSON encoded list of saved search attributes
+     *
+     * @param int saved_search_id The PK of the search set via POST
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionGetsavedsearchjson()
+    {
+
+        // Do not action if the user is not logged in
+        if (Yii::app()->user->isGuest)
+        {
+            $actionResult = array('result'      => false,
+                                  'message'     => 'Not logged in',
+                                  'search'     => null);
+
+            echo CJSON::encode($actionResult);
+            Yii::app()->end();
+        }
+
+        $argSavedSearchId       = Yii::app()->request->getPost('saved_search_id', null);
+
+        // $modelSavedSearch       = SavedSearch::model()->findByPk((int) $argSavedSearchId);
+        $listSavedSearch = Yii::app()->db->createCommand()
+                                         ->select("*")
+                                         ->from('tbl_saved_search')
+                                         ->where('search_id = :search_id', array(':search_id' => $argSavedSearchId))
+                                         ->limit('1')
+                                         ->queryRow();
+
+        if ($listSavedSearch === false)
+        {
+            $actionResult = array('result'      => false,
+                                  'message'     => 'Saved search not found',
+                                  'searche'     => null);
+            echo json_encode($actionResult);
+            Yii::app()->end();
+        }
+
+        $listSavedSearch['search_details'] = unserialize($listSavedSearch['search_details']);
+        $actionResult = array('result'      => true,
+                              'message'     => 'Success',
+                              'search'      => $listSavedSearch);
+        echo CJSON::encode($actionResult);
+        Yii::app()->end();
 
     }
 
@@ -508,6 +573,7 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         Yii::app()->session['last_saved_search_id'] = $modelSearchHistory->search_id;
 
+
     }
 
     /**
@@ -835,6 +901,78 @@ LIMIT 0 , $numberOfResults
         }
 
         return $cityModel;
+
+    }
+
+    /**
+     * Save the current search.
+     * ...
+     * ...Do not action if the user is not logged in
+     * ...Do not action is the search is already saved.
+     * ...Do not action if there is no search saved in the session.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionSavesearch()
+    {
+        // Do not action if the user is not logged in
+        if (Yii::app()->user->isGuest)
+        {
+            echo CJSON::encode(array('result'=>false, 'message'=>'Not logged in'));
+            Yii::app()->end();
+        }
+
+        // Do not action if there is no search saved in the session.
+        if (!isset(Yii::app()->session['last_saved_search_id']))
+        {
+            echo CJSON::encode(array('result'=>false, 'message'=>'No search found'));
+            Yii::app()->end();
+        }
+
+        // Search the search history log. The search history is a temporary transactional
+        // ...log table and may be cleaned up from time to time for operational reasons. If
+        // ...the search is no longer available, we exit with an error message.
+        $itemSearchLog = SearchHistory::model()->findByPk(Yii::app()->session['last_saved_search_id']);
+
+        $searchDetails = unserialize($itemSearchLog->search_details);
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Save the details into the saved search table
+        // /////////////////////////////////////////////////////////////////////
+        $modelSavedSearch = SavedSearch::model()->findByAttributes(
+                                                    array('user_id'             => Yii::app()->user->id,
+                                                          'filter_activity'     => $searchDetails['dowhat'],
+                                                          'filter_activitytype' => $searchDetails['withwhat'],
+                                                  ));
+        if ($modelSavedSearch !== null )
+        {
+            echo CJSON::encode(array('result'=>false, 'message'=>'Search already saved'));
+        }
+
+
+        // Create a new object to be added to the saved search table
+        $modelSavedSearch = new SavedSearch;
+        $modelSavedSearch->user_id                  = Yii::app()->user->id;
+        $modelSavedSearch->filter_activity          = $searchDetails['dowhat'];
+        $modelSavedSearch->filter_activitytype      = $searchDetails['withwhat'];
+        $modelSavedSearch->search_details           = $itemSearchLog->search_details;
+        $modelSavedSearch->search_name              = $searchDetails['dowhat'].' '.$searchDetails['withwhat']. ' IN '.$searchDetails['where'].' ON '.$itemSearchLog->created_time;
+
+        if ($modelSavedSearch->save() === false)
+        {
+            echo CJSON::encode(array('result'=>false, 'message'=>'Problem saving saved search. Contact administrator.'));
+            Yii::app()->end();
+
+        }
+        else
+        {
+            echo CJSON::encode(array('result'=>true, 'message'=>'Saved.'));
+            Yii::app()->end();
+        }
 
     }
 
