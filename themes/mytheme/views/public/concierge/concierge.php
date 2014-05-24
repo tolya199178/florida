@@ -1077,6 +1077,41 @@ $('.cities .typeahead')
         });
     });
 
+    // /////////////////////////////////////////////////////////////////////////
+    // Load Current Search
+    // /////////////////////////////////////////////////////////////////////////
+    // save the current save for the user.
+    $('body').on('click', '.saved_search_item', function(e) {
+
+        url = '$baseUrl/concierge/getsavedsearchjson/';
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: { saved_search_id:$(this).attr('rel') },
+			dataType 	: 'json'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            if (data.result == false)
+            {
+                alert(data.message);
+            }
+            var savedSearch = data.search.search_details;
+
+            $('#dowhat').tagsinput('remove', $("#dowhat").val());
+            $('#dowhat').tagsinput('add', savedSearch.dowhat);
+            $('#withwhat').tagsinput('remove', $("#withwhat").val());
+            $('#withwhat').tagsinput('add', savedSearch.withwhat);
+            $("#city").val(savedSearch.where);
+
+		});
+
+    });
+
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
@@ -1243,9 +1278,21 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                                 style="margin-top: 20px;"><i class="icon-angle-left"></i>
                                 Save Search</a>
 
-                            <a id="choose_new_search" class="btn btn-info btn-sm" href="#" title=""
-                                style="margin-top: 20px;"><i class="icon-angle-left"></i>
-                                Change Search</a>
+                            <div class="dropdown btn-group">
+                                <a class="btn dropdown-toggle btn-info" data-toggle="dropdown" href="#">
+                                    Change your Search
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" id='saved_search_list'>
+<?php                               foreach ($data['saved_searches'] as $saved_search) { ?>
+                                        <li><a class='saved_search_item' href="#" rel='<?php echo (int) $saved_search['search_id']; ?>'>
+                                            <?php echo CHtml::encode($saved_search['search_name']); ?>
+                                        </a>
+<?php                               } ?>
+                                    </li>
+                                </ul>
+                            </div>
+
 
                         </div>
                     </div>
