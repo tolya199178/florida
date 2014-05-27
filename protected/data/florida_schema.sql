@@ -1281,6 +1281,36 @@ ALTER TABLE `tbl_my_friend` ADD COLUMN friend_status ENUM('Pending', 'Approved',
 ALTER TABLE `tbl_my_friend` ADD COLUMN request_time  DATETIME;
 ALTER TABLE `tbl_my_friend` ADD COLUMN process_time  DATETIME;
 
+
+-- ---------------------------------------------------------------------
+-- user messages
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_user_message`;
+
+CREATE TABLE `tbl_user_message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender` int(11) NOT NULL,
+  `recipient` int(11) NOT NULL,
+  `sent` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `read` enum('Y','N') DEFAULT 'N',
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `reply_to` int(11) DEFAULT NULL,
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_user_message
+ADD CONSTRAINT user_message_recipient
+     FOREIGN KEY (recipient) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_user_message
+ADD CONSTRAINT user_message_sender
+     FOREIGN KEY (sender) 
+     REFERENCES tbl_user(user_id);
+
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
