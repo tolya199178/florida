@@ -14,8 +14,8 @@
  * @property integer $reply_to
  *
  * The followings are the available model relations:
- * @property User $sender0
- * @property User $recipient0
+ * @property User $sender_user
+ * @property User $recipient_user
  */
 
  /**
@@ -23,11 +23,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = UserMessage::model()
+ * ...   $message = UserMessage::model()
  * ...or
- * ...   $model = new UserMessage;
+ * ...   $message = new UserMessage;
  * ...or
- * ...   $model = new UserMessage($scenario);
+ * ...   $message = new UserMessage($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -66,10 +66,14 @@ class UserMessage extends CActiveRecord
 	{
 
 		return array(
-			array('sender, recipient, sent, subject, message', 'required'),
-			array('sender, recipient, reply_to', 'numerical', 'integerOnly'=>true),
-			array('read', 'length', 'max'=>1),
-			array('subject', 'length', 'max'=>255),
+
+		    // Mandatory rules
+			array('sender, recipient, subject, message',                 'required'),
+
+		    // Data types, sizes
+			array('sender, recipient, reply_to',                         'numerical', 'integerOnly'=>true),
+			array('read',                                                'in', 'range'=>array('Y','N')),
+			array('subject',                                             'length', 'max'=>255),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('id, sender, recipient, sent, read, subject, message, reply_to', 'safe', 'on'=>'search'),
@@ -88,8 +92,8 @@ class UserMessage extends CActiveRecord
 	{
 
 		return array(
-			'sender0'      => array(self::BELONGS_TO, 'User', 'sender'),
-			'recipient0'      => array(self::BELONGS_TO, 'User', 'recipient'),
+			'sender_user'            => array(self::BELONGS_TO, 'User', 'sender'),
+			'recipient_user'         => array(self::BELONGS_TO, 'User', 'recipient'),
 		);
 	}
 
@@ -107,14 +111,13 @@ class UserMessage extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id'      => 'ID',
-			'sender'      => 'Sender',
+			'id'             => 'ID',
+			'sender'         => 'Sender',
 			'recipient'      => 'Recipient',
-			'sent'      => 'Sent',
-			'read'      => 'Read',
-			'subject'      => 'Subject',
-			'message'      => 'Message',
-			'reply_to'      => 'Reply To',
+			'sent'           => 'Sent',
+			'read'           => 'Read',
+			'subject'        => 'Subject',
+			'message'        => 'Message',
 		);
 	}
 
@@ -139,14 +142,14 @@ class UserMessage extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('sender',$this->sender);
-		$criteria->compare('recipient',$this->recipient);
-		$criteria->compare('sent',$this->sent,true);
-		$criteria->compare('read',$this->read,true);
-		$criteria->compare('subject',$this->subject,true);
-		$criteria->compare('message',$this->message,true);
-		$criteria->compare('reply_to',$this->reply_to);
+		$criteria->compare('id',              $this->id);
+		$criteria->compare('sender',          $this->sender);
+		$criteria->compare('recipient',       $this->recipient);
+		$criteria->compare('sent',            $this->sent,true);
+		$criteria->compare('read',            $this->read,true);
+		$criteria->compare('subject',         $this->subject,true);
+		$criteria->compare('message',         $this->message,true);
+		$criteria->compare('reply_to',        $this->reply_to);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
