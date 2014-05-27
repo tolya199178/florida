@@ -9,6 +9,9 @@
  * @property integer $friend_id
  * @property string $created_time
  * @property string $connected_by
+ * @property string $friend_status
+ * @property string $request_time
+ * @property string $process_time
  *
  * The followings are the available model relations:
  * @property User $friend
@@ -67,6 +70,11 @@ class MyFriend extends CActiveRecord
 			array('user_id, friend_id',      'numerical', 'integerOnly'=>true),
 			array('connected_by',            'length', 'max'=>255),
 
+		    array('friend_status',           'length', 'max'=>8),
+		    array('isreadonly',              'in',
+		                                     'range'=>array('Pending', 'Approved', 'Rejected'),
+		                                     'allowEmpty'=>false),
+
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('my_friend_id, user_id, friend_id', 'safe', 'on'=>'search'),
 		);
@@ -108,6 +116,9 @@ class MyFriend extends CActiveRecord
 			'friend_id'          => 'Friend',
 			'created_time'       => 'Created Time',
 			'connected_by'       => 'Connected By',
+		    'friend_status'      => 'Friend Status',
+		    'request_time'       => 'Request Time',
+		    'process_time'       => 'Process time',
 		);
 	}
 
@@ -136,7 +147,10 @@ class MyFriend extends CActiveRecord
 		$criteria->compare('user_id',         $this->user_id);
 		$criteria->compare('friend_id',       $this->friend_id);
 		$criteria->compare('created_time',    $this->created_time,true);
-		$criteria->compare('connected_by',    $this->connected_by,true);
+		$criteria->compare('connected_by',    $this->connected_by);
+		$criteria->compare('friend_status',   $this->friend_status);
+		$criteria->compare('request_time',    $this->request_time,true);
+		$criteria->compare('process_time',    $this->process_time,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

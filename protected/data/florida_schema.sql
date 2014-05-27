@@ -1276,7 +1276,10 @@ ALTER TABLE tbl_my_friend
 ADD CONSTRAINT my_friend_friend
      FOREIGN KEY (friend_id) 
      REFERENCES tbl_user(user_id);
-     
+
+ALTER TABLE `tbl_my_friend` ADD COLUMN friend_status ENUM('Pending', 'Approved', 'Rejected');
+ALTER TABLE `tbl_my_friend` ADD COLUMN request_time  DATETIME;
+ALTER TABLE `tbl_my_friend` ADD COLUMN process_time  DATETIME;
 
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
