@@ -467,10 +467,16 @@ class AccountController extends Controller
 	    // /////////////////////////////////////////////////////////////////////
 	    $listMessages = UserMessage::model()->findAllByAttributes(array('recipient' => Yii::app()->user->id));
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's images
+	    // /////////////////////////////////////////////////////////////////////
+	    $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => Yii::app()->user->id, 'photo_type' => 'user'));
+
 	    $this->render('user_profile', array('model'            => $formModel,
 	                                        'myLocalFriends'   => $lstMyFriends,
 	                                        'myOnlineFriends'  => $lstMyOnlineFriends,
-	                                        'myMessages'       => $listMessages
+	                                        'myMessages'       => $listMessages,
+	                                        'myPhotos'         => $listPhotos,
 	                                       ));
 	}
 
