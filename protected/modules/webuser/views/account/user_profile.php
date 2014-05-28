@@ -489,7 +489,10 @@
       <!-- My images tab -->
       <div class="tab-pane" id="myimages">
 
-        <?php $this-> renderPartial('//user_photos/list', array('myPhotos' => $myPhotos)); ?>
+        <?php $this->renderPartial('//user_photos/list', array('myPhotos' => $myPhotos)); ?>
+
+        <?php $this->renderPartial('//user_photos/new_image'); ?>
+
 
       </div>
 
