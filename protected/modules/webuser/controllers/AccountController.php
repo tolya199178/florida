@@ -436,10 +436,48 @@ class AccountController extends Controller
 	        }
 	    }
 
-	    $this->render('user_profile', array('model' => $formModel));
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's friends
+	    // /////////////////////////////////////////////////////////////////////
+	    // /////////////////////////////////////////////////////////////////////
+	    // First, get a list of all local friends
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstMyFriends = MyFriend::model()->with('friend')->findAllByAttributes(array(
+	        'user_id' => Yii::app()->user->id
+	    ));
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // Now, get a list of the user's facebook friends
+	    // /////////////////////////////////////////////////////////////////////
+	    // Load the component
+	    // TODO: figure why component is not autoloading.
+	    $objFacebook = Yii::app()->getComponent('facebook');
 
+	    // Establish a connection to facebook
+	    $objFacebook->connect();
+
+	    $lstMyOnlineFriends = array();
+	    if ($objFacebook->isLoggedIn()) {
+	        $lstMyOnlineFriends = $objFacebook->getFriendList();
+	    }
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get the user's messages
+	    // /////////////////////////////////////////////////////////////////////
+	    $listMessages = UserMessage::model()->findAllByAttributes(array('recipient' => Yii::app()->user->id));
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's images
+	    // /////////////////////////////////////////////////////////////////////
+	    $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => Yii::app()->user->id, 'photo_type' => 'user'));
+
+	    $this->render('user_profile', array('model'            => $formModel,
+	                                        'myLocalFriends'   => $lstMyFriends,
+	                                        'myOnlineFriends'  => $lstMyOnlineFriends,
+	                                        'myMessages'       => $listMessages,
+	                                        'myPhotos'         => $listPhotos,
+	                                       ));
 	}
 
 	/**
