@@ -500,7 +500,7 @@
 
       <!-- My Reviews tab -->
       <div class="tab-pane" id="#myactivities">
-
+            <?php $this->renderPartial('//user_activities/listall', array('myActivities' => $myActivities)); ?>
       </div>
 
 
