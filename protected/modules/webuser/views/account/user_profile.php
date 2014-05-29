@@ -285,8 +285,14 @@
                 </div>
             </div>
         </div>
-    <!-- end profile settings for type user -->
+        <!-- end profile settings for type user -->
 
+
+    	<div class="row buttons">
+            <?php echo CHtml::submitButton('Update your Account', array('class'=>"btn btn-default")); ?>
+    	</div>
+
+        <?php $this->endWidget(); ?>
 
   </div>
   <!--  End User Profile Tab -->
@@ -294,11 +300,7 @@
         </ul>
 
 
-                    	<div class="row buttons">
-                    		<?php echo CHtml::submitButton('Create your Account', array('class'=>"btn btn-default")); ?>
-                    	</div>
 
-                    <?php $this->endWidget(); ?>
       </div>
       <div class="tab-pane" id="myprofile">
 
