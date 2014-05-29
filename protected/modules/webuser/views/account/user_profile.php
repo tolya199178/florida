@@ -47,8 +47,7 @@
   <li><a href="#myfriends" data-toggle="tab">My Friends</a></li>
   <li><a href="#mymessages" data-toggle="tab">My Messages</a></li>
   <li><a href="#myimages" data-toggle="tab">My Images</a></li>
-  <li><a href="#myreviews" data-toggle="tab">My Reviews</a></li>
-  <li><a href="#myrecommendations" data-toggle="tab">My Recommendations</a></li>
+  <li><a href="#myactivities" data-toggle="tab">My Activities</a></li>
 </ul>
 
     <div id='content' class="tab-content">
@@ -292,7 +291,8 @@
             <?php echo CHtml::submitButton('Update your Account', array('class'=>"btn btn-default")); ?>
     	</div>
 
-        <?php $this->endWidget(); ?>
+        <?php $this->endWidget(); ?>./
+
 
   </div>
   <!--  End User Profile Tab -->
@@ -499,13 +499,8 @@
       </div>
 
       <!-- My Reviews tab -->
-      <div class="tab-pane" id="myreviews">
-        My reviews
-      </div>
+      <div class="tab-pane" id="#myactivities">
 
-      <!-- My recommendation tab -->
-      <div class="tab-pane" id="myrecommendations">
-        My recommendations
       </div>
 
 
