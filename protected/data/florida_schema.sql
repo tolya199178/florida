@@ -1385,7 +1385,7 @@ ADD CONSTRAINT post_answer_parent
      
 
 -- ---------------------------------------------------------------------
--- Answer
+-- Post tag
 -- ---------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_post_tag`;
 
@@ -1396,6 +1396,28 @@ CREATE TABLE `tbl_post_tag` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ---------------------------------------------------------------------
+-- Post Votes
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_post_vote`;
+
+CREATE TABLE `tbl_post_vote` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `entity_type`      enum('question', 'answer')  NOT NULL,
+  `entity_id`       int(11) NOT NULL,
+  `vote`       int(11) NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_date` timestamp DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_post_vote
+ADD CONSTRAINT post_vote_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
