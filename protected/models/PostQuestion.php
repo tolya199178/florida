@@ -32,11 +32,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = PostQuestion::model()
+ * ...   $question = PostQuestion::model()
  * ...or
- * ...   $model = new PostQuestion;
+ * ...   $question = new PostQuestion;
  * ...or
- * ...   $model = new PostQuestion($scenario);
+ * ...   $question = new PostQuestion($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -75,12 +75,14 @@ class PostQuestion extends CActiveRecord
 	{
 
 		return array(
-			array('user_id, title, alias, content, created_date, entity_id', 'required'),
-			array('user_id, answers, views, votes, category_id, entity_id, reply_to', 'numerical', 'integerOnly'=>true),
-			array('title, alias', 'length', 'max'=>255),
-			array('status', 'length', 'max'=>10),
-			array('entity_type', 'length', 'max'=>8),
-			array('tags, modified_date', 'safe'),
+			array('user_id, title, alias, content, entity_id',                           'required'),
+			array('user_id, answers, views, votes, category_id, entity_id, reply_to',    'numerical', 'integerOnly'=>true),
+			array('title, alias',                                                        'length', 'max'=>255),
+			array('status',                                                              'in',
+			                                                                             'range'=>array('Open','Closed', 'Published', 'Unublished')),
+			array('entity_type',                                                         'in',
+			                                                                             'range'=>array('city', 'state', 'business', 'user', 'general', 'event')),
+			array('content, tags',                                                       'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('id, user_id, title, alias, content, tags, answers, views, votes, status, category_id, created_date, modified_date, entity_type, entity_id, reply_to', 'safe', 'on'=>'search'),
@@ -99,9 +101,9 @@ class PostQuestion extends CActiveRecord
 	{
 
 		return array(
-			'replyTo'      => array(self::BELONGS_TO, 'PostQuestion', 'reply_to'),
+			'replyTo'            => array(self::BELONGS_TO, 'PostQuestion', 'reply_to'),
 			'postQuestions'      => array(self::HAS_MANY, 'PostQuestion', 'reply_to'),
-			'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
+			'user'               => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -119,22 +121,22 @@ class PostQuestion extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id'      => 'ID',
-			'user_id'      => 'User',
-			'title'      => 'Title',
-			'alias'      => 'Alias',
-			'content'      => 'Content',
-			'tags'      => 'Tags',
-			'answers'      => 'Answers',
-			'views'      => 'Views',
-			'votes'      => 'Votes',
-			'status'      => 'Status',
-			'category_id'      => 'Category',
-			'created_date'      => 'Created Date',
-			'modified_date'      => 'Modified Date',
-			'entity_type'      => 'Entity Type',
+			'id'             => 'ID',
+			'user_id'        => 'User',
+			'title'          => 'Title',
+			'alias'          => 'Alias',
+			'content'        => 'Content',
+			'tags'           => 'Tags',
+			'answers'        => 'Answers',
+			'views'          => 'Views',
+			'votes'          => 'Votes',
+			'status'         => 'Status',
+			'category_id'    => 'Category',
+			'created_date'   => 'Created Date',
+			'modified_date'  => 'Modified Date',
+			'entity_type'    => 'Entity Type',
 			'entity_id'      => 'Entity',
-			'reply_to'      => 'Reply To',
+			'reply_to'       => 'Reply To',
 		);
 	}
 
@@ -159,22 +161,22 @@ class PostQuestion extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('alias',$this->alias,true);
-		$criteria->compare('content',$this->content,true);
-		$criteria->compare('tags',$this->tags,true);
-		$criteria->compare('answers',$this->answers);
-		$criteria->compare('views',$this->views);
-		$criteria->compare('votes',$this->votes);
-		$criteria->compare('status',$this->status,true);
-		$criteria->compare('category_id',$this->category_id);
-		$criteria->compare('created_date',$this->created_date,true);
-		$criteria->compare('modified_date',$this->modified_date,true);
-		$criteria->compare('entity_type',$this->entity_type,true);
-		$criteria->compare('entity_id',$this->entity_id);
-		$criteria->compare('reply_to',$this->reply_to);
+		$criteria->compare('id',              $this->id);
+		$criteria->compare('user_id',         $this->user_id);
+		$criteria->compare('title',           $this->title,true);
+		$criteria->compare('alias',           $this->alias,true);
+		$criteria->compare('content',         $this->content,true);
+		$criteria->compare('tags',            $this->tags,true);
+		$criteria->compare('answers',         $this->answers);
+		$criteria->compare('views',           $this->views);
+		$criteria->compare('votes',           $this->votes);
+		$criteria->compare('status',          $this->status,true);
+		$criteria->compare('category_id',     $this->category_id);
+		$criteria->compare('created_date',    $this->created_date,true);
+		$criteria->compare('modified_date',   $this->modified_date,true);
+		$criteria->compare('entity_type',     $this->entity_type,true);
+		$criteria->compare('entity_id',       $this->entity_id);
+		$criteria->compare('reply_to',        $this->reply_to);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
