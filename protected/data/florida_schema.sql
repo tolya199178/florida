@@ -1310,7 +1310,42 @@ ADD CONSTRAINT user_message_sender
      FOREIGN KEY (sender) 
      REFERENCES tbl_user(user_id);
 
+-- ---------------------------------------------------------------------
+-- Question
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_post_question`;
 
+CREATE TABLE `tbl_post_question` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `alias` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `tags` text DEFAULT NULL,
+  `answers` int(11) NOT NULL DEFAULT 0,
+  `views` int(11) NOT NULL DEFAULT 0,
+  `votes` int(11) NOT NULL DEFAULT 0,
+  `status` enum('Open','Closed', 'Published', 'Unublished') DEFAULT 'Open',
+  `category_id` int(11) DEFAULT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_date` timestamp DEFAULT 0,
+  `entity_type`      enum('city', 'state', 'business', 'user', 'general', 'event') DEFAULT 'general',
+  `entity_id`       int(11) NOT NULL, 
+  `reply_to` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_post_question
+ADD CONSTRAINT post_question_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_post_question
+ADD CONSTRAINT post_question_parent
+     FOREIGN KEY (reply_to) 
+     REFERENCES tbl_post_question(id);
+
+            
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
