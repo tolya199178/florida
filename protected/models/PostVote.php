@@ -64,11 +64,10 @@ class PostVote extends CActiveRecord
 	{
 
 		return array(
-			array('user_id, entity_type, entity_id, vote, created_date',     'required'),
+			array('user_id, entity_type, entity_id, vote',                   'required'),
 			array('user_id, entity_id, vote',                                'numerical', 'integerOnly'=>true),
-			array('entity_type',                                             'length', 'max'=>8),
-			array('modified_date',                                           'safe'),
-
+			array('entity_type',                                             'in',
+			                                                                 'range'=>array('question', 'answer')),
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('id, user_id, entity_type, entity_id, vote, created_date, modified_date', 'safe', 'on'=>'search'),
 		);
