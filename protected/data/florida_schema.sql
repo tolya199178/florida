@@ -1347,7 +1347,7 @@ ADD CONSTRAINT post_question_parent
 
             
 -- ---------------------------------------------------------------------
--- Question
+-- Answer
 -- ---------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_post_answer`;
 
@@ -1384,7 +1384,18 @@ ADD CONSTRAINT post_answer_parent
      REFERENCES tbl_post_answer(id);
      
 
-     
+-- ---------------------------------------------------------------------
+-- Answer
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_post_tag`;
+
+CREATE TABLE `tbl_post_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `frequency` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
