@@ -196,4 +196,40 @@ class PostQuestion extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->created_date = new CDbExpression('NOW()');
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_date = new CDbExpression('NOW()');
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Auto set the user id. Set it to the currently logged in user or
+	    // '1' otherwise (and) for command line apps too.
+	    // /////////////////////////////////////////////////////////////////
+	    $this->user_id   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+
+
+	    return parent::beforeSave();
+	}
 }
