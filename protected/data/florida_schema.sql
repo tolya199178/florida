@@ -1383,6 +1383,8 @@ ADD CONSTRAINT post_answer_parent
      FOREIGN KEY (reply_to) 
      REFERENCES tbl_post_answer(id);
      
+alter table tbl_post_answer change column `alias` `alias` varchar(255);
+alter table tbl_post_answer change column `title` `title` varchar(255);
 
 -- ---------------------------------------------------------------------
 -- Post tag

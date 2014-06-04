@@ -72,13 +72,11 @@ class PostAnswer extends CActiveRecord
 	{
 
 		return array(
-			array('user_id, question_id, title, alias, content',                 'required'),
+			array('user_id, question_id, content',                               'required'),
 			array('user_id, question_id, votes, reply_to',                       'numerical', 'integerOnly'=>true),
 			array('title, alias',                                                'length', 'max'=>255),
 		    array('status',                                                      'in','range'=>array('Open','Closed', 'Published', 'Unublished')),
             array('content, tags',                                               'length', 'max'=>4096),
-	        array('entity_type',                                                 'in',
-		                                                                         'range'=>array('city', 'state', 'business', 'user', 'general', 'event')),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('id, user_id, question_id, title, alias, content, tags, votes, status, created_date, modified_date, reply_to', 'safe', 'on'=>'search'),
