@@ -227,7 +227,9 @@ class PostQuestion extends CActiveRecord
 	    // Auto set the user id. Set it to the currently logged in user or
 	    // '1' otherwise (and) for command line apps too.
 	    // /////////////////////////////////////////////////////////////////
-	    $this->user_id   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+	    if ($this->isNewRecord) {
+	       $this->user_id   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+	    }
 
 
 	    return parent::beforeSave();
