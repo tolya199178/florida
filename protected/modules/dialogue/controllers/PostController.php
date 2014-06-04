@@ -333,4 +333,32 @@ class PostController extends Controller
             }
         }
     }
+
+    /**
+     * Search by tag
+     *
+     * @param
+     *            <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionTagsearch()
+    {
+
+        $argSearchTerm  = Yii::app()->request->getQuery('tag', null);
+
+        // TODO: We should consider pagination
+        $dbCriteria             = new CDbCriteria;
+
+        if ($argSearchTerm != null)
+        {
+            $dbCriteria->condition  = " FIND_IN_SET(:searchtag, tags) ";
+            $dbCriteria->params     = array(':searchtag' => trim($argSearchTerm));
+        }
+
+        $listQuestions  = PostQuestion::model()->findAll($dbCriteria);
+
+        return $this->render('list', compact('listQuestions'));
+    }
 }
