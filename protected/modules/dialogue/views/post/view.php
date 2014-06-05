@@ -43,8 +43,6 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 
             $('.editpost').on('click',function(event){
 
-    debugger;
-
                 event.preventDefault();
 
                 var url     = $(this).attr('href');
@@ -66,11 +64,8 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
                         return false;
                     }
 
-    debugger;
-
                     // Move the form to qa-view-text
                     $('#'+target).replaceWith($("#edit_form_container").html());
-                    // $('#question_meta').html('');
                     $("#edit_form_container").remove();
 
                     $('#post_id').val(data.postdata.id);
