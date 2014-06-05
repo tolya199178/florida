@@ -1,0 +1,179 @@
+@CHARSET "UTF-8";
+
+
+/* "qa.index.css"; */
+
+.qa-index .question-meta {
+    float: right;
+}
+
+.qa-index .qa-summary {
+    margin-left: 208px;
+}
+
+.qa-index-add-button {
+    float: right;
+}
+
+
+/* "qa.view.css"; */
+.qa-view-text {
+    min-height: 100px;
+}
+
+.qa-view-meta {
+    text-align: right;
+}
+
+.qa-view-meta .qa-tags {
+    float: left;
+}
+
+.qa-view-actions {
+    float: left;
+    width: 60px;
+}
+
+.qa-view-body {
+    margin-left: 70px;
+}
+
+.qa-view-question {
+    margin-bottom: 10px;
+}
+
+.qa-view-answer {
+    min-height: 100px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.qa-view-heading {
+    margin-top: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.qa-view-answers-heading .qa-view-title {
+    float: left;
+    margin: 0;
+}
+
+.qa-view-answers-heading .qa-view-tabs {
+    float: right;
+    border-bottom: none;
+}
+
+
+
+
+/*  "qa.edit.css" */
+
+
+/* qa */
+
+.qa-list {
+    margin-top: 10px;
+}
+
+.qa-item-not-found {
+    text-align: center;
+}
+
+.qa-panels {
+    float: left;
+    margin-right: 5px;
+}
+
+.qa-panel {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 5px 0 0;
+    width: 64px;
+    height: 54px;
+    text-align: center;
+    padding: 4px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.qa-panel.status-answered {
+    color: #71a311;
+    font-weight: normal;
+}
+
+.qa-panel.status-answered-accepted {
+    background-color: #71A311;
+    color: #ffffff;
+}
+
+.qa-panel.status-answered-accepted strong {
+    color: #ffffff;
+}
+
+.qa-panel.status-unanswered {
+    color: #a52211;
+}
+
+.qa-panel .mini-counts {
+    height: 25px;
+    font-size: 160%;
+    font-weight: normal;
+}
+
+.qa-panel .votes {
+    color: #555;
+}
+
+.qa-panel .views {
+    color: #999;
+}
+
+.qa-vote {
+    color: #555;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.qa-vote-up {
+    margin-left: 2px;
+}
+
+.qa-vote-up,
+.qa-vote-down {
+    display: block;
+    font-size: 16px;
+}
+
+.qa-vote-count {
+    display: block;
+    color: #555;
+    font-size: 24px;
+}
+
+.qa-favorite {
+    font-size: 32px;
+    text-align: center;
+}
+
+.qa-favorite-active .qa-favorite-link:hover,
+.qa-favorite-link {
+    color: #666;
+}
+
+.qa-favorite-active .qa-favorite-link,
+.qa-favorite-link:hover {
+    color: #f0ad4e;
+}
+
+.qa-created {
+    padding: 0 10px;
+}
+
+.qa-time {
+    color: #999;
+}
+
