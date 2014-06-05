@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="http://demo.bootstraptor.com/assets/ico/favicon.png">
 
-    <title>Carousel Template for Bootstrap</title>
+    <title>Florida.com</title>
 
     <!-- Bootstrap custom core CSS -->
 <link rel="stylesheet"
@@ -79,9 +79,10 @@
 
 
   <style type="text/css" id="holderjs-style">.holderjs-fluid {font-size:16px;font-weight:bold;text-align:center;font-family:sans-serif;margin:0}</style></head>
-<!-- NAVBAR
-================================================== -->
+
   <body>
+
+  <!-- NAVBAR ================================================== -->
    <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
 	<div class="container">
 	  <!-- Brand and toggle get grouped for better mobile display -->
@@ -92,31 +93,34 @@
 		  <span class="icon-bar"></span>
 		  <span class="icon-bar"></span>
 		</button>
-<!-- 		<a class="navbar-brand" href="#">YOURSITE.COM</a> -->
-                <a href="<?php echo Yii::app()->baseUrl; ?>"
-                    class="navbar-brand"> <img
-                    src="<?php echo Yii::app()->theme->baseUrl."/resources/images/site/logo-v1.png"; ?>">
-                </a>
+        <a href="<?php echo Yii::app()->baseUrl; ?>"
+            class="navbar-brand"> <img
+            src="<?php echo Yii::app()->theme->baseUrl."/resources/images/site/logo-v1.png"; ?>">
+        </a>
 
 	  </div>
 
 	  <!-- Collect the nav links, forms, and other content for toggling -->
 	  <div class="collapse navbar-collapse navbar-ex1-collapse">
 		<ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('concierge/'); ?>">Concierge</a></li>
-                    <li class="dropdown"><a href="#" class="dropdown-toggle"
-                        data-toggle="dropdown">Businesses<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Add a business</a></li>
-                            <li><a href="#">Claim your business</a></li>
-                            <li class="divider"></li>
-                            <li class="dropdown-header">Nav header</li>
-                            <li><a href="#">Business Profile</a></li>
-                        </ul>
-                    </li>
+            <li class="active"><a href="#">Home</a></li>
+
+            <li><a href="<?php echo Yii::app()->createUrl('concierge/'); ?>">I WANT TO</a></li>
+
+            <li><a href="<?php echo Yii::app()->createUrl('discussions/'); ?>">Discussions</a></li>
+
+            <li><a href="<?php echo Yii::app()->createUrl('events/'); ?>">Events</a></li>
+
+            <li class="dropdown"><a href="#" class="dropdown-toggle"
+                data-toggle="dropdown">Businesses<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="<?php echo Yii::app()->createUrl('business/browse/'); ?>">Show Business</a></li>
+                    <li class="divider"></li>
+                    <li><a href="<?php echo Yii::app()->createUrl('business/add/'); ?>">Add a business</a></li>
+                    <li><a href="<?php echo Yii::app()->createUrl('business/claim/'); ?>">Claim your business</a></li>
+
+                </ul>
+            </li>
 		</ul>
 <?php           if(!Yii::app()->user->isGuest) { ?>
 <?php
@@ -132,11 +136,13 @@
                             <li><a href="#changepassword">Change Password</a></li>
                             <li class="divider"></li>
                             <li><a href="<?php echo Yii::app()->createUrl('myfriend/'); ?>">My friends</a></li>
-                            <li><a href="#invitations">Invitations</a></li>
-                            <li><a href="#discussions">Discussions</a></li>
+
                             <li class="divider"></li>
                             <li><a href="#logout">Logout</a></li>
+
                         </ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
                     </li>
                 </ul>
 
