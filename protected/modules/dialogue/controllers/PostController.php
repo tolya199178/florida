@@ -450,6 +450,15 @@ class PostController extends Controller
                 if ($modelQuestion)
                 {
 
+                    if ($modelQuestion->user_id != Yii::app()->user->id)
+                    {
+                        echo CJSON::encode(array(
+                            'result'    => false,
+                            'message'   => 'No permission to edit',
+                        ));
+                        Yii::app()->end();
+                    }
+
                     echo CJSON::encode(array(
                                     'result'    => true,
                                     'posttype'  => 'question',
@@ -463,8 +472,7 @@ class PostController extends Controller
 
                     echo CJSON::encode(array(
                                     'result'    => false,
-                                    'posttype'  => 'question',
-                                    'postdata'  => false
+                                    'message'   => 'Post not found.',
                                 ));
                     Yii::app()->end();
 
@@ -477,6 +485,15 @@ class PostController extends Controller
 
                 if ($modelAnswer)
                 {
+
+                    if ($modelAnswer->user_id != Yii::app()->user->id)
+                    {
+                        echo CJSON::encode(array(
+                            'result'    => false,
+                            'message'   => 'No permission to edit',
+                        ));
+                        Yii::app()->end();
+                    }
 
                     echo CJSON::encode(array(
                                     'result'    => true,
@@ -491,8 +508,7 @@ class PostController extends Controller
 
                     echo CJSON::encode(array(
                                     'result'    => false,
-                                    'posttype'  => 'answer',
-                                    'postdata'  => false
+                                    'message'   => 'Post not found.',
                                 ));
                     Yii::app()->end();
 

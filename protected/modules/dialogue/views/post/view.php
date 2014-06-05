@@ -138,7 +138,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                     $form=$this->beginWidget('CActiveForm', array(
                     	'id'=>'profile-form',
                         'action'=>Yii::app()->createUrl('//dialogue/post/answer/'),
-                    )); ?>
+                    ));
+                ?>
 
                     <?php echo $form->errorSummary($answer); ?>
                     <?php $answer->question_id = $modelQuestion->id; ?>
