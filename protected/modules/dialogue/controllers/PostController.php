@@ -287,7 +287,8 @@ class PostController extends Controller
                                 ));
                     Yii::app()->end();
                 }
-            } else
+            }
+            else
             {
 
                 echo CJSON::encode(array(
@@ -346,6 +347,9 @@ class PostController extends Controller
     public function actionTagsearch()
     {
 
+        // BUG: No mechanism to preveny multiple votes. Cookies were planned, but
+        // BUGL ...may become unsutainable due ti volume. Consider a vote logging table.
+
         $argSearchTerm  = Yii::app()->request->getQuery('tag', null);
 
         // TODO: We should consider pagination
@@ -360,5 +364,143 @@ class PostController extends Controller
         $listQuestions  = PostQuestion::model()->findAll($dbCriteria);
 
         return $this->render('list', compact('listQuestions'));
+    }
+
+    /**
+     * Search by tag
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionEditpost()
+    {
+
+        // TODO: Check that only the original poster can edit.
+
+        if (isset($_POST['post_id']))
+        {
+            $argPostType     = Yii::app()->request->getPost('post_type');
+            $argPostId       = Yii::app()->request->getPost('post_id');
+            $argQuestion_id  = Yii::app()->request->getPost('static_question_id');
+
+            if ($argPostType == 'question')
+            {
+                $modelQuestion = PostQuestion::model()->findByPk($argPostId);
+
+                if ($modelQuestion)
+                {
+                    $modelQuestion->content = Yii::app()->request->getPost('post_content');
+
+                    if ($modelQuestion->save() == false)
+                    {
+
+                        print_r($modelQuestion);
+                        echo 'The updated post could not be saved. Please try again later.';
+                    }
+
+                }
+
+                //  Show the post
+                //$listAnswers    = PostAnswer::model()->findAllByAttributes(array('question_id' => $modelQuestion->id));
+                //  return $this->render('view', compact('modelQuestion', 'listAnswers'));
+                $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
+                                                'question' => $argQuestion_id
+                                            )));
+
+            }
+            else
+            if ($argPostType == 'answer')
+            {
+                $modelAnswer = PostAnswer::model()->findByPk($argPostId);
+
+                if ($modelAnswer)
+                {
+                    $modelAnswer->content = Yii::app()->request->getPost('post_content');
+
+                    if ($modelAnswer->save() == false)
+                    {
+                        echo 'The updated post could not be saved. Please try again later.';
+                    }
+
+                }
+
+//                 //  Show the post
+//                 $listAnswers    = PostAnswer::model()->findAllByAttributes(array('question_id' => $argQuestion_id));
+//                 return $this->render('view', compact('modelQuestion', 'listAnswers'));
+                $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
+                                                'question' => $argQuestion_id
+                                            )));
+
+
+            }
+
+        }
+        else
+        {
+            $argQuestionId  = (int) Yii::app()->request->getQuery('question', null);
+            $argAnswerId    = (int) Yii::app()->request->getQuery('answer', null);
+
+            if ($argQuestionId != null)
+            {
+
+                $modelQuestion = PostQuestion::model()->findByPk($argQuestionId);
+
+                if ($modelQuestion)
+                {
+
+                    echo CJSON::encode(array(
+                                    'result'    => true,
+                                    'posttype'  => 'question',
+                                    'postdata'  => $modelQuestion->attributes
+                                ));
+                    Yii::app()->end();
+
+                }
+                else
+                {
+
+                    echo CJSON::encode(array(
+                                    'result'    => false,
+                                    'posttype'  => 'question',
+                                    'postdata'  => false
+                                ));
+                    Yii::app()->end();
+
+                }
+
+            }
+            else  if ($argAnswerId != null)
+            {
+                $modelAnswer = PostAnswer::model()->findByPk($argAnswerId);
+
+                if ($modelAnswer)
+                {
+
+                    echo CJSON::encode(array(
+                                    'result'    => true,
+                                    'posttype'  => 'answer',
+                                    'postdata'  => $modelAnswer->attributes
+                                ));
+                    Yii::app()->end();
+
+                }
+                else
+                {
+
+                    echo CJSON::encode(array(
+                                    'result'    => false,
+                                    'posttype'  => 'answer',
+                                    'postdata'  => false
+                                ));
+                    Yii::app()->end();
+
+                }
+            }
+
+        }
+
+
     }
 }

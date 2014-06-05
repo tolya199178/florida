@@ -4,81 +4,103 @@ $baseScriptUrl = $this->createAbsoluteUrl('/');
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/css/dialogue/dialogue.css');
 
 ?>
+
 <?php
+ $script = <<<EOD
 
-// $this->title = $modelQuestion->title;
+            $('.qa-vote-up, .qa-vote-down').on('click',function(event){
 
-$answerOrders = array(
-    'Active' => 'active',
-    'Oldest' => 'oldest',
-    'Votes' => 'votes'
-);
+                event.preventDefault();
+
+                var url         = $(this).attr('href');
+                var target      = $(this).attr('target');
+
+        		// process the form. Note that there is no data send as posts arguements.
+        		$.ajax({
+        			type 		: 'POST',
+        			url 		: url,
+        		    data 		: null,
+        			dataType 	: 'json'
+        		})
+        		// using the done promise callback
+        		.done(function(data) {
+
+                    if (data.result == false)
+                    {
+                        alert(data.message);
+                        return false;
+                    }
+
+                    $('#'+target).html(data.votes);
 
 
-// Hack attacck
-$answerOrder = null;
+        		});
 
+                return false;
+
+
+           });
+
+            $('.editpost').on('click',function(event){
+
+    debugger;
+
+                event.preventDefault();
+
+                var url     = $(this).attr('href');
+                var type    = $(this).attr('posttype');
+                var target  = $(this).attr('target');
+
+        		$.ajax({
+        			type 		: 'GET',
+        			url 		: url,
+        		    data 		: null,
+        			dataType 	: 'json'
+        		})
+        		// using the done promise callback
+        		.done(function(data) {
+
+                    if (data.result == false)
+                    {
+                        alert(data.message);
+                        return false;
+                    }
+
+    debugger;
+
+                    // Move the form to qa-view-text
+                    $('#'+target).replaceWith($("#edit_form_container").html());
+                    // $('#question_meta').html('');
+                    $("#edit_form_container").remove();
+
+                    $('#post_id').val(data.postdata.id);
+                    $('#post_type').val(data.posttype);
+                    $('#post_content').val(data.postdata.content);
+
+                    $('#edit-form').get(0).setAttribute('action', url);
+
+        		});
+
+                return false;
+
+           });
+
+EOD;
+
+Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
 
 ?>
-<div class="container" style="background:#eeeeee;">
+
+<div class="container" style="background:#fff;">
     <div class="qa-view row">
         <div class="col-md-12">
             <div class="qa-view-question">
                 <div class="qa-view-actions">
-
-<div class="qa-vote">
-    <?php if ($modelQuestion->user_id != Yii::app()->user->id) { ?>
-    <a class="qa-vote-up"
-       href="< ? = Module::url([$route, 'id' => $model->id, 'vote' => 'up']) ? >"
-       title="< ? = Module::t('Vote up') ?> ">
-        <span class="glyphicon glyphicon-chevron-up"></span>
-    </a>
-    <?php } ?>
-    <span class="qa-vote-count"><?php echo $modelQuestion->votes ?></span>
-    <?php if ($modelQuestion->user_id != Yii::app()->user->id) { ?>
-    <a class="qa-vote-down"
-       href="< ? = Module::url([$route, 'id' => $model->id, 'vote' => 'down']) ? >"
-       title="< ? = Module::t('Vote down') ? >">
-        <span class="glyphicon glyphicon-chevron-down"></span>
-    </a>
-    <?php } ?>
-</div>
-<!--                     < ? = $this->render('parts/favorite', ['model' => $model]) ? > -->
-
+                    <?php $this->renderPartial("subviews/vote",array('model' => $modelQuestion, 'type' => 'question')); ?>
                 </div>
 
                 <div class="qa-view-body">
-                    <h1 class="qa-view-title"><?php echo CHtml::encode($modelQuestion->title) ?></h1>
-
-                    <div class="qa-view-text">
-                        <?php echo CHtml::encode($modelQuestion->content) ?>
-                    </div>
-
-                    <div class="qa-view-meta">
-
-<!--                         < ?= $this->render('parts/tags-list', ['model' => $model]) ? > -->
-<span class="qa-tags">
-<?php $tagsList = explode(",", $modelQuestion->tags); ?>
-<?php foreach ($tagsList as $tag) { ?>
-   <?php echo CHtml::link($tag, 'index', array('class'=>"label label-primary", 'title'=>"", 'rel'=>"tag")); ?>
-<?php } ?>
-</span>
-
-<!--                         < ? = $this->render('parts/edit-links', ['model' => $model]) ? > -->
-<?php if ($modelQuestion->user_id == Yii::app()->user->id) { ?>
-   <?php echo CHtml::link('Edit', 'edit', array('class'=>"label label-success", 'title'=>"")); ?>
-
-   <?php echo CHtml::link('Delete', 'delete', array('class'=>"label label-danger", 'title'=>"")); ?>
-
-       <span class="glyphicon glyphicon-remove"></span></a>
-<?php } ?>
-
-<!--                         < ? = $this->render('parts/created', ['model' => $model]) ? > -->
-<span class="qa-created">
-    <span class="qa-time"><?php echo $modelQuestion->modified_date; ?></span>
-    <span class="qa-user"><?php echo $modelQuestion->user['first_name'].' '.$modelQuestion->user['last_name'] ?></span>
-</span>
-                    </div>
+                    <?php $this->renderPartial("subviews/post",array('model' => $modelQuestion, 'type' => 'question')); ?>
                 </div>
             </div>
 
@@ -87,106 +109,55 @@ $answerOrder = null;
                     <?php echo  ((count($listAnswers) == 0)?'No Answers yet': ((count($listAnswers) == 1)?'One Answer.': count($listAnswers).' answers.') ); ?>
                 </h3>
 
-                <?php if (count($listAnswers)) { ?>
-                    <ul class="qa-view-tabs nav nav-tabs">
-                        <?php foreach ($listAnswers as $aId => $aOrder) { ?>
-                            <li <?php echo ($aOrder == $answerOrder) ? 'class="active"' : '' ?> >
-                                <?php echo CHtml::link('Edit', 'edit', array('class'=>"label label-success", 'title'=>"")); ?>
-                            </li>
-                        <?php } ?>
-                    </ul>
-                <?php }  ?>
             </div>
 
             <div class="qa-view-answers">
                 <?php foreach ($listAnswers as $row) { ?>
                     <div class="qa-view-answer">
                         <div class="qa-view-actions">
-<!--                             < ? = $this->render('parts/vote', ['model' => $row, 'route' => 'answer-vote']) ? > -->
-<div class="qa-vote">
-    <?php if ($row->user_id != Yii::app()->user->id) { ?>
-    <a class="qa-vote-up"
-       href="< ? = Module::url([$route, 'id' => $model->id, 'vote' => 'up']) ? >"
-       title="< ? = Module::t('Vote up') ?> ">
-        <span class="glyphicon glyphicon-chevron-up"></span>
-    </a>
-    <?php } ?>
-    <span class="qa-vote-count"><?php echo $row->votes ?></span>
-    <?php if ($row->user_id != Yii::app()->user->id) { ?>
-    <a class="qa-vote-down"
-       href="< ? = Module::url([$route, 'id' => $model->id, 'vote' => 'down']) ? >"
-       title="< ? = Module::t('Vote down') ? >">
-        <span class="glyphicon glyphicon-chevron-down"></span>
-    </a>
-    <?php } ?>
-</div>
+
+                            <?php $this->renderPartial("subviews/vote",array('model' => $row, 'type' => 'answer')); ?>
 
                         </div>
                         <div class="qa-view-body">
-                            <div class="qa-view-text">
-                                <?php echo CHtml::encode($row->content) ?>
-                            </div>
-
-                            <div class="qa-view-meta">
-<!--                                 < ? = $this->render('parts/edit-links', ['model' => $row]) ? > -->
-<?php if ($row->user_id == Yii::app()->user->id) { ?>
-   <?php echo CHtml::link('Edit', 'edit', array('class'=>"label label-success", 'title'=>"")); ?>
-
-   <?php echo CHtml::link('Delete', 'delete', array('class'=>"label label-danger", 'title'=>"")); ?>
-
-       <span class="glyphicon glyphicon-remove"></span></a>
-<?php } ?>
-
-
-<!--                                 < ? = $this->render('parts/created', ['model' => $row]) ? > -->
-<span class="qa-created">
-    <span class="qa-time"><?php echo $row->modified_date; ?></span>
-    <span class="qa-user"><?php echo $row->user['first_name'].' '.$row->user['last_name'] ?></span>
-</span>
-                            </div>
+                            <?php $this->renderPartial("subviews/post",array('model' => $row, 'type' => 'answer')); ?>
                         </div>
                     </div>
                 <?php } ?>
 
             </div>
 
-            <div class="qa-view-pager">
-<!--                 < ? = $this->render('parts/pager', ['dataProvider' => $answerDataProvider]) ? > -->
-            </div>
 
             <div class="qa-view-answer-form">
-<!--                 < ? = $this->render('parts/form-answer', ['model' => $answer, 'action' => Module::url(['answer', 'id' => $model->id])]); ? > -->
 
-<?php
+                <div id='postanswer_form'>
+                <?php
 
-$answer = new PostAnswer;
+                    $answer = new PostAnswer;
 
-$form=$this->beginWidget('CActiveForm', array(
-	'id'=>'profile-form',
-	'enableAjaxValidation'=>true,
-	'enableClientValidation'=>false,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-	),
-	'htmlOptions' => array('enctype' => 'multipart/form-data'),
-	'focus'=>array($answer,'username'),
-)); ?>
+                    $form=$this->beginWidget('CActiveForm', array(
+                    	'id'=>'profile-form',
+                        'action'=>Yii::app()->createUrl('//dialogue/post/answer/'),
+                    )); ?>
 
-<?php echo $form->errorSummary($answer); ?>
+                    <?php echo $form->errorSummary($answer); ?>
+                    <?php $answer->question_id = $modelQuestion->id; ?>
+                    <?php echo $form->hiddenField($answer, 'question_id'); ?>
 
-<div class="form-group field-answer-content required">
-<label for="answer-content" class="control-label"></label>
-    <?php echo $form->textArea($answer,'content', array('rows' => 6, 'class' => 'form-control')); ?>
-<div class="help-block"></div>
-</div>
+                    <div class="form-group field-answer-content required">
+                    <label for="answer-content" class="control-label"></label>
+                        <?php echo $form->textArea($answer,'content', array('rows' => 6, 'class' => 'form-control')); ?>
+                    <div class="help-block"></div>
+                    </div>
 
 
 
-    <div class="form-group">
-	<?php echo CHtml::submitButton(($answer->isNewRecord ? 'Create' : 'Update'), array('class'=>"btn btn-default")); ?>
-    </div>
+                        <div class="form-group">
+                    	   <?php echo CHtml::submitButton(($answer->isNewRecord ? 'Create' : 'Update'), array('class'=>"btn btn-inverse")); ?>
+                        </div>
 
-<?php $this->endWidget(); ?>
+                <?php $this->endWidget(); ?>
+                </div><!-- postanswer_form -->
 
 
             </div>
@@ -194,4 +165,19 @@ $form=$this->beginWidget('CActiveForm', array(
 
         </div>
     </div>
+</div>
+
+<div id='edit_form_container' style="display:none;">
+    <form id="edit-form" action="#" method="post">
+        <input name="static_question_id" id="static_question_id" type="hidden" value="<?php echo $modelQuestion->id; ?>" />
+        <input name="post_id" id="post_id" type="hidden" value="" />
+        <input name="post_type" id="post_type" type="hidden" value="" />
+        <div class="form-group field-answer-content required">
+            <label for="answer-content" class="control-label"></label>
+            <textarea rows="6" class="form-control" name="post_content" id="post_content"></textarea>
+            <div class="help-block"></div>
+        </div>
+        <div class="form-group">
+    	<input class="btn btn-inverse" type="submit" name="yt0" value="Save Updated Post" />    </div>
+    </form>
 </div>

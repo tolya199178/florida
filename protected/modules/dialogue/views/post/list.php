@@ -1,9 +1,7 @@
 <?php
 
 $baseScriptUrl = $this->createAbsoluteUrl('/');
-// Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/css/dialogue/dialogue.css');
-
-return;
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/css/dialogue/dialogue.css');
 
 ?>
 
