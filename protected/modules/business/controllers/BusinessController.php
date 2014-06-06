@@ -46,8 +46,6 @@ class BusinessController extends Controller
      */
     public function actionIndex()
     {
-  //      echo 'hello';
-        // exit;
         CController::forward('/business/business/browse/');
     }
 
@@ -59,15 +57,54 @@ class BusinessController extends Controller
      * @return <none> <none>
      * @access public
      */
+    public function actionShowlisting()
+    {
+
+        $argCategoryId = (int) Yii::app()->request->getQuery('category', 0);
+        $argPage       = (int) Yii::app()->request->getQuery('page', 0);
+
+        $currentCategory = 	$argCategoryId;
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get a listing of businesses for the current category
+        // /////////////////////////////////////////////////////////////////////
+        $dbCriteria             = new CDbCriteria;
+        $dbCriteria->with       = array('businessCategories');
+        $dbCriteria->limit      = (int) Yii::app()->params['PAGESIZEREC'];
+        $dbCriteria->offset     = $argPage * $dbCriteria->limit;
+
+        // NOTE: Add this otherwise Yii removes the relation from the query.
+        // https://code.google.com/p/yii/issues/detail?id=2678
+        $dbCriteria->together   = true;
+
+        $dbCriteria->condition  = 'businessCategories.category_id = :category_id';
+
+        if (empty($currentCategory))
+        {
+            $dbCriteria->addCondition('businessCategories.category_id IS NULL', 'OR');
+        }
+
+        $dbCriteria->params     = array(':category_id' => $currentCategory);
+
+        $listBusiness   = Business::model()->findAll($dbCriteria);
+
+        $this->renderPartial('business_list', array('listBusiness' => $listBusiness));
+
+    }
+
+    /**
+     * Displays the business listing screen
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
 	public function actionBrowse()
 	{
 
 	    $argCategoryId = (int) Yii::app()->request->getQuery('category', 0);
 
-
-
-	    // TODO: For now, we display from the root. In next iterations, we will add
-	    // TODO: paging and category filtering.
         $currentCategory = 	$argCategoryId;
 
         // /////////////////////////////////////////////////////////////////////
@@ -105,40 +142,10 @@ class BusinessController extends Controller
 
         $listSubcategory = $cmdSubCategoryList->queryAll();
 
-//         $listSubcategory = Yii::app()->db->createCommand()
-//                                          ->select('category_id, parent_id, category_name')
-//                                          ->from('tbl_category')
-//                                  	     ->where('parent_id = :category_id', array(':category_id'=>$currentCategory))
-//                                 	     ->queryAll();
-
-
-        // /////////////////////////////////////////////////////////////////////
-        // Get a listing of businesses for the current category
-        // /////////////////////////////////////////////////////////////////////
-        $dbCriteria             = new CDbCriteria;
-        $dbCriteria->with       = array('businessCategories');
-        $dbCriteria->limit      = Yii::app()->params['PAGESIZEREC'];
-
-        // NOTE: Add this otherwise Yii removes the relation from the query.
-        // https://code.google.com/p/yii/issues/detail?id=2678
-        $dbCriteria->together   = true;
-
-        $dbCriteria->condition  = 'businessCategories.category_id = :category_id';
-        if (empty($currentCategory))
-        {
-            $dbCriteria->addCondition('businessCategories.category_id IS NULL', 'OR');
-        }
-
-        $dbCriteria->params     = array(':category_id' => $currentCategory);
-
-        $listBusiness   = Business::model()->findAll($dbCriteria);
-
-
         $this->render('browse', array('category_path'     => $categoryBreadcrumb,
                                       'listSubcategories' => $listSubcategory,
-                                      'listBusiness'      => $listBusiness
+                                      'currentCategory'   => $currentCategory
                               ));
-
 	}
 
 
