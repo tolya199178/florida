@@ -572,6 +572,36 @@ text-align:left;
                 <div class="panel-body">
                     <div class="row">
 
+                		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                			<div class="panel panel-default margin-top-10">
+                				<div class="panel-heading">
+                					<h3>Search Other Categories</h3>
+                				</div>
+
+                				<div class="row margin-top-10">
+
+                				    <ul>
+                                    <?php
+
+                                        foreach ($listSubcategories as $objBusiness)
+                                        {
+                                            echo '<li>'.
+                                                 CHtml::link(CHtml::encode($objBusiness['category_name']),
+                                                             Yii::app()->createUrl('//business/business/browse', array('category' => $objBusiness['category_id'])),
+                                                             array('class'=>"question-link", 'title'=>"")).
+                                                 '</li>';
+
+                                        }
+
+                                    ?>
+                				    </ul>
+
+
+
+                				</div>
+                			</div>
+                		</div>
+
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
 
                             <div id='category_breadcrumbs'>

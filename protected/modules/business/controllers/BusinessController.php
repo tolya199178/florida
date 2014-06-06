@@ -62,9 +62,13 @@ class BusinessController extends Controller
 	public function actionBrowse()
 	{
 
+	    $argCategoryId = (int) Yii::app()->request->getQuery('category', 0);
+
+
+
 	    // TODO: For now, we display from the root. In next iterations, we will add
 	    // TODO: paging and category filtering.
-        $currentCategory = 0;
+        $currentCategory = 	$argCategoryId;
 
         // /////////////////////////////////////////////////////////////////////
         // Get details about the current category
@@ -87,11 +91,25 @@ class BusinessController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Get the list of subcategories of the current category
         // /////////////////////////////////////////////////////////////////////
-        $listSubcategory = Yii::app()->db->createCommand()
+        $cmdSubCategoryList = Yii::app()->db->createCommand()
                                          ->select('category_id, parent_id, category_name')
-                                         ->from('tbl_category')
-                                 	     ->where('parent_id = :category_id', array(':category_id'=>$currentCategory))
-                                	     ->queryAll();
+                                         ->from('tbl_category');
+        if (empty($currentCategory))
+        {
+            $cmdSubCategoryList->where('parent_id = 0 OR parent_id  IS NULL', array(':category_id'=>$currentCategory));
+        }
+        else
+        {
+            $cmdSubCategoryList->where('parent_id = :category_id', array(':category_id'=>$currentCategory));
+        }
+
+        $listSubcategory = $cmdSubCategoryList->queryAll();
+
+//         $listSubcategory = Yii::app()->db->createCommand()
+//                                          ->select('category_id, parent_id, category_name')
+//                                          ->from('tbl_category')
+//                                  	     ->where('parent_id = :category_id', array(':category_id'=>$currentCategory))
+//                                 	     ->queryAll();
 
 
         // /////////////////////////////////////////////////////////////////////
@@ -117,7 +135,7 @@ class BusinessController extends Controller
 
 
         $this->render('browse', array('category_path'     => $categoryBreadcrumb,
-                                      'subcategories'     => $listSubcategory,
+                                      'listSubcategories' => $listSubcategory,
                                       'listBusiness'      => $listBusiness
                               ));
 
