@@ -2,6 +2,9 @@
 
 class BusinessModule extends CWebModule
 {
+
+    public $defaultController='business';
+
 	public function init()
 	{
 		// this method is called when the module is being created
