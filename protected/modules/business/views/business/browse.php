@@ -1,3 +1,10 @@
+<?php
+
+// Hack
+$data['city'] = 'Miami';
+
+?>
+
 <style>
 
 /* Remove gutter */
@@ -462,12 +469,42 @@ h2 {
 
 <?php
 
+$local_list = City::model()->getListjson();
+
 $baseUrl = $this->createAbsoluteUrl('/');
 
 $showlistingUrl = $baseUrl.'/business/business/showlisting/'.'category/'.$currentCategory;
 
 $script = <<<EOD
 
+// /////////////////////////////////////////////////////////////////////////////
+// Cities load
+// /////////////////////////////////////////////////////////////////////////////
+// Load the city list for type ahead
+var numbers = new Bloodhound({
+  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.city_name); },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   local: {$local_list}
+});
+
+// initialize the bloodhound suggestion engine
+numbers.initialize();
+
+// instantiate the typeahead UI
+$('.cities .typeahead')
+   .typeahead(null, {
+       displayKey: 'city_name',
+       source: numbers.ttAdapter()
+       })
+    .on('typeahead:selected', function(e, datum){
+          loadCityGallery();
+          $('#dowhat').tagsinput('focus');
+     });
+
+
+// /////////////////////////////////////////////////////////////////////////////
+// Business Listing
+// /////////////////////////////////////////////////////////////////////////////
     var page = 0;
 
     function loadnewdata()
@@ -560,25 +597,18 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
                         <div class="cities">
                             <input class="typeahead form-control" name="city"
                                 id="city" type="text" autocomplete="off"
-                                value="< ? php echo $data['city']; ? >"
+                                value="<?php echo $data['city']; ?>"
                                 placeholder="I am in...">
                         </div>
                     </div>
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-">
+                        <label for="city" class="heading">I AM LOOKING FOR
+                            &nbsp;&nbsp;&nbsp;</label>
+                    </div>
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 text-center">
                         <input class="form-control" name="dowhat" id="dowhat"
                             type="text" autocomplete="off" value="">
                     </div>
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
-                        <input class="form-control" name="withwhat"
-                            id="withwhat" type="text" autocomplete="off"
-                            value="">
-                    </div>
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
-                        <input type="text" value="" id="dowhen"
-                            data-date-format="yyyy-mm-dd"> <input type="hidden"
-                            value="" id="dowhentimestamp">
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -666,7 +696,7 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
                                     <!--  Business listing goes here -->
                                 </div>
 
-            				</div>
+                            </div>
                         </div>
                     </div>
 
