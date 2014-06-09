@@ -114,10 +114,10 @@
             <li class="dropdown"><a href="#" class="dropdown-toggle"
                 data-toggle="dropdown">Businesses<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="<?php echo Yii::app()->createUrl('business/browse/'); ?>">Show Business</a></li>
+                    <li><a href="<?php echo Yii::app()->createUrl('business/business/browse/'); ?>">Show Business</a></li>
                     <li class="divider"></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('business/add/'); ?>">Add a business</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('business/claim/'); ?>">Claim your business</a></li>
+                    <li><a href="<?php echo Yii::app()->createUrl('business/business/add/'); ?>">Add a business</a></li>
+                    <li><a href="<?php echo Yii::app()->createUrl('business/business/claim/'); ?>">Claim your business</a></li>
 
                 </ul>
             </li>
