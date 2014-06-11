@@ -116,6 +116,13 @@
                         </ul>
                       </li>
 
+                      <!-- Advertisement Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Advertisement</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/advertisement/index'); ?>">Adverts Listing</a></li>
+                          </ul>
+                      </li>
 
 
                       <li class="nav-divider"></li>
@@ -163,6 +170,8 @@
             $('a.tree-toggler').click(function () {
             	  $(this).parent().children('ul.tree').toggle(300);
             	});
+
+            $("[data-toggle='tooltip']").tooltip();
 
         });
         </script>
