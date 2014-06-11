@@ -49,6 +49,14 @@ class Advertisement extends CActiveRecord
 {
 
     /**
+     *
+     * @var string fldUploadImage advert image uploader.
+     * @access public
+     */
+    public $fldUploadImage;
+
+
+    /**
      * Get database table name associated with the model.
      *
      * @param <none> <none>
@@ -76,28 +84,32 @@ class Advertisement extends CActiveRecord
 
 
 		return array(
-		    
+
 		    // Mandatory rules
 			array('content',                      'required'),
-		    
+
 		    // Data types, sizes
 			array('user_id, maximum_ads_views,
 			       maximum_ads_clicks, ads_views,
 			       ads_clicks',                   'numerical'),
-		    array('title',                        'length', 'max'=>255),
-		    
+		    array('title, expiry_date',           'length', 'max'=>255),
+
 		    // ranges
 			array('advert_type',                  'in', 'range'=>array('Google','Custom','Any')),
 		    array('published',                    'in','range'=>array('Y','N'),'allowEmpty'=>false),
-		    
-		    // Safe
-		    array('image, expiry_date',           'safe'),
+
+		    // Safe - set internally
+		    array('image',                        'safe'),
+
+		    // Form only attributes.
+		    array('fldUploadImage',               'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+
 
 		    // The following rule is used by search(). It only contains attributes that should be searched.
 			array('advertisement_id, advert_type,
 			       title, content, created_time,
-			       modified_time, created_by, 
-			       modified_by, published, publish_date, 
+			       modified_time, created_by,
+			       modified_by, published, publish_date,
 			       expiry_date, user_id, maximum_ads_views,
 			       maximum_ads_clicks, ads_views,
 			       ads_clicks',                   'safe', 'on'=>'search'),
@@ -166,7 +178,7 @@ class Advertisement extends CActiveRecord
      * @return CActiveDataProvider the data provider that can return the models
      *         ...based on the search/filter conditions.
      * @access public
-     */s
+     */
 	public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
@@ -201,14 +213,14 @@ class Advertisement extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return Advertisement the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
-	
+
 	/**
 	 * Runs just before the models save method is invoked. It provides a change to
 	 * ...further prepare the data for saving. The CActiveRecord (parent class)
@@ -228,14 +240,30 @@ class Advertisement extends CActiveRecord
 	        $this->created_time = new CDbExpression('NOW()');
 	        $this->created_by   = Yii::app()->user->id;
 	    }
-	    
+
 	    // /////////////////////////////////////////////////////////////////
 	    // The modified log details is set for record creation and update
 	    // /////////////////////////////////////////////////////////////////
 	    $this->modified_time = new CDbExpression('NOW()');
 	    $this->modified_by   = Yii::app()->user->id;
 
-	
+
 	    return parent::beforeSave();
 	}
+
+    /**
+     * Build an associative list of advertisement types.
+     *
+     * @param <none> <none>
+     * @return array associatve list of advertisement types
+     *
+     * @access public
+     */
+    public function listType()
+    {
+
+        return array('Google'    => 'Google',
+                     'Custom'    => 'Custom',
+                     'Any'       => 'Any');
+    }
 }
