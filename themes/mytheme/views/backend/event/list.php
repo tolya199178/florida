@@ -1,8 +1,8 @@
 <?php
     // Load the Datatables JS and CSS
     $cs = Yii::app()->getClientScript();
-    $cs->registerCssFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataTables 1.10.0-beta.2/media/css/jquery.dataTables.css');
-    $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataTables 1.10.0-beta.2/media/js/jquery.dataTables.js', CClientScript::POS_END);
+    $cs->registerCssFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataTables-1.10.0/media/css/jquery.dataTables.css');
+    $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataTables-1.10.0/media/js/jquery.dataTables.js', CClientScript::POS_END);
 
 ?>
 
