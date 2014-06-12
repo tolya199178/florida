@@ -34,6 +34,8 @@
 class AccountController extends Controller
 {
 
+    public 	$layout='//layouts/front';
+
 
     /**
      * @var string imagesDirPath Directory where Business images will be stored
