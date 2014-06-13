@@ -535,7 +535,7 @@ class AccountController extends Controller
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionFblogout()
+	public function actionLogout()
 	{
 	    // Load the component
 	    // TODO: figure why component is not autoloading.
