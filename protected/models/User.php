@@ -314,7 +314,8 @@ class User extends CActiveRecord
             'blogs_permissions'     => 'Blogs permissions',
             'travel_options_permissions' => 'Travel Options Permissions',
             'image'                 => 'Image',
-            'fldVerifyPassword'     => 'Re enter Password',
+            'fldVerifyPassword'     => 'Re-enter Password',
+            'fldCurrentPassword'    => 'Current Password',
         );
     }
 
