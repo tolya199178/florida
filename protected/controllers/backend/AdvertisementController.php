@@ -381,7 +381,8 @@ class AdvertisementController extends BackEndController
      * @return <none> <none>
      * @access public
      */
-    public function actionListjson() {
+    public function actionListjson()
+    {
 
         // /////////////////////////////////////////////////////////////////////
         // Create a Db Criteria to filter and customise the resulting results
@@ -418,12 +419,16 @@ class AdvertisementController extends BackEndController
             "aaData"                => array()
         );
 
-        foreach($listAdvertisement as $itemAdvertisment){
+        foreach($listAdvertisement as $itemAdvertisment)
+        {
 
             /* check if business_id is empty */
             $businessName ='';
-            if(!empty($itemAdvertisment->attributes['business_id']))
-                $businessName= $itemAdvertisment->business->business_name;
+
+            if(isset($itemAdvertisment->attributes['business_id']))
+            {
+                $businessName = $itemAdvertisment->business->business_name;
+            }
 
             $rowResult = array(
                 $itemAdvertisment->attributes['advertisement_id'],

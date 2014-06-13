@@ -22,6 +22,8 @@
  * @property double $ads_views
  * @property double $ads_clicks
  * @property string $custom_code
+ * @property string $business_id
+ *
  *
  * The followings are the available model relations:
  * @property User $user
@@ -91,14 +93,14 @@ class Advertisement extends CActiveRecord
 
 		    // Data types, sizes
 			array('user_id, maximum_ads_views,
-			       maximum_ads_clicks, ads_views,business_id,
-			       ads_clicks',                   'numerical'),
+			       maximum_ads_clicks, ads_views,
+			       business_id, ads_clicks',      'numerical'),
 		    array('title, expiry_date',           'length', 'max'=>255),
-            array('custom_code' ,          'length', 'max'=>255),
+            array('custom_code' ,                 'length', 'max'=>4096),
 
 		    // ranges
 			array('advert_type',                  'in', 'range'=>array('Google','Custom','Any')),
-		    array('published',                    'in','range'=>array('Y','N'),'allowEmpty'=>false),
+		    array('published',                    'in', 'range'=>array('Y','N'),'allowEmpty'=>false),
 
 		    // Safe - set internally
 		    array('image',                        'safe'),
@@ -206,8 +208,8 @@ class Advertisement extends CActiveRecord
 		$criteria->compare('maximum_ads_clicks',  $this->maximum_ads_clicks);
 		$criteria->compare('ads_views',           $this->ads_views);
 		$criteria->compare('ads_clicks',          $this->ads_clicks);
-        $criteria->compare('custom_code',          $this->custom_code);
-        $criteria->compare('business_id',          $this->business_id);
+        $criteria->compare('custom_code',         $this->custom_code);
+        $criteria->compare('business_id',         $this->business_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

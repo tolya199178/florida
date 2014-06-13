@@ -66,16 +66,8 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'user_id',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php
-                    $users = User::model()->findAll();
-                    $data = array();
-
-                    foreach ($users as $user)
-                        $data[$user->user_id] = $user->first_name . ' '. $user->last_name .' (' . $user->email . ')';
-
-                    echo $form->dropDownList($model,'user_id', $data , array('class'=>"form-control",
-                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select user", "data-original-title"=>"Select user."));
-                ?>
+                <?php echo $form->dropDownList($model,'user_id', CHtml::listData(User::model()->findAll(), 'user_id', 'fullname'), array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select user", "data-original-title"=>"Select user.")); ?>
                 <?php echo $form->error($model,'user_id'); ?>
             </div>
         </div>
