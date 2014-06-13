@@ -535,7 +535,7 @@ class AccountController extends Controller
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionFblogout()
+	public function actionLogout()
 	{
 	    // Load the component
 	    // TODO: figure why component is not autoloading.
@@ -552,6 +552,93 @@ class AccountController extends Controller
 	        $this->redirect($objFacebook->getLogoutUrl());
 
 	    }
+	}
+
+	/**
+	 * Allow the user to change their own passwords
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the change password form
+	 * ... - the (subsequent) POST request processes the change password request.
+	 * ...If the save (POST request) is processed, the user is directed back to
+	 * ...the calling url with a flash message indicating the outcome,
+	 * ...
+	 * ...The user is required to submit both their current password and new password
+	 * ...in order to process the request completely.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionChangepassword()
+	{
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Redirect non-logged in users to the login page
+	    // /////////////////////////////////////////////////////////////////////
+	    if (Yii::app()->user->isGuest)         // User is not logged in
+	    {
+	        Yii::app()->user->setFlash('error', "You are not logged in.");
+	        $this->redirect("login");
+	        Yii::app()->end();
+	    }
+
+	    $modelUser = new User('change-password');
+
+	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
+
+	    /*
+	     * Process the form if it was submitted, otherwise display the form.
+	     */
+	    if (isset($_POST['User']))
+	    {
+
+	        $modelUser = User::model()->findByPk(Yii::app()->user->id);
+	        $modelUser->scenario = User::SCENARIO_CHANGE_PASSWORD;
+
+	        $modelUser->fldCurrentPassword   = $_POST['User']['fldCurrentPassword'];
+	        $modelUser->password             = $_POST['User']['password'];
+	        $modelUser->fldVerifyPassword    = $_POST['User']['fldVerifyPassword'];
+
+	        /*
+	         * Validate user input and redirect to the previous page if valid, otherwise
+	         * ...show the login form again with error messages
+	         */
+	        if ($modelUser->validate())
+	        {
+
+	            /*
+	             * Test that the password that was entered is correct
+	             */
+                $currentuserIdentity = new UserIdentity($modelUser->user_name, $modelUser->fldCurrentPassword);
+                $currentuserIdentity->authenticate();
+
+	            if ($currentuserIdentity->errorCode === UserIdentity::ERROR_NONE)
+	            {
+
+	               if ($modelUser->save())
+	               {
+	                   Yii::app()->user->setFlash('success', "Password changed.");
+	                   $this->redirect(Yii::app()->user->returnUrl);
+	               }
+
+	            }
+	            else
+	            {
+	                Yii::app()->user->setFlash('error', "Error setting your new password. Try again.");
+	            }
+
+	        }
+	        else
+	        {
+	                Yii::app()->user->setFlash('error', "Error setting your new password. Try again.");
+	        }
+	    }
+
+	    // Display the password change capture form
+        $this->render('change_password', array('model' => $modelUser));
+
+
 	}
 
 }
