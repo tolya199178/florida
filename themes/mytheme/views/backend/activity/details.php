@@ -31,7 +31,8 @@
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'keyword',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'keyword',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'keyword',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter keyword", "data-original-title"=>"Enter keyword.")); ?>
                         <?php echo $form->error($model,'keyword'); ?>
                     </div>
                 </div>
@@ -40,7 +41,8 @@
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'language',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                    <?php echo $form->dropDownList($model,'language', CHtml::listData(Language::model()->findAll(), 'short', 'name'), array('class' =>"form-control")); ?> 
+                    <?php echo $form->dropDownList($model,'language', CHtml::listData(Language::model()->findAll(), 'short', 'name'), array('class' =>"form-control",
+                        'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select language", "data-original-title"=>"Select language.")); ?>
                         
                         <?php echo $form->error($model,'language'); ?>
                     </div>
@@ -50,7 +52,8 @@
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'related_words',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'related_words',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'related_words',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter related words", "data-original-title"=>"Enter related words.")); ?>
                         <?php echo $form->error($model,'related_words'); ?>
                     </div>
                 </div>

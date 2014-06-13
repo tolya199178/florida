@@ -111,6 +111,7 @@ $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataT
         <th>Advertisement ID</th>
         <th>Title</th>
         <th>Content</th>
+        <th>Business</th>
         <th>Ads Views</th>
         <th>Ads Clicks</th>
         <th>Max Ads Views</th>

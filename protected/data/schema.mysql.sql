@@ -42,3 +42,12 @@ CREATE TABLE `document_request` (
   `resource_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`request_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/* Added new fields for tbl_advertisement */
+ALTER TABLE `tbl_advertisement` ADD COLUMN `custom_code` TEXT NULL DEFAULT NULL  ;
+ALTER TABLE `tbl_advertisement` ADD COLUMN `business_id` int(11) NULL DEFAULT NULL  ;
+
+ALTER TABLE tbl_advertisement
+ADD CONSTRAINT tbl_advertisement_business
+     FOREIGN KEY (business_id) 
+     REFERENCES tbl_business(business_id);

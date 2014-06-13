@@ -535,4 +535,17 @@ class User extends CActiveRecord
         return array('none' => 'Do not share','friends' => 'My Friends', 'all' => 'Everybody');
     }
 
+    /**
+     * Build an associative list of permission values.
+     *
+     * @param <none> <none>
+     * @return array associatve list of permission status values
+     *
+     * @access public
+     */
+    public function getFullname() {
+
+         return $this->first_name . ' ' . $this->last_name;
+    }
+
 }

@@ -21,6 +21,7 @@
  * @property double $maximum_ads_clicks
  * @property double $ads_views
  * @property double $ads_clicks
+ * @property string $custom_code
  *
  * The followings are the available model relations:
  * @property User $user
@@ -90,9 +91,10 @@ class Advertisement extends CActiveRecord
 
 		    // Data types, sizes
 			array('user_id, maximum_ads_views,
-			       maximum_ads_clicks, ads_views,
+			       maximum_ads_clicks, ads_views,business_id,
 			       ads_clicks',                   'numerical'),
 		    array('title, expiry_date',           'length', 'max'=>255),
+            array('custom_code' ,          'length', 'max'=>255),
 
 		    // ranges
 			array('advert_type',                  'in', 'range'=>array('Google','Custom','Any')),
@@ -111,7 +113,7 @@ class Advertisement extends CActiveRecord
 			       modified_time, created_by,
 			       modified_by, published, publish_date,
 			       expiry_date, user_id, maximum_ads_views,
-			       maximum_ads_clicks, ads_views,
+			       maximum_ads_clicks, ads_views,custom_code,business_id,
 			       ads_clicks',                   'safe', 'on'=>'search'),
 		);
 	}
@@ -135,6 +137,7 @@ class Advertisement extends CActiveRecord
 			'user'       => array(self::BELONGS_TO, 'User', 'user_id'),
 			'createdBy'  => array(self::BELONGS_TO, 'User', 'created_by'),
 			'modifiedBy' => array(self::BELONGS_TO, 'User', 'modified_by'),
+            'business'   => array(self::BELONGS_TO, 'Business', 'business_id'),
 		);
 	}
 
@@ -161,6 +164,8 @@ class Advertisement extends CActiveRecord
 			'maximum_ads_clicks' => 'Maximum Ads Clicks',
 			'ads_views'          => 'Ads Views',
 			'ads_clicks'         => 'Ads Clicks',
+            'custom_code'        => 'Custom Code',
+            'business_id'        => 'Business',
 		);
 	}
 
@@ -201,6 +206,8 @@ class Advertisement extends CActiveRecord
 		$criteria->compare('maximum_ads_clicks',  $this->maximum_ads_clicks);
 		$criteria->compare('ads_views',           $this->ads_views);
 		$criteria->compare('ads_clicks',          $this->ads_clicks);
+        $criteria->compare('custom_code',          $this->custom_code);
+        $criteria->compare('business_id',          $this->business_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

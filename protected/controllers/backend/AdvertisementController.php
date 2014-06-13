@@ -420,10 +420,16 @@ class AdvertisementController extends BackEndController
 
         foreach($listAdvertisement as $itemAdvertisment){
 
+            /* check if business_id is empty */
+            $businessName ='';
+            if(!empty($itemAdvertisment->attributes['business_id']))
+                $businessName= $itemAdvertisment->business->business_name;
+
             $rowResult = array(
                 $itemAdvertisment->attributes['advertisement_id'],
                 $itemAdvertisment->attributes['title'],
                 $itemAdvertisment->attributes['content'],
+                $businessName,
                 $itemAdvertisment->attributes['ads_views'],
                 $itemAdvertisment->attributes['ads_clicks'],
                 $itemAdvertisment->attributes['maximum_ads_views'],

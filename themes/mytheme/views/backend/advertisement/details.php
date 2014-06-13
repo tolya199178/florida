@@ -66,9 +66,28 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'user_id',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,'user_id', CHtml::listData(User::model()->findAll(), 'user_id', 'user_name'), array('class'=>"form-control",
-                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select user", "data-original-title"=>"Select user.")); ?>
+                <?php
+                    $users = User::model()->findAll();
+                    $data = array();
+
+                    foreach ($users as $user)
+                        $data[$user->user_id] = $user->first_name . ' '. $user->last_name .' (' . $user->email . ')';
+
+                    echo $form->dropDownList($model,'user_id', $data , array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select user", "data-original-title"=>"Select user."));
+                ?>
                 <?php echo $form->error($model,'user_id'); ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'business_id',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->dropDownList($model,'business_id', CHtml::listData(Business::model()->findAll(), 'business_id', 'business_name'), array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select business", "data-original-title"=>"Select business.")); ?>
+                <?php echo $form->error($model,'business_id'); ?>
             </div>
         </div>
     </div>
@@ -85,6 +104,22 @@
                         'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select type", "data-original-title"=>"Select type.")
                 );?>
                 <?php echo $form->error($model,'advert_type'); ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'custom_code',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-10">
+                <?php $this->widget('application.extensions.editor.CKkceditor',array(
+                    "model"=>$model,                # Data-Model
+                    "attribute"=>'custom_code',         	# Attribute in the Data-Model
+                    "height"=>'300px',
+                    "width"=>'90%',
+                ) );
+                ?>
+                <?php echo $form->error($model,'custom_code'); ?>
             </div>
         </div>
     </div>
