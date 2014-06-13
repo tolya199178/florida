@@ -156,6 +156,12 @@
 	<div class="container-full">
 
 <?php
+    foreach(Yii::app()->user->getFlashes() as $key => $message) {
+        echo '<div class="alert alert-'  . $key . '">' . $message . "</div>\n";
+    }
+?>
+
+<?php
         // /////////////////////////////////////////////////////////////////////
         // The result of the render() is placed here.
         // /////////////////////////////////////////////////////////////////////

@@ -31,6 +31,10 @@
  * @version 1.0
  */
 
+
+Yii::import("application.modules.webuser.components.HAccount");
+
+
 class BusinessController extends Controller
 {
 
@@ -201,6 +205,106 @@ class BusinessController extends Controller
             return array();
 	    }
 
+
+    }
+
+    /**
+     * Adds a new business entry.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionAdd()
+    {
+        // /////////////////////////////////////////////////////////////////////
+        // This function is only available to users that are logged in. Other
+        // ...users are given a friendly notice and gentle request to log in
+        // ...or join.
+        // /////////////////////////////////////////////////////////////////////
+        $userId = Yii::app()->user->id;
+
+        if ($userId === null)         // User is not known
+        {
+            Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
+            $this->redirect(array('/webuser/account/register'));
+            Yii::app()->end();
+        }
+
+		$businessModel = new Business;
+
+	    // Uncomment the following line if AJAX validation is needed
+	    // todo: broken for Jquery precedence order loading
+	    // $this->performAjaxValidation($businessModel);
+
+	    if(isset($_POST['Business']))
+	    {
+
+	        $businessModel->attributes             = $_POST['Business'];
+	        $businessModel->lstBusinessCategories  = $_POST['Business']['lstBusinessCategories'];
+
+
+	        if($businessModel->save())
+	        {
+
+	            $myAccount = User::model()->findByPk(Yii::app()->user->id);
+
+	            // /////////////////////////////////////////////////////////////////////
+	            // Assign the primary business user
+	            // /////////////////////////////////////////////////////////////////////
+	            $modelBusinessUser                 = new BusinessUser;
+	            $modelBusinessUser->business_id    = $businessModel->business_id;
+	            $modelBusinessUser->user_id        = $myAccount->user_id;
+	            $modelBusinessUser->primary_user   = 'Y';
+
+	            if ($modelBusinessUser->save() === false)
+	            {
+	                throw new CHttpException(400,'Bad Request. Could not save business user record.');
+	            }
+
+
+	            // /////////////////////////////////////////////////////////////////////
+	            // Get the email message template
+	            // /////////////////////////////////////////////////////////////////////
+	            $emailMessage = HAccount::getEmailMessage('business registered');
+	            $emailSubject = HAccount::getEmailSubject('business registered');
+
+
+	            // Customise the email message
+	            $emailAttributes = array();
+	            $emailAttributes['first_name']         = $myAccount->first_name;
+	            $emailAttributes['last_name']          = $myAccount->last_name;
+
+	            $emailAttributes['business_name']      = $businessModel->business_name;
+
+
+	            $customisedEmailMessage = HAccount::CustomiseMessage($emailMessage, $emailAttributes);
+
+
+	            // Send the message
+	            HAccount::sendMessage($myAccount->email, $myAccount->first_name.' '.$myAccount->last_name, $emailSubject, $customisedEmailMessage);
+
+
+
+
+
+
+	            Yii::app()->user->setFlash('success', "The business has been created and submitted for approval*.");
+
+	            $idNewBusiness = $businessModel->business_id;
+	            $this->redirect(array('/businessuser/profile/show', 'id' => $idNewBusiness));
+
+	        }
+	        else {
+                Yii::app()->user->setFlash('error', "Error creating a business record.");
+	        }
+
+
+	    }
+
+	    // Show the details screen
+	    $this->render('register/business_register',array('model'=>$businessModel));
 
     }
 }
