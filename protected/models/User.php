@@ -108,6 +108,17 @@ class User extends CActiveRecord
     // /////////////////////////////////////////////////////////////////////////
 
     /**
+     * Form only. Used to hold the current password for change password screnario.
+     * ...In this case the 'password' field will hold the new password.
+     *
+     * @param <none> <none>
+     *
+     * @return string the repeated password entry
+     * @access public
+     */
+    public $fldCurrentPassword;
+
+    /**
      * Form only. Used to verify the password entered.
      *
      * @param <none> <none>
@@ -157,7 +168,11 @@ class User extends CActiveRecord
             // Mandatory rules
             array('user_name, email, first_name,
                    last_name',   'required'),
-            array('password, user_name',            'required', 'on' => array(self::SCENARIO_CHANGE_PASSWORD,self::SCENARIO_LOGIN,self::SCENARIO_REGISTER)),
+            array('password, user_name',            'required', 'on' => array(self::SCENARIO_LOGIN,self::SCENARIO_REGISTER)),
+            array('password, fldVerifyPassword',    'required', 'on' => array(self::SCENARIO_REGISTER)),
+            array('password, fldVerifyPassword,
+                   fldCurrentPassword',             'required', 'on' => array(self::SCENARIO_CHANGE_PASSWORD)),
+
             array('activation_code',                'required', 'on' => self::SCENARIO_VALIDATION),
             array('email',                          'required', 'on' => self::SCENARIO_FORGOT_PASSWORD),
 
@@ -167,7 +182,7 @@ class User extends CActiveRecord
                    first_name, last_name,
                    activation_code, facebook_id,
                    facebook_name, hometown,
-                   places_want_to_visit',    'length', 'max'=>255),
+                   places_want_to_visit',           'length', 'max'=>255),
             array('mobile_number',                  'length', 'max'=>64),
 
             array('email, user_name',               'email', 'checkMX'=>false),
