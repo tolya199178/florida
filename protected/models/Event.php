@@ -38,6 +38,7 @@
  * @property string $external_event_id
  *
  * The followings are the available model relations:
+ * @property EventCategory $eventCategory
  * @property Business $eventBusiness
  * @property City $eventCity
  * @property User $createdBy
@@ -143,6 +144,7 @@ class Event extends CActiveRecord
 	{
 
 		return array(
+		    'eventCategory'      => array(self::BELONGS_TO,  'EventCategory', 'event_category_id'),
 		    'eventBusiness'      => array(self::BELONGS_TO,  'Business', 'event_business_id'),
 			'eventCity'          => array(self::BELONGS_TO,  'City', 'event_city_id'),
 			'createdBy'          => array(self::BELONGS_TO,  'User', 'created_by'),
