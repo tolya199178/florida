@@ -520,7 +520,10 @@ $('.cities .typeahead')
 
                          $('#calendar_listing_container').replaceWith('<div id="calendar_listing_container">'+existing_content+data+'</div>');
 
-	                     page++;
+	                     if (data.length > 16)
+	                     {
+	                           page++;
+	                     }
                       },
                       dataType: "html"
                     });
@@ -530,12 +533,10 @@ $('.cities .typeahead')
       function (){
         // if(($(document).height() - $(window).height() - $(document).scrollTop()) < 500){
 	    if(($(document).height() - $(window).height() - $(document).scrollTop()) < 100){
-	    alert( $(document).height() + '  - ' + $(window).height() + ' -- ' + $(document).scrollTop());
     	   loadnewdata();
         }
       },
-      // 500
-	    30000
+      500
     );
 
     // Run the initial listing load.
