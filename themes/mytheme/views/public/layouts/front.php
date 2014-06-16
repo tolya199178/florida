@@ -109,7 +109,7 @@
 
             <li><a href="<?php echo Yii::app()->createUrl('discussions/'); ?>">Discussions</a></li>
 
-            <li><a href="<?php echo Yii::app()->createUrl('events/'); ?>">Events</a></li>
+            <li><a href="<?php echo Yii::app()->createUrl('calendar/'); ?>">Events</a></li>
 
             <li class="dropdown"><a href="#" class="dropdown-toggle"
                 data-toggle="dropdown">Businesses<b class="caret"></b></a>
