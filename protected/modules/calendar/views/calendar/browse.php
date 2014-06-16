@@ -1,6 +1,6 @@
 <?php
 
-// Hack
+// TODO: Hack
 $data['city'] = 'Miami';
 
 ?>
@@ -441,7 +441,7 @@ h2 {
 
 <style>
 .modal {
-	width: 80%; /* desired relative width */
+	width: 90%; /* desired relative width */
 	left: 5%; /* (100%-width)/2 */
 	/* place center */
 	margin-left: auto;
@@ -457,16 +457,6 @@ h2 {
 -->
 </style>
 
-<style>
-
-/* Triangle breadcrumbs */
-<!--
-.category_breadcrumbs {
-	text-align: left;
-}
--->
-</style>
-
 <?php
 
 $local_list = City::model()->getListjson();
@@ -474,7 +464,8 @@ $local_list = City::model()->getListjson();
 $baseUrl = $this->createAbsoluteUrl('/');
 
 $showlistingUrl = $baseUrl.'/calendar/calendar/showlisting/'.'category/'.$currentCategory;
-// $showlistingUrl = $baseUrl.'/calendar/calendar/showlisting/'.'category/';
+
+$neweventURL    = $baseUrl.'/calendar/calendar/newevent/';
 
 $script = <<<EOD
 
@@ -542,12 +533,74 @@ $('.cities .typeahead')
     // Run the initial listing load.
  	loadnewdata();
 
+    // /////////////////////////////////////////////////////////////////////////
+    // Invite my friends invitation
+    // /////////////////////////////////////////////////////////////////////////
+    // Launch the modal when the create new event link is clicked
+    $('body').on('click', '#create_event', function(e) {
+
+        // var remote = $(this).attr("data-href");
+
+        $("#modalNewEvent").modal({
+
+            keyboard: false,
+            remote: '$neweventURL'
+
+        });
+    });
+
+    // Submit the modal form and close the modal
+    $('body').on('submit', '#frmNewEvent', function(event) {
+
+        event.preventDefault();
+
+        var form_values = $(this).serialize();
+
+        var url = '$neweventURL';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                    $('#modalNewEvent').modal('hide');
+               }
+        });
+
+        return false; // avoid to execute the actual submit of the form.
+    });
+
+    // Clear the modal each time
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+    });
+
 
 EOD;
 
 Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::POS_READY);
 
 ?>
+
+<!-- New Event Modal -->
+<div class="modal fade" id="modalNewEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!-- Main concierge page .container -->
 <div class="row  fill">
@@ -558,12 +611,13 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
         <div class="panel panel-default margin-top-10">
             <div class="panel-heading">
 
+            <?php if (Yii::app()->user->isGuest) { ?>
 
                 <div class="panel panel-warning">
                     <div class="panel-heading">
                         <h4>
                             <p class="center">
-                                <a href="#" class="btn btn-info">Create a New Event.</a>
+                                <a href="#" id='create_event' class="btn btn-info">Create a New Event.</a>
                             </p>
                         </h4>
                     </div>
@@ -578,7 +632,36 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
                     </div>
                 </div>
 
+            <?php } ?>
 
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4>
+                            <p class="center">
+                                Upcoming Events
+                            </p>
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div id='upcoming_events'>
+                                    <ul>
+                                    <?php
+                                        foreach ($listUpcomingEvents as $itemEvent) {
+                                             echo '<li>'.
+                                                  CHtml::link(CHtml::encode($itemEvent->event_title),
+                                                              Yii::app()->createUrl('//calendar/calendar/showevent', array('event' => $itemEvent['event_id'])),
+                                                              array('class'=>"question-link", 'title'=>"")).
+                                                  '</li>';
+                                        }
+                                    ?>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -655,7 +738,7 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
                                          }
 
                                     ?>
-                				    </ul>
+            				    </ul>
 
 
 

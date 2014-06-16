@@ -117,11 +117,11 @@ class CalendarController extends Controller
 	    // Get details about the current category
 	    // /////////////////////////////////////////////////////////////////////
 	    $categoryRecord = Yii::app()->db->createCommand()
-	    ->select('category_id, parent_id, category_name')
-	    ->from('tbl_category')
-	    ->where('category_id = :category', array(':category'=>$currentCategory))
-	    ->limit('1')
-	    ->queryRow();
+                                	    ->select('category_id, parent_id, category_name')
+                                	    ->from('tbl_category')
+                                	    ->where('category_id = :category', array(':category'=>$currentCategory))
+                                	    ->limit('1')
+                                	    ->queryRow();
 
 	    $currentCategoryListItem = array(array('id'=>$categoryRecord['category_id'], 'name'=> $categoryRecord['category_name']));
 
@@ -135,8 +135,9 @@ class CalendarController extends Controller
 	    // Get the list of subcategories of the current category
 	    // /////////////////////////////////////////////////////////////////////
 	    $cmdSubCategoryList = Yii::app()->db->createCommand()
-	    ->select('category_id, parent_id, category_name')
-	    ->from('tbl_event_category');
+                                    	    ->select('category_id, parent_id, category_name')
+                                    	    ->from('tbl_event_category');
+
 	    if (empty($currentCategory))
 	    {
 	        $cmdSubCategoryList->where('parent_id = 0 OR parent_id  IS NULL', array(':category_id'=>$currentCategory));
@@ -148,9 +149,18 @@ class CalendarController extends Controller
 
 	    $listSubcategory = $cmdSubCategoryList->queryAll();
 
-	    $this->render('browse', array('category_path'     => $categoryBreadcrumb,
-                        	          'listSubcategories' => $listSubcategory,
-                        	          'currentCategory'   => $currentCategory
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a few upcoming events
+	    // /////////////////////////////////////////////////////////////////////
+	    $dbCriteria             = new CDbCriteria;
+	    $dbCriteria->limit      = 5;
+	    $dbCriteria->order      = 'event_start_date DESC';
+	    $listUpcomingEvents     = Event::model()->findAll($dbCriteria);
+
+	    $this->render('browse', array('category_path'      => $categoryBreadcrumb,
+                        	          'listSubcategories'  => $listSubcategory,
+                        	          'currentCategory'    => $currentCategory,
+	                                  'listUpcomingEvents' => $listUpcomingEvents
 	    ));
 	}
 
@@ -206,6 +216,68 @@ class CalendarController extends Controller
 	        return array();
 	    }
 
+
+	}
+
+	/**
+	 * Creates a new event record.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the event details capture form
+	 * ... - the (subsequent) POST request saves the submitted post data as a Event record.
+	 * ...If the save (POST request) is successful, the default method (index()) is called.
+	 * ...If the save (POST request) is not successful, the details form is shown
+	 * ...again with error messages from the Event validation (Event::rules())
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionNewevent()
+	{
+
+	    $eventModel = new Event;
+
+	    // Uncomment the following line if AJAX validation is needed
+	    // todo: broken for Jquery precedence order loading
+	    // $this->performAjaxValidation($eventModel);
+
+	    if(isset($_POST['Event']))
+	    {
+
+	        $eventModel->attributes=$_POST['Event'];
+
+	        $uploadedFile = CUploadedFile::getInstance($eventModel,'fldUploadImage');
+
+	        if($eventModel->save())
+	        {
+
+	            if(!empty($uploadedFile))  // check if uploaded file is set or not
+	            {
+
+	                $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
+	                $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
+	                $uploadedFile->saveAs($imagePath);
+	                $eventModel->event_photo = $imageFileName;
+
+	                $this->createThumbnail($imageFileName);
+
+	                $eventModel->save();
+	            }
+
+	            $this->redirect(array('index'));
+
+	        }
+	        else {
+	            Yii::app()->user->setFlash('error', "Error creating a event record.'");
+	        }
+
+
+	    }
+
+	    // Show the details screen
+	    $this->renderPartial('create_event_form',array('model'=>$eventModel), false, true);
 
 	}
 

@@ -5,7 +5,7 @@
 
                                     <div class="panel panel-warning">
                                         <div class="panel-heading">
-                                            <?php echo CHtml::link($event->event_title, Yii::app()->createUrl('/calendar/calendar/showevent/'), array('title' => $event->event_title)); ?>
+                                            <?php echo CHtml::link($event->event_title, Yii::app()->createUrl('calendar/calendar/showevent/', array('id' => $event->event_id  )), array('title' => $event->event_title)); ?>
                                         </div>
                                         <div class="panel-body">
                                             <div class="product">
