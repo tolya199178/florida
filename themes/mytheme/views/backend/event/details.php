@@ -44,6 +44,16 @@
 
 	<div class="row">
         <div class="form-group">
+            <?php echo $form->labelEx($model,'event_description',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textArea($model,'event_description',array('class'=>"form-control", 'rows' => 4, 'cols' => 300)); ?>
+                <?php echo $form->error($model,'event_description'); ?>
+            </div>
+        </div>
+	</div>
+
+	<div class="row">
+        <div class="form-group">
             <?php echo $form->labelEx($model,'event_start_date',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
 
