@@ -1,6 +1,6 @@
 						<!-- COUNTRY ITEM -->
 
-							<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<div class="thumbnail">
 
                                     <div class="panel panel-warning">
@@ -8,8 +8,9 @@
                                             <?php echo CHtml::link($event->event_title, Yii::app()->createUrl('calendar/calendar/showevent/', array('id' => $event->event_id  )), array('title' => $event->event_title)); ?>
                                         </div>
                                         <div class="panel-body">
-                                            <div class="product">
-                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <div class='row'>
+
+                                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 
 
                                                     <!-- TODO: render Goes wierd if there is a missing image. Check for image first -->
@@ -54,9 +55,37 @@
 
 
                                                 </div>
+                                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
 
+                                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                        Start Date :
+                                                    </div>
+                                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                                       <?php echo CHtml::Encode($event->event_start_date); ?> - <?php echo CHtml::Encode($event->event_start_time); ?>
+                                                    </div>
 
-                                            </div>
+                                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                        End Date :
+                                                    </div>
+                                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                                       <?php echo CHtml::Encode($event->event_end_date); ?> - <?php echo CHtml::Encode($event->event_end_time); ?>
+                                                    </div>
+
+                                                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                        City :
+                                                    </div>
+                                                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                                       <?php echo CHtml::Encode($event->eventCity->city_name); ?>
+                                                    </div>
+
+                                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                        <?php echo CHtml::Encode($event->event_description); ?>
+                                                    </div>
+
+                                                </div>
+
+                                                </div>
+
                                         </div>
                                     </div>
 
