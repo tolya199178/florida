@@ -171,11 +171,12 @@ class EventController extends BackEndController
 
 	        if($eventModel->save())
 	        {
-	            $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
-	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
+                    $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
+                    $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
                     $uploadedFile->saveAs($imagePath);
                     $eventModel->event_photo = $imageFileName;
 
