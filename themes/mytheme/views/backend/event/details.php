@@ -124,10 +124,9 @@
 
 	<div class="row">
         <div class="form-group">
-        TODO: read from category table
             <?php echo $form->labelEx($model,'event_category_id',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,'event_category_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?>
+                <?php echo $form->dropDownList($model,'event_category_id', CHtml::listData(EventCategory::model()->findAll(), 'category_id', 'category_name')); ?>
                 <?php echo $form->error($model,'event_category_id'); ?>
                 <!--  todo: styling for dropdown -->
             </div>
