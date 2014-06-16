@@ -165,6 +165,30 @@ class CalendarController extends Controller
 	}
 
 	/**
+	 * Displays the business listing screen
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionShowevent()
+	{
+
+	    $argEventId = (int) Yii::app()->request->getQuery('event', 0);
+
+	    if ($argEventId == 0)
+	    {
+	        throw new CHttpException(404,'The requested page does not exist.');
+	    }
+
+
+	    $itemEvent     = Event::model()->findByPk($argEventId);
+
+	    $this->render('event_details', array('event' => $itemEvent));
+	}
+
+	/**
 	 * Returns the category path in the category tree for the given category.
 	 *
 	 * The given category is located in the category tree and an upward path to
