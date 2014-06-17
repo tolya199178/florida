@@ -22,15 +22,25 @@
                                    )); ?>
                     </div>
                     <button type="submit" class="btn btn-success">Sign in</button>
-                    &nbsp;&nbsp;&nbsp;
-                    <a
-                        href="<?php echo Yii::app()->createUrl('webuser/account/register/'); ?>">Not a member?
-                    </a>
-                    &nbsp;&nbsp;&nbsp;
-                    <a class="face_login" href="<?php echo Yii::app()->createUrl('webuser/account/fblogin/'); ?>">
-                        <span class="face_icon">
-                            <img src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/images/facebook.png" alt="fb">
-                        </span>
-                    </a>
+
+                &nbsp;&nbsp;&nbsp;
+                <a class="face_login" href="<?php echo Yii::app()->createUrl('webuser/account/fblogin/'); ?>">
+                    <span class="face_icon">
+                        <img src="<?php echo Yii::app()->theme->baseUrl; ?>/resources/images/facebook.png" alt="fb">
+                    </span>
+                </a>
+                &nbsp;&nbsp;&nbsp;
+                <a
+                    href="<?php echo Yii::app()->createUrl('webuser/account/register/'); ?>">Not a member?
+                </a>
+                &nbsp;&nbsp;&nbsp;
+
+                <a
+                    href="<?php echo Yii::app()->createUrl('webuser/account/resetpassword/'); ?>">Lost password?
+                </a>
+                &nbsp;&nbsp;&nbsp;
 
                 <?php $this->endWidget(); ?>
+
+
+

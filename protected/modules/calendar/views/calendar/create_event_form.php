@@ -1,22 +1,16 @@
- <?php
-/* @var $this Event */
-/* @var $model Event */
-/* @var $form CActiveForm */
-?>
+                <div id='postanswer_form'>
 
 <style>
 
-.form-group {
-    padding-top:10px;
-    padding-bottom:10px;
-}
+/* .form-group { */
+/*     padding-top:10px; */
+/*     padding-bottom:10px; */
+/* } */
 </style>
-
-    <h3>Update Event : <?php echo $model->event_title; ?></h3>
 
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'event-details-form',
+	'id'=>'frmNewEvent',
     'htmlOptions'           => array('role' => 'form', 'enctype' => 'multipart/form-data'/* 'class' => "form-horizontal" */),
 	'enableAjaxValidation'  => false,
 )); ?>
@@ -29,8 +23,6 @@
         	<?php echo $form->errorSummary($model); ?>
         </div>
     <?php } ?>
-
-    <?php echo $form->hiddenField($model,'event_id'); ?>
 
 	<div class="row">
         <div class="form-group">
@@ -48,6 +40,20 @@
             <div class="col-sm-4">
                 <?php echo $form->textArea($model,'event_description',array('class'=>"form-control", 'rows' => 4, 'cols' => 300)); ?>
                 <?php echo $form->error($model,'event_description'); ?>
+            </div>
+        </div>
+	</div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'event_type',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->dropDownList($model,
+                                               'event_type',
+                                               $model->listEventTypes(),
+                                               array('prompt'=>'Select Event Type')
+                );?>
+                <?php echo $form->error($model,'event_type'); ?>
             </div>
         </div>
 	</div>
@@ -124,68 +130,6 @@
 
 	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'event_category_id',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,'event_category_id', CHtml::listData(EventCategory::model()->findAll(), 'category_id', 'category_name')); ?>
-                <?php echo $form->error($model,'event_category_id'); ?>
-                <!--  todo: styling for dropdown -->
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'event_business_id',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,'event_business_id', CHtml::listData(Business::model()->findAll(), 'business_id', 'business_name')); ?>
-                <?php echo $form->error($model,'event_business_id'); ?>
-                <!--  todo: styling for dropdown -->
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'event_tag',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'event_tag',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'event_tag'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'event_views',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'event_views',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
-                <?php echo $form->error($model,'event_views'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'cost',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'cost',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'cost'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'event_frequency',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'event_frequency',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'event_frequency'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
             <?php echo $form->labelEx($model,'event_address1',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
                 <?php echo $form->textArea($model,'event_address1',array('class'=>"form-control", 'rows' => 4, 'cols' => 300)); ?>
@@ -204,6 +148,16 @@
         </div>
 	</div>
 
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'event_street',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'event_street',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'event_street'); ?>
+            </div>
+        </div>
+	</div>
+
 	<!--  Add a city selection dropdown -->
 	<div class="row">
         <div class="form-group">
@@ -216,15 +170,6 @@
         </div>
 	</div>
 
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'event_street',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'event_street',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'event_street'); ?>
-            </div>
-        </div>
-	</div>
 
 	<div class="row">
         <div class="form-group">
@@ -250,16 +195,6 @@
 
 	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'is_featured',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
-                <?php echo $form->error($model,'is_featured'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
             <?php echo $form->labelEx($model,'event_show_map',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
                 <?php echo $form->checkBox($model,'event_show_map', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
@@ -268,53 +203,6 @@
         </div>
 	</div>
 
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'is_popular',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->checkBox($model,'is_popular', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
-                <?php echo $form->error($model,'is_popular'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'event_type',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,
-                                               'event_type',
-                                               $model->listEventTypes(),
-                                               array('prompt'=>'Select Event Type')
-                );?>
-                <?php echo $form->error($model,'event_type'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'event_status',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,
-                                               'event_status',
-                                               $model->listStatus(),
-                                               array('prompt'=>'Select Status')
-                );?>
-                <?php echo $form->error($model,'event_status'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'created_time',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'created_time',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
-                <?php echo $form->error($model,'created_time'); ?>
-            </div>
-        </div>
-	</div>
 
 	<div class="row">
         <div class="form-group">
@@ -342,12 +230,70 @@
 <?php } ?>
 
 
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'event_category_id',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->dropDownList($model,'event_category_id', CHtml::listData(EventCategory::model()->findAll(), 'category_id', 'category_name')); ?>
+                <?php echo $form->error($model,'event_category_id'); ?>
+                <!--  todo: styling for dropdown -->
+            </div>
+        </div>
+	</div>
+
+
+	<div class="row">
+        <div class="form-group">
+            <!--  TODO: This must only displays the current user's business's  -->
+            TODO: Show only business belonging to user.<br/>
+            <?php echo $form->labelEx($model,'event_business_id',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->dropDownList($model,'event_business_id', CHtml::listData(Business::model()->findAll(), 'business_id', 'business_name')); ?>
+                <?php echo $form->error($model,'event_business_id'); ?>
+                <!--  todo: styling for dropdown -->
+            </div>
+        </div>
+	</div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'event_tag',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'event_tag',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'event_tag'); ?>
+            </div>
+        </div>
+	</div>
+
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'cost',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'cost',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'cost'); ?>
+            </div>
+        </div>
+	</div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'event_frequency',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'event_frequency',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'event_frequency'); ?>
+            </div>
+        </div>
+	</div>
+
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save', array('class'=>"btn btn-default")); ?>
+		<?php echo CHtml::submitButton('Post your New Event', array('class'=>"btn btn-success")); ?>
 	</div>
 
 <?php $this->endWidget(); ?>
 
 
 
+
+                </div><!-- postanswer_form -->

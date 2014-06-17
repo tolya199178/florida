@@ -629,6 +629,11 @@ ADD CONSTRAINT fk_event_modified_by
          FOREIGN KEY (event_business_id) 
          REFERENCES tbl_business(business_id);
          
+    ALTER TABLE tbl_event
+    ADD CONSTRAINT fk_event_category
+         FOREIGN KEY (event_category_id) 
+         REFERENCES tbl_event_category(category_id);
+         
 -- ---------------------------------------------------------------------
 -- tbl_user_event
 -- ---------------------------------------------------------------------

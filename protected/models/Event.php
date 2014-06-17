@@ -38,6 +38,7 @@
  * @property string $external_event_id
  *
  * The followings are the available model relations:
+ * @property EventCategory $eventCategory
  * @property Business $eventBusiness
  * @property City $eventCity
  * @property User $createdBy
@@ -67,10 +68,24 @@ class Event extends CActiveRecord
 
     /**
      *
-     * @var string fldUploadImage Business image uploader.
+     * @var string fldUploadImage event image uploader.
      * @access public
      */
     public $fldUploadImage;
+
+    /**
+     *
+     * @var string read-only (non-db field) for url of event image.
+     * @access public
+     */
+    public $imgUrl;
+
+    /**
+     *
+     * @var string read-only (non-db field) for full url of event thumbnail.
+     * @access public
+     */
+    public $thumbnailUrl;
 
     /**
      * Get database table name associated with the model.
@@ -143,6 +158,7 @@ class Event extends CActiveRecord
 	{
 
 		return array(
+		    'eventCategory'      => array(self::BELONGS_TO,  'EventCategory', 'event_category_id'),
 		    'eventBusiness'      => array(self::BELONGS_TO,  'Business', 'event_business_id'),
 			'eventCity'          => array(self::BELONGS_TO,  'City', 'event_city_id'),
 			'createdBy'          => array(self::BELONGS_TO,  'User', 'created_by'),
@@ -329,5 +345,45 @@ class Event extends CActiveRecord
 	    // TODO: Confirm that meetups is out of scope
 	    // return array('public' =>'Public','private' => 'Private','meetups' => 'Meetups');
 	    return array('public' =>'Public','private' => 'Private');
+	}
+
+	/**
+	 * Getter function for virtual attribute $thumbnailUrl
+	 *
+	 * @param <none> <none>
+	 * @return string url of event image thumbnail
+	 *
+	 * @access public
+	 */
+	public function getThumbnailUrl()
+	{
+
+	    $thumbnailsDirUrl     = Yii::app()->request->baseUrl.'/uploads/images/event/thumbnails';
+	    $thumbnailUrl         = $thumbnailsDirUrl.DIRECTORY_SEPARATOR.$this->event_photo;
+
+	    $this->thumbnailUrl = $thumbnailUrl;
+
+	    return $thumbnailUrl;
+
+	}
+
+	/**
+	 * Getter function for virtual attribute $imgUrl
+	 *
+	 * @param <none> <none>
+	 * @return string url of event image
+	 *
+	 * @access public
+	 */
+	public function getImgUrl()
+	{
+
+	    $imagesDirUrl         = Yii::app()->request->baseUrl.'/uploads/images/event';
+	    $imageUrl             = $imagesDirUrl.DIRECTORY_SEPARATOR.$this->event_photo;
+
+	    $this->imgUrl = $imageUrl;
+
+	    return $imageUrl;
+
 	}
 }

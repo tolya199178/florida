@@ -172,11 +172,13 @@ class BusinessController extends BackEndController
 
 	        if($businessModel->save())
 	        {
-	            $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
-	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
+
+                    $imageFileName = 'business-'.$businessModel->business_id.'-'.$uploadedFile->name;
+                    $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
                     $uploadedFile->saveAs($imagePath);
                     $businessModel->image = $imageFileName;
 

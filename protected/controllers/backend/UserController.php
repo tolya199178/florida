@@ -123,11 +123,13 @@ class UserController extends BackEndController
 
 	        if($userModel->save())
 	        {
-	            $imageFileName = 'user-'.$userModel->user_id.'-'.$uploadedFile->name;
-	            $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
 	            if(!empty($uploadedFile))  // check if uploaded file is set or not
 	            {
+
+	                $imageFileName = 'user-'.$userModel->user_id.'-'.$uploadedFile->name;
+	                $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
 	                $uploadedFile->saveAs($imagePath);
 	                $userModel->image = $imageFileName;
 
