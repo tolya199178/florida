@@ -6,6 +6,9 @@
  * The followings are the available columns in table '{{mobile_carrier}}':
  * @property integer $mobile_carrier_id
  * @property string $mobile_carrier_name
+ * @property string $can_send
+ * @property string $recipient_address
+ * @property string $notes
  *
  * The followings are the available model relations:
  * @property User[] $users
@@ -30,7 +33,7 @@
  */
 class MobileCarrier extends CActiveRecord
 {
-    
+
     /**
      * Get database table name associated with the model.
      *
@@ -57,15 +60,19 @@ class MobileCarrier extends CActiveRecord
 	public function rules()
 	{
 		return array(
-		    
+
 		    // Mandatory rules
 			array('mobile_carrier_name', 'required'),
-		    
+
 		    // Data types, sizes
 			array('mobile_carrier_name', 'length', 'max'=>255),
-		    
+		    array('recipient_address',   'length', 'max'=>255),
+		    array('can_send',            'in','range'=>array('Y','N'),'allowEmpty'=>true),
+		    array('notes',               'length', 'max'=>255),
+
+
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('mobile_carrier_id, mobile_carrier_name', 'safe', 'on'=>'search'),
+			array('mobile_carrier_id, mobile_carrier_name, can_send, recipient_address', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,6 +109,9 @@ class MobileCarrier extends CActiveRecord
 		return array(
 			'mobile_carrier_id' 	=> 'Mobile Carrier',
 			'mobile_carrier_name' 	=> 'Mobile Carrier Name',
+		    'can_send'              => 'Can Send',
+		    'recipient_address'     => 'Recipient Address',
+		    'notes'                 => 'Notes',
 		);
 	}
 
@@ -127,6 +137,8 @@ class MobileCarrier extends CActiveRecord
 
 		$criteria->compare('mobile_carrier_id',		$this->mobile_carrier_id);
 		$criteria->compare('mobile_carrier_name',	$this->mobile_carrier_name,true);
+		$criteria->compare('can_send',              $this->can_send);
+		$criteria->compare('recipient_address',     $this->recipient_address,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -139,7 +151,7 @@ class MobileCarrier extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return MobileCarrier the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
