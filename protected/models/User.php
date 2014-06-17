@@ -167,7 +167,7 @@ class User extends CActiveRecord
 
             // Mandatory rules
             array('user_name, email, first_name,
-                   last_name',   'required'),
+                   last_name',   'required', 'on' => array(self::SCENARIO_REGISTER)),
             array('password, user_name',            'required', 'on' => array(self::SCENARIO_LOGIN,self::SCENARIO_REGISTER)),
             array('password, fldVerifyPassword',    'required', 'on' => array(self::SCENARIO_REGISTER)),
             array('password, fldVerifyPassword,
@@ -187,8 +187,8 @@ class User extends CActiveRecord
 
             array('email, user_name',               'email', 'checkMX'=>false),
 
-            array('email', 'unique'),
-            array('user_name', 'unique'),
+            array('email', 'unique',                'on' => array(self::SCENARIO_REGISTER)),
+            array('user_name', 'unique',            'on' => array(self::SCENARIO_REGISTER)),
 
             // Form only attributes.
             array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
@@ -215,7 +215,7 @@ class User extends CActiveRecord
             // other
 
             // compare entered and verified password. Only for change password and register screens.
-            array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_REGISTER)),
+            array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_REGISTER, self::SCENARIO_FORGOT_PASSWORD)),
 
             array('date_of_birth', 'safe'),
 

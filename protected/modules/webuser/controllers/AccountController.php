@@ -583,7 +583,7 @@ class AccountController extends Controller
 	        Yii::app()->end();
 	    }
 
-	    $modelUser = new User('change-password');
+	    $modelUser = new User(User::SCENARIO_CHANGE_PASSWORD);
 
 	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
 
@@ -637,6 +637,155 @@ class AccountController extends Controller
 
 	    // Display the password change capture form
         $this->render('change_password', array('model' => $modelUser));
+
+
+	}
+
+	/**
+	 * Allow the user to initiate a system password reset.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the change password form
+	 * ... - the (subsequent) POST request processes the change password request.
+	 * ...If the save (POST request) is processed, the user is directed back to
+	 * ...the calling url with a flash message indicating the outcome,
+	 * ...
+	 * ...The user is required at least an email address to process the request completely.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionResetpassword()
+	{
+
+
+	    // If an activation code is supplied, allow the user to reset their passwords
+	    $activationCode  = Yii::app()->request->getParam('cde', null);
+
+	    if ($activationCode !== null)
+	    {
+	        // Find the corresponding user record.
+	        $modelUser = User::model()->findByAttributes(array('activation_code' => $activationCode));
+
+	        if ($modelUser === null)
+	        {
+	            throw new CHttpException(405,'There was a problem obtaining the user record.');
+	        }
+
+	        /*
+	         * Process the form if it was submitted, otherwise display the form.
+	        */
+	        if (isset($_POST['User']))
+	        {
+	            $modelUser->attributes         = $_POST['User'];
+
+                $modelUser->fldCurrentPassword = strrev($activationCode);
+	            $modelUser->fldVerifyPassword  = $_POST['User']['fldVerifyPassword'];
+	            $modelUser->activation_code    = '';
+
+	            $modelUser->scenario           = User::SCENARIO_FORGOT_PASSWORD;
+
+	            if ($modelUser->validate())
+	            {
+
+	               $modelUser->scenario = User::SCENARIO_CHANGE_PASSWORD;
+
+	               if ($modelUser->save())
+	               {
+	                   Yii::app()->user->setFlash('success', "Password changed.");
+	                   $this->redirect(Yii::app()->user->returnUrl);
+	               }
+
+	            }
+	            else
+	            {
+	                Yii::app()->user->setFlash('error', "Error resetting your account.");
+	            }
+
+	        }
+
+            $modelUser->fldCurrentPassword = strrev($activationCode);
+            $modelUser->password           = '';
+            $this->render('reset_lost_password', array('model' => $modelUser));
+
+	    }
+	    else
+	    {
+
+	        $modelUser = new User(User::SCENARIO_FORGOT_PASSWORD);
+
+	        // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
+
+	        /*
+	         * Process the form if it was submitted, otherwise display the form.
+	        */
+	        if (isset($_POST['User']))
+	        {
+
+	            // $modelUser = User::model()->findByPk(Yii::app()->user->id);
+	            $modelUser->scenario = User::SCENARIO_FORGOT_PASSWORD;
+
+	            $modelUser->email                = $_POST['User']['email'];
+
+	            /*
+	             * Validate user input and redirect to the previous page if valid, otherwise
+	            * ...show the login form again with error messages
+	            */
+	            if ($modelUser->validate())
+	            {
+
+	                // Get the user identified by the email
+	                $modelUser = User::model()->findByAttributes(array('email' => $_POST['User']['email']));
+
+	                if ($modelUser === null)
+	                {
+	                    throw new CHttpException(404,'The requested page could not be found.');
+	                }
+
+	                // /////////////////////////////////////////////////////////////
+	                // We tag the activation code with 'P[calculated_code]W' to help
+	                // ...us identify the password reset request
+	                // /////////////////////////////////////////////////////////////
+	                $modelUser->activation_code    =  'P'.HAccount::getVerificationCode(CHtml::encode($modelUser->email)).'W';
+
+	                if ($modelUser->save())
+	                {
+
+
+	                    // Get the email message and subject
+	                    $emailMessage = HAccount::getEmailMessage('password_reset_email');
+	                    $emailSubject = HAccount::getEmailSubject('password_reset_email');
+
+
+	                    // Customise the email message
+	                    $emailMessage = HAccount::CustomiseMessage($emailMessage, $modelUser->attributes);
+
+
+	                    // Send the message
+	                    HAccount::sendMessage($modelUser->attributes['email'], $modelUser->attributes['first_name'].' '.$modelUser->attributes['last_name'], $emailSubject, $emailMessage);
+
+
+	                    Yii::app()->user->setFlash('success', "Your request is being processed. Check your email.");
+	                    $this->redirect(Yii::app()->user->returnUrl);
+	                }
+	                else
+	                {
+	                    Yii::app()->user->setFlash('error', "Your request could not be processed at this time.");
+	                    $this->redirect(Yii::app()->user->returnUrl);
+	                }
+
+	            }
+	            else
+	            {
+	                Yii::app()->user->setFlash('error', "Error requesting your new password. Try again.");
+	            }
+	        }
+
+	        // Display the password change capture form
+	        $this->render('lost_password', array('model' => $modelUser));
+
+	    }
 
 
 	}
