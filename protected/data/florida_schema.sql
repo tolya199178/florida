@@ -818,11 +818,14 @@ ADD CONSTRAINT tbl_advertisement_business
 -- ---------------------------------------------------------------------
 -- Mobile Carriers
 -- ---------------------------------------------------------------------
- DROP TABLE IF EXISTS `tbl_mobile_carrier`;
+DROP TABLE IF EXISTS `tbl_mobile_carrier`;
 
 CREATE TABLE `tbl_mobile_carrier` (
-  `mobile_carrier_id` int(11) NOT NULL AUTO_INCREMENT,
+  `mobile_carrier_id`         int(11) NOT NULL AUTO_INCREMENT,
   `mobile_carrier_name`       varchar(255) NOT NULL,
+  `can_send`                  enum('Y', 'N') DEFAULT 'N',
+  `recipient_address`         varchar(255) DEFAULT NULL,
+  `notes`                     TEXT default NULL,
   PRIMARY KEY (`mobile_carrier_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
