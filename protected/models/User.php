@@ -38,6 +38,7 @@
  * @property string $blogs_permissions
  * @property string $travel_options_permissions
  * @property string $image
+ * @property string $places_visited
  *
  * The followings are the available model relations:
  * @property User $modifiedBy
@@ -181,8 +182,10 @@ class User extends CActiveRecord
             array('user_name, email, password,
                    first_name, last_name,
                    activation_code, facebook_id,
-                   facebook_name, hometown,
-                   places_want_to_visit',           'length', 'max'=>255),
+                   facebook_name, hometown',        'length', 'max'=>255),
+            array('places_want_to_visit,
+                   places_visited',                 'length', 'max'=>4096),
+
             array('mobile_number',                  'length', 'max'=>64),
 
             array('email, user_name',               'email', 'checkMX'=>false),
