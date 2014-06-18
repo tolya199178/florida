@@ -21,6 +21,22 @@
     <div class="container">
         <!--  start anel -->
         <div class="row">
+
+        <?php
+         $form=$this->beginWidget('CActiveForm', array(
+        	'id'=>'profile-form',
+        	'enableAjaxValidation'=>true,
+        	'enableClientValidation'=>false,
+        	'clientOptions'=>array(
+        		'validateOnSubmit'=>true,
+        	),
+        	'htmlOptions' => array('enctype' => 'multipart/form-data'),
+        	'focus'=>array($model,'username'),
+        ));
+
+        ?>
+
+
             <br />
             <div class="col-lg-10 col-lg-offset-1">
                 <div class="panel panel-warning">
@@ -52,21 +68,6 @@
 
     <div id='content' class="tab-content">
       <div class="tab-pane active" id="mydetails">
-
-        <?php
-         $form=$this->beginWidget('CActiveForm', array(
-        	'id'=>'profile-form',
-        	'enableAjaxValidation'=>true,
-        	'enableClientValidation'=>false,
-        	'clientOptions'=>array(
-        		'validateOnSubmit'=>true,
-        	),
-        	'htmlOptions' => array('enctype' => 'multipart/form-data'),
-        	'focus'=>array($model,'username'),
-        ));
-
-        ?>
-
 
     	<div class="alert alert-danger">
     	<?php echo $form->errorSummary($model); ?>
@@ -289,13 +290,6 @@
         <!-- end profile settings for type user -->
 
 
-    	<div class="row buttons">
-            <?php echo CHtml::submitButton('Update your Account', array('class'=>"btn btn-default")); ?>
-    	</div>
-
-        <?php $this->endWidget(); ?>./
-
-
   </div>
   <!--  End User Profile Tab -->
 
@@ -514,6 +508,13 @@
                     </div>
                 </div>
             </div>
+
+
+    	<div class="row buttons">
+            <?php echo CHtml::submitButton('Update your Account', array('class'=>"btn btn-default")); ?>
+    	</div>
+
+        <?php $this->endWidget(); ?>
 
         </div>
         <!--  end panel -->
