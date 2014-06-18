@@ -111,7 +111,7 @@ class MobilecarrierController extends BackEndController
 	public function actionCreate()
 	{
 
-		$mobilecarrierModel = new Mo;
+		$mobilecarrierModel = new MobileCarrier;
 
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
