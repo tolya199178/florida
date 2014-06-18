@@ -474,11 +474,20 @@ class AccountController extends Controller
 	    // /////////////////////////////////////////////////////////////////////
 	    $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => Yii::app()->user->id, 'photo_type' => 'user'));
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // TODO: Get a list of the user's activities logs
+	    // /////////////////////////////////////////////////////////////////////
+	    // TODO:
+	    $listMyActivities = array();   	    // TODO:
+	    // TODO:
+
+
 	    $this->render('user_profile', array('model'            => $formModel,
 	                                        'myLocalFriends'   => $lstMyFriends,
 	                                        'myOnlineFriends'  => $lstMyOnlineFriends,
 	                                        'myMessages'       => $listMessages,
 	                                        'myPhotos'         => $listPhotos,
+	                                        'myActivities'     => $listMyActivities,
 	                                       ));
 	}
 

@@ -142,22 +142,32 @@
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'mobile_carrier_id',array('class'=>"col-sm-2 control-label")); ?>
-
-            <div class="col-sm-2">
+            <div class="col-sm-4">
                 <?php echo $form->dropDownList($model, 'mobile_carrier_id', CHtml::listData(MobileCarrier::model()->findAll(),'mobile_carrier_id','mobile_carrier_name'), array('prompt'=>'Select the mobile carrier', 'class'=>"form-control"));?>
-            </div>
-
-            <?php echo $form->labelEx($model,'mobile_number',array('class'=>"col-sm-2 control-label")); ?>
-
-
-            <div class="col-sm-2">
-                <?php echo $form->textField($model,'mobile_number',array('class'=>"form-control")); ?>
-
                 <?php echo $form->error($model,'mobile_carrier_id'); ?>
-                <?php echo $form->error($model,'mobile_number'); ?>
             </div>
         </div>
     </div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'mobile_number',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'mobile_number',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'mobile_number'); ?>
+            </div>
+        </div>
+	</div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'send_sms_notification',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->dropDownList($model, 'send_sms_notification', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Choose Option', 'class'=>"form-control"));?>
+                <?php echo $form->error($model,'send_sms_notification'); ?>
+            </div>
+        </div>
+	</div>
 
 	<div class="row">
         <div class="form-group">
@@ -184,15 +194,7 @@
   <!--  User Settings Tab -->
 
 
-	<div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'send_sms_notification',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model, 'send_sms_notification', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Choose Option'));?>
-                <?php echo $form->error($model,'send_sms_notification'); ?>
-            </div>
-        </div>
-	</div>
+
 
 
 
