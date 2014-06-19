@@ -37,6 +37,7 @@ class ProfileForm extends CFormModel
 	public $places_want_to_visit;
 	public $places_visited;
 	public $language;
+	public $image;
 
 
 	/**
@@ -53,6 +54,64 @@ class ProfileForm extends CFormModel
 	 * @var array Picture upload validation rules.
 	 */
 	private $_pictureUploadRules;
+
+	/**
+	 *
+	 * @var string fldUploadImage User image uploader.
+	 * @access public
+	 */
+	public $fldUploadImage;
+
+	/**
+	 *
+	 * @var string fldUploadImage User image uploader.
+	 * @access public
+	 */
+	public $fldUploadMyGalleryImage;
+
+	/**
+	 * @var string imagesDirPath Directory where User images will be stored
+	 * @access private
+	 */
+	private $imagesDirPath;
+
+	/**
+	 * @var string imagesDirPath Directory where User image thumbnails will be stored
+	 * @access private
+	 */
+	private $thumbnailsDirPath;
+
+	/**
+	 * @var string thumbnailWidth thumbnail width
+	 * @access private
+	 */
+	private $thumbnailWidth     = 100;
+	/**
+	 * @var string thumbnailWidth thumbnail width
+	 * @access private
+	 */
+	private $thumbnailHeight    = 100;
+
+	/**
+	 * Controller initailisation routines to set up the controller
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return array action filters
+	 * @access public
+	 */
+	public function init()
+	{
+	    $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/user';
+	    $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/user/thumbnails';
+
+	    /*
+	     *     Small-s- 100px(width)
+	    *     Medum-m- 240px(width)
+	    *     Large-l- 600px(width)
+	    */
+	}
+
 
 	/**
 	 * Returns rules for picture upload or an empty array if they are not set.
@@ -102,9 +161,13 @@ class ProfileForm extends CFormModel
 
                     array('language',                       'length', 'max'=>255),
 
+                    array('fldUploadImage',                 'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+                    array('fldUploadMyGalleryImage',        'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
 
-                    array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()),
+
+
+                    array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements(), 'on'=>'register'),
 
         		);
 	}
@@ -279,4 +342,6 @@ class ProfileForm extends CFormModel
 	    }
 
 	}
+
+
 }

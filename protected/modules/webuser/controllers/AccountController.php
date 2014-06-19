@@ -38,13 +38,13 @@ class AccountController extends Controller
 
 
     /**
-     * @var string imagesDirPath Directory where Business images will be stored
+     * @var string imagesDirPath Directory where User images will be stored
      * @access private
      */
     private $imagesDirPath;
 
     /**
-     * @var string imagesDirPath Directory where Business image thumbnails will be stored
+     * @var string imagesDirPath Directory where User image thumbnails will be stored
      * @access private
      */
     private $thumbnailsDirPath;
@@ -70,8 +70,8 @@ class AccountController extends Controller
      */
     public function init()
     {
-        $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business';
-        $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/business/thumbnails';
+        $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/user';
+        $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/user/thumbnails';
 
         /*
          *     Small-s- 100px(width)
@@ -186,7 +186,7 @@ class AccountController extends Controller
                         Yii::app()->end();
 
                     } else {
-                        Yii::app()->user->setFlash('error', "Error creating a business record.'");
+                        Yii::app()->user->setFlash('error', "Error creating a user record.'");
                     }
                 }
             }
@@ -373,31 +373,36 @@ class AccountController extends Controller
 	            $userModel->fldVerifyPassword   = isset($_POST['ProfileForm']['confirm_password'])?$_POST['ProfileForm']['confirm_password']:null;
 	            $userModel->created_by          = 1;
 	            $userModel->user_name           = $userModel->email;
-// 	            $userModel->status              = 'inactive';
-// 	            $userModel->activation_status   = 'not_activated';
 	            $userModel->places_visited      = serialize($_POST['ProfileForm']['places_visited']);
 	            $userModel->places_want_to_visit = serialize($_POST['ProfileForm']['places_want_to_visit']);
 
+	            // Make a note of the existing image file name. It will be deleted soon.
+	            $oldImageFileName = $userModel->image;
 
-	            $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
+	            $uploadedFile = CUploadedFile::getInstance($formModel, 'fldUploadImage');
 
 	            if ($userModel->validate() && $formModel->validate()) {
 
 	                if ($userModel->save()) {
+
 	                    if (!empty($uploadedFile))
 	                    {
 	                        $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
 	                        $imagePath     = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
 
-	                        if (! empty($uploadedFile))                         // check if uploaded file is set or not
+	                        // Remove existing images
+	                        if (!empty($oldImageFileName))
 	                        {
-	                            $uploadedFile->saveAs($imagePath);
-	                            $userModel->image = $imageFileName;
-
-	                            $this->createThumbnail($imageFileName);
-
-	                            $userModel->save();
+	                            $this->deleteImages($oldImageFileName);
 	                        }
+
+                            $uploadedFile->saveAs($imagePath);
+                            $userModel->image = $imageFileName;
+
+                            $this->createThumbnail($imageFileName);
+
+                            $userModel->save();
+
 	                    }
 
 	                    $this->redirect(Yii::app()->user->returnUrl);
@@ -407,6 +412,10 @@ class AccountController extends Controller
 	                    Yii::app()->user->setFlash('error', "Error updating your profile.'");
 	                }
 	            }
+	        }
+	        else
+	        {
+	            Yii::app()->user->setFlash('error', "Error updating your profile.'");
 	        }
 	    }
 	    else
@@ -431,6 +440,9 @@ class AccountController extends Controller
 	        $formModel->friends_permissions          = $userModel->attributes['friends_permissions'];
 	        $formModel->blogs_permissions            = $userModel->attributes['blogs_permissions'];
 	        $formModel->travel_options_permissions   = $userModel->attributes['travel_options_permissions'];
+	        $formModel->image                        = $userModel->attributes['image'];
+
+
 	    }
 
 
@@ -791,6 +803,67 @@ class AccountController extends Controller
 
 	    }
 
+
+	}
+
+	/**
+	 * Delete images for the user. Normally invoked when user is being deleted.
+	 *
+	 * @param string $imageFileName the name of the file
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	private function deleteImages($imageFileName)
+	{
+	    $imagePath          = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+	    @unlink($imagePath);
+
+	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+	    @unlink($thumbnailPath);
+	}
+
+
+	/**
+	 * Create a thumbnail image from the filename give, Store it in the thumnails folder.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	private function createThumbnail($imageFileName, $sizeWidth = 0, $sizeHeight = 0)
+	{
+
+	    if ($sizeWidth == 0)
+	    {
+	        $sizeWidth     = $this->thumbnailWidth;
+	    }
+	    if ($sizeHeight == 0)
+	    {
+	        $sizeHeight    = $this->thumbnailHeight;
+	    }
+
+	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+	    $imagePath         = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
+	    $imgThumbnail              = new Thumbnail;
+	    $imgThumbnail->PathImgOld  = $imagePath;
+	    $imgThumbnail->PathImgNew  = $thumbnailPath;
+
+	    $imgThumbnail->NewWidth    = $sizeWidth;
+	    $imgThumbnail->NewHeight   = $sizeHeight;
+
+	    $result = $imgThumbnail->create_thumbnail_images();
+
+	    if (!$result)
+	    {
+	        return false;
+	    }
+	    else
+	    {
+	        return true;
+	    }
 
 	}
 

@@ -125,3 +125,30 @@
             </div>
         </div>
 	</div>
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'fldUploadImage',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo CHtml::activeFileField($model,'fldUploadImage',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'fldUploadImage'); ?>
+            </div>
+        </div>
+	</div>
+
+<?php if (!empty($model->image)) { ?>
+	<div class="row">
+        <div class="form-group">
+            <span class="col-sm-2 control-label">Current Image</span>
+            <div class="col-sm-4">
+                <div style="border: 1px solid #066A75; padding: 3px; width:  150px; height: 150px   ; " id="left">
+                    <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$model->image,
+                                            "Image",
+                                            array('width'=>150, 'height'=>150))); ?>
+                </div>
+            </div>
+        </div>
+	</div>
+<?php } ?>
+
+    <p>&nbsp;</p>
