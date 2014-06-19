@@ -49,10 +49,10 @@
 
         	<div class="row">
                 <div class="form-group">
-                    <?php echo $form->labelEx($model,'business_allow_review',array('class'=>"col-sm-2 control-label")); ?>
+                    <?php echo $form->labelEx($model,'is_for_review',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->checkBox($model,'business_allow_review', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
-                        <?php echo $form->error($model,'business_allow_review'); ?>
+                        <?php echo $form->checkBox($model,'is_for_review', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+                        <?php echo $form->error($model,'is_for_review'); ?>
                     </div>
                 </div>
         	</div>
