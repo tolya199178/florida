@@ -346,7 +346,8 @@ class AccountController extends Controller
 	    $formModel->email                        = $userModel->attributes['email'];
 	    $formModel->first_name                   = $userModel->attributes['first_name'];
 	    $formModel->last_name                    = $userModel->attributes['last_name'];
-	    $formModel->places_want_to_visit         = $userModel->attributes['places_want_to_visit'];
+	    $formModel->places_want_to_visit         = unserialize($userModel->attributes['places_want_to_visit']);
+	    $formModel->places_visited               = unserialize($userModel->attributes['places_visited']);
 
 	    $formModel->date_of_birth                = $userModel->attributes['date_of_birth'];
 	    $formModel->mobile_carrier_id            = $userModel->attributes['mobile_carrier_id'];
@@ -387,6 +388,8 @@ class AccountController extends Controller
 	            $userModel->user_name           = $userModel->email;
 	            $userModel->status              = 'inactive';
 	            $userModel->activation_status   = 'not_activated';
+	            $userModel->places_visited       = serialize($_POST['ProfileForm']['places_visited']);
+	            $userModel->places_want_to_visit = serialize($_POST['ProfileForm']['places_want_to_visit']);
 
 
 	            // Create a verification code, before the entry is saved

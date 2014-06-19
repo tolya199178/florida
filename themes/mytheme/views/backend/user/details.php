@@ -437,7 +437,6 @@ function changeUserType(userType)
             </div>
         </div>
 
-
     	<div class="row">
             <div class="form-group">
                 <?php echo $form->labelEx($model,'my_info_permissions',array('class'=>"col-sm-2 control-label")); ?>
