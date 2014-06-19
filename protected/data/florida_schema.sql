@@ -426,6 +426,7 @@ ALTER TABLE tbl_business ADD COLUMN `import_source`    VARCHAR(255) DEFAULT NULL
 
 ALTER TABLE tbl_business CHANGE COLUMN `star_rating` `star_rating`  double         DEFAULT NULL;
 
+ALTER TABLE tbl_business ADD COLUMN `is_for_review` enum('Y', 'N') DEFAULT 'N';
 
 -- ---------------------------------------------------------------------
 -- Business User

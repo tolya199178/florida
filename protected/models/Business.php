@@ -47,6 +47,7 @@
  * @property string $closing_time
  * @property string $import_reference
  * @property string $import_source
+ * @property string $is_for_review
  *
  *
  * The followings are the available model relations:
@@ -172,7 +173,7 @@ class Business extends CActiveRecord
 		    // ranges
 			array('business_allow_review,
 			       business_allow_rating, is_active,
-			       is_featured, is_closed',               'in','range'=>array('Y','N'),'allowEmpty'=>false),
+			       is_featured, is_closed, is_for_review','in','range'=>array('Y','N'),'allowEmpty'=>false),
 		    array('claim_status',                         'in','range'=>array('Claimed', 'Unclaimed'),'allowEmpty'=>false),
 		    array('activation_status',                    'in','range'=>array('activated', 'not_activated'),'allowEmpty'=>false),
 		    array('add_request_processing_status',        'in','range'=>array('Accepted', 'Rejected'),'allowEmpty'=>false),
@@ -270,6 +271,7 @@ class Business extends CActiveRecord
 		    'closing_time'                       => 'Closing Time',
 		    'import_reference'                   => 'Import Reference',
 		    'import_source'                      => 'Import Source',
+		    'is_for_review'                      => 'For Review',
 		);
 	}
 
@@ -334,6 +336,7 @@ class Business extends CActiveRecord
 		$criteria->compare('closing_time',                    $this->closing_time,true);
 		$criteria->compare('import_reference',                $this->import_reference);
 		$criteria->compare('import_source',                   $this->import_source);
+		$criteria->compare('is_for_review',                   $this->is_for_review);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
