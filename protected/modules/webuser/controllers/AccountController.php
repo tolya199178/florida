@@ -81,6 +81,25 @@ class AccountController extends Controller
     }
 
     /**
+     * Controller overwrite routines to set up the available actions
+     *
+     * @param <none> <none>
+     *
+     * @return array action list
+     * @access public
+     */
+    public function actions(){
+        return array(
+            // captcha action renders the CAPTCHA image displayed on the user registration page
+            'captcha'=>array(
+                'class'=>'CCaptchaAction',
+                'backColor'=>0xFFFFFF,
+            ),
+        );
+    }
+
+
+    /**
      * Register a new user
      *
      * @param <none> <none>
@@ -93,9 +112,7 @@ class AccountController extends Controller
         $formModel = new ProfileForm('register');
 
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'profile-form') {
-            echo CActiveForm::validate(array(
-                $model
-            ));
+            echo CActiveForm::validate(array($formModel));
             Yii::app()->end();
         }
 
