@@ -64,6 +64,18 @@
         </div>
     </div>
 
+
+
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'language',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'language',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'language'); ?>
+            </div>
+        </div>
+    </div>
+
 	<div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'mobile_carrier_id',array('class'=>"col-sm-2 control-label")); ?>

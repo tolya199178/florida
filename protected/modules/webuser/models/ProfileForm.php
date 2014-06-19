@@ -36,6 +36,7 @@ class ProfileForm extends CFormModel
 	public $confirm_password;
 	public $places_want_to_visit;
 	public $places_visited;
+	public $language;
 
 
 	/**
@@ -99,6 +100,8 @@ class ProfileForm extends CFormModel
 
                     array('date_of_birth',                  'validateAge', 'age_limit' => 18),
 
+                    array('language',                       'length', 'max'=>255),
+
 
 
                     array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()),
@@ -121,6 +124,9 @@ class ProfileForm extends CFormModel
 			'password'		=> Yii::t('UsrModule.usr','Your password'),
 		    'confirm_password'		=> Yii::t('UsrModule.usr','Confirm password'),
 		    'verifyCode'    => Yii::t('UsrModule.usr','Verification Code'),
+		    'date_of_birth' => Yii::t('UsrModule.usr','Date of Birth'),
+		    'language'      => Yii::t('UsrModule.usr','Language'),
+
 		);
 	}
 
