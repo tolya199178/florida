@@ -8,6 +8,9 @@
 class ProfileForm extends CFormModel
 {
 
+    /**
+     * Various field values
+     */
     public $user_id;
     public $fldVerifyPassword;
     public $date_of_birth;
@@ -35,11 +38,16 @@ class ProfileForm extends CFormModel
 	public $places_visited;
 
 
+	/**
+	 * @var verifyCode Capctha security mechanism to prevent automated submission of form
+	 */
+	public $verifyCode;
 
 	/**
 	 * @var IdentityInterface cached object returned by @see getIdentity()
 	 */
 	private $_identity;
+
 	/**
 	 * @var array Picture upload validation rules.
 	 */
@@ -73,17 +81,20 @@ class ProfileForm extends CFormModel
 	 */
 	public function rules()
 	{
- return array(
-			array('user_name, email, first_name, last_name, removePicture', 'filter', 'filter'=>'trim'),
-			array('user_name, email, first_name, last_name, removePicture', 'default', 'setOnEmpty'=>true, 'value' => null),
+         return array(
+        			array('user_name, email, first_name, last_name, removePicture', 'filter', 'filter'=>'trim'),
+        			array('user_name, email, first_name, last_name, removePicture', 'default', 'setOnEmpty'=>true, 'value' => null),
 
-			array('email', 'required'),
-			array('email', 'uniqueIdentity'),
-			array('email', 'email'),
-			array('removePicture', 'boolean'),
-			array('password', 'validCurrentPassword', 'except'=>'register'),
-            array('confirm_password', 'validCurrentPassword', 'except'=>'register'),
-		);
+        			array('email, first_name, last_name', 'required'),
+        			array('email', 'uniqueIdentity'),
+        			array('email', 'email'),
+        			array('removePicture', 'boolean'),
+        			array('password', 'validCurrentPassword', 'except'=>'register'),
+                    array('confirm_password', 'validCurrentPassword', 'except'=>'register'),
+
+                    array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()),
+
+        		);
 	}
 
 	/**
@@ -94,12 +105,13 @@ class ProfileForm extends CFormModel
 		return array(
 			'user_name'		=> Yii::t('UsrModule.usr','Username'),
 			'email'			=> Yii::t('UsrModule.usr','Email'),
-			'first_name'		=> Yii::t('UsrModule.usr','First name'),
+			'first_name'	=> Yii::t('UsrModule.usr','First name'),
 			'last_name'		=> Yii::t('UsrModule.usr','Last name'),
 			'picture'		=> Yii::t('UsrModule.usr','Profile picture'),
 			'removePicture'	=> Yii::t('UsrModule.usr','Remove picture'),
-			'password'		=> Yii::t('UsrModule.usr','Current password'),
+			'password'		=> Yii::t('UsrModule.usr','Your password'),
 		    'confirm_password'		=> Yii::t('UsrModule.usr','Confirm password'),
+		    'verifyCode'    => Yii::t('UsrModule.usr','Verification Code'),
 		);
 	}
 
