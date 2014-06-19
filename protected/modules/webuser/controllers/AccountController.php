@@ -122,6 +122,8 @@ class AccountController extends Controller
                 $userModel->user_name           = $userModel->email;
                 $userModel->status              = 'inactive';
                 $userModel->activation_status   = 'not_activated';
+                $userModel->places_visited      = serialize($_POST['ProfileForm']['places_visited']);
+                $userModel->places_want_to_visit = serialize($_POST['ProfileForm']['places_want_to_visit']);
 
 
                 // Create a verification code, before the entry is saved
@@ -337,33 +339,7 @@ class AccountController extends Controller
         // Phew. If we made it here, then process the form request.
         // /////////////////////////////////////////////////////////////////////
 
-
 	    $formModel = new ProfileForm;
-
-	    $formModel->user_id                      = $userModel->attributes['user_id'];
-
-	    $formModel->user_name                    = $userModel->attributes['user_name'];
-	    $formModel->email                        = $userModel->attributes['email'];
-	    $formModel->first_name                   = $userModel->attributes['first_name'];
-	    $formModel->last_name                    = $userModel->attributes['last_name'];
-	    $formModel->places_want_to_visit         = unserialize($userModel->attributes['places_want_to_visit']);
-	    $formModel->places_visited               = unserialize($userModel->attributes['places_visited']);
-
-	    $formModel->date_of_birth                = $userModel->attributes['date_of_birth'];
-	    $formModel->mobile_carrier_id            = $userModel->attributes['mobile_carrier_id'];
-	    $formModel->mobile_number                = $userModel->attributes['mobile_number'];
-	    $formModel->hometown                     = $userModel->attributes['hometown'];
-	    $formModel->marital_status               = $userModel->attributes['marital_status'];
-	    $formModel->send_sms_notification        = $userModel->attributes['send_sms_notification'];
-	    $formModel->my_info_permissions          = $userModel->attributes['my_info_permissions'];
-	    $formModel->photos_permissions           = $userModel->attributes['photos_permissions'];
-	    $formModel->friends_permissions          = $userModel->attributes['friends_permissions'];
-	    $formModel->blogs_permissions            = $userModel->attributes['blogs_permissions'];
-	    $formModel->travel_options_permissions   = $userModel->attributes['travel_options_permissions'];
-
-	  //  print_r($formModel);
-	 //   print_r($userModel);
-	   // exit;
 
 	    if (isset($_POST['ProfileForm'])) {
 
@@ -372,28 +348,19 @@ class AccountController extends Controller
 
 	        if ($formModel->validate()) {
 
-	            // /////////////////////////////////////////////////////////////////
-	            // Create a new user entry
-	            // /////////////////////////////////////////////////////////////////
-	            $userModel = new User();
-	            $userModel->scenario = User::SCENARIO_REGISTER;
-
 	            // Copy form details
 	            $userModel->setAttributes($_POST['ProfileForm']);
 
 	            // Add additional fields
-	            $userModel->password            = $_POST['ProfileForm']['password'];
-	            $userModel->fldVerifyPassword   = $_POST['ProfileForm']['confirm_password'];
+	            $userModel->password            = isset($_POST['ProfileForm']['password'])?$_POST['ProfileForm']['password']:null;
+	            $userModel->fldVerifyPassword   = isset($_POST['ProfileForm']['confirm_password'])?$_POST['ProfileForm']['confirm_password']:null;
 	            $userModel->created_by          = 1;
 	            $userModel->user_name           = $userModel->email;
 	            $userModel->status              = 'inactive';
 	            $userModel->activation_status   = 'not_activated';
-	            $userModel->places_visited       = serialize($_POST['ProfileForm']['places_visited']);
+	            $userModel->places_visited      = serialize($_POST['ProfileForm']['places_visited']);
 	            $userModel->places_want_to_visit = serialize($_POST['ProfileForm']['places_want_to_visit']);
 
-
-	            // Create a verification code, before the entry is saved
-	            $userModel->activation_code = HAccount::getVerificationCode(CHtml::encode($userModel->email));
 
 	            $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
 
@@ -403,7 +370,7 @@ class AccountController extends Controller
 	                    if (!empty($uploadedFile))
 	                    {
 	                        $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
-	                        $imagePath = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
+	                        $imagePath     = $this->imagesDirPath . DIRECTORY_SEPARATOR . $imageFileName;
 
 	                        if (! empty($uploadedFile))                         // check if uploaded file is set or not
 	                        {
@@ -416,29 +383,37 @@ class AccountController extends Controller
 	                        }
 	                    }
 
-	                    // Get the email message and subject
-	                    $emailMessage = HAccount::getEmailMessage('verification_email');
-	                    $emailSubject = HAccount::getEmailSubject('verification_email');
-
-
-	                    // Customise the email message
-	                    $emailMessage = HAccount::CustomiseMessage($emailMessage, $userModel->attributes);
-
-
-	                    // Send the message
-	                    HAccount::sendMessage($userModel->attributes['email'], $userModel->attributes['first_name'].' '.$userModel->attributes['last_name'], $emailSubject, $emailMessage);
-
-
-	                    $this->render('register_thanks', array('model' => $formModel));
-
-
+	                    $this->redirect(Yii::app()->user->returnUrl);
 	                    Yii::app()->end();
 
 	                } else {
-	                    Yii::app()->user->setFlash('error', "Error creating a business record.'");
+	                    Yii::app()->user->setFlash('error', "Error updating your profile.'");
 	                }
 	            }
 	        }
+	    }
+	    else
+	    {
+	        $formModel->user_id                      = $userModel->attributes['user_id'];
+
+	        $formModel->user_name                    = $userModel->attributes['user_name'];
+	        $formModel->email                        = $userModel->attributes['email'];
+	        $formModel->first_name                   = $userModel->attributes['first_name'];
+	        $formModel->last_name                    = $userModel->attributes['last_name'];
+	        $formModel->places_want_to_visit         = unserialize($userModel->attributes['places_want_to_visit']);
+	        $formModel->places_visited               = unserialize($userModel->attributes['places_visited']);
+
+	        $formModel->date_of_birth                = $userModel->attributes['date_of_birth'];
+	        $formModel->mobile_carrier_id            = $userModel->attributes['mobile_carrier_id'];
+	        $formModel->mobile_number                = $userModel->attributes['mobile_number'];
+	        $formModel->hometown                     = $userModel->attributes['hometown'];
+	        $formModel->marital_status               = $userModel->attributes['marital_status'];
+	        $formModel->send_sms_notification        = $userModel->attributes['send_sms_notification'];
+	        $formModel->my_info_permissions          = $userModel->attributes['my_info_permissions'];
+	        $formModel->photos_permissions           = $userModel->attributes['photos_permissions'];
+	        $formModel->friends_permissions          = $userModel->attributes['friends_permissions'];
+	        $formModel->blogs_permissions            = $userModel->attributes['blogs_permissions'];
+	        $formModel->travel_options_permissions   = $userModel->attributes['travel_options_permissions'];
 	    }
 
 
