@@ -32,6 +32,7 @@ class ProfileForm extends CFormModel
 	public $password;
 	public $confirm_password;
 	public $places_want_to_visit;
+	public $places_visited;
 
 
 

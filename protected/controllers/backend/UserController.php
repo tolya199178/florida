@@ -117,7 +117,10 @@ class UserController extends BackEndController
 	    if(isset($_POST['User']))
 	    {
 
-	        $userModel->attributes=$_POST['User'];
+	        $userModel->attributes           =$_POST['User'];
+	        $userModel->places_visited       = serialize($_POST['User']['places_visited']);
+	        $userModel->places_want_to_visit = serialize($_POST['User']['places_want_to_visit']);
+
 
 	        $uploadedFile = CUploadedFile::getInstance($userModel,'fldUploadImage');
 
@@ -194,13 +197,14 @@ class UserController extends BackEndController
 		if(isset($_POST['User']))
 		{
 
-
 		    // Unset the password if it is not supplied so that it is not
 		    // ...overwritten by an empty password.
 		    if (empty($_POST['User']['password']))
 		        unset($_POST['User']['password']);
 
-			$userModel->attributes=$_POST['User'];
+			$userModel->attributes           = $_POST['User'];
+			$userModel->places_visited       = serialize($_POST['User']['places_visited']);
+			$userModel->places_want_to_visit = serialize($_POST['User']['places_want_to_visit']);
 
 			$uploadedFile = CUploadedFile::getInstance($userModel,'fldUploadImage');
 
@@ -240,7 +244,6 @@ class UserController extends BackEndController
 			}
 			else {
 
-			    print_r($userModel);exit;
 			    Yii::app()->user->setFlash('error', "Error creating a user record.'");
 			}
 
@@ -250,10 +253,11 @@ class UserController extends BackEndController
 
 		}
 
-		$userModel->password = '';            // Don't show the password
-		$this->render('details',array(
-			'model'=>$userModel,
-		));
+ 		$userModel->places_visited           = unserialize($userModel->places_visited);
+ 		$userModel->places_want_to_visit     = unserialize($userModel->places_want_to_visit);
+
+		$userModel->password                 = '';            // Don't show the password
+		$this->render('details',array('model'=>$userModel));
 	}
 
 	/**
@@ -395,7 +399,6 @@ class UserController extends BackEndController
         $f=0;
         foreach($user_list as $r){
 
-            //print_r($r)
             if($f++) echo ',';
             echo   '[' .
                 '"'  .$r->attributes['user_id'] .'"'

@@ -84,6 +84,11 @@ ADD CONSTRAINT fk_mobile_carrier
      REFERENCES tbl_mobile_carrier(mobile_carrier_id);
      
      
+ALTER TABLE tbl_user CHANGE `places_want_to_visit`  `places_want_to_visit` TEXT  DEFAULT NULL;
+ALTER TABLE tbl_user ADD COLUMN `places_visited` TEXT  DEFAULT NULL;
+
+
+     
 -- ---------------------------------------------------------------------
 -- country
 -- ---------------------------------------------------------------------
