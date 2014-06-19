@@ -1,19 +1,3 @@
-<?php
-$script = <<<EOD
-
-function changeUserType(obj)
-{
-
-   alert(obj)
-}
-
-
-EOD;
-
-Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_LOAD);
-
-?>
-
 <script type="text/javascript">
 function changeUserType(userType)
 {
@@ -428,11 +412,26 @@ function changeUserType(userType)
 
     <!-- profile settings for type user -->
     <div id='user_profile' style="display:block">
+
     	<div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'places_visited',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <div style="overflow:auto; height: 200px">
+                        <?php echo $form->CheckBoxList($model,'places_visited', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?>
+                    </div>
+                    <?php echo $form->error($model,'places_visited'); ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="form-group">
                 <?php echo $form->labelEx($model,'places_want_to_visit',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-4">
-                    <?php echo $form->textField($model,'places_want_to_visit',array('class'=>"form-control")); ?>
+                    <div style="overflow:auto; height: 200px">
+                        <?php echo $form->CheckBoxList($model,'places_want_to_visit', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?>
+                    </div>
                     <?php echo $form->error($model,'places_want_to_visit'); ?>
                 </div>
             </div>
