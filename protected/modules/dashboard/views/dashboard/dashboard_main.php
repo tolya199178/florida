@@ -262,37 +262,9 @@
 
 
                             <div class="tab-pane active" id="messages">
-                                <h3>Inbox</h3>
 
-                              <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-sm-5">Subject</th>
-                                                <th class="col-sm-4">From</th>
-                                                <th class="col-sm-2">Date</th>
-                                                <th class="col-sm-1"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="items">
+                                <?php $this->renderPartial('components/messages', array('myMessages' => $myMessages)) ?>
 
-                                        <?php foreach ($myMessages as $itemMessage) { ?>
-                                            <tr>
-                                                <td>
-                                                    <a href="<?php echo $this->createUrl('/message/details/', array('message' => $itemMessage->id)); ?>"
-                                                       class='message_item'>
-                                                       <?php echo $itemMessage->subject; ?>
-                                                   </a>
-                                                </td>
-                                                <td><?php echo $itemMessage->sender_user->last_name.', '.$itemMessage->sender_user->first_name; ?></td>
-                                                <td><?php echo $itemMessage->sent; ?></td>
-                                                <td></td>
-                                            </tr>
-                                         <?php } ?>
-
-                                        </tbody>
-                                    </table>
-                                </div>
                             </div>
                             <!--/tab-pane-->
 
