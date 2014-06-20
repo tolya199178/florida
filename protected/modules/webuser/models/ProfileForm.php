@@ -36,6 +36,8 @@ class ProfileForm extends CFormModel
 	public $confirm_password;
 	public $places_want_to_visit;
 	public $places_visited;
+	public $language;
+	public $image;
 
 
 	/**
@@ -52,6 +54,64 @@ class ProfileForm extends CFormModel
 	 * @var array Picture upload validation rules.
 	 */
 	private $_pictureUploadRules;
+
+	/**
+	 *
+	 * @var string fldUploadImage User image uploader.
+	 * @access public
+	 */
+	public $fldUploadImage;
+
+	/**
+	 *
+	 * @var string fldUploadImage User image uploader.
+	 * @access public
+	 */
+	public $fldUploadMyGalleryImage;
+
+	/**
+	 * @var string imagesDirPath Directory where User images will be stored
+	 * @access private
+	 */
+	private $imagesDirPath;
+
+	/**
+	 * @var string imagesDirPath Directory where User image thumbnails will be stored
+	 * @access private
+	 */
+	private $thumbnailsDirPath;
+
+	/**
+	 * @var string thumbnailWidth thumbnail width
+	 * @access private
+	 */
+	private $thumbnailWidth     = 100;
+	/**
+	 * @var string thumbnailWidth thumbnail width
+	 * @access private
+	 */
+	private $thumbnailHeight    = 100;
+
+	/**
+	 * Controller initailisation routines to set up the controller
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return array action filters
+	 * @access public
+	 */
+	public function init()
+	{
+	    $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/user';
+	    $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/user/thumbnails';
+
+	    /*
+	     *     Small-s- 100px(width)
+	    *     Medum-m- 240px(width)
+	    *     Large-l- 600px(width)
+	    */
+	}
+
 
 	/**
 	 * Returns rules for picture upload or an empty array if they are not set.
@@ -92,7 +152,22 @@ class ProfileForm extends CFormModel
         			array('password', 'validCurrentPassword', 'except'=>'register'),
                     array('confirm_password', 'validCurrentPassword', 'except'=>'register'),
 
-                    array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements()),
+                    // mobile carrier is mandatory if mobile number is entered, and vice-versa, and if
+                    // ...the send SMS notification flag is set, then both mobile carrier  and mobile
+                    // ...number values are mandatory.
+                    array('mobile_number, mobile_carrier_id, send_sms_notification', 'validateMobileFields'),
+
+                    array('date_of_birth',                  'validateAge', 'age_limit' => 18),
+
+                    array('language',                       'length', 'max'=>255),
+
+                    array('fldUploadImage',                 'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+                    array('fldUploadMyGalleryImage',        'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+
+
+
+
+                    array('verifyCode', 'captcha', 'allowEmpty'=>!CCaptcha::checkRequirements(), 'on'=>'register'),
 
         		);
 	}
@@ -112,6 +187,9 @@ class ProfileForm extends CFormModel
 			'password'		=> Yii::t('UsrModule.usr','Your password'),
 		    'confirm_password'		=> Yii::t('UsrModule.usr','Confirm password'),
 		    'verifyCode'    => Yii::t('UsrModule.usr','Verification Code'),
+		    'date_of_birth' => Yii::t('UsrModule.usr','Date of Birth'),
+		    'language'      => Yii::t('UsrModule.usr','Language'),
+
 		);
 	}
 
@@ -205,4 +283,65 @@ class ProfileForm extends CFormModel
 // 		}
 		return false;
 	}
+
+	/**
+	 * Custom validation for fields mobile_number, mobile_carrier_id,
+	 * send_sms_notification.
+	 *
+	 * mobile carrier is mandatory if mobile number is entered, and vice-versa,
+	 * ...and if the send SMS notification flag is set, then both mobile
+	 * ...carrier, and mobile number values are mandatory.
+	 *
+	 * @param string $attribute the attribute being validated
+	 * @return array $params optional additional parameters defined in the rule.
+	 */
+	public function validateMobileFields($attribute, $params)
+	{
+	    if ($this->send_sms_notification == 'Y')
+	    {
+            if (empty($this->mobile_number))
+            {
+                $this->addError('mobile_number', 'You must supply a mobile number.');
+            }
+            if (empty($this->mobile_carrier_id))
+            {
+                $this->addError('mobile_carrier_id', 'You must specify a mobile carrier.');
+            }
+	    }
+	    else
+	    {
+	        if (!empty($this->mobile_number) && empty($this->mobile_carrier_id))
+	        {
+	            $this->addError('mobile_carrier_id', 'You must specify a mobile carrier.');
+	        }
+	        if (!empty($this->mobile_carrier_id) && empty($this->mobile_number))
+	        {
+	            $this->addError('mobile_number', 'You must supply a mobile number.');
+	        }
+	    }
+
+
+	}
+
+	/**
+	 * Validate the user's age is greater than the supplied limit
+	 *
+	 * @param string $attribute the attribute being validated
+	 * @return array $params optional additional parameters defined in the rule.
+	 */
+	public function validateAge($attribute, $params)
+	{
+
+	    $dateBirth  = strtotime($this->$attribute);
+
+	    $ageDateLimit   = strtotime('+'.$params['age_limit'].' years', $dateBirth);
+
+
+	    if(time() < $ageDateLimit)  {
+	        $this->addError($attribute, 'Registered users must be older than '.$params['age_limit'].' .');
+	    }
+
+	}
+
+
 }

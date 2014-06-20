@@ -39,6 +39,7 @@
  * @property string $travel_options_permissions
  * @property string $image
  * @property string $places_visited
+ * @property string $language
  *
  * The followings are the available model relations:
  * @property User $modifiedBy
@@ -180,7 +181,7 @@ class User extends CActiveRecord
             // Data types, sizes
             array('mobile_carrier_id',              'numerical', 'integerOnly'=>true),
             array('user_name, email, password,
-                   first_name, last_name,
+                   first_name, last_name, language,
                    activation_code, facebook_id,
                    facebook_name, hometown',        'length', 'max'=>255),
             array('places_want_to_visit,
@@ -188,13 +189,18 @@ class User extends CActiveRecord
 
             array('mobile_number',                  'length', 'max'=>64),
 
+            // mobile carrier is mandatory if mobile number is entered, and vice-versa, and if
+            // ...the send SMS notification flag is set, then both mobile carrier  and mobile
+            // ...number values are mandatory.
+            array('mobile_number, mobile_carrier_id, send_sms_notification', 'validateMobileFields'),
+
             array('email, user_name',               'email', 'checkMX'=>false),
 
             array('email', 'unique',                'on' => array(self::SCENARIO_REGISTER)),
             array('user_name', 'unique',            'on' => array(self::SCENARIO_REGISTER)),
 
             // Form only attributes.
-            array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+            array('fldUploadImage',                 'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
 
 
@@ -220,14 +226,14 @@ class User extends CActiveRecord
             // compare entered and verified password. Only for change password and register screens.
             array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_REGISTER, self::SCENARIO_FORGOT_PASSWORD)),
 
-            array('date_of_birth', 'safe'),
+            array('date_of_birth',                  'validateAge', 'age_limit' => 18),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
             array('user_id, user_name, email, first_name, last_name, user_type, status,
                    created_by, modified_by, activation_code, activation_status, activation_time,
                    facebook_id, facebook_name, registered_with_fb, loggedin_with_fb,
                    login_status, last_login, mobile_number, mobile_carrier_id, send_sms_notification,
-                   date_of_birth, hometown, marital_status, places_want_to_visit',
+                   date_of_birth, hometown, marital_status, places_want_to_visit, places_visited',
                   'safe', 'on'=>'search'),
         );
     }
@@ -311,6 +317,7 @@ class User extends CActiveRecord
             'hometown'              => 'Hometown',
             'marital_status'        => 'Marital Status',
             'places_want_to_visit'  => 'Places Want To Visit',
+            'places_visited'        => 'Places Visited',
             'my_info_permissions'   => 'My Info permissions',
             'photos_permissions'    => 'Photos permissions',
             'friends_permissions'   => 'Friends permissions',
@@ -319,6 +326,7 @@ class User extends CActiveRecord
             'image'                 => 'Image',
             'fldVerifyPassword'     => 'Re-enter Password',
             'fldCurrentPassword'    => 'Current Password',
+            'language'              => 'Language',
         );
     }
 
@@ -368,6 +376,8 @@ class User extends CActiveRecord
         $criteria->compare('hometown',              $this->hometown,true);
         $criteria->compare('marital_status',        $this->marital_status);
         $criteria->compare('places_want_to_visit',  $this->places_want_to_visit,true);
+        $criteria->compare('places_visited',        $this->places_visited,true);
+        $criteria->compare('language',              $this->language,true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -566,5 +576,64 @@ class User extends CActiveRecord
 
          return $this->first_name . ' ' . $this->last_name;
     }
+
+    /**
+     * Custom validation for fields mobile_number, mobile_carrier_id,
+     * send_sms_notification.
+     *
+     * mobile carrier is mandatory if mobile number is entered, and vice-versa,
+     * ...and if the send SMS notification flag is set, then both mobile
+     * ...carrier, and mobile number values are mandatory.
+     *
+     * @param string $attribute the attribute being validated
+     * @return array $params optional additional parameters defined in the rule.
+     */
+    public function validateMobileFields($attribute, $params)
+    {
+        if ($this->send_sms_notification == 'Y')
+        {
+            if (empty($this->mobile_number))
+            {
+                $this->addError('mobile_number', 'You must supply a mobile number.');
+            }
+            if (empty($this->mobile_carrier_id))
+            {
+                $this->addError('mobile_carrier_id', 'You must specify a mobile carrier.');
+            }
+        }
+        else
+        {
+            if (!empty($this->mobile_number) && empty($this->mobile_carrier_id))
+            {
+                $this->addError('mobile_carrier_id', 'You must specify a mobile carrier.');
+            }
+            if (!empty($this->mobile_carrier_id) && empty($this->mobile_number))
+            {
+                $this->addError('mobile_number', 'You must supply a mobile number.');
+            }
+        }
+
+
+    }
+
+	/**
+	 * Validate the user's age is greater than the supplied limit
+	 *
+	 * @param string $attribute the attribute being validated
+	 * @return array $params optional additional parameters defined in the rule.
+	 */
+	public function validateAge($attribute, $params)
+	{
+
+	    $dateBirth  = strtotime($this->$attribute);
+
+	    $ageDateLimit   = strtotime('+'.$params['age_limit'].' years', $dateBirth);
+
+
+	    if(time() < $ageDateLimit)  {
+	        $this->addError($attribute, 'Registered users must be older than '.$params['age_limit'].' .');
+	    }
+
+	}
 
 }
