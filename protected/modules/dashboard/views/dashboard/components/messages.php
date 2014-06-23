@@ -66,8 +66,6 @@ $script = <<<EOD
         // message_reply
         $("body").on('click', "#message_create", function (e) {
 
-       debugger;
-
         	var addressValue = $(this).attr("href");
         	   $("#message_details").load(addressValue);
 
@@ -86,9 +84,9 @@ $script = <<<EOD
                 	type: 'POST',
                 	url: $(this).attr("href"),
                 	data: {id: $(this).attr("rel")} ,
-
+                    dataType: 'json',
                 	success: function(data, status) {
-                 	   $("#message_details").html(data);
+                       $('#statusMsg').html(data.message).fadeIn().animate({opacity: 1.0}, 3000).fadeOut("slow");
                 	}
             	});
                 return false;
@@ -101,9 +99,6 @@ $script = <<<EOD
 
         // message_reply
         $("body").on('click', "#message_reply", function (e) {
-
-       debugger;
-
         	var addressValue = $(this).attr("href");
         	   $("#message_details").load(addressValue);
 
@@ -114,8 +109,6 @@ $script = <<<EOD
         // message_create_form
         $("body").on('submit', "#message_create_form, #message_reply_form", function (e) {
 
-       debugger;
-
             e.preventDefault(); // prevent default form submit
 
             var thisform = $(this);
@@ -124,9 +117,9 @@ $script = <<<EOD
             	type: thisform.attr('method'),
             	url: thisform.attr('action'),
             	data: thisform.serialize(),
-
+                dataType: 'json',
             	success: function(data, status) {
-             	   $("#message_details").html(data);
+                    $('#statusMsg').html(data.message).fadeIn().animate({opacity: 1.0}, 3000).fadeOut("slow");
             	}
         	});;
 
