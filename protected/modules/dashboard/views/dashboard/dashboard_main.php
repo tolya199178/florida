@@ -85,6 +85,8 @@
                             </div>
                         </div>
 
+                        <?php $this->renderPartial('components/friends', array('myLocalFriends' => $myLocalFriends, 'myOnlineFriends' => $myOnlineFriends, 'myFriendsCount'=>$myFriendsCount)) ?>
+
 
                         <ul class="list-group">
                             <li class="list-group-item text-muted">Activity <i
