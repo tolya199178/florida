@@ -38,7 +38,7 @@ class DashboardController extends Controller
 
     /**
      * Default controller action.
-     * Displays the dashboard
+     * Displays the dashboard by forwarding to the dashboard render action
      *
      * @param <none> <none>
      *
@@ -48,102 +48,160 @@ class DashboardController extends Controller
 	public function actionIndex()
 	{
 
-	    // /////////////////////////////////////////////////////////////////////
-	    // Redirect non-logged in users to the login page
-	    // /////////////////////////////////////////////////////////////////////
-	    if (Yii::app()->user->isGuest)         // User is not logged in
-	    {
-	        $this->redirect("login");
-	        Yii::app()->end();
-	    }
+	    $this->redirect(Yii::app()->createUrl('/dashboard/dashboard/show/'));
 
-	    // /////////////////////////////////////////////////////////////////////
-	    // Get the login details from the WebUser component
-	    // /////////////////////////////////////////////////////////////////////
-	    $userId = Yii::app()->user->id;
+	}
 
-	    if ($userId === null)         // User is not known
-	    {
-	        $this->redirect("login");
-	        Yii::app()->end();
-	    }
+    /**
+     * Displays the dashboard
+     *
+     * @param
+     *            <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionShow()
+    {
 
-	    // /////////////////////////////////////////////////////////////////////
-	    // Load the user details
-	    // /////////////////////////////////////////////////////////////////////
-	    $userModel = User::model()->findByPk($userId);
-	    if ($userModel === null) {
-	        $this->redirect("login");
-	    }
+        // /////////////////////////////////////////////////////////////////////
+        // Redirect non-logged in users to the login page
+        // /////////////////////////////////////////////////////////////////////
+        if (Yii::app()->user->isGuest)         // User is not logged in
+        {
+            $this->redirect("login");
+            Yii::app()->end();
+        }
 
+        // /////////////////////////////////////////////////////////////////////
+        // Get the login details from the WebUser component
+        // /////////////////////////////////////////////////////////////////////
+        $userId = Yii::app()->user->id;
 
-	    // /////////////////////////////////////////////////////////////////////
-	    // Get the user's businesses
-	    // /////////////////////////////////////////////////////////////////////
+        if ($userId === null)         // User is not known
+        {
+            $this->redirect("login");
+            Yii::app()->end();
+        }
 
-	    $dbCriteria = new CDbCriteria;
-	    $dbCriteria->with      = array('businessUsers');
-	    $dbCriteria->condition = "businessUsers.user_id = :user_id";
-	    $dbCriteria->params    = array(':user_id' => Yii::app()->user->id);
+        // /////////////////////////////////////////////////////////////////////
+        // Load the user details
+        // /////////////////////////////////////////////////////////////////////
+        $userModel                            = User::model()->findByPk($userId);
+        if ($userModel === null)
+        {
+            $this->redirect("login");
+        }
 
-	    $listMyBusiness = Business::model()->findAll($dbCriteria);
+        $configDashboard['leftpanel']         = 'left_panel';
 
-	    // /////////////////////////////////////////////////////////////////////
-	    // Get a list of the user's friends
-	    // /////////////////////////////////////////////////////////////////////
-	    // /////////////////////////////////////////////////////////////////////
-	    // First, get a list of all local friends
-	    // /////////////////////////////////////////////////////////////////////
-	    $lstMyFriends = MyFriend::model()->with('friend')->findAllByAttributes(array(
-	        'user_id' => Yii::app()->user->id
-	    ));
+        /*
+         * Get the main dashboard component
+         */
+        $argComponent = Yii::app()->request->getQuery('component', 'default');
 
-	    // /////////////////////////////////////////////////////////////////////
-	    // Now, get a list of the user's facebook friends
-	    // /////////////////////////////////////////////////////////////////////
-	    // Load the component
-	    // TODO: figure why component is not autoloading.
-	    $objFacebook = Yii::app()->getComponent('facebook');
+        switch ($argComponent)
+        {
+            case 'allfriends':
+                $configDashboard['mainpanel'] = 'friends';
+                break;
+            case 'onlinefriends':
+                $configDashboard['mainpanel'] = 'friends';
+                break;
+            case 'sentfriendrequests':
+                $configDashboard['mainpanel'] = 'friends';
+                break;
+            case 'receivedfriendrequests':
+                $configDashboard['mainpanel'] = 'friends';
+                break;
 
-	    // Establish a connection to facebook
-	    $objFacebook->connect();
+            default:
+                $configDashboard['mainpanel'] = 'default';
+        }
 
-	    $lstMyOnlineFriends = array();
-	    if ($objFacebook->isLoggedIn()) {
-	    $lstMyOnlineFriends = $objFacebook->getFriendList();
-	    }
+        // /////////////////////////////////////////////////////////////////////
+        // Get the user's businesses
+        // /////////////////////////////////////////////////////////////////////
 
-	    // /////////////////////////////////////////////////////////////////////
-	    // Get the user's messages
-	    // /////////////////////////////////////////////////////////////////////
-	    $listMessages = UserMessage::model()->findAllByAttributes(array('recipient' => Yii::app()->user->id));
+        $dbCriteria                         = new CDbCriteria();
+        $dbCriteria->with                   = array('businessUsers');
+        $dbCriteria->condition              = "businessUsers.user_id = :user_id";
+        $dbCriteria->params                 = array(':user_id' => Yii::app()->user->id);
 
-	    // /////////////////////////////////////////////////////////////////////
+        $listMyBusiness = Business::model()->findAll($dbCriteria);
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get a list of the user's friends
+        // /////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////
+        // First, get a list of all local friends
+        // /////////////////////////////////////////////////////////////////////
+        $lstMyFriends   = MyFriend::model()
+                            ->with('friend')
+                            ->findAllByAttributes(array('user_id' => Yii::app()->user->id)
+                          );
+
+        // /////////////////////////////////////////////////////////////////////
+        // Now, get a list of the user's facebook friends
+        // /////////////////////////////////////////////////////////////////////
+        // Load the component
+        // TODO: figure why component is not autoloading.
+        $objFacebook                        = Yii::app()->getComponent('facebook');
+
+        // Establish a connection to facebook
+        $objFacebook->connect();
+
+        $lstMyOnlineFriends                 = array();
+        if ($objFacebook->isLoggedIn())
+        {
+            $lstMyOnlineFriends = $objFacebook->getFriendList();
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the user's messages
+        // /////////////////////////////////////////////////////////////////////
+        $listMessages   = UserMessage::model()->findAllByAttributes(array(
+                            'recipient' => Yii::app()->user->id
+                          ));
+
+        // /////////////////////////////////////////////////////////////////////
         // Get a list of the user's images
         // /////////////////////////////////////////////////////////////////////
-        $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => Yii::app()->user->id, 'photo_type' => 'user'));
+        $listPhotos = Photo::model()->findAllByAttributes(array(
+                        'entity_id' => Yii::app()->user->id,
+                        'photo_type' => 'user'
+                    ));
 
         // /////////////////////////////////////////////////////////////////////
         // TODO: Get a list of the user's activities logs
         // /////////////////////////////////////////////////////////////////////
         // TODO:
-        $listMyActivities = array();   	    // TODO:
+        $listMyActivities                   = array(); // TODO:
         // TODO:
 
+        // TODO: TODO: TODO:
+        // THIS IS SAMPLE DATA
+        $myFriendsCount['allfriends']               = 128;
+        $myFriendsCount['onlinefriends']            = 13;
+        $myFriendsCount['sentfriendrequests']       = 76;
+        $myFriendsCount['receivedfriendrequests']   = 1;
+        // TODO: TODO: TODO:
+        // THIS IS SAMPLE DATA
+
+
+        $configDashboard['data'] = array(
+            'listMyBusiness' => $listMyBusiness,
+            'myLocalFriends' => $lstMyFriends,
+            'myOnlineFriends' => $lstMyOnlineFriends,
+            'myMessages' => $listMessages,
+            'myPhotos' => $listPhotos,
+            'myActivities' => $listMyActivities,
+            'myFriendsCount' => $myFriendsCount
+        );
 
         // Show the dashboard
-        $this->render('dashboard_main',
-                      array('listMyBusiness'   => $listMyBusiness,
-                            'myLocalFriends'   => $lstMyFriends,
-                            'myOnlineFriends'  => $lstMyOnlineFriends,
-                            'myMessages'       => $listMessages,
-                            'myPhotos'         => $listPhotos,
-                            'myActivities'     => $listMyActivities,
-                     ));
-
-
-
-	}
+        $this->render('dashboard_main', array('configDashboard' => $configDashboard));
+    }
 
 
 }
