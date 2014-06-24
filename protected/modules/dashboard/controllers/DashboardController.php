@@ -170,7 +170,7 @@ class DashboardController extends Controller
         $listPhotos = Photo::model()->findAllByAttributes(array(
                         'entity_id' => Yii::app()->user->id,
                         'photo_type' => 'user'
-                    ));
+                      ));
 
         // /////////////////////////////////////////////////////////////////////
         // TODO: Get a list of the user's activities logs
@@ -179,24 +179,30 @@ class DashboardController extends Controller
         $listMyActivities                   = array(); // TODO:
         // TODO:
 
-        // TODO: TODO: TODO:
-        // THIS IS SAMPLE DATA
-        $myFriendsCount['allfriends']               = 128;
-        $myFriendsCount['onlinefriends']            = 13;
-        $myFriendsCount['sentfriendrequests']       = 76;
-        $myFriendsCount['receivedfriendrequests']   = 1;
-        // TODO: TODO: TODO:
-        // THIS IS SAMPLE DATA
+
+        $resultsFriendSummary = MyFriend::FriendSummary(Yii::app()->user->id);
+        $userFriendSummary = array_pop($resultsFriendSummary);
+
+        $myFriendsCount['allfriends']               = $userFriendSummary['approved'];
+        $myFriendsCount['onlinefriends']            = 0;
+        $myFriendsCount['sentfriendrequests']       = $userFriendSummary['pending'];
+        $myFriendsCount['receivedfriendrequests']   = count(MyFriend::model()
+                                                            ->findAllByAttributes(
+                                                                array('friend_id'    => Yii::app()->user->id,
+                                                                      'friend_status'=> 'pending'
+                                                                )
+                                                              )
+                                                      );
 
 
         $configDashboard['data'] = array(
-            'listMyBusiness' => $listMyBusiness,
-            'myLocalFriends' => $lstMyFriends,
-            'myOnlineFriends' => $lstMyOnlineFriends,
-            'myMessages' => $listMessages,
-            'myPhotos' => $listPhotos,
-            'myActivities' => $listMyActivities,
-            'myFriendsCount' => $myFriendsCount
+            'listMyBusiness'    => $listMyBusiness,
+            'myLocalFriends'    => $lstMyFriends,
+            'myOnlineFriends'   => $lstMyOnlineFriends,
+            'myMessages'        => $listMessages,
+            'myPhotos'          => $listPhotos,
+            'myActivities'      => $listMyActivities,
+            'myFriendsCount'    => $myFriendsCount
         );
 
         // Show the dashboard
