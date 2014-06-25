@@ -1,3 +1,13 @@
+<?php
+
+// print_r($data['listMyFriends']);
+// exit;
+
+$myLocalFriends     = $data['listMyFriends']['lstMyFriends'];
+$myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
+
+?>
+
 <!-- Friends main panel -->
 
 <style type="text/css">
@@ -66,7 +76,6 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
 ?>
 
 
-
                         <div class="panel panel-default">
 
 
@@ -74,6 +83,9 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                 My Friends <i class="fa fa-link fa-1x"></i>
                             </div>
                             <div class="panel-body">
+
+
+
 
                                 <!-- /#alphabet-list -->
                                 <div  id="alphabet-list">
@@ -152,40 +164,3 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                             </div>
 
                         </div>
-
-                        <ul class="list-group">
-                            <li class="list-group-item text-muted">My Friends List <i
-                                class="fa fa-dashboard fa-1x"></i></li>
-
-                            <li class="list-group-item text-right">
-                                <span class="pull-left">
-                                    <?php echo CHtml::link('<strong>My Friends</strong>', Yii::app()->createUrl('/dashboard/dashboard/show/component/allfriends/')); ?>
-                                </span>
-                                <?php echo CHtml::link($myFriendsCount['allfriends'], Yii::app()->createUrl('/dashboard/dashboard/show/component/allfriends/')); ?>
-                            </li>
-                            <li class="list-group-item text-right">
-                                <span class="pull-left">
-                                    <?php echo CHtml::link('<strong>Friends Online</strong>', Yii::app()->createUrl('/dashboard/dashboard/show/component/onlinefriends/')); ?>
-                                </span>
-                                <?php echo CHtml::link($myFriendsCount['onlinefriends'], Yii::app()->createUrl('/dashboard/dashboard/show/component/onlinefriends/')); ?>
-                            </li>
-                            <li class="list-group-item text-right">
-                                <span class="pull-left">
-                                    <?php echo CHtml::link('<strong>Sent Friend Invitations</strong>', Yii::app()->createUrl('/dashboard/dashboard/show/component/onlinefriends/')); ?>
-                                </span>
-                                <?php echo CHtml::link($myFriendsCount['sentfriendrequests'], Yii::app()->createUrl('/dashboard/dashboard/show/component/sentfriendrequests/')); ?>
-                            </li>
-                            <li class="list-group-item text-right">
-                                <span class="pull-left">
-                                    <?php echo CHtml::link('<strong>Received Friend Invitations</strong>', Yii::app()->createUrl('/dashboard/dashboard/show/component/onlinefriends/')); ?>
-                                </span>
-                                <?php echo CHtml::link($myFriendsCount['receivedfriendrequests'], Yii::app()->createUrl('/dashboard/dashboard/show/component/receivedfriendrequests/')); ?>
-                            </li>
-
-                            <li class="list-group-item text-center">
-                                <a class="btn btn-lg btn-success" href="<?php echo Yii::app()->createUrl('/dashboard/dashboard/show/component/allfriends/'); ?>">
-                                    <i class="glyphicon glyphicon-plus-sign"></i>
-                                    See all friends
-                                </a>
-                            </li>
-                        </ul>
