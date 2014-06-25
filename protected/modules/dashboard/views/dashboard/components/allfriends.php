@@ -1,8 +1,5 @@
 <?php
 
-// print_r($data['listMyFriends']);
-// exit;
-
 $myLocalFriends     = $data['listMyFriends']['lstMyFriends'];
 $myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
 

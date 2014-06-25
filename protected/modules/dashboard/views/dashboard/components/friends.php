@@ -32,7 +32,7 @@
                             <li class="list-group-item text-center">
                                 <a class="btn btn-lg btn-success" href="<?php echo Yii::app()->createUrl('/dashboard/dashboard/show/component/allfriends/'); ?>">
                                     <i class="glyphicon glyphicon-plus-sign"></i>
-                                    See all friends
+                                    Manage friends
                                 </a>
                             </li>
                         </ul>

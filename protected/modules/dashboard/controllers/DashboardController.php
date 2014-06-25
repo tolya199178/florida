@@ -218,7 +218,7 @@ class DashboardController extends Controller
                                     ->with('friend')
                                     ->findAllByAttributes(array('user_id' => Yii::app()->user->id));
 
-        $setFriendListing['lstMyFriends']  = $lstMyFriends;
+        $setFriendListing['lstMyFriends']   = $lstMyFriends;
 
 
         // /////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ class DashboardController extends Controller
         $lstMyOnlineFriends                 = array();
         if ($objFacebook->isLoggedIn())
         {
-            $lstMyOnlineFriends = $objFacebook->getFriendList();
+            $lstMyOnlineFriends             = $objFacebook->getFriendList();
         }
 
         $setFriendListing['lstMyOnlineFriends']  = $lstMyFriends;
@@ -244,10 +244,11 @@ class DashboardController extends Controller
         // Next, get a list of all pending requests
         // /////////////////////////////////////////////////////////////////////
         $lstFriendRequestsReceived   = MyFriend::model()
-                                                ->with('friend')
-                                                ->findAllByAttributes(array('friend_id' => Yii::app()->user->id));
+                                                ->with('user')
+                                                ->findAllByAttributes(array('friend_id' => Yii::app()->user->id,
+                                                                             'friend_status'=>'Pending'));
 
-        $setFriendListing['lstMyFriendsRequestsReceived']  = $lstMyFriends;
+        $setFriendListing['lstMyFriendsRequestsReceived']  = $lstFriendRequestsReceived;
 
         return $setFriendListing;
 
