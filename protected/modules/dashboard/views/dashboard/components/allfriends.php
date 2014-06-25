@@ -10,8 +10,11 @@ $myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
 <style type="text/css">
 
 .my_friend_selected  {
-    display: none;
+    display: block;
 }
+
+.invited {border:solid 3px red}
+
 </style>
 
 <style>
@@ -167,6 +170,8 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                 <!-- /#alphabet-list -->
 
                                 <ul class="list-group friend_list">
+                                <form action="#" role="form" id="frmInviteMyFriends" method="post">
+
 
 
                                 <?php foreach ($myLocalFriends as $myFriend) { ?>
@@ -175,23 +180,32 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                             continue;
                                         }
                                 ?>
-                                	<li>
+                                	<li class='myfriend' rel='<?php echo $myFriend->friend['user_id']; ?>'>
+
                                 	   <div class='col-lg-2'>
 
-                                            <?php
-                                            if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$myFriend->friend['image']))
-                                            {
-                                                echo CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$myFriend->friend['image'],
-                                                                  CHtml::encode($myFriend->friend->first_name).' '.CHtml::encode($myFriend->friend->last_name),
-                                                                  array("width"=>"150px" ,"height"=>"150px") );
-                                            }
-                                            else
-                                            {
-                                                echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg',
-                                                    CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']),
-                                                    array("width"=>"150px" ,"height"=>"150px") );
-                                            }
-                                            ?>
+                                       	   <div class='col-lg-1'>
+                                                <input type="checkbox" class="my_friend_selected" id="my_friend_<?php echo $myFriend->friend['user_id']; ?>" name="invitation_list[]"  value="<?php echo $myFriend->friend['user_id']; ?>" />
+                                    	   </div>
+                                    	   <div class='col-lg-11'>
+                                                <?php
+                                                if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$myFriend->friend['image']))
+                                                {
+                                                    echo CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$myFriend->friend['image'],
+                                                                      CHtml::encode($myFriend->friend->first_name).' '.CHtml::encode($myFriend->friend->last_name),
+                                                                      array("width"=>"150px" ,"height"=>"150px") );
+                                                }
+                                                else
+                                                {
+                                                    echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg',
+                                                        CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']),
+                                                        array("width"=>"150px" ,"height"=>"150px") );
+                                                }
+                                                ?>
+                                    	   </div>
+
+
+
                                 	   </div>
 
                                 	   <div class='col-lg-5'>
@@ -211,7 +225,7 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                 	   <div class='col-lg-5'>
 
                                             <a class="btn btn-md btn-primary" href="<?php echo Yii::app()->createUrl('webuser/sendfriendmessage/'); ?>">
-                                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                                <i class="glyphicon glyphicon-envelope"></i>
                                                 Send Message
                                             </a>
 
@@ -224,8 +238,78 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                 	</li>
 
                                 <?php } ?>
+                                </form>
                                 </ul>
 
                             </div>
+                            <div class="panel-footer">
+                                <button type='submit' class="btn btn-md btn-primary" href="<?php echo Yii::app()->createUrl('webuser/sendfriendmessages/'); ?>" id='send_messages'>
+                                    <i class="glyphicon glyphicon-envelope"></i>
+                                    Send Message to Selected
+                                </button>
+                            </div>
 
                         </div>
+
+
+<?php
+
+$baseUrl = $this->createAbsoluteUrl('/');
+
+
+$script = <<<EOD
+
+    $('body').on('click', '.myfriend', function(event) {
+
+        var $$          = $(this)
+        var user_id     = $(this).attr('rel');
+
+        if( !$$.is('.invited')){
+            $$.addClass('invited');
+            $('#my_friend_'+user_id).prop('checked', true);
+        } else {
+            $$.removeClass('invited');
+            $('#my_friend_'+user_id).prop('checked', false);
+
+        }
+    })
+
+    $('body').on('click', '#send_messages', function(event) {
+
+    debugger;
+
+        $('#frmInviteMyFriends').submit();
+
+    })
+
+//     // Submit the modal form and close the modal
+//     $('body').on('submit', '#frmInviteMyFriends', function(event) {
+
+
+
+//         event.preventDefault();
+
+//             debugger;
+
+//         var form_values = $(this).serialize();
+
+//         var url = '$baseUrl/concierge/sendfriendinvitations/';
+
+//         $.ajax({
+//                type: "POST",
+//                url: url,
+//                data: $(this).serialize(),
+//                success: function(data)
+//                {
+//                     $('#modalInviteMyFriends').modal('hide');
+//                }
+//         });
+
+//         return false; // avoid to execute the actual submit of the form.
+//     });
+
+EOD;
+
+Yii::app()->clientScript->registerScript('my_friend_list', $script, CClientScript::POS_READY);
+
+?>
