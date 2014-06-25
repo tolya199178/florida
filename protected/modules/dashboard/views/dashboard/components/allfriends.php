@@ -45,6 +45,61 @@ font-weight: bold;
 -->
 </style>
 
+<style>
+
+.friend_list {
+    height:300px;overflow-y:auto;overflow-x:off;
+}
+
+.friend_list li {
+    background-clip: padding-box;
+    border-radius: 4px;
+    list-style-type: none;
+    overflow: hidden;
+    padding: 1em 0 1em 1em;
+}
+
+ul li {
+    list-style: disc inside none;
+    padding-left: 20px;
+}
+
+.friend_list h2, .friend_list p {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    margin: 0;
+    padding-bottom: 0;
+}
+.friend_list p, .friend_list h2 {
+    width: 360px;
+}
+.friend_list img, .friend_list h2, .friend_list p {
+    float: left;
+}
+h2 {
+    background: url("../images/bg_hr.png") repeat-x scroll center bottom rgba(0, 0, 0, 0);
+    font-size: 32px;
+    padding-bottom: 10px;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #222222;
+    font-family: 'Calibri',Helvetica,Arial,sans-serif;
+    font-weight: 500;
+    letter-spacing: -1px;
+    margin: 10px 0;
+}
+
+/* */
+
+
+.friend_list li:hover
+{
+  background-color: #eff1f9;
+  cursor: pointer;
+  box-shadow: #bbbbbb;
+}
+</style>
+
+
 <?php
 
 $baseUrl = $this->createAbsoluteUrl('/');
@@ -119,9 +174,8 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                 </div>
                                 <!-- /#alphabet-list -->
 
+                                <ul class="list-group friend_list">
 
-
-                                <ul class="list-group" id='friend_list' style="height:300px;overflow-y:auto;overflow-x:off;">
 
                                 <?php foreach ($myLocalFriends as $myFriend) { ?>
                                 <?php
@@ -129,31 +183,35 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                             continue;
                                         }
                                 ?>
-                                    <div class='row myfriend' rel='<?php echo CHtml::encode($myFriend->friend['user_id']); ?>' id="<?php echo strtolower($myFriend->friend['first_name']); ?>">
-                                        <div class='col-lg-3'>
+                                	<li>
+                                	   <div class='col-lg-2'>
 
                                             <?php
                                             if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$myFriend->friend['image']))
                                             {
                                                 echo CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$myFriend->friend['image'],
                                                                   CHtml::encode($myFriend->friend->first_name).' '.CHtml::encode($myFriend->friend->last_name),
-                                                                  array("width"=>"50px" ,"height"=>"50px") );
+                                                                  array("width"=>"150px" ,"height"=>"150px") );
                                             }
                                             else
                                             {
                                                 echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg',
                                                     CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']),
-                                                    array("width"=>"50px" ,"height"=>"50px") );
+                                                    array("width"=>"150px" ,"height"=>"150px") );
                                             }
                                             ?>
-                                        </div>
-                                        <div class='col-lg-9'>
-                                            <input type="checkbox" class="my_friend_selected" id="my_friend_<?php echo $myFriend->friend['user_id']; ?>" name="invitation_list[]"  value="<?php echo $myFriend->friend['user_id']; ?>" />
-                                            <?php echo CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']); ?>
-                                            <br/><?php echo CHtml::encode($myFriend->friend['hometown']); ?>
-                                            <?php echo CHtml::link('See '.CHtml::encode($myFriend->friend['first_name']).'\'s profile', Yii::app()->createUrl('/webuser/profile/showfriend', array('friend' => $myFriend->friend['user_id'] )), array('class' => 'result_button_link'));   ?>
-                                        </div>
-                                    </div>
+                                	   </div>
+                                	   <div class='col-lg-5'>
+                                    		<h2><a href="#">
+                                    		      <?php echo CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']); ?>
+                                    		</a></h2>
+                                    		<p><span><strong>Joined:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['created_time']); ?><span></span></span></p>
+                                    		<p><span><strong>Date of Birth:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['date_of_birth']); ?><span></span></span></p>
+                                    		<p><span><strong>Location:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['hometown']); ?><span></span></span></p>
+                                	   </div>
+                                	   <div class='col-lg-5'>
+                                	   </div>
+                                	</li>
 
                                 <?php } ?>
                                 </ul>
