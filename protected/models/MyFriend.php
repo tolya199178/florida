@@ -170,4 +170,52 @@ class MyFriend extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+
+	/**
+	 * Returns summary count of friends by user by friend_status
+	 *
+	 * This function forms a wrapper around the data results to account for
+	 * ...missing status fields, which will not be reported if there are no
+	 * ...results for the status for the user. The results are provided with a
+	 * ..,count for each friend_status value in the column definition.
+	 *
+	 * If a userid is supplied, then the details are provided for the user,
+	 * ...otherwise summary details are provided for all users.
+	 *
+	 * @param integer $userId Optional user to send results for
+	 * @return array The list of friends grouped (optionally) by user and status
+	 *
+	 * @access public
+	 */
+	public static function FriendSummary($userId = null)
+	{
+
+        $cmdFriendSummary = Yii::app()->db->createCommand()
+                                      ->select(array('user_id',
+                                                     'SUM(CASE WHEN friend_status = "Pending"
+                                                               THEN 1
+                                                               ELSE 0 END) AS pending',
+                                                     'SUM(CASE WHEN friend_status = "Approved"
+                                                               THEN 1
+                                                               ELSE 0 END) AS approved',
+                                                     'SUM(CASE WHEN friend_status = "Rejected"
+                                                               THEN 1
+                                                               ELSE 0 END) AS rejected'
+                                        ))
+                                      ->from('tbl_my_friend');
+
+        if ($userId != null)
+        {
+            $cmdFriendSummary->where('user_id = :user_id', array(':user_id' => $userId));
+        }
+
+        $cmdFriendSummary->group('user_id');
+
+        $resultsFriendSummary = $cmdFriendSummary->queryAll();
+
+        return $resultsFriendSummary;
+
+	}
+
 }
