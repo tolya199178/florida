@@ -9,7 +9,7 @@ $myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
 
 
                             <div class="panel-heading">
-                                My Friends <i class="fa fa-link fa-1x"></i>
+                                Pending Friend Requests <i class="fa fa-link fa-1x"></i>
                             </div>
                             <div class="panel-body">
 
@@ -41,6 +41,7 @@ $myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
                                             }
                                             ?>
                                 	   </div>
+
                                 	   <div class='col-lg-5'>
                                     		<h2><a href="#">
                                     		      <?php echo CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']); ?>
@@ -49,7 +50,14 @@ $myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
                                     		<p><span><strong>Date of Birth:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['date_of_birth']); ?><span></span></span></p>
                                     		<p><span><strong>Location:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['hometown']); ?><span></span></span></p>
                                 	   </div>
+
                                 	   <div class='col-lg-5'>
+
+                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('webuser/cancelfriendrequest/'); ?>">
+                                                <i class="glyphicon glyphicon-minus-sign"></i>
+                                                Cancel Invitation
+                                            </a>
+
                                 	   </div>
                                 	</li>
 

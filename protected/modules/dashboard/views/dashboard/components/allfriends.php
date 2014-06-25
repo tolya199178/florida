@@ -59,7 +59,7 @@ font-weight: bold;
     padding: 1em 0 1em 1em;
 }
 
-ul li {
+.friend_list ul li {
     list-style: disc inside none;
     padding-left: 20px;
 }
@@ -76,16 +76,8 @@ ul li {
     float: left;
 }
 h2 {
-    background: url("../images/bg_hr.png") repeat-x scroll center bottom rgba(0, 0, 0, 0);
     font-size: 32px;
     padding-bottom: 10px;
-}
-h1, h2, h3, h4, h5, h6 {
-    color: #222222;
-    font-family: 'Calibri',Helvetica,Arial,sans-serif;
-    font-weight: 500;
-    letter-spacing: -1px;
-    margin: 10px 0;
 }
 
 /* */
@@ -201,6 +193,7 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                             }
                                             ?>
                                 	   </div>
+
                                 	   <div class='col-lg-5'>
                                     		<h2><a href="#">
                                     		      <?php echo CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']); ?>
@@ -208,8 +201,25 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                     		<p><span><strong>Joined:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['created_time']); ?><span></span></span></p>
                                     		<p><span><strong>Date of Birth:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['date_of_birth']); ?><span></span></span></p>
                                     		<p><span><strong>Location:</strong>&nbsp;</span><span><?php echo CHtml::encode($myFriend->friend['hometown']); ?><span></span></span></p>
+
+<?php                                       if ($myFriend->friend['login_status'] == 'logged in') { ?>
+                                    		    <p>&nbsp;</p>
+                                    		    <p><span class="label label-success">Online</span></p>
+                                    		<?php } ?>
                                 	   </div>
+
                                 	   <div class='col-lg-5'>
+
+                                            <a class="btn btn-md btn-primary" href="<?php echo Yii::app()->createUrl('webuser/sendfriendmessage/'); ?>">
+                                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                                Send Message
+                                            </a>
+
+                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('webuser/blockuser/'); ?>">
+                                                <i class="glyphicon glyphicon-minus-sign"></i>
+                                                Block User
+                                            </a>
+
                                 	   </div>
                                 	</li>
 
