@@ -12,6 +12,9 @@
  * @property string $subject
  * @property string $message
  * @property integer $reply_to
+ * @property string $message_bucket
+ * @property string $message_category
+ *
  *
  * The followings are the available model relations:
  * @property User $sender_user
@@ -73,7 +76,11 @@ class UserMessage extends CActiveRecord
 		    // Data types, sizes
 			array('sender, recipient, reply_to',                         'numerical', 'integerOnly'=>true),
 			array('read',                                                'in', 'range'=>array('Y','N')),
-			array('subject',                                             'length', 'max'=>255),
+			array('subject, message_category',                           'length', 'max'=>255),
+
+		    array('message_bucket',                                       'in',
+		                                                                  'range'=>array('Inbox', 'Archive', 'Pending Delete'),
+		                                                                  'allowEmpty'=>true),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('id, sender, recipient, sent, read, subject, message, reply_to', 'safe', 'on'=>'search'),
@@ -111,13 +118,15 @@ class UserMessage extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id'             => 'ID',
-			'sender'         => 'Sender',
-			'recipient'      => 'Recipient',
-			'sent'           => 'Sent',
-			'read'           => 'Read',
-			'subject'        => 'Subject',
-			'message'        => 'Message',
+			'id'                 => 'ID',
+			'sender'             => 'Sender',
+			'recipient'          => 'Recipient',
+			'sent'               => 'Sent',
+			'read'               => 'Read',
+			'subject'            => 'Subject',
+			'message'            => 'Message',
+		    'message_bucket'     => 'Message Bucket',
+		    'message_category'   => 'Message Category',
 		);
 	}
 
@@ -150,6 +159,8 @@ class UserMessage extends CActiveRecord
 		$criteria->compare('subject',         $this->subject,true);
 		$criteria->compare('message',         $this->message,true);
 		$criteria->compare('reply_to',        $this->reply_to);
+		$criteria->compare('message_category',$this->message_category);
+		$criteria->compare('message_bucket',  $this->message_bucket);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
