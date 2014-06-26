@@ -1330,6 +1330,9 @@ ALTER TABLE tbl_user_message
 ADD CONSTRAINT user_message_sender
      FOREIGN KEY (sender) 
      REFERENCES tbl_user(user_id);
+     
+ALTER TABLE `tbl_user_message` ADD COLUMN message_bucket ENUM('Inbox', 'Archive', 'Pending Delete') DEFAULT 'Inbox';
+ALTER TABLE `tbl_user_message` ADD COLUMN message_category VARCHAR(255) DEFAULT NULL;
 
 -- ---------------------------------------------------------------------
 -- Question
