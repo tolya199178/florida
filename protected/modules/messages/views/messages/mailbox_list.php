@@ -2,6 +2,63 @@
     $myMessages = $data['myMessages'];
 ?>
 
+        <!-- Message menu bar -->
+
+        <div class="row">
+
+            <div class="col-sm-9 col-md-10">
+                <!-- Split button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default">
+                        <div class="checkbox" style="margin: 0;">
+                            <label> <input type="checkbox">
+                            </label>
+                        </div>
+                    </button>
+                    <button type="button"
+                        class="btn btn-default dropdown-toggle"
+                        data-toggle="dropdown">
+                        <span class="caret"></span><span class="sr-only">Toggle
+                            Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">All</a></li>
+                        <li><a href="#">Read</a></li>
+                        <li><a href="#">Unread</a></li>
+                    </ul>
+                </div>
+
+                <button type="button" class="btn btn-default"
+                    data-toggle="tooltip" title="Refresh">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+
+                <div class="btn-group">
+                    <a class="btn btn-md btn-success"
+                        href="<?php echo Yii::app()->createUrl('messages/messages/create'); ?>">
+                        <i class="glyphicon glyphicon-plus-sign"></i> New Message
+                    </a>
+                </div>
+
+                <div class="pull-right">
+                    <span class="text-muted"><b>1</b>–<b>50</b> of <b>277</b></span>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                        </button>
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- ./Message menu bar -->
+
+        <hr />
+
             <!-- Nav tabs -->
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#allmessages" data-toggle="tab"><span
