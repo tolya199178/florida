@@ -122,8 +122,13 @@ class MessagesController extends Controller
 
         $lstMessages = UserMessage::model()->findAllByAttributes(array('recipient'=>Yii::app()->user->id));
 
-        $this->render("messages_main", array('myMessages'        => $lstMessages,
-                                             'myMessagesSummary' => $summaryMessageCount));
+
+
+        $this->render("messages_main", array('mainview' => 'mailbox_list',
+                                             'data'     => array('myMessages'        => $lstMessages,
+                                                                 'myMessagesSummary' => $summaryMessageCount)
+                                                           )
+                                       );
 
     }
 
