@@ -78,11 +78,56 @@ class MessagesController extends Controller
     public function actionIndex()
     {
 
+        /*
+         * Get the message summary details
+        */
+
+        $countMessagesByCategory = Yii::app()->db->createCommand()
+                                             ->select('message_bucket, `read` AS read_status, COUNT(*) AS count')
+                                             ->from('tbl_user_message')
+                                             ->where('recipient = :user_id', array('user_id' => Yii::app()->user->id))
+                                             ->group('message_bucket, read_status')
+                                             ->queryAll();
+
+        $summaryMessageCount                        = array();
+        $summaryMessageCount['Inbox']['Y']          = 0;
+        $summaryMessageCount['Inbox']['N']          = 0;
+        $summaryMessageCount['Archive']['Y']        = 0;
+        $summaryMessageCount['Archive']['N']        = 0;
+        $summaryMessageCount['Pending Delete']['Y'] = 0;
+        $summaryMessageCount['Pending Delete']['N'] = 0;
+
+        foreach ($countMessagesByCategory as $countMessages)
+        {
+//              $messageCount = array();
+            if (empty($countMessages['message_bucket']))
+            {
+                $countMessages['message_bucket'] = 'Inbox';
+            }
+            $summaryMessageCount[$countMessages['message_bucket']][$countMessages['read_status']] = $countMessages['count'];
+            $summaryMessageCount[$countMessages['message_bucket']]['total'] =
+                $summaryMessageCount[$countMessages['message_bucket']]['Y'] +
+                $summaryMessageCount[$countMessages['message_bucket']]['N'];
+        }
+        $summaryMessageCount['Inbox']['total']          =  $summaryMessageCount['Inbox']['Y'] +
+                                                           $summaryMessageCount['Inbox']['N'];
+
+        $summaryMessageCount['Archive']['total']        =  $summaryMessageCount['Archive']['Y'] +
+                                                           $summaryMessageCount['Archive']['N'];
+
+        $summaryMessageCount['Pending Delete']['total'] =  $summaryMessageCount['Pending Delete']['Y'] +
+                                                           $summaryMessageCount['Pending Delete']['N'];
+
+
+
         $lstMessages = UserMessage::model()->findAllByAttributes(array('recipient'=>Yii::app()->user->id));
 
-        $this->render("messages_main", array('myMessages' => $lstMessages));
+        $this->render("messages_main", array('myMessages'        => $lstMessages,
+                                             'myMessagesSummary' => $summaryMessageCount));
 
     }
+
+
 
 
     /**

@@ -7,52 +7,54 @@
 </style>
 
 <style>
-<!--
-/* .nav-tabs .glyphicon:not (.no-margin ) { */
-/* 	margin-right: 10px; */
-/* } */
 
-/* .tab-pane .list-group-item:first-child { */
-/* 	border-top-right-radius: 0px; */
-/* 	border-top-left-radius: 0px; */
-/* } */
 
-/* .tab-pane .list-group-item:last-child { */
-/* 	border-bottom-right-radius: 0px; */
-/* 	border-bottom-left-radius: 0px; */
-/* } */
-
-/* .tab-pane .list-group .checkbox { */
-/* 	display: inline-block; */
-/* 	margin: 0px; */
-/* } */
-
-/* .tab-pane .list-group input[type="checkbox"] { */
-/* 	margin-top: 2px; */
-/* } */
-
-/* .tab-pane .list-group .glyphicon { */
-/* 	margin-right: 5px; */
-/* } */
-
-/* .tab-pane .list-group .glyphicon:hover { */
-/* 	color: #FFBC00; */
-/* } */
-
-/* a.list-group-item.read { */
-/* 	color: #222; */
-/* 	background-color: #F3F3F3; */
-/* } */
-
-/* hr { */
-/* 	margin-top: 5px; */
-/* 	margin-bottom: 10px; */
-/* } */
-
-/* .nav-pills>li>a { */
-/* 	padding: 5px 10px; */
-/* } */
--->
+.badge {
+  padding: 1px 9px 2px;
+  font-size: 12.025px;
+  font-weight: bold;
+  white-space: nowrap;
+  color: #ffffff;
+  background-color: #999999;
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+}
+.badge:hover {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.badge-error {
+  background-color: #b94a48;
+}
+.badge-error:hover {
+  background-color: #953b39;
+}
+.badge-warning {
+  background-color: #f89406;
+}
+.badge-warning:hover {
+  background-color: #c67605;
+}
+.badge-success {
+  background-color: #468847;
+}
+.badge-success:hover {
+  background-color: #356635;
+}
+.badge-info {
+  background-color: #3a87ad;
+}
+.badge-info:hover {
+  background-color: #2d6987;
+}
+.badge-inverse {
+  background-color: #333333;
+}
+.badge-inverse:hover {
+  background-color: #1a1a1a;
+}
 </style>
 
 <div id="inbox">
@@ -135,15 +137,21 @@
 
             <!--  Message Buckets -->
             <div class="col-sm-3 col-md-2">
-                <a href="#" class="btn btn-danger btn-sm btn-block"
-                    role="button">COMPOSE</a>
-                <hr />
+
                 <ul class="nav nav-pills nav-stacked">
                     <li class="active"><a href="#">
-                        <span class="badge pull-right">42</span> Inbox </a></li>
+                        <span class="badge pull-right"><?php echo $myMessagesSummary['Inbox']['N']; ?></span> Inbox </a></li>
                     <li><a href="#">Sent Mail</a></li>
                     <li><a href="#">Archive</a></li>
-                    <li><a href="#">Pending Delete</a></li>
+                    <li><a href="#">
+                    <?php if ($myMessagesSummary['Pending Delete']['total'] != 0) { ?>
+                        <span class="badge pull-right alert-danger">
+                        <?php echo $myMessagesSummary['Pending Delete']['total']; ?>
+                        </span>
+                    <?php } ?>
+
+                        Pending Delete </a></li>
+
                 </ul>
             </div>
             <!--  ./Message Buckets -->
@@ -158,7 +166,7 @@
                     <li><a href="#friendmessages" data-toggle="tab"><span
                             class="glyphicon glyphicon-user"></span> Friend Messages</a></li>
                     <li><a href="#alertmessages" data-toggle="tab"><span
-                            class="glyphicon glyphicon-tags"></span> Alerts and Notifications</a></li>
+                            class="glyphicon glyphicon-tags"></span> Alerts and Notices</a></li>
                 </ul>
 
                 <!-- Tab panes -->
@@ -173,10 +181,10 @@
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th class="col-sm-4">From</th>
-                                                <th class="col-sm-5">Message Details</th>
+                                                <th class="col-sm-2">From</th>
+                                                <th class="col-sm-1">Message Type</th>
+                                                <th class="col-sm-7">Message Details</th>
                                                 <th class="col-sm-2">Date</th>
-                                                <th class="col-sm-1"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="items">
@@ -186,6 +194,19 @@
                                                 <td><?php echo CHtml::encode($itemMessage->sender_user->last_name.', '.$itemMessage->sender_user->first_name); ?></td>
 
                                                 <td>
+                                                    <?php if ($itemMessage->message_category == 'Notice' ) { ?>
+                                                        <span class="badge badge-warning"><?php echo CHtml::encode($itemMessage->message_category); ?></span>
+                                                    <?php } ?>
+                                                    <?php if ($itemMessage->message_category == 'Alert' ) { ?>
+                                                        <span class="badge badge-error"><?php echo CHtml::encode($itemMessage->message_category); ?></span>
+                                                    <?php } ?>
+                                                    <?php if ($itemMessage->message_category == 'Event' ) { ?>
+                                                        <span class="badge badge-info"><?php echo CHtml::encode($itemMessage->message_category); ?></span>
+                                                    <?php } ?>
+
+                                                </td>
+
+                                                <td>
                                                     <a href="<?php echo $this->createUrl('/message/details/', array('message' => $itemMessage->id)); ?>"
                                                        class='message_item'>
                                                        <?php echo CHtml::encode($itemMessage->subject); ?>
@@ -193,7 +214,6 @@
                                                 </td>
 
                                                 <td><?php echo CHtml::encode($itemMessage->sent); ?></td>
-                                                <td></td>
                                             </tr>
                                          <?php } ?>
 
@@ -212,15 +232,21 @@
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th class="col-sm-4">From</th>
-                                                <th class="col-sm-5">Message Details</th>
+                                                <th class="col-sm-2">From</th>
+                                                <th class="col-sm-8">Message Details</th>
                                                 <th class="col-sm-2">Date</th>
-                                                <th class="col-sm-1"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="items">
 
                                         <?php foreach ($myMessages as $itemMessage) { ?>
+                                            <?php
+                                                    if (!empty($itemMessage->message_category) )
+                                                    {
+                                                        continue;
+                                                    }
+                                            ?>
+
                                             <tr>
                                                 <td><?php echo CHtml::encode($itemMessage->sender_user->last_name.', '.$itemMessage->sender_user->first_name); ?></td>
 
@@ -232,7 +258,6 @@
                                                 </td>
 
                                                 <td><?php echo CHtml::encode($itemMessage->sent); ?></td>
-                                                <td></td>
                                             </tr>
                                          <?php } ?>
 
@@ -250,17 +275,36 @@
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th class="col-sm-4">From</th>
-                                                <th class="col-sm-5">Message Details</th>
+                                                <th class="col-sm-2">From</th>
+                                                <th class="col-sm-1">Message Type</th>
+                                                <th class="col-sm-7">Message Details</th>
                                                 <th class="col-sm-2">Date</th>
-                                                <th class="col-sm-1"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="items">
 
                                         <?php foreach ($myMessages as $itemMessage) { ?>
+                                            <?php
+                                                if (($itemMessage->message_category != 'Notice') && ($itemMessage->message_category != 'Alert') )
+                                                {
+                                                    continue;
+                                                }
+                                            ?>
                                             <tr>
                                                 <td><?php echo CHtml::encode($itemMessage->sender_user->last_name.', '.$itemMessage->sender_user->first_name); ?></td>
+
+                                                <td>
+                                                    <?php if ($itemMessage->message_category == 'Notice' ) { ?>
+                                                        <span class="badge badge-warning"><?php echo CHtml::encode($itemMessage->message_category); ?></span>
+                                                    <?php } ?>
+                                                    <?php if ($itemMessage->message_category == 'Alert' ) { ?>
+                                                        <span class="badge badge-error"><?php echo CHtml::encode($itemMessage->message_category); ?></span>
+                                                    <?php } ?>
+                                                    <?php if ($itemMessage->message_category == 'Event' ) { ?>
+                                                        <span class="badge badge-info"><?php echo CHtml::encode($itemMessage->message_category); ?></span>
+                                                    <?php } ?>
+
+                                                </td>
 
                                                 <td>
                                                     <a href="<?php echo $this->createUrl('/message/details/', array('message' => $itemMessage->id)); ?>"
@@ -270,7 +314,6 @@
                                                 </td>
 
                                                 <td><?php echo CHtml::encode($itemMessage->sent); ?></td>
-                                                <td></td>
                                             </tr>
                                          <?php } ?>
 
@@ -285,6 +328,17 @@
                 </div>
                 <!-- ./Tab panes -->
 
+                <hr style="height: 12px; border: 0; box-shadow: inset 0 12px 12px -12px rgba(0,0,0,0.5);" />
+
+                <!-- Message Preview -->
+                <div class='row' style="height:300px;">
+
+                    <div class="col-sm-12">
+
+                    </div>
+
+                </div>
+                <!-- Message Preview -->
 
             </div>
 
