@@ -320,7 +320,8 @@ class MessagesController extends Controller
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionDelete($message) {
+	public function actionDelete($message)
+	{
 
 	    // Only allow logged in users to acces this function
 	    if (Yii::app()->user->id === null)
@@ -328,12 +329,12 @@ class MessagesController extends Controller
 	        throw new CHttpException(400, 'Unauthorised Access Attempt. Please do not repeat this request.');
 	    }
 
-	    if (!isset($_POST['id']))
+	    if (!isset($_POST['message']))
 	    {
 	        throw new CHttpException(404, 'Not found. The requested page was not found.');
 	    }
 
-	    $messageId = (int) $_POST['id'];
+	    $messageId = (int) $_POST['message'];
 
 	    $messageModel = UserMessage::model()->findByPk($messageId);
 
@@ -352,7 +353,7 @@ class MessagesController extends Controller
 
 	    $messageModel->delete();
 
-
+	    Yii::app()->user->setFlash('success','Message deleted.');
 	    echo CJSON::encode(array('result' => true, 'message' => 'Message deleted.'));
 
 	}

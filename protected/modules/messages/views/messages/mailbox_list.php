@@ -270,10 +270,10 @@ $script = <<<EOD
                 $.ajax({
                 	type: 'POST',
                 	url: $(this).attr("href"),
-                	data: {id: $(this).attr("rel")} ,
+                	data: {message: $(this).attr("rel")} ,
 
                 	success: function(data, status) {
-                 	   $("#message_details").html(data);
+                 	   location.reload();
                 	}
             	});
                 return false;

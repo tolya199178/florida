@@ -25,7 +25,7 @@
 
 
                     <a href="<?php echo $this->createUrl('/messages/messages/delete/', array('message' => $model->id)); ?>"
-                        type="button" class="btn btn-default"
+                        type="button" class="btn btn-default message_delete" rel="<?php echo $model->id; ?>"
                         data-toggle="tooltip" title="Delete">
                         <span class="glyphicon glyphicon-trash"></span>
                     </a>
