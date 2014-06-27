@@ -259,25 +259,6 @@ $script = <<<EOD
             return false;
         });
 
-        // message_reply
-        $("body").on('click', ".message_reply", function (e) {
-        	var addressValue = $(this).attr("href");
-        	   $("#message_details").load(addressValue);
-
-            return false;
-        });
-
-        // message_reply
-        $("body").on('click', "#message_create", function (e) {
-
-       debugger;
-
-        	var addressValue = $(this).attr("href");
-        	   $("#message_details").load(addressValue);
-
-            return false;
-        });
-
         // message_delete
         $("body").on('click', ".message_delete", function (e) {
 
@@ -303,39 +284,6 @@ $script = <<<EOD
 
         });
 
-        // message_reply
-        $("body").on('click', "#message_reply", function (e) {
-
-       debugger;
-
-        	var addressValue = $(this).attr("href");
-        	   $("#message_details").load(addressValue);
-
-            return false;
-        });
-
-
-        // message_create_form
-        $("body").on('submit', "#message_create_form, #message_reply_form", function (e) {
-
-       debugger;
-
-            e.preventDefault(); // prevent default form submit
-
-            var thisform = $(this);
-
-            $.ajax({
-            	type: thisform.attr('method'),
-            	url: thisform.attr('action'),
-            	data: thisform.serialize(),
-
-            	success: function(data, status) {
-             	   $("#message_details").html(data);
-            	}
-        	});;
-
-            return false;
-        });
 EOD;
 
 Yii::app()->clientScript->registerScript('message_list', $script, CClientScript::POS_READY);
