@@ -31,26 +31,6 @@
                     </a>
                 </div>
 
-
-<!--                 <div class="btn-group"> -->
-<!--                     <a class="btn btn-md btn-success" -->
-<!--                         href="< ? php echo Yii::app()->createUrl('messages/messages/create'); ? >"> -->
-<!--                         <i class="glyphicon glyphicon-plus-sign"></i> New Message -->
-<!--                     </a> -->
-<!--                 </div> -->
-
-<!--                 <div class="pull-right"> -->
-<!--                     <span class="text-muted"><b>1</b>–<b>50</b> of <b>277</b></span> -->
-<!--                     <div class="btn-group btn-group-sm"> -->
-<!--                         <button type="button" class="btn btn-default"> -->
-<!--                             <span class="glyphicon glyphicon-chevron-left"></span> -->
-<!--                         </button> -->
-<!--                         <button type="button" class="btn btn-default"> -->
-<!--                             <span class="glyphicon glyphicon-chevron-right"></span> -->
-<!--                         </button> -->
-<!--                     </div> -->
-<!--                 </div> -->
-
             </div>
 
         </div>
