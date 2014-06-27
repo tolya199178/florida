@@ -5,7 +5,6 @@
 ?>
 
 <?php   $form=$this->beginWidget('CActiveForm', array(
-                            // 'action'=> $this->createUrl('/message/create'),
                         	'id'=>'message_create_form',
                             'htmlOptions'=>array(
                                 'class'=>'form-horizontal',

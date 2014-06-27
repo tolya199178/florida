@@ -143,7 +143,14 @@ class MessagesController extends Controller
      * @return <none> <none>
      * @access public
      */
-	public function actionDetails($message) {
+	public function actionDetails($message)
+	{
+
+	    // Only allow logged in users to acces this function
+	    if (Yii::app()->user->id === null)
+	    {
+	        throw new CHttpException(400, 'Unauthorised Access Attempt. Please do not repeat this request.');
+	    }
 
         $messageModel = UserMessage::model()->findByPk((int) $message);
 
@@ -160,7 +167,13 @@ class MessagesController extends Controller
             throw new CHttpException(400, 'Unauthorised Access Attempt. Please do not repeat this request.');
         }
 
-        $this->renderPartial("details",  array('model' => $messageModel));
+        $this->renderPartial("details",  array('data' => array('model'=>$messageModel)));
+//         $this->render("messages_main", array('mainview'          => 'details',
+//                                              'data'              => array(
+//                                              'model'             => $messageModel,
+//                                              'myMessagesSummary' => $this->getInboxSummary()
+//                                        )));
+        Yii::app()->end();
 
 	}
 
