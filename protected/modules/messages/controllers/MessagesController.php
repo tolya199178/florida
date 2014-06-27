@@ -267,21 +267,28 @@ class MessagesController extends Controller
 	        {
 	           if ($messageModel->save())
 	           {
-	               echo CJSON::encode(array('result' => true, 'message' => 'Message sent'));
-	               Yii::app()->end();
+	               Yii::app()->user->setFlash('success','Message Sent.');
+	               $this->redirect(array('/messages/'));
+   	               Yii::app()->end();
+
 	           }
 	           else
 	           {
-	               $msg = 'The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.';
-	               echo CJSON::encode(array('result' => false, 'message' => $msg));
-   	               Yii::app()->end();
+	               Yii::app()->user->setFlash('warning','The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.');
+	               $this->redirect(array('/messages/'));
+	               Yii::app()->end();
 	           }
 
 	        }
 
 	    }
 
-        $this->renderPartial("create",  array('model' => $messageModel));
+        $this->render("messages_main", array('mainview' => 'create',
+                                             'data' => array(
+                                                'model'             => $messageModel,
+                                                'myMessagesSummary' => $this->getInboxSummary()
+                                            )));
+        Yii::app()->end();
 
 	}
 
@@ -328,6 +335,54 @@ class MessagesController extends Controller
 
 
 	    echo CJSON::encode(array('result' => true, 'message' => 'Message deleted.'));
+
+	}
+
+	/**
+	 * Calculates summary information for the current' user's inbox by category
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return array the summary matrix
+	 * @access private
+	 */
+	private function getInboxSummary()
+	{
+
+        /*
+         * Get the message summary details
+         */
+        $countMessagesByCategory = Yii::app()->db->createCommand()
+                                             ->select('message_bucket, `read` AS read_status, COUNT(*) AS count')
+                                             ->from('tbl_user_message')
+                                             ->where('recipient = :user_id',
+                                                     array('user_id' => Yii::app()->user->id))
+                                             ->group('message_bucket, read_status')
+                                             ->queryAll();
+
+        $summaryMessageCount = array();
+        $summaryMessageCount['Inbox']['Y'] = 0;
+        $summaryMessageCount['Inbox']['N'] = 0;
+        $summaryMessageCount['Archive']['Y'] = 0;
+        $summaryMessageCount['Archive']['N'] = 0;
+        $summaryMessageCount['Pending Delete']['Y'] = 0;
+        $summaryMessageCount['Pending Delete']['N'] = 0;
+
+        foreach ($countMessagesByCategory as $countMessages) {
+            // $messageCount = array();
+            if (empty($countMessages['message_bucket'])) {
+                $countMessages['message_bucket'] = 'Inbox';
+            }
+            $summaryMessageCount[$countMessages['message_bucket']][$countMessages['read_status']] = $countMessages['count'];
+            $summaryMessageCount[$countMessages['message_bucket']]['total'] = $summaryMessageCount[$countMessages['message_bucket']]['Y'] + $summaryMessageCount[$countMessages['message_bucket']]['N'];
+        }
+        $summaryMessageCount['Inbox']['total'] = $summaryMessageCount['Inbox']['Y'] + $summaryMessageCount['Inbox']['N'];
+
+        $summaryMessageCount['Archive']['total'] = $summaryMessageCount['Archive']['Y'] + $summaryMessageCount['Archive']['N'];
+
+        $summaryMessageCount['Pending Delete']['total'] = $summaryMessageCount['Pending Delete']['Y'] + $summaryMessageCount['Pending Delete']['N'];
+
+        return $summaryMessageCount;
 
 	}
 }
