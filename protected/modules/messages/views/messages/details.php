@@ -78,7 +78,8 @@
                     <label for="inputEmail3" class="col-sm-2 control-label">Message : </label>
                     <div class="col-sm-12">
                         <div id='message_text' style='width:90%;height:300px; overflow:auto;'>
-                            <?php echo CHtml::encode($model->message); ?>
+                            <pre><?php echo CHtml::encode($model->message); ?>
+                            </pre>
                         </div>
                     </div>
                   </div>

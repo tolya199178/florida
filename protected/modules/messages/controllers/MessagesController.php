@@ -187,7 +187,8 @@ class MessagesController extends Controller
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionReply($message) {
+	public function actionReply($message)
+	{
 
 
 	    // Only allow logged in users to acces this function
@@ -227,13 +228,14 @@ class MessagesController extends Controller
 
 	            if ($replyMessage->save())
 	            {
-	                echo CJSON::encode(array('result' => true, 'message' => 'Message sent.'));
+	                Yii::app()->user->setFlash('success','Message Sent.');
+	                $this->redirect(array('/messages/'));
 	                Yii::app()->end();
 	            }
 	            else
 	            {
-	                $msg = 'The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.';
-	                echo CJSON::encode(array('result' => false, 'message' => $msg));
+	                Yii::app()->user->setFlash('warning','The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.');
+	                $this->redirect(array('/messages/'));
 	                Yii::app()->end();
 	            }
 
@@ -244,8 +246,11 @@ class MessagesController extends Controller
 	    $messageModel->subject = 'Re: '.$messageModel->subject;
 	    $messageModel->message = "\r\n\r\n>>> Original message >>>\r\n".$messageModel->message."\r\n\r\n>>>";
 
-	    $this->renderPartial("reply",  array('model' => $messageModel));
-
+        $this->render("messages_main", array('mainview'          => 'reply',
+                                             'data'              => array(
+                                             'model'             => $messageModel,
+                                             'myMessagesSummary' => $this->getInboxSummary()
+                                            )));
 	    Yii::app()->end();
 
 	}
@@ -260,7 +265,8 @@ class MessagesController extends Controller
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 
 	    // Only allow users to request their own messages
 	    if (Yii::app()->user->id === null)
