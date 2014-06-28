@@ -53,7 +53,7 @@ class ShortMessageService
          * - A recipient is not supplied
          * - A message to send is not supplied
          */
-        if ($modelMobileCarrier === null)
+        if ($toCarrier === null)
         {
             return false;
         }
