@@ -31,6 +31,7 @@
 * @version 1.0
 */
 
+Yii::import("application.components.ShortMessageService");
 
 class MessagesController extends Controller
 {
@@ -99,7 +100,6 @@ class MessagesController extends Controller
 
         foreach ($countMessagesByCategory as $countMessages)
         {
-//              $messageCount = array();
             if (empty($countMessages['message_bucket']))
             {
                 $countMessages['message_bucket'] = 'Inbox';
@@ -168,11 +168,6 @@ class MessagesController extends Controller
         }
 
         $this->renderPartial("details",  array('data' => array('model'=>$messageModel)));
-//         $this->render("messages_main", array('mainview'          => 'details',
-//                                              'data'              => array(
-//                                              'model'             => $messageModel,
-//                                              'myMessagesSummary' => $this->getInboxSummary()
-//                                        )));
         Yii::app()->end();
 
 	}
@@ -279,33 +274,53 @@ class MessagesController extends Controller
 	    if (isset($_POST['UserMessage']))
 	    {
 
-	        $messageModel->attributes  = $_POST['UserMessage'];
-	        $messageModel->sender      = Yii::app()->user->id;
+	        $argSendMethod = $_POST['UserMessage']['send_as'];
 
-	        if ($messageModel->validate())
+	        if (($argSendMethod == 'email') || ($argSendMethod == 'both') )
 	        {
-	           if ($messageModel->save())
-	           {
-	               Yii::app()->user->setFlash('success','Message Sent.');
-	               $this->redirect(array('/messages/'));
-   	               Yii::app()->end();
+	            $messageModel->attributes  = $_POST['UserMessage'];
+	            $messageModel->sender      = Yii::app()->user->id;
 
-	           }
-	           else
-	           {
-	               Yii::app()->user->setFlash('warning','The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.');
-	               $this->redirect(array('/messages/'));
-	               Yii::app()->end();
-	           }
+	            if ($messageModel->validate())
+	            {
+	                if ($messageModel->save())
+	                {
+	                    Yii::app()->user->setFlash('success','Message Sent.');
+	                    $this->redirect(array('/messages/'));
+	                    Yii::app()->end();
+
+	                }
+	                else
+	                {
+	                    Yii::app()->user->setFlash('warning','The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.');
+	                    $this->redirect(array('/messages/'));
+	                    Yii::app()->end();
+	                }
+
+	            }
+
+	        }
+	        if (($argSendMethod == 'sms') || ($argSendMethod == 'both') )
+	        {
+	            $modelRecipient = User::model()->findByPk($_POST['UserMessage']['recipient']);
+
+	            ShortMessageService::sendMessage($modelRecipient->mobile_number,
+	                                             $modelRecipient->mobile_carrier_id,
+	                                             $_POST['UserMessage']['smsmessage'],
+	                                             $_POST['UserMessage']['smsmessage']);
+
+	            Yii::app()->user->setFlash('success','The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.');
+	            $this->redirect(array('/messages/'));
+	            Yii::app()->end();
 
 	        }
 
 	    }
 
-        $this->render("messages_main", array('mainview' => 'create',
-                                             'data' => array(
-                                                'model'             => $messageModel,
-                                                'myMessagesSummary' => $this->getInboxSummary()
+        $this->render("messages_main", array('mainview'         => 'create',
+                                             'data'             => array(
+                                             'model'             => $messageModel,
+                                             'myMessagesSummary' => $this->getInboxSummary()
                                             )));
         Yii::app()->end();
 
