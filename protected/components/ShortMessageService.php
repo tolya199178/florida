@@ -44,7 +44,7 @@ class ShortMessageService
      * @return boolean result of send.
      * @access public
      */
-    public function sendMessage($toAddress, $toCarrier = null, $msgSubject = null, $msgContent = null)
+    public static function sendMessage($toAddress, $toCarrier = null, $msgSubject = null, $msgContent = null)
     {
 
         /**
@@ -129,7 +129,7 @@ class ShortMessageService
      * @return string The template, after applying replacement
      * @access public
      */
-    public function CustomiseMessage($messageContent, $replacementValuesList)
+    public static function CustomiseMessage($messageContent, $replacementValuesList)
     {
 
         $tagPersonalisation 		= array();
