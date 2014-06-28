@@ -66,6 +66,7 @@
  * @property UserEvent[] $userEvents
  * @property SubscribedBusiness[] $subscribedBusinesses
  * @property BusinessRating[] $businessRatings
+ * @property RestaurantCertificates[] $restaurantCertificates
  *
  */
 
@@ -277,6 +278,7 @@ class User extends CActiveRecord
 			'mobileCarrier'      => array(self::BELONGS_TO, 'MobileCarrier', 'mobile_carrier_id'),
 			'subscribedBusinesses' => array(self::HAS_MANY, 'SubscribedBusiness', 'user_id'),
 			'businessRatings'    => array(self::HAS_MANY, 'BusinessRating', 'user_id'),
+            'restaurantCertificates' => array(self::HAS_MANY, 'RestaurantCertificate', 'business_id'),
 		);
     }
 
