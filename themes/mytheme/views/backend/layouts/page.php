@@ -124,6 +124,17 @@
                               <li><a href="<?php echo Yii::app()->createUrl('/advertisement/index'); ?>">Adverts Listing</a></li>
                           </ul>
                       </li>
+                      
+                      <!-- Restaurante Certificates Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Restaurant Certificate</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/import'); ?>">Import Certificates</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/list'); ?>">Certificates Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/price'); ?>">Set Purchase Price</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/summary'); ?>">Summary</a></li>
+                          </ul>
+                      </li>
 
 
                       <li class="nav-divider"></li>
