@@ -309,7 +309,7 @@ class MessagesController extends Controller
 	                                             $_POST['UserMessage']['smsmessage'],
 	                                             $_POST['UserMessage']['smsmessage']);
 
-	            Yii::app()->user->setFlash('success','The message could not be sent at this time. Try again later. Contact the administrator if the problem persists.');
+	            Yii::app()->user->setFlash('success','Message Sent');
 	            $this->redirect(array('/messages/'));
 	            Yii::app()->end();
 

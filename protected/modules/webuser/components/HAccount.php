@@ -37,7 +37,7 @@ class HAccount
      * @return string the activation code
      * @access public
      */
-    public function getVerificationCode($toEmailAddress)
+    public static function getVerificationCode($toEmailAddress)
     {
 
 		$encodedEmailAddress      = urlencode($toEmailAddress);
@@ -59,7 +59,7 @@ class HAccount
      * @return <none>
      * @access public
      */
-    public function sendMessage($toEmailAddress = null, $toName = null, $msgSubject, $msgContent)
+    public static function sendMessage($toEmailAddress = null, $toName = null, $msgSubject, $msgContent)
     {
 
         if (empty($toEmailAddress) || empty($toName))
@@ -103,7 +103,7 @@ class HAccount
      * @return string The template, after applying replacement
      * @access public
      */
-    public function CustomiseMessage($messageContent, $replacementValuesList)
+    public static function CustomiseMessage($messageContent, $replacementValuesList)
     {
 
         $tagPersonalisation 		= array();
@@ -131,7 +131,7 @@ class HAccount
      * @return string The message content,
      * @access public
      */
-    public function getEmailMessage($messageName)
+    public static function getEmailMessage($messageName)
     {
         // /////////////////////////////////////////////////////////////////////
         // Get the message details
@@ -156,7 +156,7 @@ class HAccount
      * @return string The message subject,
      * @access public
      */
-    public function getEmailSubject($messageName)
+    public static function getEmailSubject($messageName)
     {
         // /////////////////////////////////////////////////////////////////////
         // Get the message details
