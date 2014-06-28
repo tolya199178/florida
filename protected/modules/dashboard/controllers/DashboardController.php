@@ -146,9 +146,23 @@ class DashboardController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Get the user's messages
         // /////////////////////////////////////////////////////////////////////
-        $listMessages   = UserMessage::model()->findAllByAttributes(array(
-                            'recipient' => Yii::app()->user->id
-                          ));
+
+        /*
+         * Get the message summary details
+         */
+
+        $countNewMessages = Yii::app()->db->createCommand()
+                                          ->select('COUNT(*) AS count')
+                                          ->from('tbl_user_message')
+                                          ->where('recipient = :user_id AND `read` = "N"',
+                                                  array('user_id' => Yii::app()->user->id))
+                                          ->queryRow();
+
+        $myMessagesCount['countUnreadMessages'] = $countNewMessages['count'];
+
+        $listMyMessages   = UserMessage::model()->findAllByAttributes(array(
+                                'recipient' => Yii::app()->user->id
+                            ));
 
         // /////////////////////////////////////////////////////////////////////
         // Get a list of the user's images
@@ -184,12 +198,11 @@ class DashboardController extends Controller
         $configDashboard['data'] = array(
             'listMyBusiness'    => $listMyBusiness,
             'listMyFriends'     => $listMyFriends,
-//             'myLocalFriends'    => $lstMyFriends,
-//             'myOnlineFriends'   => $lstMyOnlineFriends,
-            'myMessages'        => $listMessages,
+            'listMyMessages'        => $listMyMessages,
             'myPhotos'          => $listPhotos,
             'myActivities'      => $listMyActivities,
             'myFriendsCount'    => $myFriendsCount,
+            'myMessagesCount'   => $myMessagesCount,
             'component'         => $argComponent
         );
 
