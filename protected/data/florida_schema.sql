@@ -685,36 +685,31 @@ ALTER TABLE tbl_event_category ADD COLUMN `search_tags`  text  DEFAULT NULL;
 
 
 -- ---------------------------------------------------------------------
--- tbl_restaurant_certificat
+-- tbl_restaurant_certificate
 -- ---------------------------------------------------------------------
- 
- DROP TABLE IF EXISTS `tbl_restaurant_certificate`;
-  
- CREATE TABLE `tbl_restaurant_certificate` (
- 
-  `certificate_id`          int(11) NOT NULL AUTO_INCREMENT,
-  `certificate_number`      varchar(255) DEFAULT NULL,
-  `purchase_amount`         DECIMAL(13,2) DEFAULT NULL,
-  `discount`                DECIMAL(13,2) DEFAULT NULL,
-  `purchase_date`           DATE DEFAULT NULL,
-  
-  `business_id`             int(11) DEFAULT NULL,
-  `purchased_by_business_date` DATETIME DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_restaurant_certificate`;
 
-  `availability_status`     ENUM('Available', 'Purchased'),
-  
-  `redeemer_email`          varchar(64) DEFAULT NULL,
-  `redeemer_user_id`        int(11) DEFAULT NULL,
-  `redeem_date`             DATETIME DEFAULT NULL,  
+CREATE TABLE IF NOT EXISTS `tbl_restaurant_certificate` (
+  `certificate_id` int(11) NOT NULL AUTO_INCREMENT,
+  `certificate_number` varchar(255) NOT NULL,
+  `purchase_amount` decimal(13,2) NOT NULL,
+  `certificate_value` decimal(13,2) NOT NULL,
+  `purchase_date` date NOT NULL,
+  `business_id` int(11) DEFAULT NULL,
+  `purchased_by_business_date` date DEFAULT NULL,
+  `availability_status` enum('Available','Purchased') DEFAULT NULL,
+  `redeemer_email` varchar(64) DEFAULT NULL,
+  `redeemer_user_id` int(11) DEFAULT NULL,
+  `redeem_date` date DEFAULT NULL,
+  PRIMARY KEY (`certificate_id`),
+  KEY `fk_restaurant_certificate_business` (`business_id`),
+  KEY `redeemer_user_id` (`redeemer_user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-  PRIMARY KEY (`certificate_id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
-  
-  
-ALTER TABLE tbl_restaurant_certificate
-ADD CONSTRAINT fk_restaurant_certificate_business
-     FOREIGN KEY (business_id) 
-     REFERENCES tbl_business(business_id);  
+ALTER TABLE `tbl_restaurant_certificate`
+  ADD CONSTRAINT `fk_restaurant_certificate_user` FOREIGN KEY (`redeemer_user_id`) REFERENCES `tbl_user` (`user_id`),
+  ADD CONSTRAINT `fk_restaurant_certificate_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`);
+
      
    
 -- ---------------------------------------------------------------------

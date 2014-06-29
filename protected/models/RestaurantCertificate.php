@@ -7,7 +7,7 @@
  * @property integer $certificate_id
  * @property string $certificate_number
  * @property string $purchase_amount
- * @property string $discount
+ * @property string $certificate_value
  * @property string $purchase_date
  * @property integer $business_id
  * @property string $purchased_by_business_date
@@ -18,6 +18,7 @@
  *
  * The followings are the available model relations:
  * @property Business $business
+ * @property User $user
  */
 
 /**
@@ -67,15 +68,20 @@ class RestaurantCertificate extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('business_id, redeemer_user_id', 'numerical', 'integerOnly'=>true),
-			array('certificate_number', 'length', 'max'=>255),
-			array('purchase_amount, discount', 'length', 'max'=>13),
-			array('availability_status', 'length', 'max'=>9),
-			array('redeemer_email', 'length', 'max'=>64),
-			array('purchase_date, purchased_by_business_date, redeem_date', 'safe'),
+			array('business_id, redeemer_user_id',                       'numerical', 'integerOnly'=>true),
+			array('certificate_number, purchase_amount, purchase_date',  'required'),
+			array('certificate_number',                                  'length', 'max'=>255),
+			array('purchase_amount, certificate_value', 'length',        'max'=>13),
+			array('availability_status',                                 'length', 'max'=>9),
+			array('redeemer_email',                                      'length', 'max'=>64),
+			array('redeemer_email',                                      'email'),
+			array('purchase_date, purchased_by_business_date, redeem_date', 'date'),
+
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('certificate_id, certificate_number, purchase_amount, discount, purchase_date, business_id, purchased_by_business_date, availability_status, redeemer_email, redeemer_user_id, redeem_date', 'safe', 'on'=>'search'),
+			array('certificate_id, certificate_number, purchase_amount, certificate_value,
+			       purchase_date, business_id, purchased_by_business_date, availability_status,
+			       redeemer_email, redeemer_user_id, redeem_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,7 +98,8 @@ class RestaurantCertificate extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'business' => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'business'       => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'user'           => array(self::BELONGS_TO, 'User', 'redeemer_user_id'),
 		);
 	}
 
@@ -110,17 +117,17 @@ class RestaurantCertificate extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'certificate_id' => 'Certificate',
-			'certificate_number' => 'Certificate Number',
-			'purchase_amount' => 'Purchase Amount',
-			'discount' => 'Discount',
-			'purchase_date' => 'Purchase Date',
-			'business_id' => 'Business',
-			'purchased_by_business_date' => 'Purchased By Business Date',
-			'availability_status' => 'Availability Status',
-			'redeemer_email' => 'Redeemer Email',
-			'redeemer_user_id' => 'Redeemer User',
-			'redeem_date' => 'Redeem Date',
+			'certificate_id'             => 'Certificate',
+			'certificate_number'         => 'Certificate Number',
+			'purchase_amount'            => 'Purchase Price',
+			'certifcate_value'           => 'Value of Certificate',
+			'purchase_date'              => 'Date Purchased',
+			'business_id'                => 'Issued to Business',
+			'purchased_by_business_date' => 'Date Issued',
+			'availability_status'        => 'Availability Status',
+			'redeemer_email'             => 'Issued to Email',
+			'redeemer_user_id'           => 'Issued to Client',
+			'redeem_date'                => 'Date Claimed',
 		);
 	}
 
@@ -145,21 +152,41 @@ class RestaurantCertificate extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('certificate_id',$this->certificate_id);
-		$criteria->compare('certificate_number',$this->certificate_number,true);
-		$criteria->compare('purchase_amount',$this->purchase_amount,true);
-		$criteria->compare('discount',$this->discount,true);
-		$criteria->compare('purchase_date',$this->purchase_date,true);
-		$criteria->compare('business_id',$this->business_id);
-		$criteria->compare('purchased_by_business_date',$this->purchased_by_business_date,true);
-		$criteria->compare('availability_status',$this->availability_status,true);
-		$criteria->compare('redeemer_email',$this->redeemer_email,true);
-		$criteria->compare('redeemer_user_id',$this->redeemer_user_id);
-		$criteria->compare('redeem_date',$this->redeem_date,true);
+		$criteria->compare('certificate_id',          $this->certificate_id);
+		$criteria->compare('certificate_number',      $this->certificate_number,true);
+		$criteria->compare('purchase_amount',         $this->purchase_amount,true);
+		$criteria->compare('certificate_value',       $this->certificate_value,true);
+		$criteria->compare('purchase_date',           $this->purchase_date);
+		$criteria->compare('business_id',             $this->business_id);
+		$criteria->compare('purchased_by_business_date',$this->purchased_by_business_date);
+		$criteria->compare('availability_status',     $this->availability_status,true);
+		$criteria->compare('redeemer_email',          $this->redeemer_email,true);
+		$criteria->compare('redeemer_user_id',        $this->redeemer_user_id);
+		$criteria->compare('redeem_date',             $this->redeem_date);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+
+    /**
+	 * Build an associative list of avaiability status values.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of availability status values
+	 *
+	 * @access public
+	 */
+	public function listAvailabilityStatus()
+	{
+        $matches = '';
+        $values = array();
+        preg_match('/\((.*)\)/', $this->tableSchema->columns['availability_status']->dbType, $matches);
+        foreach(explode("','", $matches[1]) as $value) {
+                $value=str_replace("'",null,$value);
+                $values[$value]=Yii::t('enumItem',$value);
+        }
+        return $values;
 	}
 
     /**
@@ -168,7 +195,7 @@ class RestaurantCertificate extends CActiveRecord
      *
      * @param string $className active record class name.
      * @return RestaurantCertificate the static model class
-     * 
+     *
      * @access public
      */
 	public static function model($className=__CLASS__)
