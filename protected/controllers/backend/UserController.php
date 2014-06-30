@@ -494,4 +494,40 @@ class UserController extends BackEndController
 
 	}
 
+	/**
+	 * Renders JSON results of user search in {id,text} format.
+	 * Used for dropdowns
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionAutocompletelist()
+	{
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 3)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstUsers = Yii::app()->db
+                              ->createCommand()
+                              ->select('user_id AS id, CONCAT(first_name, " ", last_name) AS text')
+                              ->from('tbl_user user')
+                              ->where(array('LIKE', 'first_name', '%'.$_GET['query'].'%'))
+                              ->orWhere(array('OR LIKE', 'last_name', '%'.$_GET['query'].'%'))
+                              ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstUsers);
+
+	}
+
 }

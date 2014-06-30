@@ -4,6 +4,20 @@
 /* @var $form CActiveForm */
 ?>
 
+<?php
+/**
+ * @package default
+ */
+$baseScriptUrl = $this->createAbsoluteUrl('/');
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
+Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', CClientScript::POS_END);
+
+
+?>
+
 <style>
 
 .form-group {
@@ -126,7 +140,7 @@
 	            <div class="form-group">
 	                <?php echo $form->labelEx($model,'business_id',array('class'=>"col-sm-2 control-label")); ?>
 	                <div class="col-sm-4">
-                        <?php echo $form->dropDownList($model, 'business_id', array(), array('class' => 'select2 form-control', 'style' => 'width: 345px')); ?>
+                        <?php echo CHtml::hiddenField('RestaurantCertificate[business_id]', '', array ('id'=>'RestaurantCertificate_business_id')); ?>
 	                    <?php echo $form->error($model,'business_id'); ?>
 	                </div>
 	            </div>
@@ -135,7 +149,8 @@
 	            <div class="form-group">
 	                <?php echo $form->labelEx($model,'redeemer_user_id',array('class'=>"col-sm-2 control-label")); ?>
 	                <div class="col-sm-4">
-                        <?php echo $form->dropDownList($model, 'redeemer_user_id', array(), array('class' => 'select2 form-control', 'style' => 'width: 345px')); ?>
+                        <?php echo CHtml::hiddenField('RestaurantCertificate[redeemer_user_id]', '', array ('id'=>'RestaurantCertificate_redeemer_user_id')); ?>
+
 	                    <?php echo $form->error($model,'redeemer_user_id'); ?>
 	                </div>
 	            </div>
@@ -174,24 +189,53 @@
 
 </div><!-- form -->
 
-<script type="text/javascript">
-	$('#RestaurantCertificate_business_id').select2(
-        placeholder: "Search Business",
-        ajax: {
-            url: "/backend.php/business/autocompletelist",
-            data: function(term) {
-                return { query: term };
-            }
-        }
-    );
+<?php
 
-	$('#RestaurantCertificate_redeemer_user_id').select2(
-        placeholder: "Search User",
+$userAutoCompleteURL = Yii::app()->createUrl('/user/autocompletelist');
+$bizAutoCompleteURL = Yii::app()->createUrl('/business/autocompletelist');
+
+$script = <<<EOD
+	$('#RestaurantCertificate_business_id').select2({
+        placeholder: "Search Business",
+        width : "100%",
+        minimumInputLength: 3,
         ajax: {
-            url: "/backend.php/user/autocompletelist",
-            data: function(term) {
-                return { query: term };
-            }
+            url: "$bizAutoCompleteURL",
+            dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term
+                      };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                }
         }
-    );
-</script>
+	});
+
+	$('#RestaurantCertificate_redeemer_user_id').select2({
+        placeholder: "Search User",
+        width : "100%",
+        minimumInputLength: 3,
+        ajax: {
+            url: "$userAutoCompleteURL",
+            dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term
+                      };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                }
+        }
+	});
+EOD;
+
+Yii::app()->clientScript->registerScript('details', $script, CClientScript::POS_READY);
+
+?>
