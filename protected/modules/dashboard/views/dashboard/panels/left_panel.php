@@ -55,7 +55,7 @@ $myInboxCount       = $data['myMessagesCount'];
                             </div>
                         </div>
 
-                        <?php $this->renderPartial('components/friends', array('myFriendsCount'=>$myFriendsCount)) ?>
+                        <?php $this->renderPartial('components/friends_summary', array('myFriendsCount'=>$myFriendsCount)) ?>
 
                         <?php $this->renderPartial('components/messages_summary', array('myInboxCount'=>$myInboxCount)) ?>
 

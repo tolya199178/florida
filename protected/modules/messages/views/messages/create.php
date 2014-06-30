@@ -18,7 +18,7 @@
                   <div class="form-group">
                     <label for="recipient" class="col-sm-2 control-label">Send To : </label>
                     <div class="col-sm-4">
-                                <?php echo CHtml::dropDownList('UserMessage[recipient]', '',
+                                <?php echo CHtml::dropDownList('UserMessage[recipient]', $model->recipient,
                                                                CHtml::listData(MyFriend::model()->findAllByAttributes(array('user_id' => Yii::app()->user->id, 'friend_status' => 'Approved')),
                                                                        'friend_id',
                                                                        function($friend) {
@@ -28,7 +28,8 @@
                                                                      'class'        => 'form-control',
                                                                      'data-toggle'  => 'tooltip',
                                                                      'title'        => 'Enter Recipient',
-                                                                     'placeholder'  => 'Enter Recipient.')
+                                                                     'placeholder'  => 'Enter Recipient.',
+                                                                     'disabled'     => (!empty($model->recipient)?'disabled':''))
                                                             );
                                 ?>
                                 <?php echo CHtml::error($model,'recipient'); ?>

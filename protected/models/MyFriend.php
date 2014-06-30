@@ -70,9 +70,8 @@ class MyFriend extends CActiveRecord
 			array('user_id, friend_id',      'numerical', 'integerOnly'=>true),
 			array('connected_by',            'length', 'max'=>255),
 
-		    array('friend_status',           'length', 'max'=>8),
-		    array('isreadonly',              'in',
-		                                     'range'=>array('Pending', 'Approved', 'Rejected'),
+		    array('friend_status',           'in',
+		                                     'range'=>array('Pending', 'Approved', 'Rejected', 'Blocked'),
 		                                     'allowEmpty'=>false),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
@@ -201,7 +200,10 @@ class MyFriend extends CActiveRecord
                                                                ELSE 0 END) AS approved',
                                                      'SUM(CASE WHEN friend_status = "Rejected"
                                                                THEN 1
-                                                               ELSE 0 END) AS rejected'
+                                                               ELSE 0 END) AS rejected',
+                                                     'SUM(CASE WHEN friend_status = "Blocked"
+                                                               THEN 1
+                                                               ELSE 0 END) AS blocked',
                                         ))
                                       ->from('tbl_my_friend');
 

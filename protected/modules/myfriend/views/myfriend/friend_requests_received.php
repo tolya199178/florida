@@ -1,23 +1,23 @@
 <?php
 
-$myLocalFriends     = $data['listMyFriends']['lstMyFriends'];
-$myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
+$listFriendRequests     = $data['listMyFriends']['lstMyFriendsRequestsReceived'];
 
 ?>
+
 
                         <div class="panel panel-default">
 
 
                             <div class="panel-heading">
-                                Pending Friend Requests <i class="fa fa-link fa-1x"></i>
+                                Friend Requests Received <i class="fa fa-link fa-1x"></i>
                             </div>
                             <div class="panel-body">
 
 
-                                <ul class="list-group friend_list">
+                            <ul class="list-group friend_list">
 
 
-                                <?php foreach ($myLocalFriends as $myFriend) { ?>
+                                <?php foreach ($listFriendRequests as $myFriend) { ?>
                                 <?php
                                         if ($myFriend->friend_status !='Pending') {
                                             continue;
@@ -53,11 +53,15 @@ $myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
 
                                 	   <div class='col-lg-5'>
 
-                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('webuser/cancelfriendrequest/'); ?>">
-                                                <i class="glyphicon glyphicon-minus-sign"></i>
-                                                Cancel Invitation
+                                            <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('myfriend/myfriend/acceptrequest/', array('friend'=>$myFriend->my_friend_id)); ?>">
+                                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                                Accept Invitation
                                             </a>
 
+                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('myfriend/myfriend/rejectrequest/', array('friend'=>$myFriend->my_friend_id)); ?>">
+                                                <i class="glyphicon glyphicon-minus-sign"></i>
+                                                Reject Invitation
+                                            </a>
                                 	   </div>
                                 	</li>
 
