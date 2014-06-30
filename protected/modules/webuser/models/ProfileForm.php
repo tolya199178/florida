@@ -39,6 +39,10 @@ class ProfileForm extends CFormModel
 	public $language;
 	public $image;
 
+	/**
+	 * @var confirmAge Form only fields to request user confirming that they are over 18.
+	 */
+	public $confirmAge;
 
 	/**
 	 * @var verifyCode Capctha security mechanism to prevent automated submission of form
@@ -146,6 +150,8 @@ class ProfileForm extends CFormModel
         			array('user_name, email, first_name, last_name, removePicture', 'default', 'setOnEmpty'=>true, 'value' => null),
 
         			array('email, first_name, last_name', 'required'),
+                    array('confirmAge',                   'required', 'message'=>'You must be over 18 to register.'),
+
         			array('email', 'uniqueIdentity'),
         			array('email', 'email'),
         			array('removePicture', 'boolean'),
@@ -189,6 +195,7 @@ class ProfileForm extends CFormModel
 		    'verifyCode'    => Yii::t('UsrModule.usr','Verification Code'),
 		    'date_of_birth' => Yii::t('UsrModule.usr','Date of Birth'),
 		    'language'      => Yii::t('UsrModule.usr','Language'),
+		    'confirmAge'    => Yii::t('UsrModule.usr','Confirm Your Age'),
 
 		);
 	}

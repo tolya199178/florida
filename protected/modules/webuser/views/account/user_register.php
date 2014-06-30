@@ -137,6 +137,17 @@
                             </div>
                         <?php } ?>
 
+                        <div class="row">
+                            <div class="form-group">
+                                <?php echo $form->labelEx($model,'confirmAge',array('class'=>"col-sm-2 control-label")); ?>
+                                <div class="col-sm-4">
+                                   <?php echo CHtml::checkBox('ProfileForm[confirm_age]', false, array('id'=>'ProfileForm_confirm_age' )); ?>
+                                   Please confirm that you are over 18 years old.
+                                   <?php echo $form->error($model,'confirmAge'); ?>
+                                </div>
+                            </div>
+                        </div>
+
                         <p>&nbsp;</p>
 
                     	<div class="row buttons">
