@@ -157,7 +157,7 @@ class ProfileForm extends CFormModel
                     // ...number values are mandatory.
                     array('mobile_number, mobile_carrier_id, send_sms_notification', 'validateMobileFields'),
 
-                    array('date_of_birth',                  'validateAge', 'age_limit' => 18),
+                    array('date_of_birth',                   'date', 'format'=>'M-d-yyyy'),
 
                     array('language',                       'length', 'max'=>255),
 
@@ -325,6 +325,9 @@ class ProfileForm extends CFormModel
 
 	/**
 	 * Validate the user's age is greater than the supplied limit
+	 * Example of rule :
+	 * array('date_of_birth', 'validateAge', 'age_limit' => 18),
+	 *
 	 *
 	 * @param string $attribute the attribute being validated
 	 * @return array $params optional additional parameters defined in the rule.
