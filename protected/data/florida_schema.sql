@@ -1297,6 +1297,9 @@ ALTER TABLE `tbl_my_friend` ADD COLUMN friend_status ENUM('Pending', 'Approved',
 ALTER TABLE `tbl_my_friend` ADD COLUMN request_time  DATETIME;
 ALTER TABLE `tbl_my_friend` ADD COLUMN process_time  DATETIME;
 
+ALTER TABLE `tbl_my_friend` CHANGE COLUMN friend_status friend_status ENUM('Pending', 'Approved', 'Rejected', 'Blocked');
+
+
 
 -- ---------------------------------------------------------------------
 -- user messages
