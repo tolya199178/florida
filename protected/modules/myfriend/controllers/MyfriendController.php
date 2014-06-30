@@ -14,15 +14,15 @@
  * Usage:
  * ...Typical usage is from a web browser, by means of a URL
  * ...
- * ...   http://application.domain/index.php?/webuser/profile/show/attribute1/parameter1/.../attribute-n/parameter-n/
+ * ...   http://application.domain/index.php?/myfriend/myfriend/show/attribute1/parameter1/.../attribute-n/parameter-n/
  * ...eg.
- * ...   http://mydomain/index.php?/webuser/profile/show/name/toms/
+ * ...   http://mydomain/index.php?/myfriend/myfriend/show/name/toms/
  * ...
  * ...The 'action' in the request is converted to invoke the actionAction() action
- * ...eg. /business/profile/show/name/toms-diner/ will invoke ProfileController::actionShow()
+ * ...eg. /myfriend/myfriend/show/name/toms/ will invoke MyFriendController::actionShow()
  * ...(case is significant)
  * ...Additional parameters after the action are passed as $_GET pairs
- * ...eg. /business/profile/show/name/toms/ will pass $_GET['name'] = 'toms'
+ * ...eg. /myfriend/myfriend/show/name/toms/ will pass $_GET['name'] = 'tom'
  *
  * @package   Controllers
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -75,5 +75,60 @@ class MyfriendController extends Controller
 
 	}
 
+	/**
+	 * Finds friend, and pending friend requests received and sent
+	 *
+	 * @param  <none> <none>
+	 *
+	 * @return Array The set of lists of users by category.
+	 * @access private
+	 */
+	private function getFriendLists()
+	{
+
+	    $setFriendListing = array();
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // First, get a list of all local friends
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstMyFriends   = MyFriend::model()
+                            	  ->with('friend')
+                                  ->findAllByAttributes(array('user_id' => Yii::app()->user->id));
+
+	    $setFriendListing['lstMyFriends']      = $lstMyFriends;
+
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Now, get a list of the user's facebook friends
+	    // /////////////////////////////////////////////////////////////////////
+	    // Load the component
+	    // TODO: figure why component is not autoloading.
+	    $objFacebook                           = Yii::app()->getComponent('facebook');
+
+	    // Establish a connection to facebook
+	    $objFacebook->connect();
+
+	    $lstMyOnlineFriends                    = array();
+	    if ($objFacebook->isLoggedIn())
+	    {
+	       $lstMyOnlineFriends                    = $objFacebook->getFriendList();
+	    }
+
+	    $setFriendListing['lstMyOnlineFriends']  = $lstMyFriends;
+
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Next, get a list of all pending requests
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstFriendRequestsReceived     = MyFriend::model()
+                                                 ->with('user')
+                                                 ->findAllByAttributes(array('friend_id'    => Yii::app()->user->id,
+                                                                             'friend_status'=>'Pending'));
+
+        $setFriendListing['lstMyFriendsRequestsReceived']  = $lstFriendRequestsReceived;
+
+        return $setFriendListing;
+
+	}
 
 }

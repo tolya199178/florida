@@ -210,62 +210,6 @@ class DashboardController extends Controller
         $this->render('dashboard_main', array('configDashboard' => $configDashboard));
     }
 
-    /**
-     * Finds friend, and pending friend requests received and sent
-     *
-     * @param
-     *            <none> <none>
-     *
-     * @return Array The set of lists of users by category.
-     * @access private
-     */
-    private function getFriendLists()
-    {
-
-        $setFriendListing = array();
-
-        // /////////////////////////////////////////////////////////////////////
-        // First, get a list of all local friends
-        // /////////////////////////////////////////////////////////////////////
-        $lstMyFriends   = MyFriend::model()
-                                    ->with('friend')
-                                    ->findAllByAttributes(array('user_id' => Yii::app()->user->id));
-
-        $setFriendListing['lstMyFriends']   = $lstMyFriends;
-
-
-        // /////////////////////////////////////////////////////////////////////
-        // Now, get a list of the user's facebook friends
-        // /////////////////////////////////////////////////////////////////////
-        // Load the component
-        // TODO: figure why component is not autoloading.
-        $objFacebook                        = Yii::app()->getComponent('facebook');
-
-        // Establish a connection to facebook
-        $objFacebook->connect();
-
-        $lstMyOnlineFriends                 = array();
-        if ($objFacebook->isLoggedIn())
-        {
-            $lstMyOnlineFriends             = $objFacebook->getFriendList();
-        }
-
-        $setFriendListing['lstMyOnlineFriends']  = $lstMyFriends;
-
-
-        // /////////////////////////////////////////////////////////////////////
-        // Next, get a list of all pending requests
-        // /////////////////////////////////////////////////////////////////////
-        $lstFriendRequestsReceived   = MyFriend::model()
-                                                ->with('user')
-                                                ->findAllByAttributes(array('friend_id' => Yii::app()->user->id,
-                                                                             'friend_status'=>'Pending'));
-
-        $setFriendListing['lstMyFriendsRequestsReceived']  = $lstFriendRequestsReceived;
-
-        return $setFriendListing;
-
-    }
 
 
 }
