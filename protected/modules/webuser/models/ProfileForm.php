@@ -39,6 +39,10 @@ class ProfileForm extends CFormModel
 	public $language;
 	public $image;
 
+	/**
+	 * @var confirmAge Form only fields to request user confirming that they are over 18.
+	 */
+	public $confirmAge;
 
 	/**
 	 * @var verifyCode Capctha security mechanism to prevent automated submission of form
@@ -146,6 +150,8 @@ class ProfileForm extends CFormModel
         			array('user_name, email, first_name, last_name, removePicture', 'default', 'setOnEmpty'=>true, 'value' => null),
 
         			array('email, first_name, last_name', 'required'),
+                    array('confirmAge',                   'required', 'message'=>'You must be over 18 to register.'),
+
         			array('email', 'uniqueIdentity'),
         			array('email', 'email'),
         			array('removePicture', 'boolean'),
@@ -157,7 +163,7 @@ class ProfileForm extends CFormModel
                     // ...number values are mandatory.
                     array('mobile_number, mobile_carrier_id, send_sms_notification', 'validateMobileFields'),
 
-                    array('date_of_birth',                  'validateAge', 'age_limit' => 18),
+                    array('date_of_birth',                   'date', 'format'=>'M-d-yyyy'),
 
                     array('language',                       'length', 'max'=>255),
 
@@ -189,6 +195,7 @@ class ProfileForm extends CFormModel
 		    'verifyCode'    => Yii::t('UsrModule.usr','Verification Code'),
 		    'date_of_birth' => Yii::t('UsrModule.usr','Date of Birth'),
 		    'language'      => Yii::t('UsrModule.usr','Language'),
+		    'confirmAge'    => Yii::t('UsrModule.usr','Confirm Your Age'),
 
 		);
 	}
@@ -325,6 +332,9 @@ class ProfileForm extends CFormModel
 
 	/**
 	 * Validate the user's age is greater than the supplied limit
+	 * Example of rule :
+	 * array('date_of_birth', 'validateAge', 'age_limit' => 18),
+	 *
 	 *
 	 * @param string $attribute the attribute being validated
 	 * @return array $params optional additional parameters defined in the rule.
