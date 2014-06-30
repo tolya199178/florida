@@ -34,6 +34,8 @@
 class MyfriendController extends Controller
 {
 
+    public 	$layout='//layouts/front';
+
     /**
      * Default controller action.
      * Shows the listing of friends
@@ -74,6 +76,83 @@ class MyfriendController extends Controller
 
 
 	}
+
+	/**
+	 * Displays friend lists
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionShow()
+	{
+
+        // /////////////////////////////////////////////////////////////////////
+        // Redirect non-logged in users to the login page
+        // /////////////////////////////////////////////////////////////////////
+        if (Yii::app()->user->isGuest)         // User is not logged in
+        {
+            $this->redirect("login");
+            Yii::app()->end();
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the login details from the WebUser component
+        // /////////////////////////////////////////////////////////////////////
+        $userId = Yii::app()->user->id;
+
+        if ($userId === null)         // User is not known
+        {
+            $this->redirect("login");
+            Yii::app()->end();
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Load the user details
+        // /////////////////////////////////////////////////////////////////////
+        $userModel = User::model()->findByPk($userId);
+        if ($userModel === null) {
+            $this->redirect("login");
+        }
+
+        /*
+         * Get the main dashboard component
+         */
+        $argComponent = Yii::app()->request->getQuery('component', 'default');
+
+        $lstMyFriends = array();
+        $lstMyOnlineFriends = array();
+        $myFriendsCount = array();
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get a list of the user's friends
+        // /////////////////////////////////////////////////////////////////////
+        $listMyFriends = $this->getFriendLists();
+
+        $resultsFriendSummary = MyFriend::FriendSummary(Yii::app()->user->id);
+        $userFriendSummary = array_pop($resultsFriendSummary);
+
+        $myFriendsCount['allfriends'] = $userFriendSummary['approved'];
+        $myFriendsCount['onlinefriends'] = 0;
+        $myFriendsCount['sentfriendrequests'] = $userFriendSummary['pending'];
+        $myFriendsCount['receivedfriendrequests'] = count(MyFriend::model()->findAllByAttributes(array(
+                                                                                'friend_id' => Yii::app()->user->id,
+                                                                                'friend_status' => 'pending'
+                                                                             )));
+
+        // Show the dashboard
+        $this->render('myfriend_main', array(
+                      'mainview'        => 'myfriends',
+                      'data'            => array(
+                                              'listMyFriends'   => $listMyFriends,
+                                              'myFriendsCount'  => $myFriendsCount
+                                           )
+                ));
+
+	}
+
 
 	/**
 	 * Finds friend, and pending friend requests received and sent

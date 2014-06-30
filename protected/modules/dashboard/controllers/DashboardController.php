@@ -101,31 +101,12 @@ class DashboardController extends Controller
         $argComponent = Yii::app()->request->getQuery('component', 'default');
 
         $listMyBusiness = array();
-        $lstMyFriends = array();
-        $lstMyOnlineFriends = array();
         $listMessages = array();
         $listPhotos = array();
         $listMyActivities = array();
         $myFriendsCount = array();
 
-        switch ($argComponent)
-        {
-            case 'allfriends':
-                $configDashboard['mainpanel'] = 'myfriends';
-                break;
-            case 'onlinefriends':
-                $configDashboard['mainpanel'] = 'myfriends';
-                break;
-            case 'sentfriendrequests':
-                $configDashboard['mainpanel'] = 'friends';
-                break;
-            case 'receivedfriendrequests':
-                $configDashboard['mainpanel'] = 'friends';
-                break;
-
-            default:
-                $configDashboard['mainpanel'] = 'default';
-        }
+        $configDashboard['mainpanel'] = 'default';
 
         // /////////////////////////////////////////////////////////////////////
         // Get the user's businesses
@@ -138,10 +119,6 @@ class DashboardController extends Controller
 
         $listMyBusiness = Business::model()->findAll($dbCriteria);
 
-        // /////////////////////////////////////////////////////////////////////
-        // Get a list of the user's friends
-        // /////////////////////////////////////////////////////////////////////
-        $listMyFriends  = $this->getFriendLists();
 
         // /////////////////////////////////////////////////////////////////////
         // Get the user's messages
@@ -197,7 +174,6 @@ class DashboardController extends Controller
 
         $configDashboard['data'] = array(
             'listMyBusiness'    => $listMyBusiness,
-            'listMyFriends'     => $listMyFriends,
             'listMyMessages'        => $listMyMessages,
             'myPhotos'          => $listPhotos,
             'myActivities'      => $listMyActivities,
