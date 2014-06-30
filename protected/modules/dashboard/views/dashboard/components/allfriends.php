@@ -224,7 +224,7 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
 
                                 	   <div class='col-lg-5'>
 
-                                            <a class="btn btn-md btn-primary" href="<?php echo Yii::app()->createUrl('webuser/sendfriendmessage/'); ?>">
+                                            <a class="btn btn-md btn-primary" href="<?php echo Yii::app()->createUrl('messages/messages/create/', array('friend'=>$myFriend->my_friend_id)); ?>">
                                                 <i class="glyphicon glyphicon-envelope"></i>
                                                 Send Message
                                             </a>
@@ -243,7 +243,7 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
 
                             </div>
                             <div class="panel-footer">
-                                <button type='submit' class="btn btn-md btn-primary" href="<?php echo Yii::app()->createUrl('webuser/sendfriendmessages/'); ?>" id='send_messages'>
+                                <button type='submit' class="btn btn-md btn-primary" href="<?php echo Yii::app()->createUrl('messages/messages/create/', array()); ?>" id='send_messages'>
                                     <i class="glyphicon glyphicon-envelope"></i>
                                     Send Message to Selected
                                 </button>

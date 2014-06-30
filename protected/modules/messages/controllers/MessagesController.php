@@ -269,7 +269,31 @@ class MessagesController extends Controller
 	        throw new CHttpException(400, 'Unauthorised Access Attempt. Please do not repeat this request.');
 	    }
 
+
 	    $messageModel              = new UserMessage;
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // We can receive a send message request from a link to a friend. A
+	    // ...friend id will be supplied, prepopulated.
+	    // /////////////////////////////////////////////////////////////////////
+	    if (isset($_GET['friend']))
+	    {
+	        /*
+	         * Validate the friend id, and check that the record is pointing to a true friend
+	        */
+	        $friendModel = MyFriend::model()->findByPk( (int) $_GET['friend']);
+
+	        if ($friendModel && ($friendModel->user_id == Yii::app()->user->id))
+	        {
+	            $messageModel->recipient = $friendModel->friend_id;
+	        }
+	        else
+	        {
+	            Yii::app()->user->setFlash('error','You cannot send messages to this user.');
+	            $this->redirect(array('/messages/'));
+	            Yii::app()->end();
+	        }
+	    }
 
 	    if (isset($_POST['UserMessage']))
 	    {
@@ -283,6 +307,23 @@ class MessagesController extends Controller
 
 	            if ($messageModel->validate())
 	            {
+
+	                /*
+	                 * Check that the recipient is a true friend to prevent spamming.
+	                 */
+	                $friendModel = MyFriend::model()->findByAttributes(array(
+	                                   'user_id'       => $messageModel->sender,
+	                                   'friend_id'     => $messageModel->recipient
+                                   ));
+
+	                if ($friendModel === null)
+	                {
+	                    Yii::app()->user->setFlash('error','You cannot send messages to this user.');
+	                    $this->redirect(array('/messages/'));
+	                    Yii::app()->end();
+	                }
+
+
 	                if ($messageModel->save())
 	                {
 	                    Yii::app()->user->setFlash('success','Message Sent.');
