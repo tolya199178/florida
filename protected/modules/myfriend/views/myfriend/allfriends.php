@@ -176,7 +176,7 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
 
                                 <?php foreach ($myLocalFriends as $myFriend) { ?>
                                 <?php
-                                        if ($myFriend->friend_status !='Approved') {
+                                        if (($myFriend->friend_status !='Approved') && ($myFriend->friend_status !='Blocked')) {
                                             continue;
                                         }
                                 ?>
@@ -229,10 +229,18 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                                 Send Message
                                             </a>
 
-                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('webuser/blockuser/'); ?>">
-                                                <i class="glyphicon glyphicon-minus-sign"></i>
-                                                Block User
-                                            </a>
+<?php                                       if ($myFriend->friend_status == 'Approved' ) { ?>
+                                                <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('myfriend/myfriend/blockuser/', array('friend'=>$myFriend->my_friend_id)); ?>">
+                                                    <i class="glyphicon glyphicon-minus-sign"></i>
+                                                    Block User
+                                                </a>
+<?php                                       } ?>
+<?php                                       if ($myFriend->friend_status == 'Blocked' ) { ?>
+                                                <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('myfriend/myfriend/unblockuser/', array('friend'=>$myFriend->my_friend_id)); ?>">
+                                                    <i class="glyphicon glyphicon-minus-sign"></i>
+                                                    Unblock User
+                                                </a>
+<?php                                       } ?>
 
                                 	   </div>
                                 	</li>
