@@ -439,7 +439,7 @@ class MyfriendController extends Controller
 	        */
 	        $friendModel = MyFriend::model()->findByPk((int) $_GET['friend']);
 
-	        if ($friendModel && ($friendModel->user_id == Yii::app()->user->id))
+	        if ($friendModel && ($friendModel->friend_id == Yii::app()->user->id))
 	        {
 
 	            if ($friendModel->friend_status != 'Pending')
@@ -478,6 +478,99 @@ class MyfriendController extends Controller
 
 	}
 
+	/**
+	 * Reject a previously issued request to connect to the current user
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionAcceptrequest()
+	{
+
+	        // /////////////////////////////////////////////////////////////////////
+        // Redirect non-logged in users to the login page
+        // /////////////////////////////////////////////////////////////////////
+        if (Yii::app()->user->isGuest)         // User is not logged in
+        {
+            $this->redirect("login");
+            Yii::app()->end();
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the login details from the WebUser component
+        // /////////////////////////////////////////////////////////////////////
+        $userId = Yii::app()->user->id;
+
+        if ($userId === null)         // User is not known
+        {
+            $this->redirect("login");
+            Yii::app()->end();
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // Load the user details
+        // /////////////////////////////////////////////////////////////////////
+        $userModel = User::model()->findByPk($userId);
+        if ($userModel === null) {
+            $this->redirect("login");
+        }
+
+        // /////////////////////////////////////////////////////////////////////
+        // We can only disconnect from users that we connected from.
+        // /////////////////////////////////////////////////////////////////////
+        if (isset($_GET['friend'])) {
+
+            $friendId = $_GET['friend'];
+
+            /*
+             * Check if an existing friend entry already exists
+             */
+            $friendModel = MyFriend::model()->findByPk((int) $_GET['friend']);
+
+            if ($friendModel && ($friendModel->friend_id == Yii::app()->user->id))
+            {
+
+                if ($friendModel->friend_status != 'Pending')
+                {
+                    Yii::app()->user->setFlash('error', 'Record not found. Your request could not be processed.');
+                    $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+                    Yii::app()->end();
+                }
+                else
+                {
+                    $friendModel->friend_status = 'Approved';
+
+                    if ($friendModel->save())
+                    {
+                        Yii::app()->user->setFlash('success', 'You are now connected.');
+                        $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+                        Yii::app()->end();
+
+                    }
+                    else
+                    {
+                        Yii::app()->user->setFlash('warning','Your request could not be handled at this time. Try again later.
+	                                           Contact the administrator if the problem persists.');
+                        $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+                        Yii::app()->end();
+                    }
+
+
+                }
+
+            }
+            else
+            {
+                Yii::app()->user->setFlash('error', 'Record not found. Your request could not be processed.');
+                $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+                Yii::app()->end();
+            }
+
+		}
+
+	}
 
 	/**
 	 * Finds friend, and pending friend requests received and sent

@@ -53,12 +53,12 @@ $listFriendRequests     = $data['listMyFriends']['lstMyFriendsRequestsReceived']
 
                                 	   <div class='col-lg-5'>
 
-                                            <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('webuser/acceptfriendrequest/'); ?>">
+                                            <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('myfriend/myfriend/acceptrequest/', array('friend'=>$myFriend->my_friend_id)); ?>">
                                                 <i class="glyphicon glyphicon-plus-sign"></i>
                                                 Accept Invitation
                                             </a>
 
-                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('webuser/rejectfriendrequest/'); ?>">
+                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('myfriend/myfriend/rejectrequest/', array('friend'=>$myFriend->my_friend_id)); ?>">
                                                 <i class="glyphicon glyphicon-minus-sign"></i>
                                                 Reject Invitation
                                             </a>
