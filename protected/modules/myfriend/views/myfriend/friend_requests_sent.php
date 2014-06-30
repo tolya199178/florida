@@ -53,7 +53,7 @@ $myOnlineFriends    = $data['listMyFriends']['lstMyOnlineFriends'];
 
                                 	   <div class='col-lg-5'>
 
-                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('webuser/cancelfriendrequest/'); ?>">
+                                            <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('myfriend/myfriend/unrequest/', array('friend'=>$myFriend->my_friend_id)); ?>">
                                                 <i class="glyphicon glyphicon-minus-sign"></i>
                                                 Cancel Invitation
                                             </a>
