@@ -45,18 +45,30 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
     public function run($args)
     {
 
+        /*
+         * Due to the large number of iterations, we microsleep to prevent cpu hogs
+         */
+        usleep(10000);
+
+        ini_set('memory_limit', '-1');
+
         // /////////////////////////////////////////////////////////////////////
         // Read all ImportedBusiness records
         // /////////////////////////////////////////////////////////////////////
-        $listImportedBusiness   = ImportedBusiness::model()->findAll(array('limit' => 100));
+        $listImportedBusiness   = ImportedBusiness::model()->findAll(array('limit' => 100000));
+        //$listImportedBusiness   = ImportedBusiness::model()->findAll();
 
         $recordsProcessed       = 0;
         $recordsSuccessfull     = 0;
+
+        echo "\n";
 
         foreach ($listImportedBusiness as $recImportedBusiness)
         {
 
             $recordsProcessed++;
+
+            echo 'Processing import record for ' . $recImportedBusiness->company_name;
 
             // ////////////////////////////////////////////////////////////////
             // Check if the business exists by checking the biz namea
@@ -69,6 +81,8 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
             // Do not process an existing business record
             if ($recBusiness != null)
             {
+                echo ' ** Record already exists at position ' . $recBusiness->business_id;
+                echo ' ** Ingoring.' . "\n";
                 continue;
             }
 
@@ -84,6 +98,7 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
             $recCity   = City::model()->findByAttributes(array('city_name' => $recImportedBusiness->city));
             if ($recCity === null)
             {
+                echo ' (** No city record for imported city ' . $recImportedBusiness->city . ' **)';
                 $cityId = null;
             }
             else
@@ -100,7 +115,7 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
             $recBusiness->business_city_id                  = $cityId;
             $recBusiness->business_zipcode                  = $recImportedBusiness->zip;
             $recBusiness->business_phone_ext                = null;
-            $recBusiness->business_phone                    = $recImportedBusiness->phone;
+            $recBusiness->business_phone                    = substr($recImportedBusiness->phone, 0, 16);
             $recBusiness->business_email                    = $recImportedBusiness->email;
             $recBusiness->business_website                  = $recImportedBusiness->website;
             $recBusiness->business_description              = null;
@@ -142,10 +157,13 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
             // `zip5` tinytext
 
 
-            try {
+            try
+            {
 
                 if ($recBusiness->save())
                 {
+
+                    echo " ** Record saved. **\n";
 
                     $recordsSuccessfull++;
 
@@ -164,7 +182,8 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
                 }
 
 
-            } catch (Exception $error) {
+            } catch (Exception $error)
+            {
                 print_r($recBusiness);
                 print_r($error);
             }
@@ -225,7 +244,7 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
         }
 
         // Fetch the category$bizCategory
-        $categoryModel = Category::model()->findByAttributes(array('category_name' => $bizCategory));
+        $categoryModel = Category::model()->findByAttributes(array('category_name' => trim($bizCategory)));
 
         // If the category does not exist, add it
         if ($categoryModel === null)
@@ -253,24 +272,23 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
                 // Add the sub-category
                 echo "Add new subcategory $bizSubCategory\n";
 
-                $categoryModel                          = new Category;
-                $categoryModel->category_name           = $bizSubCategory;
-                $categoryModel->category_description    = $bizSubCategory;
-                $categoryModel->parent_id               = $categoryId;
+                $subcategoryModel                          = new Category;
+                $subcategoryModel->category_name           = $bizSubCategory;
+                $subcategoryModel->category_description    = $bizSubCategory;
+                $subcategoryModel->parent_id               = $categoryId;
 
-                $categoryModel->save();
-                if ($categoryModel->save() === false)
+                $subcategoryModel->save();
+                if ($subcategoryModel->save() === false)
                 {
                     echo 'Error saving category record'."\n";
-                    print_r($categoryModel->getErrors());
-                    print_r($categoryModel->attributes);
+                    print_r($subcategoryModel->getErrors());
+                    print_r($subcategoryModel->attributes);
                 }
             }
 
-
-
-
         }
+
+        return $categoryModel->category_id;
 
     }
 
