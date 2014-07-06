@@ -22,11 +22,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = Trip::model()
+ * ...   $trip = Trip::model()
  * ...or
- * ...   $model = new Trip;
+ * ...   $trip = new Trip;
  * ...or
- * ...   $model = new Trip($scenario);
+ * ...   $trip = new Trip($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -65,10 +65,10 @@ class Trip extends CActiveRecord
 	{
 
 		return array(
-			array('user_id, created_date', 'required'),
-			array('trip_status, user_id', 'numerical', 'integerOnly'=>true),
-			array('trip_name', 'length', 'max'=>150),
-			array('description, modified_date', 'safe'),
+			array('user_id, created_date',               'required'),
+			array('trip_status, user_id',                'numerical', 'integerOnly'=>true),
+			array('trip_name', 'length',                 'max'=>150),
+			array('description',                         'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('trip_id, trip_name, description, trip_status, user_id, created_date, modified_date', 'safe', 'on'=>'search'),
@@ -87,8 +87,8 @@ class Trip extends CActiveRecord
 	{
 
 		return array(
-			'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
-			'tripLegs'      => array(self::HAS_MANY, 'TripLeg', 'trip_id'),
+			'user'       => array(self::BELONGS_TO, 'User', 'user_id'),
+			'tripLegs'   => array(self::HAS_MANY, 'TripLeg', 'trip_id'),
 		);
 	}
 
@@ -106,12 +106,12 @@ class Trip extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'trip_id'      => 'Trip',
-			'trip_name'      => 'Trip Name',
-			'description'      => 'Description',
-			'trip_status'      => 'Trip Status',
-			'user_id'      => 'User',
-			'created_date'      => 'Created Date',
+			'trip_id'            => 'Trip',
+			'trip_name'          => 'Trip Name',
+			'description'        => 'Description',
+			'trip_status'        => 'Trip Status',
+			'user_id'            => 'User',
+			'created_date'       => 'Created Date',
 			'modified_date'      => 'Modified Date',
 		);
 	}
@@ -137,13 +137,13 @@ class Trip extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('trip_id',$this->trip_id);
-		$criteria->compare('trip_name',$this->trip_name,true);
-		$criteria->compare('description',$this->description,true);
-		$criteria->compare('trip_status',$this->trip_status);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('created_date',$this->created_date,true);
-		$criteria->compare('modified_date',$this->modified_date,true);
+		$criteria->compare('trip_id',         $this->trip_id);
+		$criteria->compare('trip_name',       $this->trip_name,true);
+		$criteria->compare('description',     $this->description,true);
+		$criteria->compare('trip_status',     $this->trip_status);
+		$criteria->compare('user_id',         $this->user_id);
+		$criteria->compare('created_date',    $this->created_date);
+		$criteria->compare('modified_date',   $this->modified_date);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -162,5 +162,47 @@ class Trip extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave() {
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+
+	        // /////////////////////////////////////////////////////////////////
+	        // If the user is not logged in, this will result
+	        // /////////////////////////////////////////////////////////////////
+	        if (Yii::app()->user->id === null)
+	        {
+	            $this->addError('user_id', 'User is not logged in');
+	            $event->isValid = false;
+	        }
+	        else
+	        {
+	            $this->user_id      = Yii::app()->user->id;
+	        }
+
+	        $this->created_time = new CDbExpression('NOW()');
+
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+
+	    return parent::beforeSave();
 	}
 }

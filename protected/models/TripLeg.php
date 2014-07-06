@@ -21,11 +21,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = TripLeg::model()
+ * ...   $trip_leg = TripLeg::model()
  * ...or
- * ...   $model = new TripLeg;
+ * ...   $trip_leg = new TripLeg;
  * ...or
- * ...   $model = new TripLeg($scenario);
+ * ...   $trip_leg = new TripLeg($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -64,9 +64,10 @@ class TripLeg extends CActiveRecord
 	{
 
 		return array(
-			array('trip_id, city_id', 'required'),
-			array('trip_id, city_id', 'numerical', 'integerOnly'=>true),
-			array('leg_start_date, leg_end_date, description', 'safe'),
+			array('trip_id, city_id',                    'required'),
+			array('trip_id, city_id',                    'numerical', 'integerOnly'=>true),
+		    array('description',                         'max'=>4096),
+		    array('leg_start_date, leg_end_date',        'date', 'format'=>'yyyy-MM-dd'),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('tbl_trip_leg, trip_id, city_id, leg_start_date, leg_end_date, description', 'safe', 'on'=>'search'),
@@ -104,12 +105,12 @@ class TripLeg extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'tbl_trip_leg'      => 'Tbl Trip Leg',
-			'trip_id'      => 'Trip',
-			'city_id'      => 'City',
-			'leg_start_date'      => 'Leg Start Date',
-			'leg_end_date'      => 'Leg End Date',
-			'description'      => 'Description',
+			'tbl_trip_leg'       => 'Tbl Trip Leg',
+			'trip_id'            => 'Trip',
+			'city_id'            => 'City',
+			'leg_start_date'     => 'Leg Start Date',
+			'leg_end_date'       => 'Leg End Date',
+			'description'        => 'Description',
 		);
 	}
 
@@ -134,12 +135,12 @@ class TripLeg extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('tbl_trip_leg',$this->tbl_trip_leg);
-		$criteria->compare('trip_id',$this->trip_id);
-		$criteria->compare('city_id',$this->city_id);
-		$criteria->compare('leg_start_date',$this->leg_start_date,true);
-		$criteria->compare('leg_end_date',$this->leg_end_date,true);
-		$criteria->compare('description',$this->description,true);
+		$criteria->compare('tbl_trip_leg',    $this->tbl_trip_leg);
+		$criteria->compare('trip_id',         $this->trip_id);
+		$criteria->compare('city_id',         $this->city_id);
+		$criteria->compare('leg_start_date',  $this->leg_start_date,true);
+		$criteria->compare('leg_end_date',    $this->leg_end_date,true);
+		$criteria->compare('description',     $this->description,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
