@@ -1451,7 +1451,7 @@ CREATE TABLE `tbl_trip` (
   `trip_id` int(11) NOT NULL AUTO_INCREMENT,
   `trip_name` varchar(150) DEFAULT NULL,
   `description` text,
-  `trip_status` tinyint(4) DEFAULT '1' COMMENT '1=>Active,2=>Cancelled,3=>Complete',
+  `trip_status` enum('Active', 'Cancelled', 'Complete') DEFAULT 'Active',
   `user_id` int(11) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modified_date` timestamp DEFAULT 0,

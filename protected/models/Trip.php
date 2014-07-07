@@ -66,9 +66,11 @@ class Trip extends CActiveRecord
 
 		return array(
 			array('user_id, created_date',               'required'),
-			array('trip_status, user_id',                'numerical', 'integerOnly'=>true),
+			array('user_id',                             'numerical', 'integerOnly'=>true),
 			array('trip_name',                           'length', 'max'=>150),
 			array('description',                         'length', 'max'=>4096),
+
+		    array('trip_status',                         'in','range'=>array('Active', 'Cancelled', 'Complete')),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('trip_id, trip_name, description, trip_status, user_id, created_date, modified_date', 'safe', 'on'=>'search'),
@@ -204,5 +206,28 @@ class Trip extends CActiveRecord
 	    $this->modified_time = new CDbExpression('NOW()');
 
 	    return parent::beforeSave();
+	}
+
+	/**
+	 * Build an associative list of list status values from the column definition.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of trip status values
+	 *
+	 * @access public
+	 */
+	public function listTripStatus()
+	{
+	    $searchMatches     = '';
+	    $searchValues      = array();
+
+	    preg_match('/\((.*)\)/', $this->tableSchema->columns['trip_status']->dbType, $searchMatches);
+
+	    foreach(explode("','", $searchMatches[1]) as $strMatch)
+	    {
+	        $strMatch                  = str_replace("'",null,$strMatch);
+	        $searchValues[$strMatch]   = Yii::t('enumItem', $strMatch);
+	    }
+	    return $searchValues;
 	}
 }
