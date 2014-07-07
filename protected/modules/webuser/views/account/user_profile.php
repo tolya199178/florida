@@ -208,10 +208,6 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                             <ul class="nav nav-pills">
                               <li class="active"><a href="#mydetails" data-toggle="tab">My Details</a></li>
                               <li><a href="#myprofile" data-toggle="tab">My Public Profile</a></li>
-                              <li><a href="#myfriends" data-toggle="tab">My Friends</a></li>
-                              <li><a href="#mymessages" data-toggle="tab">My Messages</a></li>
-                              <li><a href="#myimages" data-toggle="tab">My Images</a></li>
-                              <li><a href="#myactivities" data-toggle="tab">My Activities</a></li>
                             </ul>
                       </div>
                    </div>
@@ -244,55 +240,6 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                       </div>
                       <!-- ./ Step 2 contents -->
 
-                      <!-- Step 3 contents -->
-                      <div class="tab-pane" id="myfriends">
-
-                            <?php $this->renderPartial("user_profile_my_friends",array('form'=>$form, 'model'=>$model, 'myLocalFriends'=>$myLocalFriends, 'myOnlineFriends'=>$myOnlineFriends)); ?>
-
-                            <!-- Panel Footer -->
-                            <div class="panel-footer">
-                                  <a class="btn btn-default next" href="#">Continue</a>
-                            </div>
-                      </div>
-                      <!-- ./ Step 3 contents -->
-
-                      <!-- Step 4 contents -->
-                      <div class="tab-pane" id="mymessages">
-
-                            <?php $this->renderPartial("//message/list",array('form'=>$form, 'model'=>$model, 'myMessages'=>$myMessages)); ?>
-
-                            <!-- Panel Footer -->
-                            <div class="panel-footer">
-                                  <a class="btn btn-default next" href="#">Continue</a>
-                            </div>
-                      </div>
-                      <!-- ./ Step 4 contents -->
-
-                      <!-- Step 5 contents -->
-                      <div class="tab-pane" id="myimages">
-
-                            <?php $this->renderPartial('//user_photos/list', array('myPhotos' => $myPhotos)); ?>
-                            <?php $this->renderPartial('//user_photos/new_image'); ?>
-
-                            <!-- Panel Footer -->
-                            <div class="panel-footer">
-                                  <a class="btn btn-default next" href="#">Continue</a>
-                            </div>
-                      </div>
-                      <!-- ./ Step 5 contents -->
-
-                      <!-- Step 6 contents -->
-                      <div class="tab-pane" id="myactivities">
-
-                            <?php $this->renderPartial('//user_activities/listall', array('myActivities' => $myActivities)); ?>
-
-                            <!-- Panel Footer -->
-                            <div class="panel-footer">
-                		          <?php echo CHtml::submitButton('Save the Business Record', array('class'=>"btn btn-success btn-lg")); ?>
-                            </div>
-                      </div>
-                      <!-- ./ Step 6 contents -->
-
 
 
                    </div>
@@ -307,9 +254,6 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
             <!-- ./ Panel Body -->
 
             <!-- Panel Footer -->
-<!--             <div class="panel-footer"> -->
-<!--                 Panel footer -->
-<!--             </div> -->
             <!-- ./ Panel Header  -->
         </div>
 <?php   $this->endWidget(); ?>
