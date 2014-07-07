@@ -1,0 +1,231 @@
+<?php
+
+/**
+ * This is the model class for table "{{trip}}".
+ *
+ * The followings are the available columns in table '{{trip}}':
+ * @property integer $trip_id
+ * @property string $trip_name
+ * @property string $description
+ * @property integer $trip_status
+ * @property integer $user_id
+ * @property string $created_date
+ * @property string $modified_date
+ *
+ * The followings are the available model relations:
+ * @property User $user
+ * @property TripLeg[] $tripLegs
+ */
+
+ /**
+ * Trip activerecord model class provides a mechanism to keep data and their
+ * ...relevant business rules. A model instant represents a single database row.
+ * ...
+ * ...Usage:
+ * ...   $trip = Trip::model()
+ * ...or
+ * ...   $trip = new Trip;
+ * ...or
+ * ...   $trip = new Trip($scenario);
+ *
+ * @package   Components
+ * @author    Pradesh <pradesh@datacraft.co.za>
+ * @copyright 2014 florida.com
+ * @package Components
+ * @version 1.0
+ */
+
+class Trip extends CActiveRecord
+{
+
+    /**
+     * Get database table name associated with the model.
+     *
+     * @param <none> <none>
+     *
+     * @return string the associated database table name
+     * @access public
+     */
+	public function tableName()
+	{
+		return '{{trip}}';
+	}
+
+    /**
+     * Set rules for validation of model attributes. Each attribute is listed with its
+     * ...associated rules. All attributes listed in the rules set forms a set of 'safe'
+     * ...attributes that allow it to be used in massive assignment.
+     *
+     * @param <none> <none>
+     *
+     * @return array validation rules for model attributes.
+     * @access public
+     */
+	public function rules()
+	{
+
+		return array(
+			array('trip_name',                           'length', 'max'=>150),
+			array('description',                         'length', 'max'=>4096),
+
+		    array('trip_status',                         'in','range'=>array('Active', 'Cancelled', 'Complete')),
+
+            // The following rule is used by search(). It only contains attributes that should be searched.
+			array('trip_id, trip_name, description, trip_status, user_id, created_date, modified_date', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * Set rules for the relation of this record model to other record models.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return array relational rules.
+	 * @access public
+	 */
+	public function relations()
+	{
+
+		return array(
+			'user'       => array(self::BELONGS_TO, 'User', 'user_id'),
+			'tripLegs'   => array(self::HAS_MANY, 'TripLeg', 'trip_id'),
+		);
+	}
+
+	/**
+	 * Label set for attributes. Only required for attributes that appear on view/forms.
+	 * ...
+	 * Usage:
+	 *    echo $form->label($model, $attribute)
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return array customized attribute labels (name=>label)
+	 * @access public
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'trip_id'            => 'Trip',
+			'trip_name'          => 'Trip Name',
+			'description'        => 'Description',
+			'trip_status'        => 'Trip Status',
+			'user_id'            => 'User',
+			'created_date'       => 'Created Date',
+			'modified_date'      => 'Modified Date',
+		);
+	}
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @param <none> <none>
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     *         ...based on the search/filter conditions.
+     * @access public
+     */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('trip_id',         $this->trip_id);
+		$criteria->compare('trip_name',       $this->trip_name,true);
+		$criteria->compare('description',     $this->description,true);
+		$criteria->compare('trip_status',     $this->trip_status);
+		$criteria->compare('user_id',         $this->user_id);
+		$criteria->compare('created_date',    $this->created_date);
+		$criteria->compare('modified_date',   $this->modified_date);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     *
+     * @param string $className active record class name.
+     * @return Trip the static model class
+     *
+     * @access public
+     */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave() {
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+
+	        // /////////////////////////////////////////////////////////////////
+	        // If the user is not logged in, this will result
+	        // /////////////////////////////////////////////////////////////////
+	        if (Yii::app()->user->id === null)
+	        {
+	            $this->addError('user_id', 'User is not logged in');
+	            $event->isValid = false;
+	        }
+	        else
+	        {
+	            $this->user_id      = Yii::app()->user->id;
+	        }
+
+	        $this->created_date = new CDbExpression('NOW()');
+
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_date = new CDbExpression('NOW()');
+
+	    return parent::beforeSave();
+	}
+
+	/**
+	 * Build an associative list of list status values from the column definition.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of trip status values
+	 *
+	 * @access public
+	 */
+	public function listTripStatus()
+	{
+	    $searchMatches     = '';
+	    $searchValues      = array();
+
+	    preg_match('/\((.*)\)/', $this->tableSchema->columns['trip_status']->dbType, $searchMatches);
+
+	    foreach(explode("','", $searchMatches[1]) as $strMatch)
+	    {
+	        $strMatch                  = str_replace("'",null,$strMatch);
+	        $searchValues[$strMatch]   = Yii::t('enumItem', $strMatch);
+	    }
+	    return $searchValues;
+	}
+}

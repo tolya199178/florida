@@ -1441,6 +1441,51 @@ ALTER TABLE tbl_post_vote
 ADD CONSTRAINT post_vote_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
+
+
+-- ---------------------------------------------------------------------
+--  My Trip
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_trip`;
+CREATE TABLE `tbl_trip` (
+  `trip_id` int(11) NOT NULL AUTO_INCREMENT,
+  `trip_name` varchar(150) DEFAULT NULL,
+  `description` text,
+  `trip_status` enum('Active', 'Cancelled', 'Complete') DEFAULT 'Active',
+  `user_id` int(11) NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_date` timestamp DEFAULT 0,
+  PRIMARY KEY (`trip_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_trip
+ADD CONSTRAINT tbl_trip_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+-- ---------------------------------------------------------------------
+--  My Trip Locations
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_trip_leg`;
+CREATE TABLE `tbl_trip_leg` (
+  `trip_leg_id` int(11) NOT NULL AUTO_INCREMENT,
+  `trip_id` int(11) NOT NULL,
+  `city_id` int(11) NOT NULL,
+  `leg_start_date` date DEFAULT NULL,
+  `leg_end_date` date DEFAULT NULL,
+  `description` text,
+  PRIMARY KEY (`trip_leg_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_trip_leg
+ADD CONSTRAINT tbl_trip_leg_trip
+     FOREIGN KEY (trip_id) 
+     REFERENCES tbl_trip(trip_id);
+     
+ALTER TABLE tbl_trip_leg
+ADD CONSTRAINT tbl_trip_leg_city
+     FOREIGN KEY (city_id) 
+     REFERENCES tbl_city(city_id);
      
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
