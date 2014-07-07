@@ -1486,7 +1486,31 @@ ALTER TABLE tbl_trip_leg
 ADD CONSTRAINT tbl_trip_leg_city
      FOREIGN KEY (city_id) 
      REFERENCES tbl_city(city_id);
+
      
+-- ---------------------------------------------------------------------
+-- User profile settings
+-- ---------------------------------------------------------------------
+  DROP TABLE IF EXISTS `tbl_user_notification_settings`;
+
+  CREATE TABLE `tbl_user_profile` (
+  `user_profile_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `alert_business_review` enum('Y','N') DEFAULT 'Y',
+  `alert_review_comment`  enum('Y','N') DEFAULT 'Y',
+  `alert_like_complaint_response` enum('Y','N') DEFAULT 'Y',
+  `alert_forum_response` enum('Y','N') DEFAULT 'Y',
+  `alert_answer_voted` enum('Y','N') DEFAULT 'Y',
+  `alert_trip_question_response` enum('Y','N') DEFAULT 'Y',
+  PRIMARY KEY (`user_profile_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+  
+ALTER TABLE tbl_user_profile
+ADD CONSTRAINT tbl_user_profile_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
