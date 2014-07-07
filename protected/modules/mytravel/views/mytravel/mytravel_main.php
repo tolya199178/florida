@@ -68,19 +68,19 @@
 
         <p>&nbsp;</p>
 
-        <!-- Main message area -->
+        <!-- Main details area -->
         <div class="row">
 
-            <!--  Message Buckets -->
+            <!--  Quick list -->
             <div class="col-sm-3 col-md-2">
 
                 <?php $this->renderPartial('mytrips_quicklist',
                       array('myTrips'=>$data['myTrips'])); ?>
 
             </div>
-            <!--  ./Message Buckets -->
+            <!--  ./Quick list -->
 
-            <!--  Message Lists -->
+            <!--  Fill List-->
             <div class="col-sm-9 col-md-10">
 
                 <?php $this->renderPartial($mainview, array('data' => $data)); ?>
@@ -88,7 +88,7 @@
             </div>
 
         </div>
-        <!-- ./Main message area -->
+        <!-- ./Main details area -->
 
 
     </div>

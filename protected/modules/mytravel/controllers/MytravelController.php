@@ -27,8 +27,7 @@
  * @package   Controllers
  * @author    Pradesh <pradesh@datacraft.co.za>
  * @copyright 2014 florida.com
- * @package Controllers
- * @version 1.0
+ * @version   1.0
  */
 
 class MytravelController extends Controller
@@ -102,15 +101,247 @@ class MytravelController extends Controller
 
         $lstMyTrips = Trip::model()->findAll($dbCriteria);
 
+        $lstMyTravels = Trip::model()->findAllByAttributes(array('user_id'=>Yii::app()->user->id));
+
 
 
         // Show the dashboard
         $this->render('mytravel_main', array(
                       'mainview'        => 'mytravels',
-                      'data'            => array('myTrips'   => $lstMyTrips)
+                      'data'            => array('myTrips'   => $lstMyTrips,
+                                                 'myTravels' => $lstMyTravels)
                 ));
 
 	}
 
+
+	/**
+	 * Adds a new Trip.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionAdd()
+	{
+	    // /////////////////////////////////////////////////////////////////////
+	    // This function is only available to users that are logged in. Other
+	    // ...users are given a friendly notice and gentle request to log in
+	    // ...or join.
+	    // /////////////////////////////////////////////////////////////////////
+	    $userId = Yii::app()->user->id;
+
+	    if ($userId === null)         // User is not known
+	    {
+	        Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
+	        $this->redirect("login");
+	        Yii::app()->end();
+	    }
+
+	    $tripModel = new Trip;
+
+	    // Uncomment the following line if AJAX validation is needed
+	    // todo: broken for Jquery precedence order loading
+	    // $this->performAjaxValidation($tripModel);
+
+	    if(isset($_POST['Trip']))
+	    {
+
+ 	        $tripModel->attributes             = $_POST['Trip'];
+
+
+	        if($tripModel->save())
+	        {
+
+	            Yii::app()->user->setFlash('success', "The trip details has been created.");
+
+	            $this->redirect(array('/mytravel/mytravel/show'));
+
+	        }
+	        else {
+	            Yii::app()->user->setFlash('error', "Error creating a trip record.");
+	        }
+
+
+	    }
+
+	    $dbCriteria             = new CDbCriteria;
+	    $dbCriteria->condition  = 'user_id = :user_id';
+	    $dbCriteria->params     = array(':user_id'=>Yii::app()->user->id);
+	    $dbCriteria->limit      = 10;
+	    $dbCriteria->order      = 'created_date  DESC';
+
+	    // Show the details screen
+	    $lstMyTrips = Trip::model()->findAll($dbCriteria);
+
+	    // Show the dashboard
+	    $this->render('mytravel_main', array('mainview'        => 'details',
+                                	         'data'            => array('myTrips'   => $lstMyTrips,
+                                	                                    'model'     => $tripModel)
+                                	    ));
+
+	}
+
+	/**
+	 * Edits an existing Trip.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionManage()
+	{
+	    // /////////////////////////////////////////////////////////////////////
+	    // This function is only available to users that are logged in. Other
+	    // ...users are given a friendly notice and gentle request to log in
+	    // ...or join.
+	    // /////////////////////////////////////////////////////////////////////
+	    $userId = Yii::app()->user->id;
+
+	    if ($userId === null)         // User is not known
+	    {
+	        Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
+	        $this->redirect("login");
+	        Yii::app()->end();
+	    }
+
+	    $argTripId = Yii::app()->request->getQuery('trip', null);
+
+	    if ($argTripId === null)         // User is not known
+	    {
+	        Yii::app()->user->setFlash('error','No trip indicated.');
+	    }
+
+	    $tripModel = Trip::model()->with('tripLegs','tripLegs.city')->findByPk( (int) $argTripId);
+
+	    /* Check that the trip record is found. */
+	    if ($tripModel === null)
+	    {
+	        throw new CHttpException(404, 'The requested record was not found.');
+	    }
+
+	    /* Only owners can edit their own trip */
+	    if ($tripModel->user_id != $userId)
+	    {
+	        throw new CHttpException(403, 'Unauthorised Access Attempt. Please do not repeat this request.');
+	    }
+
+	    // Uncomment the following line if AJAX validation is needed
+	    // todo: broken for Jquery precedence order loading
+	    // $this->performAjaxValidation($tripModel);
+
+	    if(isset($_POST['Trip']))
+	    {
+
+	        $tripModel->attributes             = $_POST['Trip'];
+
+
+	        if($tripModel->save())
+	        {
+
+	            Yii::app()->user->setFlash('success', "The trip details has been created.");
+
+	            $this->redirect(array('/mytravel/mytravel/show'));
+
+	        }
+	        else {
+	            Yii::app()->user->setFlash('error', "Error creating a trip record.");
+	        }
+
+
+	    }
+
+	    $dbCriteria             = new CDbCriteria;
+	    $dbCriteria->condition  = 'user_id = :user_id';
+	    $dbCriteria->params     = array(':user_id'=>Yii::app()->user->id);
+	    $dbCriteria->limit      = 10;
+	    $dbCriteria->order      = 'created_date  DESC';
+
+	    // Show the details screen
+	    $lstMyTrips = Trip::model()->findAll($dbCriteria);
+
+	    // Show the dashboard
+	    $this->render('mytravel_main', array('mainview'        => 'details',
+	                                         'data'            => array('myTrips'   => $lstMyTrips,
+	                                         'model'           => $tripModel)
+	    ));
+
+	}
+
+	/**
+	 * Adds a new Trip Leg.
+	 * Leag interface is AJAX.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionAddleg()
+	{
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // This function is only available to users that are logged in. Other
+	    // ...users are given a friendly notice and gentle request to log in
+	    // ...or join.
+	    // /////////////////////////////////////////////////////////////////////
+	    $userId = Yii::app()->user->id;
+
+	    if ($userId === null)         // User is not known
+	    {
+	        Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
+	        $this->redirect("login");
+	        Yii::app()->end();
+	    }
+
+	    $argTripId = Yii::app()->request->getQuery('trip', null);
+
+	    if ($argTripId === null)         // User is not known
+	    {
+	        Yii::app()->user->setFlash('error','No trip indicated.');
+	    }
+
+	    $modelTripLeg = new TripLeg;
+
+	    /* Check that the trip record is found. */
+	    if ($modelTripLeg === null)
+	    {
+	        throw new CHttpException(404, 'The requested record was not found.');
+	    }
+
+	    $modelTripLeg->trip_id = $argTripId;
+
+
+	    // Uncomment the following line if AJAX validation is needed
+	    // todo: broken for Jquery precedence order loading
+	    // $this->performAjaxValidation($tripModel);
+
+	    if(isset($_POST['TripLeg']))
+	    {
+
+ 	        $modelTripLeg->attributes             = $_POST['TripLeg'];
+
+
+ 	        if($modelTripLeg->save())
+ 	        {
+ 	            Yii::app()->user->setFlash('success', "The trip details has been created.");
+ 	            $this->redirect(array('/mytravel/mytravel/manage/trip/'.$argTripId));
+
+ 	        }
+ 	        else {
+ 	            Yii::app()->user->setFlash('error', "Error creating a trip record.");
+ 	            print_r($modelTripLeg);
+ 	        }
+
+
+	    }
+
+
+	    // Show the dashboard
+	    $this->renderPartial('trip_leg_details', array('model'=> $modelTripLeg));
+
+	}
 
 }
