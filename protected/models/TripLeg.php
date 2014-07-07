@@ -4,7 +4,7 @@
  * This is the model class for table "{{trip_leg}}".
  *
  * The followings are the available columns in table '{{trip_leg}}':
- * @property integer $tbl_trip_leg
+ * @property integer $trip_leg_id
  * @property integer $trip_id
  * @property integer $city_id
  * @property string $leg_start_date
@@ -66,11 +66,11 @@ class TripLeg extends CActiveRecord
 		return array(
 			array('trip_id, city_id',                    'required'),
 			array('trip_id, city_id',                    'numerical', 'integerOnly'=>true),
-		    array('description',                         'max'=>4096),
-		    array('leg_start_date, leg_end_date',        'date', 'format'=>'yyyy-MM-dd'),
+		    array('description',                         'length', 'max'=>4096),
+		    array('leg_start_date, leg_end_date',        'date', 'format'=>'yyyy-MM-dd', 'allowEmpty'=>true),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('tbl_trip_leg, trip_id, city_id, leg_start_date, leg_end_date, description', 'safe', 'on'=>'search'),
+			array('trip_leg_id, trip_id, city_id, leg_start_date, leg_end_date, description', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -105,7 +105,7 @@ class TripLeg extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'tbl_trip_leg'       => 'Tbl Trip Leg',
+			'trip_leg_id'        => 'Tbl Trip Leg Id',
 			'trip_id'            => 'Trip',
 			'city_id'            => 'City',
 			'leg_start_date'     => 'Leg Start Date',
@@ -135,7 +135,7 @@ class TripLeg extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('tbl_trip_leg',    $this->tbl_trip_leg);
+		$criteria->compare('trip_leg_id',     $this->trip_leg_id);
 		$criteria->compare('trip_id',         $this->trip_id);
 		$criteria->compare('city_id',         $this->city_id);
 		$criteria->compare('leg_start_date',  $this->leg_start_date,true);

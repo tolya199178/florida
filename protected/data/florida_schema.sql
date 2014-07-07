@@ -1468,13 +1468,13 @@ ADD CONSTRAINT tbl_trip_user
 -- ---------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_trip_leg`;
 CREATE TABLE `tbl_trip_leg` (
-  `tbl_trip_leg` int(11) NOT NULL AUTO_INCREMENT,
+  `trip_leg_id` int(11) NOT NULL AUTO_INCREMENT,
   `trip_id` int(11) NOT NULL,
   `city_id` int(11) NOT NULL,
   `leg_start_date` date DEFAULT NULL,
   `leg_end_date` date DEFAULT NULL,
   `description` text,
-  PRIMARY KEY (`tbl_trip_leg`)
+  PRIMARY KEY (`trip_leg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE tbl_trip_leg
