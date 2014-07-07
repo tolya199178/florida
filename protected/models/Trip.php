@@ -65,8 +65,6 @@ class Trip extends CActiveRecord
 	{
 
 		return array(
-			array('user_id, created_date',               'required'),
-			array('user_id',                             'numerical', 'integerOnly'=>true),
 			array('trip_name',                           'length', 'max'=>150),
 			array('description',                         'length', 'max'=>4096),
 
@@ -196,14 +194,14 @@ class Trip extends CActiveRecord
 	            $this->user_id      = Yii::app()->user->id;
 	        }
 
-	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_date = new CDbExpression('NOW()');
 
 	    }
 
 	    // /////////////////////////////////////////////////////////////////
 	    // The modified log details is set for record creation and update
 	    // /////////////////////////////////////////////////////////////////
-	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_date = new CDbExpression('NOW()');
 
 	    return parent::beforeSave();
 	}
