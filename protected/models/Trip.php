@@ -67,8 +67,8 @@ class Trip extends CActiveRecord
 		return array(
 			array('user_id, created_date',               'required'),
 			array('trip_status, user_id',                'numerical', 'integerOnly'=>true),
-			array('trip_name', 'length',                 'max'=>150),
-			array('description',                         'max'=>4096),
+			array('trip_name',                           'length', 'max'=>150),
+			array('description',                         'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('trip_id, trip_name, description, trip_status, user_id, created_date, modified_date', 'safe', 'on'=>'search'),
