@@ -39,6 +39,13 @@ class ProfileForm extends CFormModel
 	public $language;
 	public $image;
 
+	public $alert_business_review;
+	public $alert_review_comment;
+	public $alert_like_complaint_response;
+	public $alert_forum_response;
+	public $alert_answer_voted;
+	public $alert_trip_question_response;
+
 	/**
 	 * @var confirmAge Form only fields to request user confirming that they are over 18.
 	 */
@@ -150,7 +157,7 @@ class ProfileForm extends CFormModel
         			array('user_name, email, first_name, last_name, removePicture', 'default', 'setOnEmpty'=>true, 'value' => null),
 
         			array('email, first_name, last_name', 'required'),
-                    array('confirmAge',                   'required', 'message'=>'You must be over 18 to register.'),
+                    array('confirmAge',                   'required', 'on'=>'register', 'message'=>'You must be over 18 to register.'),
 
         			array('email', 'uniqueIdentity'),
         			array('email', 'email'),
@@ -169,6 +176,13 @@ class ProfileForm extends CFormModel
 
                     array('fldUploadImage',                 'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
                     array('fldUploadMyGalleryImage',        'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+
+
+                    array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+                    array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+                    array('friends_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+                    array('blogs_permissions',              'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+                    array('travel_options_permissions',     'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
 
 
 

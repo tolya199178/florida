@@ -231,18 +231,18 @@ class User extends CActiveRecord
             array('loggedin_with_fb',               'in','range'=>array('Y','N'),'allowEmpty'=>false),
 
             array('marital_status',                 'in','range'=>array('Married','Single','Unknown'),'allowEmpty'=>true),
-            array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-            array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-            array('friends_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-            array('blogs_permissions',              'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-            array('travel_options_permissions',     'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+            array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+            array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+            array('friends_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+            array('blogs_permissions',              'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+            array('travel_options_permissions',     'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
 
             // other
 
             // compare entered and verified password. Only for change password and register screens.
             array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_REGISTER, self::SCENARIO_FORGOT_PASSWORD)),
 
-            array('date_of_birth',                  'validateAge', 'age_limit' => 18),
+            array('date_of_birth',                  'validateAge', 'age_limit' => 18, 'on' => array(self::SCENARIO_REGISTER)),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
             array('user_id, user_name, email, first_name, last_name, user_type, status,
