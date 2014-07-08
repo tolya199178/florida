@@ -360,6 +360,7 @@ class AccountController extends Controller
 
 	    if (isset($_POST['ProfileForm'])) {
 
+
 	        $formModel->setAttributes($_POST['ProfileForm']);
 	        $formModel->user_name = $formModel->email;
 
@@ -405,16 +406,54 @@ class AccountController extends Controller
 
 	                    }
 
+	                    Yii::app()->user->setFlash('success', "User record saved.");
+
+
+	                    $userprofileModel = UserProfile::model()->findByAttributes(array('user_id'=> $userModel->user_id));
+
+	                    if ($userprofileModel === null)
+	                    {
+	                        $userprofileModel                                = new UserProfile;
+	                        $userprofileModel->user_id                       = $userModel->user_id;
+	                    }
+
+	                    $userprofileModel->alert_business_review         =
+	                               $_POST['ProfileForm']['alert_business_review'];
+	                    $userprofileModel->alert_review_comment
+	                               = $_POST['ProfileForm']['alert_review_comment'];
+	                    $userprofileModel->alert_like_complaint_response =
+	                               $_POST['ProfileForm']['alert_like_complaint_response'];
+	                    $userprofileModel->alert_forum_response          =
+	                               $_POST['ProfileForm']['alert_forum_response'];
+	                    $userprofileModel->alert_answer_voted            =
+	                               $_POST['ProfileForm']['alert_answer_voted'];
+	                    $userprofileModel->alert_trip_question_response  =
+	                               $_POST['ProfileForm']['alert_trip_question_response'];
+
+	                    if($userprofileModel->save() === false)
+	                    {
+	                        Yii::app()->user->setFlash('warning', "User record saved, but profile settings were not saved.'");
+	                    }
+
+
 	                    $this->redirect(Yii::app()->user->returnUrl);
 	                    Yii::app()->end();
 
-	                } else {
+	                }
+	                else
+	                {
 	                    Yii::app()->user->setFlash('error', "Error updating your profile.'");
 	                }
+	            }
+	            else
+	            {
+	                Yii::app()->user->setFlash('error', "Error updating your profile.'");
+
 	            }
 	        }
 	        else
 	        {
+
 	            Yii::app()->user->setFlash('error', "Error updating your profile.'");
 	        }
 	    }
@@ -441,6 +480,13 @@ class AccountController extends Controller
 	        $formModel->blogs_permissions            = $userModel->attributes['blogs_permissions'];
 	        $formModel->travel_options_permissions   = $userModel->attributes['travel_options_permissions'];
 	        $formModel->image                        = $userModel->attributes['image'];
+
+	        $formModel->alert_business_review        = $userModel->alert_business_review;
+	        $formModel->alert_review_comment         = $userModel->alert_review_comment;
+	        $formModel->alert_like_complaint_response = $userModel->alert_like_complaint_response;
+	        $formModel->alert_forum_response         = $userModel->alert_forum_response;
+	        $formModel->alert_answer_voted           = $userModel->alert_answer_voted;
+	        $formModel->alert_trip_question_response = $userModel->alert_trip_question_response;
 
 
 	    }

@@ -208,6 +208,7 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                             <ul class="nav nav-pills">
                               <li class="active"><a href="#mydetails" data-toggle="tab">My Details</a></li>
                               <li><a href="#myprofile" data-toggle="tab">My Public Profile</a></li>
+                              <li><a href="#notifications" data-toggle="tab">Notification Settings</a></li>
                             </ul>
                       </div>
                    </div>
@@ -239,6 +240,18 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                             </div>
                       </div>
                       <!-- ./ Step 2 contents -->
+
+                      <!-- Step 3 contents -->
+                      <div class="tab-pane" id="notifications">
+
+                            <?php $this->renderPartial("user_notifications_settings",array('form'=>$form, 'model'=>$model)); ?>
+
+                            <!-- Panel Footer -->
+                            <div class="panel-footer">
+                		        <?php echo CHtml::submitButton('Save the Business Record', array('class'=>"btn btn-success btn-lg")); ?>
+                            </div>
+                      </div>
+                      <!-- ./ Step 3 contents -->
 
 
 

@@ -141,6 +141,8 @@ class UserController extends BackEndController
 	                $userModel->save();
 	            }
 
+	            Yii::app()->user->setFlash('success', "User record saved.");
+
 	            // /////////////////////////////////////////////////////////////
 	            // Save the user profile record.
 	            // /////////////////////////////////////////////////////////////
@@ -155,7 +157,7 @@ class UserController extends BackEndController
 
 	            if($userprofileModel->save() === false)
 	            {
-	                Yii::app()->user->setFlash('warning', "User record saved, but profile settings were not saved.'");
+	                Yii::app()->user->setFlash('warning', "User record saved, but profile settings were not saved.");
 	            }
 
 	            $this->redirect(array('index'));
@@ -256,11 +258,19 @@ class UserController extends BackEndController
 			        $this->createThumbnail($imageFileName);
 			    }
 
+			    Yii::app()->user->setFlash('success', "User record saved.");
+
 			    // /////////////////////////////////////////////////////////////
 			    // Save the user profile record.
 			    // /////////////////////////////////////////////////////////////
-			    $userprofileModel                                = new UserProfile;
-			    $userprofileModel->user_id                       = $userModel->user_id;
+		        $userprofileModel = UserProfile::model()->findByAttributes(array('user_id'=> $userModel->user_id));
+
+                if ($userprofileModel === null)
+                {
+                    $userprofileModel                                = new UserProfile;
+                    $userprofileModel->user_id                       = $userModel->user_id;
+                }
+
 			    $userprofileModel->alert_business_review         = $_POST['User']['alert_business_review'];
 			    $userprofileModel->alert_review_comment          = $_POST['User']['alert_review_comment'];
 			    $userprofileModel->alert_like_complaint_response = $_POST['User']['alert_like_complaint_response'];
