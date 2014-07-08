@@ -67,6 +67,7 @@
  * @property SubscribedBusiness[] $subscribedBusinesses
  * @property BusinessRating[] $businessRatings
  * @property RestaurantCertificates[] $restaurantCertificates
+ * @property UserProfile[] $userProfiles
  *
  */
 
@@ -137,6 +138,20 @@ class User extends CActiveRecord
      * @access public
      */
     public $fldUploadImage;
+
+
+    /**
+     * Form only. Used for Userprofile.*.
+     *
+     * @var string
+     * @access public
+     */
+    public $alert_business_review;
+    public $alert_review_comment;
+    public $alert_like_complaint_response;
+    public $alert_forum_response;
+    public $alert_answer_voted;
+    public $alert_trip_question_response;
 
 
     /**
@@ -279,6 +294,7 @@ class User extends CActiveRecord
 			'subscribedBusinesses' => array(self::HAS_MANY, 'SubscribedBusiness', 'user_id'),
 			'businessRatings'    => array(self::HAS_MANY, 'BusinessRating', 'user_id'),
             'restaurantCertificates' => array(self::HAS_MANY, 'RestaurantCertificate', 'business_id'),
+            'userProfiles'       => array(self::HAS_ONE, 'UserProfile', 'user_id'),
 		);
     }
 
@@ -635,6 +651,34 @@ class User extends CActiveRecord
 	    if(time() < $ageDateLimit)  {
 	        $this->addError($attribute, 'Registered users must be older than '.$params['age_limit'].' .');
 	    }
+
+	}
+
+	/**
+	 * Runs just after the model find method has completed invoked. The method
+	 * ...provides a chance to alter the model attributes before sending the
+	 * ... results off to the caller.
+	 *
+	 * @param <none> <none>
+	 * @return void.
+	 *
+	 * @access public
+	 */
+	public function afterFind()
+	{
+	    if (isset($this->userProfiles))
+	    {
+
+	        $this->alert_business_review         = $this->userProfiles->attributes['alert_business_review'];
+	        $this->alert_review_comment          = $this->userProfiles->attributes['alert_review_comment'];
+	        $this->alert_like_complaint_response = $this->userProfiles->attributes['alert_like_complaint_response'];
+	        $this->alert_forum_response          = $this->userProfiles->attributes['alert_forum_response'];
+	        $this->alert_answer_voted            = $this->userProfiles->attributes['alert_answer_voted'];
+	        $this->alert_trip_question_response  = $this->userProfiles->attributes['alert_trip_question_response'];
+
+	    }
+
+	    return parent::afterFind();
 
 	}
 
