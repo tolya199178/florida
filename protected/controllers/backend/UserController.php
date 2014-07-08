@@ -141,6 +141,25 @@ class UserController extends BackEndController
 	                $userModel->save();
 	            }
 
+	            Yii::app()->user->setFlash('success', "User record saved.");
+
+	            // /////////////////////////////////////////////////////////////
+	            // Save the user profile record.
+	            // /////////////////////////////////////////////////////////////
+	            $userprofileModel                                = new UserProfile;
+	            $userprofileModel->user_id                       = $userModel->user_id;
+	            $userprofileModel->alert_business_review         = $_POST['User']['alert_business_review'];
+	            $userprofileModel->alert_review_comment          = $_POST['User']['alert_review_comment'];
+	            $userprofileModel->alert_like_complaint_response = $_POST['User']['alert_like_complaint_response'];
+	            $userprofileModel->alert_forum_response          = $_POST['User']['alert_forum_response'];
+	            $userprofileModel->alert_answer_voted            = $_POST['User']['alert_answer_voted'];
+	            $userprofileModel->alert_trip_question_response  = $_POST['User']['alert_trip_question_response'];
+
+	            if($userprofileModel->save() === false)
+	            {
+	                Yii::app()->user->setFlash('warning', "User record saved, but profile settings were not saved.");
+	            }
+
 	            $this->redirect(array('index'));
 
 	        }
@@ -237,6 +256,31 @@ class UserController extends BackEndController
 			        $uploadedFile->saveAs($imagePath);
 
 			        $this->createThumbnail($imageFileName);
+			    }
+
+			    Yii::app()->user->setFlash('success', "User record saved.");
+
+			    // /////////////////////////////////////////////////////////////
+			    // Save the user profile record.
+			    // /////////////////////////////////////////////////////////////
+		        $userprofileModel = UserProfile::model()->findByAttributes(array('user_id'=> $userModel->user_id));
+
+                if ($userprofileModel === null)
+                {
+                    $userprofileModel                                = new UserProfile;
+                    $userprofileModel->user_id                       = $userModel->user_id;
+                }
+
+			    $userprofileModel->alert_business_review         = $_POST['User']['alert_business_review'];
+			    $userprofileModel->alert_review_comment          = $_POST['User']['alert_review_comment'];
+			    $userprofileModel->alert_like_complaint_response = $_POST['User']['alert_like_complaint_response'];
+			    $userprofileModel->alert_forum_response          = $_POST['User']['alert_forum_response'];
+			    $userprofileModel->alert_answer_voted            = $_POST['User']['alert_answer_voted'];
+			    $userprofileModel->alert_trip_question_response  = $_POST['User']['alert_trip_question_response'];
+
+			    if($userprofileModel->save() === false)
+			    {
+			        Yii::app()->user->setFlash('warning', "User record saved, but profile settings were not saved.'");
 			    }
 
 			    $this->redirect(array('index'));

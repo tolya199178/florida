@@ -40,6 +40,7 @@ function changeUserType(userType)
                       <li><a href="#contact" data-toggle="tab" class="btn btn-primary">Contact</a></li>
                       <li><a href="#settings" data-toggle="tab" class="btn btn-primary">Settings</a></li>
                       <li><a href="#profile" data-toggle="tab" class="btn btn-primary">Profile</a></li>
+                      <li><a href="#notification" data-toggle="tab" class="btn btn-primary">Notification Settings</a></li>
                     </ul>
                 </div>
             </div>
@@ -172,7 +173,7 @@ function changeUserType(userType)
         <div class="form-group">
             <?php echo $form->labelEx($model,'created_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::textField('UserReadOnly[createdBy]', CHtml::encode($model->createdBy->user_name), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[createdBy]', ((!empty($model->createdBy->user_name))?CHtml::encode($model->createdBy->user_name):''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>
 	</div>
@@ -190,7 +191,7 @@ function changeUserType(userType)
         <div class="form-group">
             <?php echo $form->labelEx($model,'modified_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', CHtml::encode($model->modifiedBy->user_name), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', ((!empty($model->modifiedBy->user_name))?CHtml::encode($model->modifiedBy->user_name):''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>
 	</div>
@@ -494,6 +495,68 @@ function changeUserType(userType)
 
   </div>
   <!--  End User Profile Tab -->
+
+
+  <!--  User Contact Details Tab -->
+  <div class="tab-pane" id="notification">
+
+        <div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'alert_business_review',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'alert_business_review', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Select Option', 'class'=>"form-control"));?>
+                    <?php echo $form->error($model,'alert_business_review'); ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'alert_review_comment',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'alert_review_comment', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Select Option', 'class'=>"form-control"));?>
+                    <?php echo $form->error($model,'alert_review_comment'); ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'alert_like_complaint_response',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'alert_like_complaint_response', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Select Option', 'class'=>"form-control"));?>
+                    <?php echo $form->error($model,'alert_like_complaint_response'); ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'alert_forum_response',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'alert_forum_response', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Select Option', 'class'=>"form-control"));?>
+                    <?php echo $form->error($model,'alert_forum_response'); ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'alert_answer_voted',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'alert_answer_voted', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Select Option', 'class'=>"form-control"));?>
+                    <?php echo $form->error($model,'alert_answer_voted'); ?>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'alert_trip_question_response',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-4">
+                    <?php echo $form->dropDownList($model, 'alert_trip_question_response', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Select Option', 'class'=>"form-control"));?>
+                    <?php echo $form->error($model,'alert_trip_question_response'); ?>
+                </div>
+            </div>
+        </div>
+  </div>
+  <!--  End User Account Tab -->
+
 
 </div>
 
