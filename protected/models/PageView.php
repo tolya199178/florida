@@ -167,7 +167,7 @@ class PageView extends CActiveRecord
 	public function beforeSave()
 	{
 
-	    $this->review_date = new CDbExpression('NOW()');
+	    $this->visit_time = new CDbExpression('NOW()');
 
 	    return parent::beforeSave();
 	}
