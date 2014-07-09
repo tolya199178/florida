@@ -1491,7 +1491,7 @@ ADD CONSTRAINT tbl_trip_leg_city
 -- ---------------------------------------------------------------------
 -- User profile settings
 -- ---------------------------------------------------------------------
-  DROP TABLE IF EXISTS `tbl_user_notification_settings`;
+  DROP TABLE IF EXISTS `tbl_user_profile`;
 
   CREATE TABLE `tbl_user_profile` (
   `user_profile_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1511,8 +1511,22 @@ ADD CONSTRAINT tbl_user_profile_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
 
+
+-- ---------------------------------------------------------------------
+-- Paypal raw trx log
+-- ---------------------------------------------------------------------
+  CREATE TABLE IF NOT EXISTS `tbl_paypallog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action` varchar(255) NOT NULL,
+  `raw` text NOT NULL,
+  `result` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
+
