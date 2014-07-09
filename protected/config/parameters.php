@@ -81,8 +81,10 @@ return array(
     //Paypal
     'PAYPALURL' => 'https://www.sandbox.paypal.com/cgi-bin/webscr',
     //'PAYPALURL' => 'https://www.paypal.com/cgi-bin/webscr',
-    'PAYPALBUSINESSEMAIL' => 'jkp.ph_1359131919_biz@gmail.com',
+    'PAYPALACCOUNT' => 'eago99-facilitator@gmail.com',
+    'PAYPALBUSINESSEMAIL' => 'eago99-facilitator@gmail.com',
     'PAYPALCURRENCYCODE' => 'USD',
+    'PAYPALSANDBOX' => true,
     // TODO: Account settings ? Merchant account
 
 

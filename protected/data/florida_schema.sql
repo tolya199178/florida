@@ -711,6 +711,11 @@ ALTER TABLE `tbl_restaurant_certificate`
   ADD CONSTRAINT `fk_restaurant_certificate_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`);
 
      
+ALTER TABLE tbl_restaurant_certificate ADD COLUMN `issue_date` DATE DEFAULT NULL;
+ALTER TABLE tbl_restaurant_certificate ADD COLUMN `redeem_code` varchar(255) DEFAULT NULL;
+ALTER TABLE tbl_restaurant_certificate DROP COLUMN `redeemer_email`;
+
+
    
 -- ---------------------------------------------------------------------
 -- email template
@@ -1491,7 +1496,7 @@ ADD CONSTRAINT tbl_trip_leg_city
 -- ---------------------------------------------------------------------
 -- User profile settings
 -- ---------------------------------------------------------------------
-  DROP TABLE IF EXISTS `tbl_user_notification_settings`;
+  DROP TABLE IF EXISTS `tbl_user_profile`;
 
   CREATE TABLE `tbl_user_profile` (
   `user_profile_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1511,8 +1516,22 @@ ADD CONSTRAINT tbl_user_profile_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
 
+
+-- ---------------------------------------------------------------------
+-- Paypal raw trx log
+-- ---------------------------------------------------------------------
+  CREATE TABLE IF NOT EXISTS `tbl_paypallog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action` varchar(255) NOT NULL,
+  `raw` text NOT NULL,
+  `result` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
+
