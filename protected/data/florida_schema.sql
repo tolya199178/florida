@@ -1510,6 +1510,22 @@ ALTER TABLE tbl_user_profile
 ADD CONSTRAINT tbl_user_profile_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
+     
+     
+-- ---------------------------------------------------------------------
+-- Page views
+-- ---------------------------------------------------------------------
+  DROP TABLE IF EXISTS `tbl_page_view`;
+
+  CREATE TABLE `tbl_page_view` (
+  `tbl_page_view_id` int(11) NOT NULL AUTO_INCREMENT,
+  `entity_id` int(11) NOT NULL,
+  `entity_type` VARCHAR(255) DEFAULT NULL,
+  `ip_address` VARCHAR(255) DEFAULT NULL,
+  `visit_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`tbl_page_view_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
 
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
