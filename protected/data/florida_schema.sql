@@ -711,6 +711,11 @@ ALTER TABLE `tbl_restaurant_certificate`
   ADD CONSTRAINT `fk_restaurant_certificate_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`);
 
      
+ALTER TABLE tbl_restaurant_certificate ADD COLUMN `issue_date` DATE DEFAULT NULL;
+ALTER TABLE tbl_restaurant_certificate ADD COLUMN `redeem_code` varchar(255) DEFAULT NULL;
+ALTER TABLE tbl_restaurant_certificate DROP COLUMN `redeemer_email`;
+
+
    
 -- ---------------------------------------------------------------------
 -- email template

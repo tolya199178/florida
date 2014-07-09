@@ -12,9 +12,10 @@
  * @property integer $business_id
  * @property string $purchased_by_business_date
  * @property string $availability_status
- * @property string $redeemer_email
  * @property integer $redeemer_user_id
  * @property string $redeem_date
+ * @property string $redeem_code
+ * @property string $issue_date
  *
  * The followings are the available model relations:
  * @property Business $business
@@ -70,18 +71,17 @@ class RestaurantCertificate extends CActiveRecord
 		return array(
 			array('business_id, redeemer_user_id',                       'numerical', 'integerOnly'=>true),
 			array('certificate_number, purchase_amount, purchase_date',  'required'),
-			array('certificate_number',                                  'length', 'max'=>255),
+			array('certificate_number, redeem_code',                     'length', 'max'=>255),
 			array('purchase_amount, certificate_value', 'length',        'max'=>13),
 			array('availability_status',                                 'length', 'max'=>9),
-			array('redeemer_email',                                      'length', 'max'=>64),
-			array('redeemer_email',                                      'email'),
-			array('purchase_date, purchased_by_business_date, redeem_date', 'date'),
+		    array('purchase_date',                                       'date', 'format'=>'yyyy-MM-dd', 'allowEmpty'=>false),
+		    array('purchased_by_business_date, redeem_date, issue_date', 'date', 'format'=>'yyyy-MM-dd', 'allowEmpty'=>true),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('certificate_id, certificate_number, purchase_amount, certificate_value,
 			       purchase_date, business_id, purchased_by_business_date, availability_status,
-			       redeemer_email, redeemer_user_id, redeem_date', 'safe', 'on'=>'search'),
+			       redeem_code, redeemer_user_id, redeem_date, issue_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -125,9 +125,10 @@ class RestaurantCertificate extends CActiveRecord
 			'business_id'                => 'Issued to Business',
 			'purchased_by_business_date' => 'Date Issued',
 			'availability_status'        => 'Availability Status',
-			'redeemer_email'             => 'Issued to Email',
 			'redeemer_user_id'           => 'Issued to Client',
 			'redeem_date'                => 'Date Claimed',
+		    'redeem_code'                => 'Redeem Code',
+		    'issue_date'                 => 'Issue Date',
 		);
 	}
 
@@ -160,9 +161,10 @@ class RestaurantCertificate extends CActiveRecord
 		$criteria->compare('business_id',             $this->business_id);
 		$criteria->compare('purchased_by_business_date',$this->purchased_by_business_date);
 		$criteria->compare('availability_status',     $this->availability_status,true);
-		$criteria->compare('redeemer_email',          $this->redeemer_email,true);
 		$criteria->compare('redeemer_user_id',        $this->redeemer_user_id);
 		$criteria->compare('redeem_date',             $this->redeem_date);
+		$criteria->compare('issue_date',              $this->issue_date);
+		$criteria->compare('redeem_code',             $this->redeem_code);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
