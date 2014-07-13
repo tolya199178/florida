@@ -1,3 +1,17 @@
+
+<?php
+
+Yii::app()->clientScript->registerScriptFile("https://maps.googleapis.com/maps/api/js?sensor=false", CClientScript::POS_HEAD);
+
+
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
+
+?>
+
 <?php
 
 // Hack
@@ -84,67 +98,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 	bottom: 3px;
 }
 
-.typeahead,.tt-query,.tt-hint {
-	width: 250px;
-	/*   height: 30px; */
-	padding: 8px 12px;
-	/*   font-size: 24px; */
-	/*   line-height: 30px; */
-	border: 2px solid #ccc;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
-	outline: none;
-}
-
--
-.typeahead {
-	background-color: #fff;
-}
-
-.typeahead:focus {
-	border: 2px solid #0097cf;
-}
-
-.tt-query {
-	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.tt-hint {
-	color: #999
-}
-
-.tt-dropdown-menu {
-	width: 250px;
-	margin-top: 12px;
-	padding: 8px 0;
-	background-color: #fff;
-	border: 1px solid #ccc;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
-	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-	box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-}
-
-.tt-suggestion {
-	padding: 3px 20px;
-	/*   font-size: 18px; */
-	line-height: 24px;
-}
-
-.tt-suggestion.tt-cursor {
-	color: #fff;
-	background-color: #0097cf;
-}
-
-.tt-suggestion p {
-	margin: 0;
-}
 
 .cities {
 	float: right;
@@ -440,21 +393,16 @@ h2 {
 </style>
 
 <style>
-.modal {
-	width: 80%; /* desired relative width */
-	left: 5%; /* (100%-width)/2 */
-	/* place center */
-	margin-left: auto;
-	margin-right: auto;
+
+.modal-dialog {
+  width: 1200px;
 }
 
-@media screen and (min-width: 768px) {
-	.biz-details-modal {
-		width: 70%;
-		/* either % (e.g. 60%) or px (400px) */
-	}
+.modal-content {
+  width: 1200px;
+    margin-left:  0px;
+    margin-top: -60px;
 }
--->
 </style>
 
 <style>
@@ -469,38 +417,17 @@ h2 {
 
 <?php
 
-$local_list = City::model()->getListjson();
-
 $baseUrl = $this->createAbsoluteUrl('/');
+
+$imageBaseUrl = Yii::app()->request->baseUrl;
 
 $showlistingUrl = $baseUrl.'/business/business/showlisting/'.'category/'.$currentCategory;
 
+$friendListUrl = $baseUrl.'/myfriend/myfriend/autocompletelist/';
+
+
+
 $script = <<<EOD
-
-// /////////////////////////////////////////////////////////////////////////////
-// Cities load
-// /////////////////////////////////////////////////////////////////////////////
-// Load the city list for type ahead
-var numbers = new Bloodhound({
-  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.city_name); },
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-   local: {$local_list}
-});
-
-// initialize the bloodhound suggestion engine
-numbers.initialize();
-
-// instantiate the typeahead UI
-$('.cities .typeahead')
-   .typeahead(null, {
-       displayKey: 'city_name',
-       source: numbers.ttAdapter()
-       })
-    .on('typeahead:selected', function(e, datum){
-          loadCityGallery();
-          $('#dowhat').tagsinput('focus');
-     });
-
 
 // /////////////////////////////////////////////////////////////////////////////
 // Business Listing
@@ -510,19 +437,19 @@ $('.cities .typeahead')
     function loadnewdata()
     {
         // do ajax stuff, update data.
-             var url         = '$showlistingUrl'+'/page/'+page;
+         var url         = '$showlistingUrl'+'/page/'+page;
 
-             $.ajax({ url: url,
-                      cache: false,
-                      success: function(data){
+         $.ajax({ url: url,
+                  cache: false,
+                  success: function(data){
      	                var existing_content = $('#business_listing_container').html();
 
-                         $('#business_listing_container').replaceWith('<div id="business_listing_container">'+existing_content+data+'</div>');
+                        $('#business_listing_container').replaceWith('<div id="business_listing_container">'+existing_content+data+'</div>');
 
-	                     page++;
-                      },
-                      dataType: "html"
-                    });
+                        page++;
+                  },
+                  dataType: "html"
+                });
     }
 
     setInterval(
@@ -537,12 +464,206 @@ $('.cities .typeahead')
     // Run the initial listing load.
  	loadnewdata();
 
+    $("#city_list").select2({
+        placeholder: "I am in...",
+        allowClear: true
+    });
+
+
+
+    $(document.body).on("change","#city_list",function(){
+     alert(this.value);
+    });
+
+
+    // Clear the modal each time
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+    });
+
+    function initialize_map()
+    {
+
+        var latitude= $("#map_latitude").val();
+        var longitude= $("#map_longitude").val();
+
+    	var mapCanvas = document.getElementById('map_canvas');
+        var myLatLng = new google.maps.LatLng(latitude,longitude);
+        var mapOptions = {
+            center: myLatLng,
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.LARGE
+            }
+        }
+        try {
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title:"Business Location"
+            });
+        } catch (err) {
+            // Error Handling
+        }
+    }
+
+
+
+
+
+
+    $('#modalBusinessDetails').on('shown.bs.modal', function(e) {
+
+        // Show map
+        initialize_map();
+
+
+        function format(friend) {
+            if (!friend.id) return friend.text; // optgroup
+            return "<img class='friend_icon' src='{$imageBaseUrl}/uploads/images/user/" + friend.image + "' />" + friend.text;
+        }
+        $("#tell_a_friend").select2({
+            formatResult: format,
+            formatSelection: format,
+            escapeMarkup: function(m) { return m; },
+            ajax: {
+                url: "{$friendListUrl}",
+                dataType: 'json',
+                data: function (term) {
+                    return {
+                        query: term, // search term
+                        page_limit: 10
+                    };
+                },
+                results: function (data) {
+                    return {results: data, text:'City'};
+
+                }
+            },
+        })
+
+
+    })
+
+    $(document.body).on("change","#tell_a_friend",function(){
+        var form_values = $(this).serialize();
+        var url = '/myfriend/myfriend/reviewbusiness/';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                   alert(data);
+               }
+        });
+
+    });
+
+
+
+    // Show/hide pop-review-form
+    $('body').on('click', '.pop-review-form', function(event) {
+        event.preventDefault();
+        $("#review-box").toggle();
+        $('#review_rating').rating();
+    });
+
+    /* Review form */
+    $('body').on('submit', '#review_form', function(event) {
+
+        event.preventDefault();
+
+        var form_values = $(this).serialize();
+        var url = '/webuser/profile/reviewbusiness/';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                   alert(data);
+               }
+        });
+
+//         $('[rel="review_popover"]').popover('hide');
+        return false; // avoid to execute the actual submit of the form.
+    });
+
+    // img-responsive - Our makshift image gallery in a modal.
+    /* Review form */
+    $('body').on('click', '.img-responsive', function(event) {
+
+        event.preventDefault();
+
+        var clickedimage = $(this).attr('src');
+        $("#business_main_image_view").attr('src',clickedimage);
+
+    });
+
+
+
+	// pop-report-closed-biz toggle button
+    // Show/hide pop-review-form
+    $('body').on('click', '.pop-report-closed-biz', function(event) {
+        event.preventDefault();
+        $("#report-closed-biz").toggle();
+    });
+
+    /* Report biz closed form */
+    $('body').on('submit', '#report-closed-biz_form', function(event) {
+
+        event.preventDefault();
+
+        var form_values = $(this).serialize();
+        var url = '/business/business/reportclosed/';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                   alert(data);
+               }
+        });
+
+        $('[rel="review_popover"]').popover('hide');
+        return false; // avoid to execute the actual submit of the form.
+    });
+
 
 EOD;
 
 Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::POS_READY);
 
 ?>
+
+
+<div class="modal fade" id="modalBusinessDetails" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
+    <div class="modal-dialog biz-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                 <h4 class="modal-title" id="titleBusinessDetails">Business Details</h4>
+
+            </div>
+            <div class="modal-body"><div class="te"></div></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 
 <!-- Main concierge page .container -->
 <div class="row  fill">
@@ -595,11 +716,15 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div class="cities">
-                            <input class="typeahead form-control" name="city"
-                                id="city" type="text" autocomplete="off"
-                                value="<?php echo $data['city']; ?>"
-                                placeholder="I am in...">
+
+                            <select id="city_list" style="width:300px;" class="populate placeholder">
+                            <?php foreach ($listCities as $itemCity) { ?>
+                                <option value="<?php echo $itemCity->city_id; ?>"><?php echo Chtml::encode($itemCity->city_name); ?></option>
+                            <?php } ?>
+                            </select>
+
                         </div>
+
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-">
                         <label for="city" class="heading">I AM LOOKING FOR
