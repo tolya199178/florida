@@ -1,7 +1,7 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
-<?php if ( (!empty($event->event_latitude)) && (!empty($event->event_latitude)) ) { ?>
+<?php if ( (!empty($event->event_latitude)) && (!empty($event->event_longitude)) ) { ?>
 <script>
 
 function initialize() {
