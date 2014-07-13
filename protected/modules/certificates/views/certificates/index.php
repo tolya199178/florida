@@ -88,6 +88,7 @@ $certListTableUrl       = $this->createUrl('/certificates/certificates/certifica
 $allocateUrl            = $this->createUrl('/certificates/certificates/allocate');
 $userAutoCompleteURL    = Yii::app()->createUrl('/user/autocompletelist');
 $cartConfirmUrl         = Yii::app()->createUrl('/certificates/certificates/cartconfirm');
+$saveOrderUrl = Yii::app()->createUrl('/certificates/certificates/saveorder');
 
 $script = <<<EOD
 
@@ -192,6 +193,25 @@ $script = <<<EOD
                     $('#cart-confirm-container').html('');
                     return false;
                 });
+                $('#paypal-form-submit').click(function(e) {
+
+                    $('#paypal-form-buttons').hide();
+                    $.post('$saveOrderUrl', $('#paypal-form').serialize(), function(e) {
+
+                        var res = JSON.parse(e);
+
+                        if(res.success == 1) {
+                            $('#paypal-custom-field').val(res.purchaseId);
+                            $('#paypal-form').submit();
+                        }
+
+                    });
+
+                    return false;
+
+                });
+
+
             }
         });
         return false;
