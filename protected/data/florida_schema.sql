@@ -410,6 +410,17 @@ ADD CONSTRAINT fk_business_city
 
 ALTER TABLE tbl_business ADD COLUMN `latitude`  DECIMAL (10,8)  DEFAULT NULL;
 ALTER TABLE tbl_business ADD COLUMN `longitude` DECIMAL (10,8)  DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `report_closed_reference` TEXT  DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `report_closed_by`    int(11)       DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `report_closed_date` DATE DEFAULT NULL;
+ALTER TABLE tbl_business CHANGE COLUMN `is_closed` `is_closed`  enum('Y','N','Pending')  DEFAULT 'N';
+
+
+ALTER TABLE tbl_business
+ADD CONSTRAINT fk_business_report_closed_by
+     FOREIGN KEY (report_closed_by) 
+     REFERENCES tbl_user(user_id);
+
 
 
 -- --------
