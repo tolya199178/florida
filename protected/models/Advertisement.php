@@ -22,13 +22,15 @@
  * @property double $ads_views
  * @property double $ads_clicks
  * @property string $custom_code
- * @property string $business_id
+ * @property integer $business_id
+ * @property string $url
  *
  *
  * The followings are the available model relations:
  * @property User $user
  * @property User $createdBy
  * @property User $modifiedBy
+ * @property Business $business
  */
 
 /**
@@ -97,9 +99,10 @@ class Advertisement extends CActiveRecord
 			       business_id, ads_clicks',      'numerical'),
 		    array('title, expiry_date',           'length', 'max'=>255),
             array('custom_code' ,                 'length', 'max'=>4096),
+		    array('url' ,                         'length', 'max'=>512),
 
 		    // ranges
-			array('advert_type',                  'in', 'range'=>array('Google','Custom','Any')),
+			array('advert_type',                  'in', 'range'=>array('Google','Custom','Banner','Any')),
 		    array('published',                    'in', 'range'=>array('Y','N'),'allowEmpty'=>false),
 
 		    // Safe - set internally
@@ -116,7 +119,7 @@ class Advertisement extends CActiveRecord
 			       modified_by, published, publish_date,
 			       expiry_date, user_id, maximum_ads_views,
 			       maximum_ads_clicks, ads_views,custom_code,business_id,
-			       ads_clicks',                   'safe', 'on'=>'search'),
+			       ads_clicks, url',              'safe', 'on'=>'search'),
 		);
 	}
 
@@ -168,6 +171,7 @@ class Advertisement extends CActiveRecord
 			'ads_clicks'         => 'Ads Clicks',
             'custom_code'        => 'Custom Code',
             'business_id'        => 'Business',
+		    'url'                => 'Url',
 		);
 	}
 
@@ -210,6 +214,7 @@ class Advertisement extends CActiveRecord
 		$criteria->compare('ads_clicks',          $this->ads_clicks);
         $criteria->compare('custom_code',         $this->custom_code);
         $criteria->compare('business_id',         $this->business_id);
+        $criteria->compare('url',                 $this->url,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -272,6 +277,7 @@ class Advertisement extends CActiveRecord
     {
 
         return array('Google'    => 'Google',
+                     'Banner'    => 'Banner',
                      'Custom'    => 'Custom',
                      'Any'       => 'Any');
     }

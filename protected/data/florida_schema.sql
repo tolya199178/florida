@@ -776,8 +776,7 @@ CREATE TABLE `tbl_advertisement` (
   
   `title`               varchar(255) DEFAULT NULL,
   `content`             TEXT NOT NULL,
-  -- `google_code`         text,
-  `image`               text,
+  `image`               TEXT DEFAULT NULL,
   
   `created_time`        TIMESTAMP NOT NULL DEFAULT 0,
   `modified_time`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -787,12 +786,10 @@ CREATE TABLE `tbl_advertisement` (
   
   `published`           enum('Y', 'N') DEFAULT 'N',
   
-  `publish_date`        DATE,
-  `expiry_date`         DATE,
-  
+  `publish_date`        DATE DEFAULT NULL,
+  `expiry_date`         DATE DEFAULT NULL,
 
   `user_id`             int(11) DEFAULT NULL,
-  
   
   `maximum_ads_views`           double DEFAULT NULL,
   `maximum_ads_clicks`          double DEFAULT NULL,
@@ -826,6 +823,15 @@ ADD CONSTRAINT fk_advertisement_user
 -- Added new fields for tbl_advertisement
 ALTER TABLE `tbl_advertisement` ADD COLUMN `custom_code` TEXT NULL DEFAULT NULL  ;
 ALTER TABLE `tbl_advertisement` ADD COLUMN `business_id` int(11) NULL DEFAULT NULL  ;
+
+ALTER TABLE `tbl_advertisement` ADD COLUMN `url` varchar(512) DEFAULT NULL;
+ALTER TABLE `tbl_advertisement` CHANGE COLUMN `advert_type` `advert_type` enum('Google', 'Custom', 'Any', 'Banner') DEFAULT 'Any';
+ALTER TABLE `tbl_advertisement` CHANGE COLUMN `image` `image` varchar(1024) DEFAULT NULL;
+
+
+
+
+
 
 ALTER TABLE tbl_advertisement
 ADD CONSTRAINT tbl_advertisement_business
