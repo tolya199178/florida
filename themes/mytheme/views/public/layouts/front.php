@@ -117,7 +117,11 @@
                     <li><a href="<?php echo Yii::app()->createUrl('business/business/browse/'); ?>">Show Business</a></li>
                     <li class="divider"></li>
                     <li><a href="<?php echo Yii::app()->createUrl('business/business/add/'); ?>">Add a business</a></li>
-                    <li><a href="<?php echo Yii::app()->createUrl('business/business/claim/'); ?>">Claim your business</a></li>
+<?php               if(!Yii::app()->user->isGuest) { ?>
+                    <li class="divider"></li>
+                    <li><a href="<?php echo Yii::app()->createUrl('business/business/dashboard/'); ?>">My Businesses</a></li>
+<?php               } ?>
+
 
                 </ul>
             </li>
