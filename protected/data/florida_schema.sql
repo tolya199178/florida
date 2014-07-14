@@ -1589,8 +1589,54 @@ ALTER TABLE `tbl_restaurant_certificate_purchases`
   ADD CONSTRAINT `tbl_restaurant_certificate_purchases_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`),
   ADD CONSTRAINT `tbl_restaurant_certificate_purchases_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`);
 
+  
+-- ---------------------------------------------------------------------
+-- questionnaire
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_questionnaire`;
+
+  CREATE TABLE `tbl_questionnaire` (
+  `questionnaire_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) DEFAULT NULL,
+  `question` VARCHAR(1024) NOT NULL DEFAULT '',
+  `question_type` enum('Subjective','Objective') NOT NULL DEFAULT 'Objective',
+  `deliveredcount` int(11) NOT NULL DEFAULT '0',
+  `answer` TEXT DEFAULT NULL,
+
+  `created_time`        TIMESTAMP NOT NULL DEFAULT 0,
+  `modified_time`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  `created_by`          int(11) NOT NULL COMMENT 'FK with user',
+  `modified_by`         int(11) NOT NULL COMMENT 'FK with user',
+  
+  `business_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+
+  PRIMARY KEY (`questionnaire_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 
+ALTER TABLE tbl_questionnaire
+ADD CONSTRAINT fk_questionnaire_created_by
+     FOREIGN KEY (created_by) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_questionnaire
+ADD CONSTRAINT fk_questionnaire_modified_by
+     FOREIGN KEY (modified_by) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_questionnaire
+ADD CONSTRAINT fk_questionnaire_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_questionnaire
+ADD CONSTRAINT fk_questionnaire_business
+     FOREIGN KEY (business_id) 
+     REFERENCES tbl_business(business_id);
+  
+  
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END

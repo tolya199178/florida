@@ -430,6 +430,14 @@ class AdvertisementController extends BackEndController
                 $businessName = $itemAdvertisment->business->business_name;
             }
 
+            /* check if business_id is empty */
+            $businessName ='';
+            if(!empty($itemAdvertisment->attributes['business_id']))
+            {
+                $businessName = $itemAdvertisment->business->business_name;
+            }
+
+
             $rowResult = array(
                 $itemAdvertisment->attributes['advertisement_id'],
                 $itemAdvertisment->attributes['title'],

@@ -167,7 +167,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_name',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_name',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_name',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business name", "data-original-title"=>"Enter business name.")); ?>
                         <?php echo $form->error($model,'business_name'); ?>
                     </div>
                 </div>
@@ -195,7 +196,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'activation_code',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'activation_code',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'activation_code',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter activation code", "data-original-title"=>"Enter activation code.")); ?>
                         <?php echo $form->error($model,'activation_code'); ?>
                     </div>
                 </div>
@@ -205,7 +207,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'fldUploadImage',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo CHtml::activeFileField($model,'fldUploadImage',array('class'=>"form-control")); ?>
+                        <?php echo CHtml::activeFileField($model,'fldUploadImage',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Uplaod image", "data-original-title"=>"Upload image.")); ?>
                         <?php echo $form->error($model,'fldUploadImage'); ?>
                     </div>
                 </div>
@@ -238,7 +241,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_email',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_email',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_email',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter email", "data-original-title"=>"Enter email.")); ?>
                         <?php echo $form->error($model,'business_email'); ?>
                     </div>
                 </div>
@@ -248,7 +252,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_website',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_website',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_website',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business website", "data-original-title"=>"Enter business website.")); ?>
                         <?php echo $form->error($model,'business_website'); ?>
                     </div>
                 </div>
@@ -258,7 +263,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_phone',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_phone',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_phone',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business phone", "data-original-title"=>"Enter business phone.")); ?>
                         <?php echo $form->error($model,'business_phone'); ?>
                     </div>
                 </div>
@@ -268,7 +274,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_phone_ext',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_phone_ext',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_phone_ext',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business phone extension", "data-original-title"=>"Enter business phone extension.")); ?>
                         <?php echo $form->error($model,'business_phone_ext'); ?>
                     </div>
                 </div>
@@ -278,7 +285,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_address1',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textArea($model,'business_address1',array('class'=>"form-control", 'rows' => 4, 'cols' => 300)); ?>
+                        <?php echo $form->textArea($model,'business_address1',array('class'=>"form-control", 'rows' => 4, 'cols' => 300,
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business address ", "data-original-title"=>"Enter address.")); ?>
                         <?php echo $form->error($model,'business_address1'); ?>
                     </div>
                 </div>
@@ -288,7 +296,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_address2',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textArea($model,'business_address2',array('class'=>"form-control",  'rows' => 4, 'cols' => 300)); ?>
+                        <?php echo $form->textArea($model,'business_address2',array('class'=>"form-control",  'rows' => 4, 'cols' => 300,
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business address", "data-original-title"=>"Enter business address.")); ?>
                         <?php echo $form->error($model,'business_address2'); ?>
                     </div>
                 </div>
@@ -299,7 +308,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_city_id',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->dropDownList($model,'business_city_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name'), array('class'=>"form-control")); ?>
+                        <?php echo $form->dropDownList($model,'business_city_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name'), array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select City", "data-original-title"=>"Select city.")); ?>
                         <?php echo $form->error($model,'business_city_id'); ?>
                         <!--  todo: styling for dropdown -->
                     </div>
@@ -310,7 +320,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_zipcode',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_zipcode',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'business_zipcode',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business zipcode", "data-original-title"=>"Enter business zipcode.")); ?>
                         <?php echo $form->error($model,'business_zipcode'); ?>
                     </div>
                 </div>
@@ -346,7 +357,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_keywords',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_keywords',array('class'=>"form-control", 'data-role' => "tagsinput")); ?>
+                        <?php echo $form->textField($model,'business_keywords',array('class'=>"form-control", 'data-role' => "tagsinput",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business keywords", "data-original-title"=>"Enter business keywords.")); ?>
                         <?php echo $form->error($model,'business_keywords'); ?>
                     </div>
                 </div>
@@ -356,7 +368,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_activities',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_activities',array('class'=>"form-control", 'data-role' => "tagsinput")); ?>
+                        <?php echo $form->textField($model,'business_activities',array('class'=>"form-control", 'data-role' => "tagsinput",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business activities", "data-original-title"=>"Enter business activities.")); ?>
                         <?php echo $form->error($model,'business_activities'); ?>
                     </div>
                 </div>
@@ -373,7 +386,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'add_request_processed_by',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'add_request_processed_by',array('class'=>"form-control",'readonly' => 'readonly')); ?>
+                        <?php echo $form->textField($model,'add_request_processed_by',array('class'=>"form-control",'readonly' => 'readonly',
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Request processed by", "data-original-title"=>"Request processed by.")); ?>
                         <?php echo $form->error($model,'add_request_processed_by'); ?>
                     </div>
                 </div>
@@ -383,7 +397,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'add_request_rejection_reason',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'add_request_rejection_reason',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'add_request_rejection_reason',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Add request rejection reason", "data-original-title"=>"Add request rejection reason.")); ?>
                         <?php echo $form->error($model,'add_request_rejection_reason'); ?>
                     </div>
                 </div>
@@ -393,7 +408,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'claimed_by',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'claimed_by',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                        <?php echo $form->textField($model,'claimed_by',array('class'=>"form-control", 'readonly' => 'readonly',
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Claimed by", "data-original-title"=>"Claimed by.")); ?>
                         <?php echo $form->error($model,'claimed_by'); ?>
                     </div>
                 </div>
@@ -403,7 +419,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'claim_rejection_reason',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'claim_rejection_reason',array('class'=>"form-control")); ?>
+                        <?php echo $form->textField($model,'claim_rejection_reason',array('class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter claim rejection reason", "data-original-title"=>"Enter claim rejection reason.")); ?>
                         <?php echo $form->error($model,'claim_rejection_reason'); ?>
                     </div>
                 </div>
@@ -413,7 +430,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_allow_review',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->checkBox($model,'business_allow_review', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+                        <?php echo $form->checkBox($model,'business_allow_review', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Check business allow review", "data-original-title"=>"Check business allow review.")); ?>
                         <?php echo $form->error($model,'business_allow_review'); ?>
                     </div>
                 </div>
@@ -433,7 +451,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_allow_rating',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->checkBox($model,'business_allow_rating', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+                        <?php echo $form->checkBox($model,'business_allow_rating', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Check business allow rating", "data-original-title"=>"Enter business allow rating.")); ?>
                         <?php echo $form->error($model,'business_allow_rating'); ?>
                     </div>
                 </div>
@@ -446,7 +465,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         <?php echo $form->dropDownList($model,
                                                        'claim_status',
                                                        $model->listClaimStatus(),
-                                                       array('prompt'=>'Select Status', 'class'=>"form-control")
+                                                       array('prompt'=>'Select Status', 'class'=>"form-control",
+                                                           'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select claim status", "data-original-title"=>"Select claim status.")
                         );?>
                         <?php echo $form->error($model,'claim_status'); ?>
                     </div>
@@ -462,7 +482,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         <?php echo $form->dropDownList($model,
                                                        'add_request_processing_status',
                                                        $model->listAddRequestProcessingStatus(),
-                                                       array('prompt'=>'Select Status', 'class'=>"form-control")
+                                                       array('prompt'=>'Select Status', 'class'=>"form-control",
+                                                           'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select request processing status", "data-original-title"=>"Select request processing status.")
                         );?>
                         <?php echo $form->error($model,'add_request_processing_status'); ?>
                     </div>
@@ -473,7 +494,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'is_active',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->checkBox($model,'is_active', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+                        <?php echo $form->checkBox($model,'is_active', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Check is active", "data-original-title"=>"Check is active.")); ?>
                         <?php echo $form->error($model,'is_active'); ?>
                     </div>
                 </div>
@@ -483,7 +505,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'is_featured',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+                        <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Check is featured", "data-original-title"=>"Check is featured.")); ?>
                         <?php echo $form->error($model,'is_featured'); ?>
                     </div>
                 </div>
@@ -493,7 +516,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'is_closed',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+                        <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
+                            'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Check is closed", "data-original-title"=>"Check is closed.")); ?>
                         <?php echo $form->error($model,'is_closed'); ?>
                     </div>
                 </div>
@@ -506,7 +530,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         <?php echo $form->dropDownList($model,
                                                        'activation_status',
                                                        $model->listActivationStatus(),
-                                                       array('prompt'=>'Select Status', 'class'=>"form-control")
+                                                       array('prompt'=>'Select Status', 'class'=>"form-control",
+                                                           'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select activation status", "data-original-title"=>"Select activation status.")
                         );?>
                     <?php echo $form->error($model,'activation_status'); ?>
                     </div>
