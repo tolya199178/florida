@@ -109,7 +109,7 @@ class CertificatesController extends Controller
             }
         }
 
-        $itemsPerPage           = 20;
+        $itemsPerPage           = 10;
 
         $pageCount              = ceil(RestaurantCertificate::model()->count($dbCriteria) / $itemsPerPage);
         $page                   = isset($_GET['page']) ? intval($_GET['page']) : 1;
@@ -350,8 +350,16 @@ class CertificatesController extends Controller
         ));
     }
 
-
-    public function  actionPaypalipn() {
+    /**
+     * Process paypal responses
+     *
+     * @param <none> <none>
+     *
+     * @return none
+     * @access public
+     */
+    public function  actionPaypalipn()
+    {
 		$ppLog = new Paypallog();
 		$ppLog->action = 'certificates';
 		$ppLog->result = '';
@@ -396,12 +404,25 @@ class CertificatesController extends Controller
 		$listener = new IpnVerify();
 
 		try {
-			if($listener->validateIpn($_POST, Yii::app()->params['paypal']['sandbox'])) {
+
+			if($listener->validateIpn($_POST, Yii::app()->params['paypal']['sandbox']))
+			{
+
 				if(!isset($_POST['custom'])) {
 					$ppLog->result = 'missing custom data user id';
 					$ppLog->save();
 					return;
 				}
+
+				$purchaseId = intval($_POST['custom']);
+				$purchase = RestaurantCertificatePurchase::model()->findByPk($purchaseId);
+
+				if(!$purchase) {
+				    $ppLog->result = 'wrong purchase id';
+				    $ppLog->save();
+				    return;
+				}
+
 				$businessId = intval($_POST['custom']);
 				if($businessId < 1) {
 					$ppLog->result = 'wrong user id';
@@ -414,20 +435,31 @@ class CertificatesController extends Controller
 					$ppLog->save();
 					return;
 				}
-                $quantity = intval($_POST['quantity1']);
+                $quantity = intval($_POST['count']);
                 if($quantity < 1) {
                     $ppLog->result = 'invalid quantity';
 					$ppLog->save();
 					return;
                 }
 
-                $certs = RestaurantCertificate::model(new CDbCriteria(array('condition' => 'business_id IS NULL', 'limit' => $quantity)));
+                $certs = RestaurantCertificate::model()->findAll(new CDbCriteria(array('condition' => 'business_id IS NULL', 'limit' => $quantity)));
+
+                $date = date('Y-m-d H:i:s');
+
+                $delivered = 0;
 
                 foreach($certs as $cert) {
                     $cert['business_id'] = $business['business_id'];
                     $cert['purchased_by_business_date'] = date('Y-m-d H:i:s');
                     $cert->save();
+                    $delivered++;
                 }
+
+                $purchase['status'] = 'verified';
+                $purchase['approved_time'] = $date;
+                $purchase['deliveredcount'] = $delivered;
+                $purchase->save();
+
 
 				$ppLog->result = 'success';
 				$ppLog->save();
@@ -442,5 +474,48 @@ class CertificatesController extends Controller
 			$ppLog->save();
 		}
     }
+
+    /**
+     * Logs the order placed by the client
+     *
+     * @param <none> <none>
+     *
+     * @return none.
+     * @access public
+     */
+    public function actionSaveorder()
+    {
+
+        $orderResult                        = array('success' => 0);
+
+        $purchaseDetails                    = new RestaurantCertificatePurchase();
+
+        $purchaseDetails['user_id']         = Yii::app()->user->id;
+        $purchaseDetails['business_id']     = $_POST['custom'];
+        $purchaseDetails['count']           = $_POST['quantity_1'];
+        $purchaseDetails['totalcost']       = $_POST['quantity_1'] * $_POST['amount_1'];
+        $purchaseDetails['created_time']    = date('Y-m-d H:i:s');
+
+        if($purchase->validate())
+        {
+
+            $purchaseDetails->save();
+
+            $orderResult['success']          = 1;
+
+            $orderResult['purchaseId']       = $purchaseDetails->purchase_id;
+
+        }
+        else
+        {
+
+            $orderResult['error']            = $purchaseDetails->errors;
+
+        }
+
+        echo CJSON::encode($orderResult);
+
+    }
+
 
 }

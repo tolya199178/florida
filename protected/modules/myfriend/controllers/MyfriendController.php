@@ -628,4 +628,40 @@ class MyfriendController extends Controller
 
 	}
 
+	/**
+	 * Renders JSON results of friend search in {id,text,image} format.
+	 * Used for dropdowns
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionAutocompletelist()
+	{
+
+	    $strSearchFilter = $_GET['query'];
+
+	    // Don't process short request to prevent load on the system.
+	    if (strlen($strSearchFilter) < 2)
+	    {
+	        header('Content-type: application/json');
+	        return "";
+	        Yii::app()->end();
+
+	    }
+
+	    $lstFriend = Yii::app()->db
+	    ->createCommand()
+	    ->select('tbl_my_friend.my_friend_id as id, CONCAT(user.first_name," ",user.last_name) as text, user.image as image')
+	    ->from('tbl_my_friend')
+        ->join('tbl_user user', 'user.user_id=tbl_my_friend.friend_id')
+	    ->where('tbl_my_friend.user_id = :user_id', array(':user_id'=>Yii::app()->user->id))
+	    ->queryAll();
+
+	    header('Content-type: application/json');
+	    echo CJSON::encode($lstFriend);
+
+	}
+
 }

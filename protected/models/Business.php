@@ -48,6 +48,9 @@
  * @property string $import_reference
  * @property string $import_source
  * @property string $is_for_review
+ * @property string $report_closed_reference
+ * @property integer $report_closed_by
+ * @property string $report_closed_date
  *
  *
  * The followings are the available model relations:
@@ -156,7 +159,7 @@ class Business extends CActiveRecord
 		    array('business_name, business_email, business_website, add_request_rejection_reason, claim_rejection_reason, activation_code', 'length', 'max'=>255),
 			array('business_zipcode, business_phone, business_phone_ext',        'length', 'max'=>16),
 		    array('business_address1, business_address2, business_description,
-		           business_keywords',  'length', 'max'=>4096),
+		           business_keywords, report_closed_reference',                  'length', 'max'=>4096),
 		    array('add_request_rejection_reason, claim_rejection_reason',        'length', 'max'=>255),
 
 		    array('business_activities',                                         'length', 'max'=>255),
@@ -173,7 +176,9 @@ class Business extends CActiveRecord
 		    // ranges
 			array('business_allow_review,
 			       business_allow_rating, is_active,
-			       is_featured, is_closed, is_for_review','in','range'=>array('Y','N'),'allowEmpty'=>false),
+			       is_featured, is_for_review',           'in','range'=>array('Y','N'),'allowEmpty'=>false),
+		    array('is_closed',                            'in','range'=>array('Y','N','Pending'),'allowEmpty'=>false),
+
 		    array('claim_status',                         'in','range'=>array('Claimed', 'Unclaimed'),'allowEmpty'=>false),
 		    array('activation_status',                    'in','range'=>array('activated', 'not_activated'),'allowEmpty'=>false),
 		    array('add_request_processing_status',        'in','range'=>array('Accepted', 'Rejected'),'allowEmpty'=>false),
@@ -219,6 +224,7 @@ class Business extends CActiveRecord
 			'restaurantCertificates' => array(self::HAS_MANY,   'RestaurantCertificate', 'business_id'),
 		    'subscribedBusinesses'   => array(self::HAS_MANY,   'SubscribedBusiness', 'business_id'),
 		    'businessReviews'        => array(self::HAS_MANY,   'BusinessReview', 'business_id'),
+		    'reportClosedBy'         => array(self::BELONGS_TO, 'User', 'report_closed_by'),
 		);
 	}
 
@@ -272,6 +278,9 @@ class Business extends CActiveRecord
 		    'import_reference'                   => 'Import Reference',
 		    'import_source'                      => 'Import Source',
 		    'is_for_review'                      => 'For Review',
+		    'report_closed_reference'            => 'Report Closed Reference',
+		    'report_closed_by'                   => 'Report Closed By',
+		    'report_closed_date'                 => 'Report Closed Date',
 		);
 	}
 
@@ -337,6 +346,9 @@ class Business extends CActiveRecord
 		$criteria->compare('import_reference',                $this->import_reference);
 		$criteria->compare('import_source',                   $this->import_source);
 		$criteria->compare('is_for_review',                   $this->is_for_review);
+		$criteria->compare('report_closed_reference',         $this->report_closed_reference,true);
+		$criteria->compare('report_closed_by',                $this->report_closed_by);
+		$criteria->compare('report_closed_date',              $this->report_closed_date);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -383,6 +395,12 @@ class Business extends CActiveRecord
         $this->modified_time = new CDbExpression('NOW()');
         $this->modified_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
 
+        if ($this->scenario == 'report_closed')
+        {
+            $this->report_closed_by     = $this->modified_by;
+            $this->report_closed_date   = new CDbExpression('NOW()');
+        }
+
 	    return parent::beforeSave();
 	}
 
@@ -425,7 +443,7 @@ class Business extends CActiveRecord
 	        throw new CHttpException(405,'Something went wrong trying to replace business categories.');
 	    }
 
-	    return parent::beforeSave();
+	    return parent::afterSave();
 	}
 
 	/**
@@ -483,9 +501,17 @@ class Business extends CActiveRecord
 	public function getThumbnailUrl()
 	{
 
-	    $thumbnailsDirUrl     = Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails';
-	    $thumbnailUrl         = $thumbnailsDirUrl.DIRECTORY_SEPARATOR.$this->image;
+	    if(filter_var($this->image, FILTER_VALIDATE_URL))
+	    {
+	        $thumbnailUrl = $this->image;
+	    }
+	    else
+	    {
+	        $thumbnailsDirUrl     = Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails';
+	        $thumbnailUrl         = $thumbnailsDirUrl.DIRECTORY_SEPARATOR.$this->image;
+	    }
 
+        // Set the attribute
 	    $this->thumbnailUrl = $thumbnailUrl;
 
 	    return $thumbnailUrl;
@@ -503,9 +529,17 @@ class Business extends CActiveRecord
 	public function getImgUrl()
 	{
 
-	    $imagesDirUrl         = Yii::app()->request->baseUrl.'/uploads/images/business';
-	    $imageUrl             = $imagesDirUrl.DIRECTORY_SEPARATOR.$this->image;
+	    if(filter_var($this->image, FILTER_VALIDATE_URL))
+	    {
+	        $imageUrl = $this->image;
+	    }
+	    else
+	    {
+    	    $imagesDirUrl         = Yii::app()->request->baseUrl.'/uploads/images/business';
+    	    $imageUrl             = $imagesDirUrl.DIRECTORY_SEPARATOR.$this->image;
+	    }
 
+	    // Set the attribute
 	    $this->imgUrl = $imageUrl;
 
 	    return $imageUrl;

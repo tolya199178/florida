@@ -146,9 +146,12 @@ class BusinessController extends Controller
 
         $listSubcategory = $cmdSubCategoryList->queryAll();
 
+        $listCities  = City::model()->findAll();
+
         $this->render('browse', array('category_path'     => $categoryBreadcrumb,
                                       'listSubcategories' => $listSubcategory,
-                                      'currentCategory'   => $currentCategory
+                                      'currentCategory'   => $currentCategory,
+                                      'listCities'        => $listCities
                               ));
 	}
 
@@ -307,4 +310,105 @@ class BusinessController extends Controller
 	    $this->render('register/business_register',array('model'=>$businessModel));
 
     }
+
+    /**
+     * Displays the profile for the given Business id
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionShow()
+    {
+
+        $argBusinessId = (int) Yii::app()->request->getQuery('id', null);
+
+        if ($argBusinessId)
+        {
+            $modelBusiness = Business::model()->findByPk($argBusinessId);
+
+            if ($modelBusiness === null)
+            {
+                throw new CHttpException(404,'No such user. The requested user page does not exist.');
+            }
+            else
+            {
+                // Get photos
+                // TODO: We should look into implementing this woth relations.
+                $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => $argBusinessId, 'photo_type' => 'business'));
+
+
+                $this->renderPartial('profile/profile_modal', array('model'=>$modelBusiness, 'photos' => $listPhotos));
+            }
+        }
+        else
+        {
+            throw new CHttpException(404,'No user supplied. The requested user page does not exist.');
+        }
+    }
+
+    /**
+     * Processes a request to reporr a business a closed
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionReportClosed()
+    {
+
+        // /////////////////////////////////////////////////////////////////////
+        // This function is only available to users that are logged in. Other
+        // ...users are given a friendly notice and gentle request to log in
+        // ...or join.
+        // /////////////////////////////////////////////////////////////////////
+        $userId = Yii::app()->user->id;
+
+        if ($userId === null)         // User is not known
+        {
+            Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
+            $this->redirect(array('/webuser/account/register'));
+            Yii::app()->end();
+        }
+
+
+        $argBusinessId = (int) Yii::app()->request->getQuery('business_id', null);
+
+        if ($argBusinessId)
+        {
+            $modelBusiness = Business::model()->findByPk($argBusinessId);
+
+            if ($modelBusiness === null)
+            {
+                throw new CHttpException(404,'No such business. The requested business page does not exist.');
+            }
+            else
+            {
+                $modelBusiness->report_closed_reference = $_POST['reference'];
+
+                if ($friendModel->save())
+                {
+                    Yii::app()->user->setFlash($flashMessageType, $flashMessage);
+                    $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+                    Yii::app()->end();
+
+                }
+                else
+                {
+                    Yii::app()->user->setFlash('warning','Your request could not be handled at this time. Try again later.
+	                                           Contact the administrator if the problem persists.');
+                    $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+                    Yii::app()->end();
+                }
+
+            }
+        }
+        else
+        {
+            throw new CHttpException(404,'No business supplied. The requested business page does not exist.');
+        }
+    }
+
 }

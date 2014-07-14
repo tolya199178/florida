@@ -410,6 +410,17 @@ ADD CONSTRAINT fk_business_city
 
 ALTER TABLE tbl_business ADD COLUMN `latitude`  DECIMAL (10,8)  DEFAULT NULL;
 ALTER TABLE tbl_business ADD COLUMN `longitude` DECIMAL (10,8)  DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `report_closed_reference` TEXT  DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `report_closed_by`    int(11)       DEFAULT NULL;
+ALTER TABLE tbl_business ADD COLUMN `report_closed_date` DATE DEFAULT NULL;
+ALTER TABLE tbl_business CHANGE COLUMN `is_closed` `is_closed`  enum('Y','N','Pending')  DEFAULT 'N';
+
+
+ALTER TABLE tbl_business
+ADD CONSTRAINT fk_business_report_closed_by
+     FOREIGN KEY (report_closed_by) 
+     REFERENCES tbl_user(user_id);
+
 
 
 -- --------
@@ -1543,6 +1554,35 @@ ADD CONSTRAINT tbl_user_profile_user
   `result` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+
+-- tbl_restaurant_certificate_purchases
+
+--
+
+
+CREATE TABLE IF NOT EXISTS `tbl_restaurant_certificate_purchases` (
+  `purchase_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `business_id` int(11) NOT NULL,
+  `count` int(11) NOT NULL,
+  `totalcost` float(13,2) NOT NULL,
+  `status` enum('created','verified') NOT NULL DEFAULT 'created',
+  `deliveredcount` int(11) NOT NULL DEFAULT '0',
+  `created_time` datetime NOT NULL,
+  `approved_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`purchase_id`),
+  KEY `business_id` (`business_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `tbl_restaurant_certificate_purchases`
+  ADD CONSTRAINT `tbl_restaurant_certificate_purchases_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`),
+  ADD CONSTRAINT `tbl_restaurant_certificate_purchases_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`);
+
 
 
 -- ---------------------------------------------------------------------

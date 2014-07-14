@@ -1,4 +1,4 @@
-<form action="<?php echo $paypalUrl?>" method="post">
+<form action="<?php echo $paypalUrl?>" method="post" id="paypal-form">
 
     <input type="hidden" name="cmd" value="_cart">
     <input type="hidden" name="upload" value="1">
@@ -12,7 +12,7 @@
     <input type="hidden" name="tax_1" value="<?php echo CHtml::encode($tax); ?>">
     <input type="hidden" name="notify_url" value="<?php echo CHtml::encode($paypalNotifyUrl); ?>">
     <input type="hidden" name="return" value="<?php echo CHtml::encode($paypalReturnUrl); ?>">
-    <input type="hidden" name="custom" value="<?php echo CHtml::encode($business['business_id']); ?>">
+    <input type="hidden" name="custom" value="<?php echo $business['business_id']?>" id="paypal-custom-field">
     <input type="hidden" name="no_shipping" value="1">
 
     <div class="container">
@@ -29,13 +29,13 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="paypal-form-buttons">
 
             <div class="col-sm-1">
                 <a href="#" class="btn btn-primary btn-xs" id="cancel-cart">cancel</a>
             </div>
             <div class="col-sm-11">
-                <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" alt="Checkout with PayPal">
+                <a href="#" id="paypal-form-submit"><image src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" alt="Checkout with PayPal"></a>
             </div>
         </div>
 

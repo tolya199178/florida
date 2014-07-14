@@ -5,7 +5,7 @@
 
                                     <div class="panel panel-warning">
                                         <div class="panel-heading">
-                                            <?php echo CHtml::link($data->business_name, Yii::app()->createUrl('/business/profile/'), array('title' => $data->business_name)); ?>
+                                            <?php echo CHtml::link($data->business_name, Yii::app()->createUrl('/business/profile/'), array('title' => CHtml::Encode($data->business_name))); ?>
                                         </div>
                                         <div class="panel-body">
                                             <div class="product">
@@ -15,14 +15,14 @@
                                                     <!-- TODO: render Goes wierd if there is a missing image. Check for image first -->
                                                     <a class='product-img-container' href='#'>
                                 <?php
-                                                    if(@GetImageSize('./'.$data->getThumbnailUrl()))
-                                                    {
+//                                                     if(GetImageSize($data->getThumbnailUrl()))
+//                                                     {
                                                         echo CHtml::image($data->getThumbnailUrl(), "Image", array('class'=>"product-img"));
-                                                    }
-                                                    else
-                                                    {
-                                                        echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg', "No image available", array('class'=>"product-img"));
-                                                    }
+//                                                     }
+//                                                     else
+//                                                     {
+//                                                         echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg', "No image available", array('class'=>"product-img"));
+//                                                     }
                                 ?>
                                                     </a>
                                                       <div class="product-actions">
@@ -44,12 +44,12 @@
 
                                                                 <span class="label label-lg label-danger">
                                                                     <a data-toggle="modal"
-                                                                       href="<?php echo Yii::app()->createUrl('businessuser/profile/show/', array('id' => $data->business_id  )); ?>"
+                                                                       href="<?php echo Yii::app()->createUrl('business/business/show/', array('id' => $data->business_id  )); ?>"
                                                                        data-target="#modalBusinessDetails">Details!</a>
                                                                 </span>
 
 
-                                <?php if ((!Yii::app()->user->isGuest) && (!SubscribedBusiness::isSubcribed(Yii::app()->user->id, $data->business_id)))  { ?>
+                                <?php if ((!Yii::app()->user->isGuest) && (!SubscribedBusiness::isSubcribed(Yii::app()->user->id, (int) $data->business_id)))  { ?>
                                                                 <span class="label label-danger"><?php echo CHtml::link('Add to profile', Yii::app()->createUrl('/webuser/profile/addbusiness', array('business_id' => $data->business_id  )), array('class' => 'result_button_link', 'rel' => $data->business_id)); ?></span>
                                 <?php }?>
                                 <?php if (!Yii::app()->user->isGuest) { ?>
@@ -59,9 +59,9 @@
                                                                 <span class="label label-sucess">Featured</span>
                                 <?php }?>
                                 <?php if ((!Yii::app()->user->isGuest) && ($data->business_allow_review == 'Y')) { ?>
-                                <!--             <span><input type="number" name="your_awesome_parameter" id="some_id"  class="rating" rel="<?php echo $data->business_id; ?>" /></span>  -->
+                                <!--             <span><input type="number" name="your_awesome_parameter" id="some_id"  class="rating" rel="<?php echo (int) $data->business_id; ?>" /></span>  -->
 
-                                                <button class="pop-review-form" rel="review_popover" refid="<?php echo $data->business_id; ?>"  >Review</button>
+                                                <button class="pop-review-form" rel="review_popover" refid="<?php echo (int) $data->business_id; ?>"  >Review</button>
 
                                 <?php } ?>
 
