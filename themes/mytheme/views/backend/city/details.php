@@ -49,7 +49,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'city_name',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'city_name',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'city_name',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter name", "data-original-title"=>"Enter name.")); ?>
                 <?php echo $form->error($model,'city_name'); ?>
             </div>
         </div>
@@ -59,7 +60,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'city_alternate_name',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'city_alternate_name',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'city_alternate_name',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter alternate name", "data-original-title"=>"Enter alternate name.")); ?>
                 <?php echo $form->error($model,'city_alternate_name'); ?>
             </div>
         </div>
@@ -70,7 +72,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
             <?php echo $form->labelEx($model,'is_featured',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
                 <?php echo $form->error($model,'is_featured'); ?>
-                <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control")); ?>
+                <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select is featured", "data-original-title"=>"Select is featured.")); ?>
             </div>
         </div>
 	</div>
@@ -79,7 +82,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'city_alternate_name',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'city_alternate_name',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'city_alternate_name',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter alternate name", "data-original-title"=>"Enter alternate name.")); ?>
                 <?php echo $form->error($model,'city_alternate_name'); ?>
             </div>
         </div>
@@ -121,7 +125,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'latitude',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'latitude',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'latitude',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter latitude", "data-original-title"=>"Enter latitude.")); ?>
                 <?php echo $form->error($model,'latitude'); ?>
             </div>
         </div>
@@ -131,7 +136,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'longitude',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'longitude',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'longitude',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter longitude", "data-original-title"=>"Enter longitude.")); ?>
                 <?php echo $form->error($model,'longitude'); ?>
             </div>
         </div>
@@ -141,7 +147,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'image',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::activeFileField($model,'image',array('class'=>"form-control")); ?>
+                <?php echo CHtml::activeFileField($model,'image',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter image", "data-original-title"=>"Enter image.")); ?>
                 <?php echo $form->error($model,'image'); ?>
             </div>
         </div>

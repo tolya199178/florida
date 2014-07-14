@@ -49,7 +49,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'template_name',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'template_name',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'template_name',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter name", "data-original-title"=>"Enter name.")); ?>
                 <?php echo $form->error($model,'template_name'); ?>
             </div>        
         </div>	
@@ -59,7 +60,8 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         <div class="form-group">
             <?php echo $form->labelEx($model,'subject',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'subject',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'subject',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter subject", "data-original-title"=>"Enter subject.")); ?>
                 <?php echo $form->error($model,'subject'); ?>
             </div>        
         </div>	

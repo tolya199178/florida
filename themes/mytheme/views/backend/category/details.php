@@ -39,7 +39,8 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'category_name',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'category_name',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'category_name',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter category", "data-original-title"=>"Enter Category.")); ?>
                 <?php echo $form->error($model,'category_name'); ?>
             </div>
         </div>
@@ -53,7 +54,8 @@
                       $parents = Category::model()->findAll('parent_id is null');
                       $data = $model->makeDropDown($parents);
 
-                      echo $form->dropDownList($model,'parent_id',  $data);
+                      echo $form->dropDownList($model,'parent_id',  $data,array('class'=>"form-control",
+                          'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select parent", "data-original-title"=>"Select parent."));
                 ?>
                 <?php echo $form->error($model,'parent_id'); ?>
             </div>
@@ -64,7 +66,8 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'category_description',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'category_description',array('class'=>"form-control")); ?>
+                <?php echo $form->textField($model,'category_description',array('class'=>"form-control",
+                    'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select description", "data-original-title"=>"Select description.")); ?>
                 <?php echo $form->error($model,'category_description'); ?>
             </div>
         </div>
