@@ -411,4 +411,152 @@ class BusinessController extends Controller
         }
     }
 
+   /**
+     * Calculates the certificate for the logged in user, or for the current business.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     */
+    private function getCertificateSummary($businessId = null)
+    {
+
+        if ($businessId === null)
+        {
+            // lists certificates of all business of the current user
+            $inDdbCriteria              = new CDbCriteria();
+            $inDdbCriteria->with        = array('businessUsers');
+            $inDdbCriteria->condition   = "businessUsers.user_id = :user_id";
+            $inDdbCriteria->params      = array(':user_id' => Yii::app()->user->id);
+
+            $businessList               = Business::model()->findAll($inDdbCriteria);
+            $businessIds                = array();
+
+            foreach ($businessList as $businessItem)
+            {
+                array_push($businessIds, $businessItem['business_id']);
+            }
+        }
+        else
+        {
+
+            $businessIds                = array();
+            array_push($businessIds, $businessId);
+        }
+
+
+
+
+        $dbCriteria                 = new CDbCriteria();
+        $dbCriteria->addInCondition('business_id', $businessIds);
+
+        $lstAllMyCertificates       = RestaurantCertificate::model()->findAll($dbCriteria);
+
+        $summaryResults             = array('countAll'      => 0,
+                                            'countIssued'   => 0,
+                                            'countUnIssued' => 0,
+                                            'countRedeemed' => 0);
+
+        foreach ($lstAllMyCertificates as $itemCertificate)
+        {
+            $summaryResults['countAll']++;
+
+            if (!empty($itemCertificate->redeem_code))
+            {
+                $summaryResults['countIssued']++;
+            }
+            else
+            {
+                $summaryResults['countUnIssued']++;
+            }
+
+            if (!empty($itemCertificate->redeem_date))
+            {
+                $summaryResults['countRedeemed']++;
+            }
+
+        }
+
+        return $summaryResults;
+
+    }
+
+    /**
+     * Displays the user's business dashboard.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionDashboard()
+    {
+
+        // /////////////////////////////////////////////////////////////////////
+        // This function is only available to users that are logged in. Other
+        // ...users are given a friendly notice and gentle request to log in
+        // ...or join.
+        // /////////////////////////////////////////////////////////////////////
+        $userId = Yii::app()->user->id;
+
+        if ($userId === null)         // User is not known
+        {
+            Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
+            $this->redirect(array('/webuser/account/register'));
+            Yii::app()->end();
+        }
+
+        $argCurrentBusiness = Yii::app()->request->getQuery('business', null);
+
+        if ($argCurrentBusiness != null)
+        {
+            $dashboardMainpanel = 'biz_stats';
+        }
+        else
+        {
+            $dashboardMainpanel = 'default';
+        }
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the user's businesses
+        // /////////////////////////////////////////////////////////////////////
+
+        $dbCriteria                         = new CDbCriteria();
+        $dbCriteria->with                   = array('businessUsers');
+        $dbCriteria->condition              = "businessUsers.user_id = :user_id";
+        $dbCriteria->params                 = array(':user_id' => Yii::app()->user->id);
+
+        $listMyBusiness = Business::model()->findAll($dbCriteria);
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the user's certificate summary
+        // /////////////////////////////////////////////////////////////////////
+        $myCertificateSummary                       = $this->getCertificateSummary($argCurrentBusiness);
+
+
+
+        $viewsCount = array('totalPageViews'    => Yii::app()->dashboardstats->totalPageViews($argCurrentBusiness, 'business'),
+                            'totalBannerViews'  => Yii::app()->dashboardstats->totalBannerViewsByBusiness($argCurrentBusiness),
+                            'totalReviews'      => Yii::app()->dashboardstats->totalReviewsByBusiness($argCurrentBusiness)
+                      );
+
+
+        $configDashboard = array('leftPanel'        => 'left_panel',
+                                 'mainPanel'        => $dashboardMainpanel
+                           );
+
+
+
+        $dashboardData = array('listMyBusiness'     => $listMyBusiness,
+                               'viewsCount'         => $viewsCount,
+                               'currentBusiness'    => Business::model()->findByPk((int) $argCurrentBusiness),
+                               'myCertificateSummary' => $myCertificateSummary);
+
+
+        $this->render('dashboard/dashboard_main', array('config'=>$configDashboard, 'data'=>$dashboardData));
+
+    }
+
+
 }
