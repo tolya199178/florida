@@ -71,11 +71,11 @@ class Questionnaire extends CActiveRecord
     {
 
         return array(
-            array('title, question, answer', 'required'),
-            array('business_id, user_id', 'numerical', 'integerOnly'=>true),
-            array('title, question', 'length', 'max'=>100),
-            array('question_type', 'length', 'max'=>10),
-            array('answer', 'length', 'max'=>50),
+            array('title, question, answer',                'required'),
+            array('business_id, user_id',                   'numerical', 'integerOnly'=>true),
+            array('title, question',                        'length', 'max'=>255),
+            array('question_type',                          'in', 'range'=>array('Subjective','Objective')),
+            array('answer',                                 'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
             array('questionnaire_id, title, question, question_type, answer, created_time, modified_time, created_by, modified_by, business_id, user_id', 'safe', 'on'=>'search'),
@@ -94,10 +94,10 @@ class Questionnaire extends CActiveRecord
     {
 
         return array(
-            'business'      => array(self::BELONGS_TO, 'Business', 'business_id'),
-            'createdBy'      => array(self::BELONGS_TO, 'User', 'created_by'),
-            'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
-            'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
+            'business'          => array(self::BELONGS_TO, 'Business', 'business_id'),
+            'createdBy'         => array(self::BELONGS_TO, 'User', 'created_by'),
+            'modifiedBy'        => array(self::BELONGS_TO, 'User', 'modified_by'),
+            'user'              => array(self::BELONGS_TO, 'User', 'user_id'),
         );
     }
 
@@ -115,17 +115,17 @@ class Questionnaire extends CActiveRecord
     public function attributeLabels()
     {
         return array(
-            'questionnaire_id'      => 'Questionnaire',
-            'title'      => 'Title',
-            'question'      => 'Question',
-            'question_type'      => 'Question Type',
-            'answer'      => 'Answer',
-            'created_time'      => 'Created Time',
-            'modified_time'      => 'Modified Time',
-            'created_by'      => 'Created By',
-            'modified_by'      => 'Modified By',
-            'business_id'      => 'Business',
-            'user_id'      => 'User',
+            'questionnaire_id'          => 'Questionnaire',
+            'title'                     => 'Title',
+            'question'                  => 'Question',
+            'question_type'             => 'Question Type',
+            'answer'                    => 'Answer',
+            'created_time'              => 'Created Time',
+            'modified_time'             => 'Modified Time',
+            'created_by'                => 'Created By',
+            'modified_by'               => 'Modified By',
+            'business_id'               => 'Business',
+            'user_id'                   => 'User',
         );
     }
 
@@ -150,17 +150,17 @@ class Questionnaire extends CActiveRecord
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('questionnaire_id',$this->questionnaire_id);
-        $criteria->compare('title',$this->title,true);
-        $criteria->compare('question',$this->question,true);
-        $criteria->compare('question_type',$this->question_type,true);
-        $criteria->compare('answer',$this->answer,true);
-        $criteria->compare('created_time',$this->created_time,true);
-        $criteria->compare('modified_time',$this->modified_time,true);
-        $criteria->compare('created_by',$this->created_by);
-        $criteria->compare('modified_by',$this->modified_by);
-        $criteria->compare('business_id',$this->business_id);
-        $criteria->compare('user_id',$this->user_id);
+        $criteria->compare('questionnaire_id',      $this->questionnaire_id);
+        $criteria->compare('title',                 $this->title,true);
+        $criteria->compare('question',              $this->question,true);
+        $criteria->compare('question_type',         $this->question_type);
+        $criteria->compare('answer',                $this->answer,true);
+        $criteria->compare('created_time',          $this->created_time,true);
+        $criteria->compare('modified_time',         $this->modified_time,true);
+        $criteria->compare('created_by',            $this->created_by);
+        $criteria->compare('modified_by',           $this->modified_by);
+        $criteria->compare('business_id',           $this->business_id);
+        $criteria->compare('user_id',               $this->user_id);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -222,7 +222,7 @@ class Questionnaire extends CActiveRecord
     public function listType()
     {
 
-        return array('objective'    => 'Objective',
-            'subjective'    => 'Subjective');
+        return array('objective'        => 'Objective',
+                     'subjective'       => 'Subjective');
     }
 }
