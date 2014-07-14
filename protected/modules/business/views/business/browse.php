@@ -719,7 +719,7 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
 
                             <select id="city_list" style="width:300px;" class="populate placeholder">
                             <?php foreach ($listCities as $itemCity) { ?>
-                                <option value="<?php echo $itemCity->city_id; ?>"><?php echo Chtml::encode($itemCity->city_name); ?></option>
+                                <option value="<?php echo $itemCity->city_id; ?>"><?php echo CHtml::encode($itemCity->city_name); ?></option>
                             <?php } ?>
                             </select>
 
