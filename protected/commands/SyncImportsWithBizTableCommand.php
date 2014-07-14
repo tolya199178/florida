@@ -55,15 +55,21 @@ class SyncImportsWithBizTableCommand extends CConsoleCommand
         // /////////////////////////////////////////////////////////////////////
         // Read all ImportedBusiness records
         // /////////////////////////////////////////////////////////////////////
-        $listImportedBusiness   = ImportedBusiness::model()->findAll(array('limit' => 100000));
-        //$listImportedBusiness   = ImportedBusiness::model()->findAll();
+//         $listImportedBusiness   = ImportedBusiness::model()->findAll(array('limit' => 100000));
+//         //$listImportedBusiness   = ImportedBusiness::model()->findAll();
+
+        $dataProvider = new CActiveDataProvider('ImportedBusiness');
+        $providerIterator = new CDataProviderIterator($dataProvider);
+
 
         $recordsProcessed       = 0;
         $recordsSuccessfull     = 0;
 
         echo "\n";
 
-        foreach ($listImportedBusiness as $recImportedBusiness)
+
+        //foreach ($listImportedBusiness as $recImportedBusiness)
+        foreach($providerIterator as $recImportedBusiness)
         {
 
             $recordsProcessed++;
