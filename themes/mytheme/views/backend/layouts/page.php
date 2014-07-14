@@ -136,6 +136,14 @@
                           </ul>
                       </li>
 
+                      <!-- Questionnaire Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Questionnaire</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/questionnaire/index'); ?>">Listing</a></li>
+                          </ul>
+                      </li>
+
 
                       <li class="nav-divider"></li>
                   </ul>
