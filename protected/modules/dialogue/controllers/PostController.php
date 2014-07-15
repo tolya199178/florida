@@ -55,7 +55,7 @@ class PostController extends Controller
     {
 
         // Default action is to show all activitys.
-        $this->redirect(array('list'));
+        $this->redirect(array('dashboard'));
     }
 
     /**
@@ -111,7 +111,7 @@ class PostController extends Controller
     }
 
     /**
-     * Post and answer
+     * Post a answer
      *
      * @param
      *            <none> <none>
@@ -154,6 +154,52 @@ class PostController extends Controller
             $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
                             'question' => $formValues['question_id']
                     )));
+        }
+    }
+
+    /**
+     * Post a question.
+     *
+     * @param
+     *            <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionQuestion()
+    {
+
+        $formValues         = Yii::app()->request->getPost('PostQuestion');
+
+        $modelQuestion      = new PostQuestion;
+
+        $modelQuestion->attributes = array(
+                        'user_id'       => Yii::app()->user->id,
+                        'title'         => $formValues['content'],
+                        'alias'         => $formValues['content'],
+                        'content'       => $formValues['content'],
+                        'tags'          => '',
+                        'status'        => 'Open',
+                        'category_id'   => $formValues['category_id'],
+                        'entity_type'   => 'general',
+                        'entity_id'     => '1',
+        );
+
+        if ($modelQuestion->save() === false)
+        {
+            Yii::app()->user->setFlash('error','Problem saving question. Your request could not be processed at this time.');
+
+            print_r($modelQuestion);exit;
+            $this->redirect(Yii::app()->createUrl('/dialogue/'));
+        }
+        else
+        {
+
+            $questionId = $modelQuestion->id;
+            Yii::app()->user->setFlash('success','Question saved.');
+            $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
+                'question' => $questionId
+            )));
         }
     }
 
@@ -519,4 +565,70 @@ class PostController extends Controller
 
 
     }
+
+    /**
+     * Displays the discussion dashboard
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionDashboard()
+    {
+
+        $configDashboard = array('leftPanel'        => 'left_panel',
+                                 'mainPanel'        => 'list'
+                           );
+
+
+        $listRantRaves    = array();
+        $listQuestions    = PostQuestion::model()->findAll();
+        $listSolutions    = array();
+
+
+        $dashboardData = array('listQuestions'    => $listQuestions,
+                               'listRantRaves'    => $listRantRaves,
+                               'listSolutions'    => $listSolutions
+                              );
+
+        $this->render('dashboard/dashboard_main', array('config'=>$configDashboard, 'data'=>$dashboardData));
+
+    }
+
+    /**
+     * Renders JSON results of friend search in {id,text,image} format.
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionAutocompletetaglist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 2)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstTags = Yii::app()->db
+                             ->createCommand()
+                             ->select('category_id AS id, category_name as text')
+                             ->from('tbl_category')
+                             ->where(array('like', 'category_name', '%'.$strSearchFilter.'%'))
+                             ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstTags);
+
+    }
+
 }
