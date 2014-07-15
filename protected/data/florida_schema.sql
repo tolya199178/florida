@@ -1465,6 +1465,32 @@ ADD CONSTRAINT post_vote_user
      REFERENCES tbl_user(user_id);
 
 
+     
+     
+-- ---------------------------------------------------------------------
+-- post subscription
+-- ---------------------------------------------------------------------
+  DROP TABLE IF EXISTS `tbl_post_subscribed`;
+  
+  CREATE TABLE `tbl_post_subscribed` (
+    `post_subscribed_id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `post_id` int(11) NOT NULL,
+  PRIMARY KEY (`post_subscribed_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+ALTER TABLE tbl_post_subscribed
+ADD CONSTRAINT fk_post_subscribed_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_post_subscribed
+ADD CONSTRAINT fk_post_subscribed_post
+     FOREIGN KEY (post_id) 
+     REFERENCES tbl_post_question(id);
+     
+     
+     
 -- ---------------------------------------------------------------------
 --  My Trip
 -- ---------------------------------------------------------------------
