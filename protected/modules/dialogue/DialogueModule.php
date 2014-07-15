@@ -4,7 +4,7 @@ class DialogueModule extends CWebModule
 {
 
     // myfriends refers to MyfriendsController under modules/myfriends/controllers
-    public $defaultController='dialogue';
+    public $defaultController='post';
 
 	public function init()
 	{
