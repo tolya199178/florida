@@ -102,7 +102,9 @@ class PostController extends Controller
 
             $listAnswers    = PostAnswer::model()->findAllByAttributes(array('question_id' => $modelQuestion->id));
 
-            return $this->render('view', compact('modelQuestion', 'listAnswers'));
+            $subview        = 'view';
+
+            return $this->render('question_main', array('data' => compact('modelQuestion', 'listAnswers', 'subview')));
         }
         else
         {
@@ -121,7 +123,6 @@ class PostController extends Controller
      */
     public function actionAnswer()
     {
-        // print_r($_POST);
         $formValues     = Yii::app()->request->getPost('PostAnswer');
 
         $modelAnswer    = new PostAnswer();
@@ -138,12 +139,11 @@ class PostController extends Controller
 
         if ($modelAnswer->save() === false)
         {
-            echo CJSON::encode(array(
-                            'result' => false,
-                            'message' => 'Problem saving saved answer. Contact administrator.'
-                        ));
 
-            $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
+            Yii::app()->user->setFlash('error','Problem saving saved answer. Contact administrator.');
+
+
+            $this->redirect(Yii::app()->createAbsoluteUrl('/dialogue/post/view', array(
                             'question' => $formValues['question_id']
                    )));
             Yii::app()->end();
@@ -151,6 +151,33 @@ class PostController extends Controller
         }
         else
         {
+
+            $questionId = $formValues['question_id'];
+
+            $this->notifySubscribers($questionId);
+
+            if ($formValues['notify_updates'] == 1)
+            {
+
+                $modelPostSubscription          = PostSubscribed::model()->findByAttributes(
+                                                        array('user_id'=>Yii::app()->user->id,
+                                                              'post_id'=>$questionId));
+
+                if ($modelPostSubscription === null)
+                {
+                    $modelPostSubscription          = new PostSubscribed;
+                }
+
+
+                $modelPostSubscription->user_id = Yii::app()->user->id;
+                $modelPostSubscription->post_id = $questionId;
+
+                $modelPostSubscription->save();
+            }
+
+
+            Yii::app()->user->setFlash('success','Answer saved.');
+
             $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
                             'question' => $formValues['question_id']
                     )));
@@ -185,17 +212,28 @@ class PostController extends Controller
                         'entity_id'     => '1',
         );
 
+
         if ($modelQuestion->save() === false)
         {
+
             Yii::app()->user->setFlash('error','Problem saving question. Your request could not be processed at this time.');
 
-            print_r($modelQuestion);exit;
             $this->redirect(Yii::app()->createUrl('/dialogue/'));
         }
         else
         {
 
             $questionId = $modelQuestion->id;
+
+            if ($formValues['notify_updates'] == 1)
+            {
+                $modelPostSubscription          = new PostSubscribed;
+                $modelPostSubscription->user_id = Yii::app()->user->id;
+                $modelPostSubscription->post_id = $questionId;
+
+                $modelPostSubscription->save();
+            }
+
             Yii::app()->user->setFlash('success','Question saved.');
             $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
                 'question' => $questionId
@@ -628,6 +666,35 @@ class PostController extends Controller
 
         header('Content-type: application/json');
         echo CJSON::encode($lstTags);
+
+    }
+
+    /**
+     * Notify user about changes to question or answer that they subscribed to
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function notifySubscribers($questionId)
+    {
+
+        $msgSubject = 'A post you are watching has been updated';
+        $msgContent = 'A post you are watching has been updated. Click to see updates.'.
+                      Yii::app()->createAbsoluteUrl('//dialogue/post/view/', array('question'=>$questionId));
+
+        $listSubscribers    = PostSubscribed::model()->findAllByAttributes(array('post_id'=>$questionId));
+
+        foreach ($listSubscribers as $recSubscriber)
+        {
+
+            $subscriberId = $recSubscriber->user_id;
+
+            MessageService::sendMessage($subscriberId, $msgSubject, $msgContent);
+
+        }
+
 
     }
 

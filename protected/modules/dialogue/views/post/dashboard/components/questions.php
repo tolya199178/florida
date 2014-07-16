@@ -46,7 +46,9 @@
                 ?>
             </div>
             <div class="col-sm-2">
-                <?php echo CHtml::submitButton(($question->isNewRecord ? 'Ask' : 'Update'), array('class'=>"btn btn-primary")); ?>
+                <?php echo CHtml::checkBox('PostQuestion[notify_updates]', false, array('id'=>'notify_updates', 'class'=>'')); ?> Notify me of updates.
+
+                <?php echo CHtml::submitButton(($question->isNewRecord ? 'Ask' : 'Update'), array('class'=>"form-control btn btn-primary")); ?>
             </div>
 
             <?php $this->endWidget(); ?>

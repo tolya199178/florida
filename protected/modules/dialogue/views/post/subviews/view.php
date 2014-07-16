@@ -1,5 +1,12 @@
 <?php
 
+$modelQuestion  = $data['modelQuestion'];
+$listAnswers    = $data['listAnswers'];
+
+?>
+
+<?php
+
 $baseScriptUrl = $this->createAbsoluteUrl('/');
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/css/dialogue/dialogue.css');
 
@@ -145,6 +152,9 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         <?php echo $form->textArea($answer,'content', array('rows' => 6, 'class' => 'form-control')); ?>
                     <div class="help-block"></div>
                     </div>
+
+
+                    <?php echo CHtml::checkBox('PostAnswer[notify_updates]', false, array('id'=>'notify_updates', 'class'=>'')); ?> Notify me of updates.
 
 
 
