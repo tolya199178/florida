@@ -1667,6 +1667,7 @@ ADD CONSTRAINT fk_questionnaire_business
 -- ---------------------------------------------------------------------
 -- tbl_package
 -- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_package`;
 
 CREATE TABLE IF NOT EXISTS `tbl_package` (
   `package_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1677,10 +1678,22 @@ CREATE TABLE IF NOT EXISTS `tbl_package` (
   `package_price` decimal(10,2) DEFAULT NULL,
   `created_time` timestamp NULL DEFAULT 0,
   `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by`  int(11) NOT NULL COMMENT 'FK with user',
+  `modified_by` int(11) NOT NULL COMMENT 'FK with user', 
   PRIMARY KEY (`package_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
+ALTER TABLE tbl_package
+ADD CONSTRAINT fk_package_created_by
+     FOREIGN KEY (created_by) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_package
+ADD CONSTRAINT fk_package_modified_by
+     FOREIGN KEY (modified_by) 
+     REFERENCES tbl_user(user_id);
+     
 -- ---------------------------------------------------------------------
 -- tbl_package_item_type
 -- ---------------------------------------------------------------------
