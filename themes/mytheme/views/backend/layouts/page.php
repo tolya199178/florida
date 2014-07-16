@@ -125,7 +125,7 @@
                           </ul>
                       </li>
                       
-                      <!-- Restaurante Certificates Menu -->
+                      <!-- Restaurant Certificates Menu -->
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Restaurant Certificate</a>
                           <ul class="nav nav-list tree active-trial">
@@ -133,6 +133,14 @@
                               <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/list'); ?>">Certificates Listing</a></li>
                               <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/price'); ?>">Set Purchase Price</a></li>
                               <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/summary'); ?>">Summary</a></li>
+                          </ul>
+                      </li>
+                      
+                      <!-- Packages Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Packages</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/package/list'); ?>">Packages Listing</a></li>
                           </ul>
                       </li>
 
