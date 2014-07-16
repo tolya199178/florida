@@ -107,7 +107,7 @@
 
             <li><a href="<?php echo Yii::app()->createUrl('concierge/'); ?>">I WANT TO</a></li>
 
-            <li><a href="<?php echo Yii::app()->createUrl('discussions/'); ?>">Discussions</a></li>
+            <li><a href="<?php echo Yii::app()->createUrl('dialogue/'); ?>">Discussions</a></li>
 
             <li><a href="<?php echo Yii::app()->createUrl('calendar/'); ?>">Events</a></li>
 

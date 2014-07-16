@@ -55,7 +55,7 @@ class PostController extends Controller
     {
 
         // Default action is to show all activitys.
-        $this->redirect(array('list'));
+        $this->redirect(array('dashboard'));
     }
 
     /**
@@ -102,7 +102,9 @@ class PostController extends Controller
 
             $listAnswers    = PostAnswer::model()->findAllByAttributes(array('question_id' => $modelQuestion->id));
 
-            return $this->render('view', compact('modelQuestion', 'listAnswers'));
+            $subview        = 'view';
+
+            return $this->render('question_main', array('data' => compact('modelQuestion', 'listAnswers', 'subview')));
         }
         else
         {
@@ -111,7 +113,7 @@ class PostController extends Controller
     }
 
     /**
-     * Post and answer
+     * Post a answer
      *
      * @param
      *            <none> <none>
@@ -121,7 +123,6 @@ class PostController extends Controller
      */
     public function actionAnswer()
     {
-        // print_r($_POST);
         $formValues     = Yii::app()->request->getPost('PostAnswer');
 
         $modelAnswer    = new PostAnswer();
@@ -138,12 +139,11 @@ class PostController extends Controller
 
         if ($modelAnswer->save() === false)
         {
-            echo CJSON::encode(array(
-                            'result' => false,
-                            'message' => 'Problem saving saved answer. Contact administrator.'
-                        ));
 
-            $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
+            Yii::app()->user->setFlash('error','Problem saving saved answer. Contact administrator.');
+
+
+            $this->redirect(Yii::app()->createAbsoluteUrl('/dialogue/post/view', array(
                             'question' => $formValues['question_id']
                    )));
             Yii::app()->end();
@@ -151,9 +151,93 @@ class PostController extends Controller
         }
         else
         {
+
+            $questionId = $formValues['question_id'];
+
+            $this->notifySubscribers($questionId);
+
+            if ($formValues['notify_updates'] == 1)
+            {
+
+                $modelPostSubscription          = PostSubscribed::model()->findByAttributes(
+                                                        array('user_id'=>Yii::app()->user->id,
+                                                              'post_id'=>$questionId));
+
+                if ($modelPostSubscription === null)
+                {
+                    $modelPostSubscription          = new PostSubscribed;
+                }
+
+
+                $modelPostSubscription->user_id = Yii::app()->user->id;
+                $modelPostSubscription->post_id = $questionId;
+
+                $modelPostSubscription->save();
+            }
+
+
+            Yii::app()->user->setFlash('success','Answer saved.');
+
             $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
                             'question' => $formValues['question_id']
                     )));
+        }
+    }
+
+    /**
+     * Post a question.
+     *
+     * @param
+     *            <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionQuestion()
+    {
+
+        $formValues         = Yii::app()->request->getPost('PostQuestion');
+
+        $modelQuestion      = new PostQuestion;
+
+        $modelQuestion->attributes = array(
+                        'user_id'       => Yii::app()->user->id,
+                        'title'         => $formValues['content'],
+                        'alias'         => $formValues['content'],
+                        'content'       => $formValues['content'],
+                        'tags'          => '',
+                        'status'        => 'Open',
+                        'category_id'   => $formValues['category_id'],
+                        'entity_type'   => 'general',
+                        'entity_id'     => '1',
+        );
+
+
+        if ($modelQuestion->save() === false)
+        {
+
+            Yii::app()->user->setFlash('error','Problem saving question. Your request could not be processed at this time.');
+
+            $this->redirect(Yii::app()->createUrl('/dialogue/'));
+        }
+        else
+        {
+
+            $questionId = $modelQuestion->id;
+
+            if ($formValues['notify_updates'] == 1)
+            {
+                $modelPostSubscription          = new PostSubscribed;
+                $modelPostSubscription->user_id = Yii::app()->user->id;
+                $modelPostSubscription->post_id = $questionId;
+
+                $modelPostSubscription->save();
+            }
+
+            Yii::app()->user->setFlash('success','Question saved.');
+            $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
+                'question' => $questionId
+            )));
         }
     }
 
@@ -519,4 +603,99 @@ class PostController extends Controller
 
 
     }
+
+    /**
+     * Displays the discussion dashboard
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionDashboard()
+    {
+
+        $configDashboard = array('leftPanel'        => 'left_panel',
+                                 'mainPanel'        => 'list'
+                           );
+
+
+        $listRantRaves    = array();
+        $listQuestions    = PostQuestion::model()->findAll();
+        $listSolutions    = array();
+
+
+        $dashboardData = array('listQuestions'    => $listQuestions,
+                               'listRantRaves'    => $listRantRaves,
+                               'listSolutions'    => $listSolutions
+                              );
+
+        $this->render('dashboard/dashboard_main', array('config'=>$configDashboard, 'data'=>$dashboardData));
+
+    }
+
+    /**
+     * Renders JSON results of friend search in {id,text,image} format.
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionAutocompletetaglist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 2)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstTags = Yii::app()->db
+                             ->createCommand()
+                             ->select('category_id AS id, category_name as text')
+                             ->from('tbl_category')
+                             ->where(array('like', 'category_name', '%'.$strSearchFilter.'%'))
+                             ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstTags);
+
+    }
+
+    /**
+     * Notify user about changes to question or answer that they subscribed to
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function notifySubscribers($questionId)
+    {
+
+        $msgSubject = 'A post you are watching has been updated';
+        $msgContent = 'A post you are watching has been updated. Click to see updates.'.
+                      Yii::app()->createAbsoluteUrl('//dialogue/post/view/', array('question'=>$questionId));
+
+        $listSubscribers    = PostSubscribed::model()->findAllByAttributes(array('post_id'=>$questionId));
+
+        foreach ($listSubscribers as $recSubscriber)
+        {
+
+            $subscriberId = $recSubscriber->user_id;
+
+            MessageService::sendMessage($subscriberId, $msgSubject, $msgContent);
+
+        }
+
+
+    }
+
 }

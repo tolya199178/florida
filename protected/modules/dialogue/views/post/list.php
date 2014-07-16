@@ -3,7 +3,21 @@
 $baseScriptUrl = $this->createAbsoluteUrl('/');
 Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/css/dialogue/dialogue.css');
 
+$listQuestions = $data['listQuestions'];
+
 ?>
+
+                <br/>
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <ul class="nav nav-tabs" id="question_sort_tabs">
+                            <li class="active"><a href="#question_recent" data-toggle="tab">Recent</a></li>
+                            <li><a href="#question_popular" data-toggle="tab">Popular</a></li>
+                        </ul>
+                    </div>
+
+                </div>
 
 
 <div class="qa-list list-group">
