@@ -11,6 +11,9 @@
  * @property integer $package_expire
  * @property string $package_price
  * @property string $created_time
+ * @property string $modified_time
+ * @property integer $created_by
+ * @property integer $modified_by
  *
  * The followings are the available model relations:
  * @property PackageItems[] $packageItems
@@ -36,7 +39,7 @@
 
 class Package extends CActiveRecord
 {
-    
+
     /**
      *
      * @var string fldUploadImage advert image uploader.
@@ -76,7 +79,7 @@ class Package extends CActiveRecord
 			array('package_name', 'length', 'max'=>250),
 			array('package_price', 'length', 'max'=>10),
 			array('package_image, package_description', 'safe'),
-            
+
             // Form only attributes.
 		    array('fldUploadImage',               'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
@@ -97,7 +100,9 @@ class Package extends CActiveRecord
 	{
 
 		return array(
-			'packageItems'      => array(self::HAS_MANY, 'PackageItem', 'package_id'),
+		    'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
+		    'createdBy'       => array(self::BELONGS_TO, 'User', 'created_by'),
+			'packageItems'    => array(self::HAS_MANY, 'PackageItem', 'package_id'),
 		);
 	}
 
@@ -115,13 +120,16 @@ class Package extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'package_id'      => 'Package',
-			'package_name'      => 'Package Name',
+			'package_id'         => 'Package',
+			'package_name'       => 'Package Name',
 			'package_image'      => 'Package Image',
-			'package_description' => 'Package Description',
-			'package_expire'      => 'Package Expire (months)',
+			'package_description'=> 'Package Description',
+			'package_expire'     => 'Package Expire (months)',
 			'package_price'      => 'Package Price',
-			'created_time'      => 'Created Time',
+			'created_time'       => 'Created Time',
+		    'modified_time'      => 'Modified Time',
+		    'created_by'         => 'Created By',
+		    'modified_by'        => 'Modified By',
 		);
 	}
 
@@ -146,13 +154,16 @@ class Package extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('package_id',$this->package_id);
-		$criteria->compare('package_name',$this->package_name,true);
-		$criteria->compare('package_image',$this->package_image,true);
-		$criteria->compare('package_description',$this->package_description,true);
-		$criteria->compare('package_expire',$this->package_expire);
-		$criteria->compare('package_price',$this->package_price,true);
-		$criteria->compare('created_time',$this->created_time,true);
+		$criteria->compare('package_id',          $this->package_id);
+		$criteria->compare('package_name',        $this->package_name,true);
+		$criteria->compare('package_image',       $this->package_image,true);
+		$criteria->compare('package_description', $this->package_description,true);
+		$criteria->compare('package_expire',      $this->package_expire);
+		$criteria->compare('package_price',       $this->package_price,true);
+		$criteria->compare('created_time',        $this->created_time,true);
+		$criteria->compare('modified_time',       $this->modified_time,true);
+		$criteria->compare('created_by',          $this->created_by);
+		$criteria->compare('modified_by',         $this->modified_by);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -172,4 +183,51 @@ class Package extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave() {
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+
+	    return parent::beforeSave();
+	}
+
+	/**
+	 * Build an associative list of event type values.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of permission status values
+	 *
+	 * @access public
+	 */
+	public function listExpiryPeriods()
+	{
+
+	    return array('30' =>'1 Month (30 days)',
+	                 '90' =>'3 Months (90 days)',
+	                 '180' => '6 Months (180 days)',
+	                 '365' => '12 Months (365 days)');
+	}
+
 }
