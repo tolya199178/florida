@@ -1663,6 +1663,72 @@ ADD CONSTRAINT fk_questionnaire_business
      REFERENCES tbl_business(business_id);
   
   
+     
+-- ---------------------------------------------------------------------
+-- tbl_package
+-- ---------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tbl_package` (
+  `package_id` int(11) NOT NULL AUTO_INCREMENT,
+  `package_name` varchar(250) NOT NULL,
+  `package_image` text,
+  `package_description` text,
+  `package_expire` int(11) DEFAULT NULL,
+  `package_price` decimal(10,2) DEFAULT NULL,
+  `created_time` timestamp NULL DEFAULT 0,
+  `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`package_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+-- ---------------------------------------------------------------------
+-- tbl_package_item_type
+-- ---------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tbl_package_item_type` (
+  `package_item_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `description` text NOT NULL,
+  `has_quantity` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`package_item_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_package_item_type`
+--
+
+INSERT INTO `tbl_package_item_type` (`package_item_type_id`, `name`, `description`, `has_quantity`) VALUES
+(1, 'banners', '', 1),
+(2, 'private survey', '', 0),
+(3, 'Restaurant.com certificates', '', 1),
+(4, 'Coupons', '', 1),
+(5, 'auto reply', '', 0);
+
+
+-- ---------------------------------------------------------------------
+-- tbl_package_item
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tbl_package_item` (
+  `package_item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `package_id` int(11) NOT NULL,
+  `item_type_id` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  PRIMARY KEY (`package_item_id`),
+  KEY `FK_tbl_package_items1` (`package_id`),
+  KEY `package_id` (`package_id`),
+  KEY `item_type_id` (`item_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+--
+-- Constraints for table `tbl_package_item`
+--
+ALTER TABLE `tbl_package_item`
+  ADD CONSTRAINT `FK_tbl_package_items1` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`),
+  ADD CONSTRAINT `FK_tbl_package_items` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_package_item_ibfk_1` FOREIGN KEY (`item_type_id`) REFERENCES `tbl_package_item_type` (`package_item_type_id`);
+     
+     
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
