@@ -157,10 +157,13 @@ class CalendarController extends Controller
 	    $dbCriteria->order      = 'event_start_date DESC';
 	    $listUpcomingEvents     = Event::model()->findAll($dbCriteria);
 
+	    $listCities  = City::model()->findAll();
+
 	    $this->render('browse', array('category_path'      => $categoryBreadcrumb,
                         	          'listSubcategories'  => $listSubcategory,
                         	          'currentCategory'    => $currentCategory,
-	                                  'listUpcomingEvents' => $listUpcomingEvents
+	                                  'listUpcomingEvents' => $listUpcomingEvents,
+	                                  'listCities'         => $listCities
 	    ));
 	}
 
