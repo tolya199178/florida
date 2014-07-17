@@ -15,11 +15,28 @@
 
                 $form=$this->beginWidget('CActiveForm', array(
                 	'id'=>'profile-form',
-                    'action'=>Yii::app()->createUrl('//dialogue/post/question/'),
+                    'action'=>Yii::app()->createUrl('//dialogue/post/rantrave/'),
                 ));
             ?>
 
-            <div class="col-sm-7">
+            <div class="col-sm-2">
+
+                <div class="compactRadioGroup">
+                <?php
+                    echo $form->radioButtonList($question, 'question_rating_value', array(3 => 'I Like', 4 => 'I Love', 5=>'I Adore',
+                                                                                          2 => 'I dont like', '1'=>'I get Annoyed. It bothers me.'));
+                ?>
+                </div>
+
+            </div>
+            <div class="col-sm-4">
+
+                <div class="compactRadioGroup">
+                    <?php echo $form->textField($question,'title', array('class'=>"form-control", 'placeholder'=>'Enter your title...')); ?>
+                </div>
+
+            </div>
+            <div class="col-sm-4">
 
                 <?php echo $form->textArea($question,'content',array(
                                                                     'id'=>'questiontext',
@@ -28,27 +45,9 @@
                                                                     'placeholder'=>'What would you like to ask today ???'));
                 ?>
             </div>
-            <div class="col-sm-3">
-                <?php echo $form->dropDownList($question,
-                                               'category_id',
-                                               CHtml::listData(Category::model()->findAll(),'category_id', 'category_name'),
-                                               array('id'=>'questiontext',
-                                                     'class'=>'form-control',
-                                                     'empty' => '(Select a category)',
-                                                     'placeholder'=>'(Select a category)')
-                                  );
-                ?>
 
-                <?php echo $form->textField($question,'tags',array(
-                                                                'id'=>'question_tags',
-                                                                'class'=>'form-control',
-                                                                'placeholder'=>'choose tags'));
-                ?>
-            </div>
             <div class="col-sm-2">
-                <?php echo CHtml::checkBox('PostQuestion[notify_updates]', false, array('id'=>'notify_updates', 'class'=>'')); ?> Notify me of updates.
-
-                <?php echo CHtml::submitButton(($question->isNewRecord ? 'Ask' : 'Update'), array('class'=>"form-control btn btn-primary")); ?>
+                <?php echo CHtml::submitButton('Tell Us', array('class'=>"form-control btn btn-primary")); ?>
             </div>
 
             <?php $this->endWidget(); ?>
@@ -57,7 +56,7 @@
         </div>
 
         <div class='row'>
-            <?php $this->renderPartial("dashboard/components/list_questions",array('data' => $data)); ?>
+            <?php $this->renderPartial("dashboard/components/list_raves",array('data' => $data)); ?>
         </div>
 
 

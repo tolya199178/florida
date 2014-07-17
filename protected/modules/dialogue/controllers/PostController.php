@@ -242,6 +242,70 @@ class PostController extends Controller
     }
 
     /**
+     * Post a question.
+     *
+     * @param
+     *            <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionRantrave()
+    {
+
+        $formValues         = Yii::app()->request->getPost('PostQuestion');
+
+        /**
+         * Detirmine if this is a rant or a rave, depending on the rating value
+         */
+        $argRating = $formValues['question_rating_value'];
+        if (($argRating == 1) || ($argRating == 2))
+        {
+            $postType = 'Rant';
+        }
+        else if (($argRating == 3) || ($argRating == 4) || ($argRating == 5))
+        {
+            $postType = 'Rave';
+        }
+
+
+
+        $modelQuestion      = new PostQuestion;
+
+        $modelQuestion->attributes = array(
+            'user_id'               => Yii::app()->user->id,
+            'title'                 => $formValues['title'],
+            'alias'                 => $formValues['title'],
+            'content'               => $formValues['content'],
+            'tags'                  => '',
+            'status'                => 'Open',
+            'entity_type'           => 'general',
+            'entity_id'             => '1',
+            'question_rating_value' => $formValues['question_rating_value'],
+            'post_type'             => $postType
+        );
+
+
+        if ($modelQuestion->save() === false)
+        {
+
+            Yii::app()->user->setFlash('error','Problem saving your post. Your request could not be processed at this time.');
+
+            $this->redirect(Yii::app()->createUrl('/dialogue/'));
+        }
+        else
+        {
+
+            $questionId = $modelQuestion->id;
+
+            Yii::app()->user->setFlash('success','Your post has been saved.');
+            $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
+                'question' => $questionId
+            )));
+        }
+    }
+
+    /**
      * Vote a question or answer up
      *
      * @param
@@ -619,15 +683,27 @@ class PostController extends Controller
                                  'mainPanel'        => 'list'
                            );
 
+        $dbCriteria             = new CDbCriteria;
+        $dbCriteria->condition  = " post_type = :post_type ";
+        $dbCriteria->params     = array(':post_type' => 'question');
+        $listQuestions          = PostQuestion::model()->findAll($dbCriteria);
 
-        $listRantRaves    = array();
-        $listQuestions    = PostQuestion::model()->findAll();
+        $dbCriteria             = new CDbCriteria;
+        $dbCriteria->condition  = " post_type = :post_type ";
+        $dbCriteria->params     = array(':post_type' => 'rant');
+        $listRants              = PostQuestion::model()->findAll($dbCriteria);
+
+        $dbCriteria             = new CDbCriteria;
+        $dbCriteria->condition  = " post_type = :post_type ";
+        $dbCriteria->params     = array(':post_type' => 'rave');
+        $listRaves              = PostQuestion::model()->findAll($dbCriteria);
+
         $listSolutions    = array();
 
 
-        $dashboardData = array('listQuestions'    => $listQuestions,
-                               'listRantRaves'    => $listRantRaves,
-                               'listSolutions'    => $listSolutions
+        $dashboardData = array('listQuestions'      => $listQuestions,
+                               'listRants'          => $listRants,
+                               'listRaves'          => $listRaves
                               );
 
         $this->render('dashboard/dashboard_main', array('config'=>$configDashboard, 'data'=>$dashboardData));
