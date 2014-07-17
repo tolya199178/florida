@@ -172,8 +172,8 @@
                     <div class="col-sm-12">
                         <ul class="nav nav-tabs" id="myTab">
                             <li class="active"><a href="#questions" data-toggle="tab">Questions</a></li>
-                            <li><a href="#rantraves" data-toggle="tab">Rants/Raves</a></li>
-                            <li><a href="#solutions" data-toggle="tab">Solutions</a></li>
+                            <li><a href="#rants" data-toggle="tab">Rants</a></li>
+                            <li><a href="#raves" data-toggle="tab">Raves</a></li>
                         </ul>
                     </div>
 
@@ -195,14 +195,15 @@
                                     <!--/tab-pane-->
 
 
-                                    <div class="tab-pane" id="rantraves">
+                                    <div class="tab-pane" id="rants">
 
+                                        <?php $this->renderPartial("dashboard/components/rants",array('data' => $data)); ?>
 
                                     </div>
                                     <!--/tab-pane-->
 
-                                    <div class="tab-pane" id="solutions">
-                                        <hr>
+                                    <div class="tab-pane" id="raves">
+                                        <?php $this->renderPartial("dashboard/components/raves",array('data' => $data)); ?>
 
                                     </div>
                                 </div>

@@ -1390,6 +1390,11 @@ ADD CONSTRAINT post_question_parent
      REFERENCES tbl_post_question(id);
 
             
+ALTER TABLE `tbl_post_question` ADD COLUMN post_type enum('Question', 'Rant', 'Rave', 'Solution') DEFAULT 'Question';
+ALTER TABLE `tbl_post_question` ADD COLUMN question_rating_value int(11) DEFAULT NULL;
+
+
+     
 -- ---------------------------------------------------------------------
 -- Answer
 -- ---------------------------------------------------------------------

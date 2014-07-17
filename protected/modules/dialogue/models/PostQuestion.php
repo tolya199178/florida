@@ -20,6 +20,8 @@
  * @property string $entity_type
  * @property integer $entity_id
  * @property integer $reply_to
+ * @property string $post_type
+ * @property integer $question_rating_value
  *
  * The followings are the available model relations:
  * @property PostQuestion $replyTo
@@ -77,11 +79,16 @@ class PostQuestion extends CActiveRecord
 		return array(
 			array('user_id, title, alias, content, entity_id',                           'required'),
 			array('user_id, answers, views, votes, category_id, entity_id, reply_to',    'numerical', 'integerOnly'=>true),
+		    array('question_rating_value',                                               'numerical', 'integerOnly'=>true),
+
 			array('title, alias',                                                        'length', 'max'=>255),
 			array('status',                                                              'in',
 			                                                                             'range'=>array('Open','Closed', 'Published', 'Unublished')),
 			array('entity_type',                                                         'in',
 			                                                                             'range'=>array('city', 'state', 'business', 'user', 'general', 'event')),
+		    array('post_type',                                                           'in',
+		        'range'=>array('Question', 'Rant', 'Rave', 'Solution')),
+
 			array('content, tags',                                                       'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
@@ -137,6 +144,8 @@ class PostQuestion extends CActiveRecord
 			'entity_type'    => 'Entity Type',
 			'entity_id'      => 'Entity',
 			'reply_to'       => 'Reply To',
+		    'post_type'      => 'Post Type',
+		    'question_rating_value'       => 'Question Rating Value',
 		);
 	}
 
@@ -177,6 +186,8 @@ class PostQuestion extends CActiveRecord
 		$criteria->compare('entity_type',     $this->entity_type,true);
 		$criteria->compare('entity_id',       $this->entity_id);
 		$criteria->compare('reply_to',        $this->reply_to);
+		$criteria->compare('post_type',       $this->post_type);
+		$criteria->compare('question_rating_value',$this->question_rating_value);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
