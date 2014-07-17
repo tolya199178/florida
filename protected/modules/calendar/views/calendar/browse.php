@@ -464,7 +464,6 @@ $script = <<<EOD
     // Launch the modal when the create new event link is clicked
     $('body').on('click', '#create_event', function(e) {
 
-        // var remote = $(this).attr("data-href");
 
         $("#modalNewEvent").modal({
 
@@ -472,6 +471,13 @@ $script = <<<EOD
             remote: '$neweventURL'
 
         });
+    });
+
+    $('#modalNewEvent').on('shown.bs.modal', function(e) {
+            $("#event_business_id").select2({
+                placeholder: "Choose linked business",
+                allowClear: true
+            });
     });
 
     // Submit the modal form and close the modal

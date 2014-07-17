@@ -558,5 +558,40 @@ class BusinessController extends Controller
 
     }
 
+    /**
+     * Renders JSON results of friend search in {id,text,image} format.
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionAutocompletelist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 2)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstBusiness = Yii::app()->db
+                                 ->createCommand()
+                                 ->select('busines_id AS id, business_name AS text')
+                                 ->from('tbl_business')
+                                 ->where(array('LIKE', 'business_name', '%'.$_GET['query'].'%'))
+                                 ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstBusiness);
+
+    }
+
 
 }

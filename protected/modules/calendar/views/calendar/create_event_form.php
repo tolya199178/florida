@@ -63,7 +63,7 @@
                                     <?php echo $form->dropDownList($model,
                                                                    'event_type',
                                                                    $model->listEventTypes(),
-                                                                   array('prompt'=>'Select Event Type')
+                                                                   array('prompt'=>'Select Event Type', 'class'=>"form-control")
                                     );?>
                                     <?php echo $form->error($model,'event_type'); ?>
                                 </div>
@@ -189,9 +189,9 @@
                         <!--  Add a city selection dropdown -->
                         <div class="row">
                             <div class="form-group">
-                                <?php echo $form->labelEx($model,'event_city_id',array('class'=>"col-sm-2 control-label")); ?>
+                                <?php echo $form->labelEx($model,'event_city_id',array('class'=>"col-sm-2 control-label", 'id'=>'event_city_id')); ?>
                                 <div class="col-sm-10">
-                                    <?php echo $form->dropDownList($model,'event_city_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?>
+                                    <?php echo $form->dropDownList($model,'event_city_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name'), array('class'=>"form-control")); ?>
                                     <?php echo $form->error($model,'event_city_id'); ?>
                                     <!--  todo: styling for dropdown -->
                                 </div>
@@ -279,7 +279,7 @@
                             <div class="form-group">
                                 <!--  TODO: This must only displays the current user's business's  -->
                                 TODO: Show only business belonging to user.<br />
-                                <?php echo $form->labelEx($model,'event_business_id',array('class'=>"col-sm-2 control-label")); ?>
+                                <?php echo $form->labelEx($model,'event_business_id',array('class'=>"col-sm-2 control-label", 'id'=>'event_business_id')); ?>
                                 <div class="col-sm-10">
                                     <?php echo $form->dropDownList($model,'event_business_id', CHtml::listData(Business::model()->findAll(), 'business_id', 'business_name')); ?>
                                     <?php echo $form->error($model,'event_business_id'); ?>
