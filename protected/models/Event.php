@@ -36,6 +36,7 @@
  * @property integer $event_views
  * @property string $external_event_source
  * @property string $external_event_id
+ * @property integer $user_id
  *
  * The followings are the available model relations:
  * @property EventCategory $eventCategory
@@ -44,6 +45,7 @@
  * @property User $createdBy
  * @property User $modifiedBy
  * @property UserEvent[] $userEvents
+ * @property User $user
  */
 
 /**
@@ -143,7 +145,7 @@ class Event extends CActiveRecord
 			       event_street, event_city_id, event_phone_no,
 			       event_category_id, event_business_id,event_tag, created_time, created_by,
 			       modified_by, is_featured, is_popular, event_status, cost, event_views,
-			       external_event_source, external_event_id',             'safe', 'on'=>'search'),
+			       external_event_source, external_event_id, user_id',    'safe', 'on'=>'search'),
 		);
 	}
 
@@ -159,6 +161,7 @@ class Event extends CActiveRecord
 	{
 
 		return array(
+		    'user'               => array(self::BELONGS_TO,  'User', 'user_id'),
 		    'eventCategory'      => array(self::BELONGS_TO,  'EventCategory', 'event_category_id'),
 		    'eventBusiness'      => array(self::BELONGS_TO,  'Business', 'event_business_id'),
 			'eventCity'          => array(self::BELONGS_TO,  'City', 'event_city_id'),
@@ -210,6 +213,7 @@ class Event extends CActiveRecord
 			'event_views'            => 'Event Views',
 		    'external_event_source'  => 'External Event Source',
 		    'external_event_id'      => 'External Event',
+		    'user_id'                => 'User',
 		);
 	}
 
@@ -265,6 +269,7 @@ class Event extends CActiveRecord
 		$criteria->compare('event_views',         $this->event_views);
 		$criteria->compare('external_event_source',$this->external_event_source);
 		$criteria->compare('external_event_id',   $this->external_event_id,true);
+		$criteria->compare('user_id',             $this->user_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -305,6 +310,7 @@ class Event extends CActiveRecord
         if ($this->isNewRecord) {
             $this->created_time = new CDbExpression('NOW()');
             $this->created_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+            $this->user_id      = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
         }
 
         // /////////////////////////////////////////////////////////////////
