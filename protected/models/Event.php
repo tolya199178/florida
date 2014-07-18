@@ -128,7 +128,8 @@ class Event extends CActiveRecord
 		    array('event_street, event_start_time, event_end_time',       'length', 'max'=>512),
 		    array('event_phone_no',                                       'length', 'max'=>32),
 		    array('event_latitude, event_longitude',                      'length', 'max'=>10),
-		    array('external_event_source, external_event_id',             'length', 'max'=>255),
+		    array('external_event_source',                                'length', 'max'=>255),
+		    array('external_event_id',                                    'length', 'max'=>64),
 
 		    // ranges
 		    array('is_featured, event_show_map,
