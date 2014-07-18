@@ -650,6 +650,15 @@ ADD CONSTRAINT fk_event_modified_by
     ADD CONSTRAINT fk_event_category
          FOREIGN KEY (event_category_id) 
          REFERENCES tbl_event_category(category_id);
+
+
+ALTER TABLE tbl_event ADD COLUMN `user_id`  int(11) NOT NULL;
+
+ALTER TABLE tbl_event
+ADD CONSTRAINT fk_event_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+
          
 -- ---------------------------------------------------------------------
 -- tbl_user_event

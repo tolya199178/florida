@@ -109,8 +109,6 @@
 
             <li><a href="<?php echo Yii::app()->createUrl('dialogue/'); ?>">Discussions</a></li>
 
-            <li><a href="<?php echo Yii::app()->createUrl('calendar/'); ?>">Events</a></li>
-
             <li class="dropdown"><a href="#" class="dropdown-toggle"
                 data-toggle="dropdown">Businesses<b class="caret"></b></a>
                 <ul class="dropdown-menu">
