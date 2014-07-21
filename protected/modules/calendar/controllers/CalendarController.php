@@ -341,6 +341,12 @@ class CalendarController extends Controller
 	        Yii::app()->end();
 	    }
 
+	    // Only allow event owners to update the event
+	    if ($eventModel->user_id != Yii::app()->user->id)
+	    {
+	        throw new CHttpException(400, 'Unauthorised Access Attempt. Please do not repeat this request.');
+	    }
+
 
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
