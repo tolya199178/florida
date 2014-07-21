@@ -13,19 +13,23 @@ $myCertificateSummary   = $data['myCertificateSummary'];
                             <div class="panel-body">
                                 <p>In focus : <?php echo ($currentBusiness != null)?$currentBusiness->business_name:'&lt;Not selected&gt;'; ?></p>
 
-                                <p>
-                                    <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('business/business/add/'); ?>">
-                                        <i class="glyphicon glyphicon-write-sign"></i>
-                                        Change Business Details
-                                    </a>
-                                </p>
+<?php                           if ($currentBusiness != null) { ?>
+                                    <p>
+                                        <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('business/business/add/'); ?>">
+                                            <i class="glyphicon glyphicon-write-sign"></i>
+                                            Change Business Details
+                                        </a>
+<!--                                     </p> -->
 
-                                <p>
-                                    <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('business/business/add/'); ?>">
-                                        <i class="glyphicon glyphicon-minus-sign"></i>
-                                         Remove Listing
-                                    </a>
-                                </p>
+<!--                                     <p> -->
+                                        <a class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('business/business/add/'); ?>">
+                                            <i class="glyphicon glyphicon-minus-sign"></i>
+                                             Remove Listing
+                                        </a>
+                                    </p>
+<?php                           } ?>
+
+
 
                                 <ul class="list-group">
                                 <?php foreach ($listMyBusiness as $itemBusiness) { ?>
@@ -35,7 +39,7 @@ $myCertificateSummary   = $data['myCertificateSummary'];
 
                                 <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('business/business/add/'); ?>">
                                     <i class="glyphicon glyphicon-plus-sign"></i>
-                                    Add a business
+                                    Add a new business
                                 </a>
                             </div>
                         </div>
