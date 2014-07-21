@@ -70,6 +70,20 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="form-group">
+                                <?php echo $form->labelEx($model,'event_status',array('class'=>"col-sm-2 control-label")); ?>
+                                <div class="col-sm-10">
+                                    <?php echo $form->dropDownList($model,
+                                                                   'event_status',
+                                                                   $model->listStatus(),
+                                                                   array('prompt'=>'Select Event Status', 'class'=>"form-control")
+                                    );?>
+                                    <?php echo $form->error($model,'event_status'); ?>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="tab-pane" id="datetime">

@@ -259,6 +259,12 @@ h2 {
                                                             <i class="glyphicon glyphicon-envelope"></i>
                                                             Update Event
                                                         </button>
+
+                                                        <button type='submit' class="btn btn-md btn-danger" href="<?php echo Yii::app()->createUrl('calendar/calendar/delete/', array('id'=>$myEvent->event_id)); ?>" id='delete_event' rel="<?php echo $myEvent->event_id; ?>">
+                                                            <i class="glyphicon glyphicon-minus-sign"></i>
+                                                            Delete Event
+                                                        </button>
+
                                                     </div>
 
                                                 </div>
@@ -327,6 +333,34 @@ $script = <<<EOD
             remote: url
 
         });
+    });
+    //
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Delete event.
+    // /////////////////////////////////////////////////////////////////////////
+    // Launch the modal when the create new event link is clicked
+    $('body').on('click', '#delete_event', function(e) {
+
+            var result = window.confirm("Do you really want to Delete the event?");
+            if (result == false) {
+                e.preventDefault();
+                return false;
+            }
+            else {
+                $.ajax({
+                	type: 'POST',
+                	url: $(this).attr("href"),
+                	datatype:"json",
+                	data: {event_id: $(this).attr("rel")} ,
+
+                	success: function(data, status) {
+                 	   location.reload();
+                	}
+            	});
+                return false;
+            }
+
     });
     //
 
