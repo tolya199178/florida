@@ -66,6 +66,7 @@
  * @property RestaurantCertificate[] $restaurantCertificates
  * @property SubscribedBusiness[] $subscribedBusinesses
  * @property BusinessReviews[] $businessReviews
+ * @property Coupon[] $coupons
  */
 
 /**
@@ -225,6 +226,7 @@ class Business extends CActiveRecord
 		    'subscribedBusinesses'   => array(self::HAS_MANY,   'SubscribedBusiness', 'business_id'),
 		    'businessReviews'        => array(self::HAS_MANY,   'BusinessReview', 'business_id'),
 		    'reportClosedBy'         => array(self::BELONGS_TO, 'User', 'report_closed_by'),
+		    'coupons'                => array(self::HAS_MANY,   'Coupon', 'business_id'),
 		);
 	}
 
