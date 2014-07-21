@@ -1755,7 +1755,47 @@ ALTER TABLE `tbl_package_item`
   ADD CONSTRAINT `FK_tbl_package_items` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `tbl_package_item_ibfk_1` FOREIGN KEY (`item_type_id`) REFERENCES `tbl_package_item_type` (`package_item_type_id`);
      
-     
+-- ---------------------------------------------------------------------
+-- business_coupon
+-- ---------------------------------------------------------------------
+CREATE TABLE `tbl_coupon` (
+  `coupon_id` int(11) NOT NULL AUTO_INCREMENT,
+  `business_id` int(11) NOT NULL,
+  `redeemed_by` int(11) DEFAULT NULL,
+  `coupon_name` varchar(250) NOT NULL,
+  `number_of_uses` int(11) NOT NULL DEFAULT 1,
+  `coupon_type` enum('Unique','Generic') NOT NULL DEFAULT 'Unique',
+  `coupon_expiry` DATE DEFAULT NULL,
+  `coupon_photo` varchar(1024) DEFAULT NULL,
+  `coupon_description` varchar(4096) DEFAULT NULL,
+  `coupon_code` varchar(32) DEFAULT NULL,
+  `terms` text DEFAULT NULL,
+  `printed` enum('Y','N') NOT NULL DEFAULT 'N',
+  `cost` decimal(10,2) DEFAULT NULL,
+  `created_time` timestamp NULL DEFAULT 0,
+  `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by`  int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  PRIMARY KEY (`coupon_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+	ALTER TABLE tbl_coupon
+	ADD CONSTRAINT fk_coupon_created_by
+	     FOREIGN KEY (created_by) 
+	     REFERENCES tbl_user(user_id);
+	     
+	ALTER TABLE tbl_coupon
+	ADD CONSTRAINT fk_coupon_modified_by
+	     FOREIGN KEY (modified_by) 
+	     REFERENCES tbl_user(user_id);
+	     
+	 
+	ALTER TABLE tbl_coupon
+	ADD CONSTRAINT fk_coupon_business
+	     FOREIGN KEY (business_id) 
+	     REFERENCES tbl_business(business_id);
+	  
+  
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
