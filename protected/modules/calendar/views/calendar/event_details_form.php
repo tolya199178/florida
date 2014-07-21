@@ -253,7 +253,7 @@
                                     <div
                                         style="border: 1px solid #066A75; padding: 3px; width: 150px; height: 150px;"
                                         id="left">
-                                        <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails/'.$model->image,
+                                        <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails/'.$model->event_photo,
                                                                 "Image",
                                                                 array('width'=>150, 'height'=>150))); ?>
                                     </div>
@@ -320,7 +320,7 @@
         </div>
         <div class="modal-footer">
             <div class="row buttons">
-        		<?php echo CHtml::submitButton('Post your New Event', array('class'=>"btn btn-success")); ?>
+        		<?php echo CHtml::submitButton('Save the Event', array('class'=>"btn btn-success")); ?>
         	</div>
 
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -297,14 +297,129 @@ class CalendarController extends Controller
 
 	        }
 	        else {
-	            Yii::app()->user->setFlash('error', "Error creating a event record.'");
+	            Yii::app()->user->setFlash('error', "Error creating a event record.");
 	        }
 
 
 	    }
 
 	    // Show the details screen
-	    $this->renderPartial('create_event_form',array('model'=>$eventModel), false, true);
+	    $this->renderPartial('event_details_form',array('model'=>$eventModel), false, true);
+
+	}
+
+	/**
+	 * Update an existing event record.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the event details capture form
+	 * ... - the (subsequent) POST request saves the submitted post data as a Event record.
+	 * ...If the save (POST request) is successful, the default method (index()) is called.
+	 * ...If the save (POST request) is not successful, the details form is shown
+	 * ...again with error messages from the Event validation (Event::rules())
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionUpdate()
+	{
+
+	    $argEventId = (int) Yii::app()->request->getQuery('event_id', 0);
+
+	    if ($argEventId == 0)
+	    {
+            CJSON::encode(array('result' => false, 'message'=>'Event not found'));
+            Yii::app()->end();
+	    }
+
+	    $eventModel = Event::model()->findByPk($argEventId);
+
+	    if ($eventModel === null)
+	    {
+	        CJSON::encode(array('result' => false, 'message'=>'Event not found'));
+	        Yii::app()->end();
+	    }
+
+
+	    // Uncomment the following line if AJAX validation is needed
+	    // todo: broken for Jquery precedence order loading
+	    // $this->performAjaxValidation($eventModel);
+
+	    if(isset($_POST['Event']))
+	    {
+
+	        $eventModel->attributes=$_POST['Event'];
+
+	        $uploadedFile = CUploadedFile::getInstance($eventModel,'fldUploadImage');
+
+	        if($eventModel->save())
+	        {
+
+	            if(!empty($uploadedFile))  // check if uploaded file is set or not
+	            {
+
+	                $imageFileName = 'event-'.$eventModel->event_id.'-'.$uploadedFile->name;
+	                $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
+	                $uploadedFile->saveAs($imagePath);
+	                $eventModel->event_photo = $imageFileName;
+
+	                $this->createThumbnail($imageFileName);
+
+	                if ($eventModel->save())
+	                {
+	                   Yii::app()->user->setFlash('success', "Event Saved.");
+	                }
+
+	            }
+
+	            $this->redirect(array('myevents'));
+
+	        }
+	        else {
+	            Yii::app()->user->setFlash('error', "Error creating a event record.");
+	        }
+
+
+	    }
+
+	    // Show the details screen
+	    $this->renderPartial('event_details_form',array('model'=>$eventModel), false, true);
+
+	}
+
+	/**
+	 * Displays the list fo events for the current user.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionMyevents()
+	{
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a few upcoming events
+	    // /////////////////////////////////////////////////////////////////////
+	    $dbCriteria             = new CDbCriteria;
+	    $dbCriteria->limit      = 5;
+	    $dbCriteria->order      = 'event_start_date DESC';
+	    $listUpcomingEvents     = Event::model()->findAll($dbCriteria);
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's events
+	    // /////////////////////////////////////////////////////////////////////
+	    $listEvents = Event::model()->findAllByAttributes(array(
+                            	           'user_id' => Yii::app()->user->id,
+                            	      ));
+
+
+	    $this->render('my_event_list', array('data' => array(
+	                                               'listEvents'=>$listEvents,
+	    	                                       'listUpcomingEvents' => $listUpcomingEvents
+                     )));
 
 	}
 

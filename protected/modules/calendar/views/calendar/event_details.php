@@ -83,6 +83,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
 
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <strong><?php echo CHtml::Encode($event->event_title); ?></strong>
+        </div>
+
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Start Date :</div>
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                 <?php echo CHtml::Encode($event->event_start_date); ?> - <?php echo CHtml::Encode($event->event_start_time); ?>
