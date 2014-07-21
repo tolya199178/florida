@@ -102,7 +102,12 @@
                             <div class="form-group">
                                 <?php echo $form->labelEx($model,'event_start_time',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-10">
-                                    <?php echo $form->textField($model,'event_start_time',array('class'=>"form-control")); ?>
+                                    <?php echo $form->dropDownList($model,
+                                                                   'event_start_time',
+                                                                   $model->listEventStartEndTimes(),
+                                                                   array('prompt'=>'Select Event Start Time', 'class'=>"form-control")
+                                                     );
+                                    ?>
                                     <?php echo $form->error($model,'event_start_time'); ?>
                                 </div>
                             </div>
@@ -137,7 +142,12 @@
                             <div class="form-group">
                                 <?php echo $form->labelEx($model,'event_end_time',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-10">
-                                    <?php echo $form->textField($model,'event_end_time',array('class'=>"form-control")); ?>
+                                    <?php echo $form->dropDownList($model,
+                                                                   'event_end_time',
+                                                                   $model->listEventStartEndTimes(),
+                                                                   array('prompt'=>'Select Event End Time', 'class'=>"form-control")
+                                                     );
+                                    ?>
                                     <?php echo $form->error($model,'event_end_time'); ?>
                                 </div>
                             </div>
