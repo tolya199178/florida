@@ -50,6 +50,13 @@ class Coupon extends CActiveRecord
 {
 
     /**
+     *
+     * @var string fldUploadImage Business image uploader.
+     * @access public
+     */
+    public $fldUploadImage;
+
+    /**
      * Get database table name associated with the model.
      *
      * @param <none> <none>
@@ -78,7 +85,7 @@ class Coupon extends CActiveRecord
 		return array(
 
 		    // Mandatory rules
-			array('business_id, coupon_name, created_by, modified_by',   'required'),
+			array('business_id, coupon_name',                            'required'),
 
 		    // Data types, sizes
 			array('business_id, redeemed_by, number_of_uses',            'numerical', 'integerOnly'=>true),
@@ -94,6 +101,9 @@ class Coupon extends CActiveRecord
 		          'in', 'range'=>array('Unique','Generic'),'allowEmpty'=>false),
 		    array('printed',
 		          'in', 'range'=>array('Y','N'),'allowEmpty'=>false),
+
+		    // Form only attributes.
+		    array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
 
             // The following rule is used by search(). It only contains attributes that should be searched.
@@ -139,7 +149,7 @@ class Coupon extends CActiveRecord
 			'coupon_name'            => 'Coupon Name',
 			'number_of_uses'         => 'Number Of Uses',
 			'coupon_type'            => 'Coupon Type',
-			'coupon_expiry'          => 'Coupon Expiry',
+			'coupon_expiry'          => 'Coupon Expiry Date',
 			'coupon_photo'           => 'Coupon Photo',
 			'coupon_description'     => 'Coupon Description',
 			'coupon_code'            => 'Coupon Code',
@@ -239,4 +249,20 @@ class Coupon extends CActiveRecord
 
 	    return parent::beforeSave();
 	}
+
+	/**
+	 * Build an associative list of coupon type values.
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of user type values
+	 *
+	 * @access public
+	 */
+	public function listCouponTypes() {
+
+	    return array('Unique'      => 'Unique',
+	                 'Generic'     => 'Generic',
+	           );
+	}
+
 }
