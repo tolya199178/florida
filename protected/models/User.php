@@ -68,6 +68,8 @@
  * @property BusinessRating[] $businessRatings
  * @property RestaurantCertificates[] $restaurantCertificates
  * @property UserProfile[] $userProfiles
+ * @property Coupon[] $couponsCreatedBy
+  * @property Coupon[] $couponsModifiedBy
  *
  */
 
@@ -295,6 +297,8 @@ class User extends CActiveRecord
 			'businessRatings'    => array(self::HAS_MANY, 'BusinessRating', 'user_id'),
             'restaurantCertificates' => array(self::HAS_MANY, 'RestaurantCertificate', 'business_id'),
             'userProfiles'       => array(self::HAS_ONE, 'UserProfile', 'user_id'),
+            'couponsCreatedBy'   => array(self::HAS_MANY, 'Coupon', 'created_by'),
+            'couponsModifiedBy'  => array(self::HAS_MANY, 'Coupon', 'modified_by'),
 		);
     }
 

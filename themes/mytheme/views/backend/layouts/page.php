@@ -124,7 +124,7 @@
                               <li><a href="<?php echo Yii::app()->createUrl('/advertisement/index'); ?>">Adverts Listing</a></li>
                           </ul>
                       </li>
-                      
+
                       <!-- Restaurant Certificates Menu -->
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Restaurant Certificate</a>
@@ -135,12 +135,12 @@
                               <li><a href="<?php echo Yii::app()->createUrl('/restaurantcertificate/summary'); ?>">Summary</a></li>
                           </ul>
                       </li>
-                      
+
                       <!-- Packages Menu -->
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Packages</a>
                           <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/package/list'); ?>">Packages Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/packageadmin/list'); ?>">Packages Listing</a></li>
                           </ul>
                       </li>
 
@@ -149,6 +149,14 @@
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Questionnaire</a>
                           <ul class="nav nav-list tree active-trial">
                               <li><a href="<?php echo Yii::app()->createUrl('/questionnaire/index'); ?>">Listing</a></li>
+                          </ul>
+                      </li>
+
+                      <!-- Coupon Menu -->
+                      <li class="nav-divider"></li>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Coupons</a>
+                          <ul class="nav nav-list tree active-trial">
+                              <li><a href="<?php echo Yii::app()->createUrl('/coupon/list'); ?>">Listing</a></li>
                           </ul>
                       </li>
 

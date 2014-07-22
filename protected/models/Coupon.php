@@ -1,34 +1,43 @@
 <?php
 
 /**
- * This is the model class for table "{{package}}".
+ * This is the model class for table "{{coupon}}".
  *
- * The followings are the available columns in table '{{package}}':
- * @property integer $package_id
- * @property string $package_name
- * @property string $package_image
- * @property string $package_description
- * @property integer $package_expire
- * @property string $package_price
+ * The followings are the available columns in table '{{coupon}}':
+ * @property integer $coupon_id
+ * @property integer $business_id
+ * @property integer $redeemed_by
+ * @property string $coupon_name
+ * @property integer $number_of_uses
+ * @property string $coupon_type
+ * @property string $coupon_expiry
+ * @property string $coupon_photo
+ * @property string $coupon_description
+ * @property string $coupon_code
+ * @property string $terms
+ * @property string $printed
+ * @property string $cost
  * @property string $created_time
  * @property string $modified_time
  * @property integer $created_by
  * @property integer $modified_by
  *
  * The followings are the available model relations:
- * @property PackageItems[] $packageItems
+ * @property Business $business
+ * @property User $createdBy
+ * @property User $modifiedBy
  */
 
  /**
- * Package activerecord model class provides a mechanism to keep data and their
+ * Coupon activerecord model class provides a mechanism to keep data and their
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = Package::model()
+ * ...   $coupon = Coupon::model()
  * ...or
- * ...   $model = new Package;
+ * ...   $coupon = new Coupon;
  * ...or
- * ...   $model = new Package($scenario);
+ * ...   $coupon = new Coupon($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -37,12 +46,12 @@
  * @version 1.0
  */
 
-class Package extends CActiveRecord
+class Coupon extends CActiveRecord
 {
 
     /**
      *
-     * @var string fldUploadImage advert image uploader.
+     * @var string fldUploadImage Business image uploader.
      * @access public
      */
     public $fldUploadImage;
@@ -57,7 +66,7 @@ class Package extends CActiveRecord
      */
 	public function tableName()
 	{
-		return '{{package}}';
+		return '{{coupon}}';
 	}
 
     /**
@@ -74,18 +83,31 @@ class Package extends CActiveRecord
 	{
 
 		return array(
-			array('package_name, package_price', 'required'),
-			array('package_expire', 'numerical', 'integerOnly'=>true),
-			array('package_name', 'length', 'max'=>250),
-			array('package_price', 'length', 'max'=>10),
-            array('package_description','filter','filter'=>array($obj=new CHtmlPurifier(),'purify')),
-			array('package_image', 'safe'),
 
-            // Form only attributes.
-		    array('fldUploadImage',               'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+		    // Mandatory rules
+			array('business_id, coupon_name',                            'required'),
+
+		    // Data types, sizes
+			array('business_id, redeemed_by, number_of_uses',            'numerical', 'integerOnly'=>true),
+			array('coupon_name', 'length',                               'max'=>250),
+		    array('coupon_photo', 'length',                              'max'=>1024),
+		    array('coupon_description, terms',                           'length', 'max'=>4096),
+
+		    array('coupon_code, coupon_expiry',                          'length', 'max'=>32),
+		    array('cost',                                                'length', 'max'=>10),
+
+		    // ranges
+		    array('coupon_type',
+		          'in', 'range'=>array('Unique','Generic'),'allowEmpty'=>false),
+		    array('printed',
+		          'in', 'range'=>array('Y','N'),'allowEmpty'=>false),
+
+		    // Form only attributes.
+		    array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('package_id, package_name, package_image, package_description, package_expire, package_price, created_time', 'safe', 'on'=>'search'),
+			array('coupon_id, business_id, redeemed_by, coupon_name, number_of_uses, coupon_type, coupon_expiry, coupon_photo, coupon_description, coupon_code, terms, printed, cost, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -101,9 +123,9 @@ class Package extends CActiveRecord
 	{
 
 		return array(
-		    'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
-		    'createdBy'       => array(self::BELONGS_TO, 'User', 'created_by'),
-			'packageItems'    => array(self::HAS_MANY, 'PackageItem', 'package_id'),
+			'business'           => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'createdBy'          => array(self::BELONGS_TO, 'User', 'created_by'),
+			'modifiedBy'         => array(self::BELONGS_TO, 'User', 'modified_by'),
 		);
 	}
 
@@ -121,16 +143,23 @@ class Package extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'package_id'         => 'Package',
-			'package_name'       => 'Package Name',
-			'package_image'      => 'Package Image',
-			'package_description'=> 'Package Description',
-			'package_expire'     => 'Package Expire (months)',
-			'package_price'      => 'Package Price',
-			'created_time'       => 'Created Time',
-		    'modified_time'      => 'Modified Time',
-		    'created_by'         => 'Created By',
-		    'modified_by'        => 'Modified By',
+			'coupon_id'              => 'Coupon',
+			'business_id'            => 'Business',
+			'redeemed_by'            => 'Redeemed By',
+			'coupon_name'            => 'Coupon Name',
+			'number_of_uses'         => 'Number Of Uses',
+			'coupon_type'            => 'Coupon Type',
+			'coupon_expiry'          => 'Coupon Expiry Date',
+			'coupon_photo'           => 'Coupon Photo',
+			'coupon_description'     => 'Coupon Description',
+			'coupon_code'            => 'Coupon Code',
+			'terms'                  => 'Terms',
+			'printed'                => 'Printed',
+			'cost'                   => 'Cost',
+			'created_time'           => 'Created Time',
+			'modified_time'          => 'Modified Time',
+			'created_by'             => 'Created By',
+			'modified_by'            => 'Modified By',
 		);
 	}
 
@@ -155,12 +184,19 @@ class Package extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('package_id',          $this->package_id);
-		$criteria->compare('package_name',        $this->package_name,true);
-		$criteria->compare('package_image',       $this->package_image,true);
-		$criteria->compare('package_description', $this->package_description,true);
-		$criteria->compare('package_expire',      $this->package_expire);
-		$criteria->compare('package_price',       $this->package_price,true);
+		$criteria->compare('coupon_id',           $this->coupon_id);
+		$criteria->compare('business_id',         $this->business_id);
+		$criteria->compare('redeemed_by',         $this->redeemed_by);
+		$criteria->compare('coupon_name',         $this->coupon_name,true);
+		$criteria->compare('number_of_uses',      $this->number_of_uses);
+		$criteria->compare('coupon_type',         $this->coupon_type,true);
+		$criteria->compare('coupon_expiry',       $this->coupon_expiry,true);
+		$criteria->compare('coupon_photo',        $this->coupon_photo,true);
+		$criteria->compare('coupon_description',  $this->coupon_description,true);
+		$criteria->compare('coupon_code',         $this->coupon_code,true);
+		$criteria->compare('terms',               $this->terms,true);
+		$criteria->compare('printed',             $this->printed,true);
+		$criteria->compare('cost',                $this->cost,true);
 		$criteria->compare('created_time',        $this->created_time,true);
 		$criteria->compare('modified_time',       $this->modified_time,true);
 		$criteria->compare('created_by',          $this->created_by);
@@ -176,7 +212,7 @@ class Package extends CActiveRecord
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      *
      * @param string $className active record class name.
-     * @return Package the static model class
+     * @return Coupon the static model class
      *
      * @access public
      */
@@ -215,20 +251,18 @@ class Package extends CActiveRecord
 	}
 
 	/**
-	 * Build an associative list of event type values.
+	 * Build an associative list of coupon type values.
 	 *
 	 * @param <none> <none>
-	 * @return array associatve list of permission status values
+	 * @return array associatve list of user type values
 	 *
 	 * @access public
 	 */
-	public function listExpiryPeriods()
-	{
+	public function listCouponTypes() {
 
-	    return array('30' =>'1 Month (30 days)',
-	                 '90' =>'3 Months (90 days)',
-	                 '180' => '6 Months (180 days)',
-	                 '365' => '12 Months (365 days)');
+	    return array('Unique'      => 'Unique',
+	                 'Generic'     => 'Generic',
+	           );
 	}
 
 }
