@@ -205,6 +205,7 @@ class Coupon extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+
 	}
 
     /**
