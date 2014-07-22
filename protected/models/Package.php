@@ -78,7 +78,8 @@ class Package extends CActiveRecord
 			array('package_expire', 'numerical', 'integerOnly'=>true),
 			array('package_name', 'length', 'max'=>250),
 			array('package_price', 'length', 'max'=>10),
-			array('package_image, package_description', 'safe'),
+            array('package_description','filter','filter'=>array($obj=new CHtmlPurifier(),'purify')),
+			array('package_image', 'safe'),
 
             // Form only attributes.
 		    array('fldUploadImage',               'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),

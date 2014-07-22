@@ -1754,7 +1754,86 @@ ALTER TABLE `tbl_package_item`
   ADD CONSTRAINT `FK_tbl_package_items1` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`),
   ADD CONSTRAINT `FK_tbl_package_items` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `tbl_package_item_ibfk_1` FOREIGN KEY (`item_type_id`) REFERENCES `tbl_package_item_type` (`package_item_type_id`);
-     
+
+
+
+--
+-- tbl_my_package
+--
+
+CREATE TABLE IF NOT EXISTS `tbl_my_package` (
+  `my_package_id` int(11) NOT NULL AUTO_INCREMENT,
+  `package_id` int(11) NOT NULL,
+  `business_id` int(11) NOT NULL,
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `expire_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`my_package_id`),
+  KEY `package_id` (`package_id`),
+  KEY `business_id` (`business_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Constraints for table `tbl_my_package`
+--
+ALTER TABLE `tbl_my_package`
+  ADD CONSTRAINT `tbl_my_package_ibfk_2` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
+  ADD CONSTRAINT `tbl_my_package_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`);
+
+
+
+
+--
+-- tbl_my_package_item
+--
+
+CREATE TABLE IF NOT EXISTS `tbl_my_package_item` (
+  `my_package_item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `my_package_id` int(11) NOT NULL,
+  `item_type_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  PRIMARY KEY (`my_package_item_id`),
+  KEY `my_package_id` (`my_package_id`),
+  KEY `item_type_id` (`item_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Constraints for table `tbl_my_package_item`
+--
+ALTER TABLE `tbl_my_package_item`
+  ADD CONSTRAINT `tbl_my_package_item_ibfk_2` FOREIGN KEY (`item_type_id`) REFERENCES `tbl_package_item_type` (`package_item_type_id`),
+  ADD CONSTRAINT `tbl_my_package_item_ibfk_1` FOREIGN KEY (`my_package_id`) REFERENCES `tbl_my_package` (`my_package_id`);
+
+
+
+
+
+--
+-- tbl_package_purchase
+--
+
+CREATE TABLE IF NOT EXISTS `tbl_package_purchase` (
+  `package_purchase_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `business_id` int(11) NOT NULL,
+  `status` enum('created','verified') NOT NULL,
+  `total_cost` float NOT NULL,
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `verified_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`package_purchase_id`),
+  KEY `package_id` (`package_id`),
+  KEY `user_id` (`user_id`),
+  KEY `business_id` (`business_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+--
+-- Constraints for table `tbl_package_purchase`
+--
+ALTER TABLE `tbl_package_purchase`
+  ADD CONSTRAINT `tbl_package_purchase_ibfk_3` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
+  ADD CONSTRAINT `tbl_package_purchase_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
+
+
 -- ---------------------------------------------------------------------
 -- business_coupon
 -- ---------------------------------------------------------------------
@@ -1779,23 +1858,23 @@ CREATE TABLE `tbl_coupon` (
   PRIMARY KEY (`coupon_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-	ALTER TABLE tbl_coupon
-	ADD CONSTRAINT fk_coupon_created_by
-	     FOREIGN KEY (created_by) 
-	     REFERENCES tbl_user(user_id);
-	     
-	ALTER TABLE tbl_coupon
-	ADD CONSTRAINT fk_coupon_modified_by
-	     FOREIGN KEY (modified_by) 
-	     REFERENCES tbl_user(user_id);
-	     
-	 
-	ALTER TABLE tbl_coupon
-	ADD CONSTRAINT fk_coupon_business
-	     FOREIGN KEY (business_id) 
-	     REFERENCES tbl_business(business_id);
-	  
-  
+   ALTER TABLE tbl_coupon
+   ADD CONSTRAINT fk_coupon_created_by
+        FOREIGN KEY (created_by) 
+        REFERENCES tbl_user(user_id);
+        
+   ALTER TABLE tbl_coupon
+   ADD CONSTRAINT fk_coupon_modified_by
+        FOREIGN KEY (modified_by) 
+        REFERENCES tbl_user(user_id);
+        
+    
+   ALTER TABLE tbl_coupon
+   ADD CONSTRAINT fk_coupon_business
+        FOREIGN KEY (business_id) 
+        REFERENCES tbl_business(business_id);
+     
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
