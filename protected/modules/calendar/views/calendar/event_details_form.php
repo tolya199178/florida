@@ -70,6 +70,20 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="form-group">
+                                <?php echo $form->labelEx($model,'event_status',array('class'=>"col-sm-2 control-label")); ?>
+                                <div class="col-sm-10">
+                                    <?php echo $form->dropDownList($model,
+                                                                   'event_status',
+                                                                   $model->listStatus(),
+                                                                   array('prompt'=>'Select Event Status', 'class'=>"form-control")
+                                    );?>
+                                    <?php echo $form->error($model,'event_status'); ?>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="tab-pane" id="datetime">
@@ -102,7 +116,12 @@
                             <div class="form-group">
                                 <?php echo $form->labelEx($model,'event_start_time',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-10">
-                                    <?php echo $form->textField($model,'event_start_time',array('class'=>"form-control")); ?>
+                                    <?php echo $form->dropDownList($model,
+                                                                   'event_start_time',
+                                                                   $model->listEventStartEndTimes(),
+                                                                   array('prompt'=>'Select Event Start Time', 'class'=>"form-control")
+                                                     );
+                                    ?>
                                     <?php echo $form->error($model,'event_start_time'); ?>
                                 </div>
                             </div>
@@ -137,7 +156,12 @@
                             <div class="form-group">
                                 <?php echo $form->labelEx($model,'event_end_time',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-10">
-                                    <?php echo $form->textField($model,'event_end_time',array('class'=>"form-control")); ?>
+                                    <?php echo $form->dropDownList($model,
+                                                                   'event_end_time',
+                                                                   $model->listEventStartEndTimes(),
+                                                                   array('prompt'=>'Select Event End Time', 'class'=>"form-control")
+                                                     );
+                                    ?>
                                     <?php echo $form->error($model,'event_end_time'); ?>
                                 </div>
                             </div>
@@ -253,7 +277,7 @@
                                     <div
                                         style="border: 1px solid #066A75; padding: 3px; width: 150px; height: 150px;"
                                         id="left">
-                                        <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails/'.$model->image,
+                                        <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails/'.$model->event_photo,
                                                                 "Image",
                                                                 array('width'=>150, 'height'=>150))); ?>
                                     </div>
@@ -320,7 +344,7 @@
         </div>
         <div class="modal-footer">
             <div class="row buttons">
-        		<?php echo CHtml::submitButton('Post your New Event', array('class'=>"btn btn-success")); ?>
+        		<?php echo CHtml::submitButton('Save the Event', array('class'=>"btn btn-success")); ?>
         	</div>
 
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

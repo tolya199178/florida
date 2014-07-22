@@ -150,6 +150,13 @@ class DashboardController extends Controller
                       ));
 
         // /////////////////////////////////////////////////////////////////////
+        // Get a list of the user's events
+        // /////////////////////////////////////////////////////////////////////
+        $listEvents = Event::model()->findAllByAttributes(array(
+                                        'user_id' => Yii::app()->user->id,
+                                      ));
+
+        // /////////////////////////////////////////////////////////////////////
         // TODO: Get a list of the user's activities logs
         // /////////////////////////////////////////////////////////////////////
         // TODO:
@@ -174,7 +181,8 @@ class DashboardController extends Controller
 
         $configDashboard['data'] = array(
             'listMyBusiness'    => $listMyBusiness,
-            'listMyMessages'        => $listMyMessages,
+            'listMyMessages'    => $listMyMessages,
+            'listEvents'        => $listEvents,
             'myPhotos'          => $listPhotos,
             'myActivities'      => $listMyActivities,
             'myFriendsCount'    => $myFriendsCount,

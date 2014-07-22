@@ -1,8 +1,6 @@
 <?php
 
 $listMyBusiness     = $data['listMyBusiness'];
-// $myLocalFriends     = $data['myLocalFriends'];
-// $myOnlineFriends    = $data['myOnlineFriends'];
 $myFriendsCount     = $data['myFriendsCount'];
 $myInboxCount       = $data['myMessagesCount'];
 
@@ -59,3 +57,4 @@ $myInboxCount       = $data['myMessagesCount'];
 
                         <?php $this->renderPartial('components/messages_summary', array('myInboxCount'=>$myInboxCount)) ?>
 
+                        <?php $this->renderPartial('components/events_top5', array('data'=>$data)) ?>
