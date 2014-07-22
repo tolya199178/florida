@@ -145,6 +145,17 @@ class MyPackage extends CActiveRecord
 		));
 	}
 
+    protected function beforeSave() {
+        // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+	    }
+
+        return parent::beforeSave();
+    }
+
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
