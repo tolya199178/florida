@@ -1750,11 +1750,12 @@ CREATE TABLE IF NOT EXISTS `tbl_package_item` (
 --
 -- Constraints for table `tbl_package_item`
 --
+-- THIS ALTER TABLE IS BROKEN
 ALTER TABLE `tbl_package_item`
   ADD CONSTRAINT `FK_tbl_package_items1` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`),
   ADD CONSTRAINT `FK_tbl_package_items` FOREIGN KEY (`package_id`) REFERENCES `tbl_package` (`package_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `tbl_package_item_ibfk_1` FOREIGN KEY (`item_type_id`) REFERENCES `tbl_package_item_type` (`package_item_type_id`);
-
+-- THIS ALTER TABLE IS BROKEN
 
 
 --
@@ -1770,7 +1771,7 @@ CREATE TABLE IF NOT EXISTS `tbl_my_package` (
   PRIMARY KEY (`my_package_id`),
   KEY `package_id` (`package_id`),
   KEY `business_id` (`business_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Constraints for table `tbl_my_package`
@@ -1794,7 +1795,7 @@ CREATE TABLE IF NOT EXISTS `tbl_my_package_item` (
   PRIMARY KEY (`my_package_item_id`),
   KEY `my_package_id` (`my_package_id`),
   KEY `item_type_id` (`item_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 --
 -- Constraints for table `tbl_my_package_item`
@@ -1823,7 +1824,7 @@ CREATE TABLE IF NOT EXISTS `tbl_package_purchase` (
   KEY `package_id` (`package_id`),
   KEY `user_id` (`user_id`),
   KEY `business_id` (`business_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 --
