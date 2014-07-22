@@ -27,7 +27,7 @@ $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataT
         <div class="navbar-form navbar-left" role="search">
             <div class="form-group">
                 <a
-                    href="<?php echo Yii::app()->createUrl('package/create'); ?>"
+                    href="<?php echo Yii::app()->createUrl('packageadmin/create'); ?>"
                     class="btn btn-primary">Add New Package</a>
             </div>
         </div>
@@ -92,9 +92,9 @@ $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataT
 </table>
 
 <?php
-$data_url = Yii::app()->createUrl('package/listjson');
-$edit_url = Yii::app()->createUrl('package/edit');
-$delete_url = Yii::app()->createUrl('package/delete');
+$data_url = Yii::app()->createUrl('packageadmin/listjson');
+$edit_url = Yii::app()->createUrl('packageadmin/edit');
+$delete_url = Yii::app()->createUrl('packageadmin/delete');
 
 $script = <<<EOD
     var table = $('#package_table').DataTable({

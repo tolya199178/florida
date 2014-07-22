@@ -28,7 +28,7 @@
  * @package Controllers
  * @version 1.0
  */
-class PackageController extends BackEndController
+class PackageadminController extends BackEndController
 {
 
     /**
