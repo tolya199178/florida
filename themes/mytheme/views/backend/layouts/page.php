@@ -140,7 +140,7 @@
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Packages</a>
                           <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/package/list'); ?>">Packages Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/packageadmin/list'); ?>">Packages Listing</a></li>
                           </ul>
                       </li>
 
