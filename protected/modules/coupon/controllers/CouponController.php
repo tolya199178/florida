@@ -302,6 +302,97 @@ class CouponController extends Controller
 
 	}
 
+	/**
+	 * Updates an existing coupon record.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the requested coupon's
+	 * ...   details capture form
+	 * ... - the (subsequent) POST request saves the submitted post data for
+	 * ...   the existing Coupon record
+	 * ...If the save (POST request) is successful, the default method (index()) is called.
+	 * ...If the save (POST request) is not successful, the details form is shown
+	 * ...again with error messages from the Coupon validation (Coupon::rules())
+	 *
+	 * @param integer $coupon_id the ID of the model to be updated
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionUpdatecoupon($coupon_id)
+	{
+
+	    $couponModel = Coupon::model()->findByPk($coupon_id);
+	    if($couponModel===null)
+	    {
+	        throw new CHttpException(404,'The requested page does not exist.');
+	    }
+
+
+	    // Uncomment the following line if AJAX validation is needed
+	    // TODO: Currently disabled as it breaks JQuery loading order
+	    // $this->performAjaxValidation($couponModel);
+
+	    if(isset($_POST['Coupon']))
+	    {
+	        // Assign all fields from the form
+	        $couponModel->attributes=$_POST['Coupon'];
+
+	        $uploadedFile = CUploadedFile::getInstance($couponModel,'fldUploadImage');
+
+	        // Make a note of the existing image file name. It will be deleted soon.
+	        $oldImageFileName = $couponModel->coupon_photo;
+
+	        if(!empty($uploadedFile))  // check if uploaded file is set or not
+	        {
+	            // Save the image file name
+	            $couponModel->coupon_photo = 'coupon-'.$couponModel->coupon_id.'-'.$uploadedFile->name;
+	        }
+
+	        if($couponModel->save())
+	        {
+
+	            if(!empty($uploadedFile))  // check if uploaded file is set or not
+	            {
+
+	                $imageFileName = 'coupon-'.$couponModel->coupon_id.'-'.$uploadedFile->name;
+	                $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+
+	                // Remove existing images
+	                if (!empty($oldImageFileName))
+	                {
+	                    $this->deleteImages($oldImageFileName);
+	                }
+
+	                // Save the new uploaded image
+	                $uploadedFile->saveAs($imagePath);
+
+	                $this->createThumbnail($imageFileName);
+
+	                $couponModel->save();
+
+
+	            }
+
+	            $this->redirect(array('index'));
+
+	        }
+	        else {
+	            Yii::app()->user->setFlash('error', "Error creating a coupon record.'");
+	        }
+
+	    }
+
+	    $couponData          = array('mainview'        => 'details',
+                        	         'model'           => $couponModel,
+                        	         'myCouponSummary' => $this->getCouponSummary());
+
+	    // Show the details screen
+	    $this->render('coupon_main', array('data'=>$couponData));
+
+	}
+
+
+
     /**
      * Delete images for the coupon. Normally invoked when coupon is being deleted.
      *
