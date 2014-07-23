@@ -329,7 +329,7 @@ class CouponadminController extends BackEndController
         }
         else
         {
-            $this->deleteImages($couponModel->image);
+            $this->deleteImages($couponModel->coupon_photo);
         }
 
 
@@ -426,10 +426,8 @@ class CouponadminController extends BackEndController
             $row = array($r->attributes['coupon_id'],
                          $r->attributes['coupon_name'],
                          $r->attributes['coupon_description'],
-                         $r->attributes['coupon_type'],
-                         $r->attributes['coupon_code'],
                          $r->attributes['coupon_expiry'],
-                         $r->attributes['printed'],
+                         $r->attributes['active'],
                          ''
                         );
             $output['aaData'][] = $row;
