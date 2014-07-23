@@ -57,6 +57,13 @@ class Coupon extends CActiveRecord
     public $fldUploadImage;
 
     /**
+     *
+     * @var string fldCouponCreateCount Form only number of coupons to create
+     * @access public
+     */
+    public $fldCouponCreateCount;
+
+    /**
      * Get database table name associated with the model.
      *
      * @param <none> <none>
@@ -89,6 +96,8 @@ class Coupon extends CActiveRecord
 
 		    // Data types, sizes
 			array('business_id, redeemed_by, number_of_uses',            'numerical', 'integerOnly'=>true),
+		    array('fldCouponCreateCount',                                'numerical', 'integerOnly'=>true),
+		    array('fldCouponCreateCount',                                'required', 'on'=>'createbatch'),
 			array('coupon_name', 'length',                               'max'=>250),
 		    array('coupon_photo', 'length',                              'max'=>1024),
 		    array('coupon_description, terms',                           'length', 'max'=>4096),
@@ -160,6 +169,7 @@ class Coupon extends CActiveRecord
 			'modified_time'          => 'Modified Time',
 			'created_by'             => 'Created By',
 			'modified_by'            => 'Modified By',
+		    'fldCouponCreateCount'   => '#Coupons to be Issued'
 		);
 	}
 
@@ -205,6 +215,7 @@ class Coupon extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+
 	}
 
     /**

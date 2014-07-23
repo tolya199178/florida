@@ -15,7 +15,7 @@
                                 <?php echo $myCouponSummary['valuePrinted']; ?>
                             </li>
                             <li class="list-group-item text-center">
-                                <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('coupons/coupons/'); ?>">
+                                <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('coupon/coupon/'); ?>">
                                     <i class="glyphicon glyphicon-plus-sign"></i>
                                     Manage your Coupons
                                 </a>
