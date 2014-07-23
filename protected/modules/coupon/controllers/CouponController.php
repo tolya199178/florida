@@ -467,6 +467,39 @@ class CouponController extends Controller
 
 	}
 
+	/**
+	 * Print a coupon.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return string $result JSON encoded result and message
+	 * @access public
+	 */
+	public function actionPrint()
+	{
+
+	    $couponId = $_GET['coupon_id'];
+	    $couponModel = Coupon::model()->findByPk($couponId);
+
+	    if ($couponModel == null)
+	    {
+	        throw new CHttpException(404,'The requested coupon was not found.');
+	        Yii::app()->end();
+	    }
+
+	    if ($couponModel->printed == 'Y')
+	    {
+	        throw new CHttpException(400,'Invalid request. The requested coupon is already printed.');
+	        Yii::app()->end();
+	    }
+
+
+	    // Show the details screen
+	    $this->render('coupon_print', array('model'=>$couponModel));
+
+
+    }
+
 
     /**
      * Delete images for the coupon. Normally invoked when coupon is being deleted.

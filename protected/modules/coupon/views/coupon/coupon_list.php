@@ -53,9 +53,17 @@
                     	    ),
                             array(
                                 'class'=>'CButtonColumn',
-                                'template'=>'{update}{delete}',
+                                'template'=>'{update}{delete}{print}',
                                 'updateButtonUrl'=>'Yii::app()->createUrl("coupon/coupon/updatecoupon", array("coupon_id"=>$data["coupon_id"]))',
-                                "htmlOptions" => array(
+                                'buttons'=>array(
+                                    'print' => array(
+                                        'label'=>'<span class="glyphicon glyphicon-print"></span>', // text label of the button
+                                        'url'=>'Yii::app()->createUrl("coupon/coupon/print", array("coupon_id"=>$data["coupon_id"]))',
+                                        // 'imageUrl'=>'/path/to/copy.gif',  // image URL of the button. If not set or false, a text link is used
+                                        'options' => array('class'=>'copy'), // HTML options for the button
+                                    ),
+                                ),
+                                                            "htmlOptions" => array(
                                     'style'=>'width: 60px;',
                                     'class' => 'action_class'
                                 )
