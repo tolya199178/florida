@@ -1838,20 +1838,21 @@ ALTER TABLE `tbl_package_purchase`
 -- ---------------------------------------------------------------------
 -- business_coupon
 -- ---------------------------------------------------------------------
-CREATE TABLE `tbl_coupon` (
+DROP TABLE IF EXISTS `tbl_coupon`;
+  
+  CREATE TABLE `tbl_coupon` (
   `coupon_id` int(11) NOT NULL AUTO_INCREMENT,
   `business_id` int(11) NOT NULL,
-  `redeemed_by` int(11) DEFAULT NULL,
   `coupon_name` varchar(250) NOT NULL,
-  `number_of_uses` int(11) NOT NULL DEFAULT 1,
-  `coupon_type` enum('Unique','Generic') NOT NULL DEFAULT 'Unique',
+  `count_created` int(11) NOT NULL DEFAULT 0,
+  `count_available` int(11) NOT NULL,
   `coupon_expiry` DATE DEFAULT NULL,
   `coupon_photo` varchar(1024) DEFAULT NULL,
   `coupon_description` varchar(4096) DEFAULT NULL,
-  `coupon_code` varchar(32) DEFAULT NULL,
   `terms` text DEFAULT NULL,
   `printed` enum('Y','N') NOT NULL DEFAULT 'N',
-  `cost` decimal(10,2) DEFAULT NULL,
+  `coupon_value` decimal(10,2) DEFAULT NULL,
+  `coupon_value_type` enum('%','$') NOT NULL DEFAULT '$',
   `created_time` timestamp NULL DEFAULT 0,
   `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_by`  int(11) NOT NULL,
@@ -1875,7 +1876,24 @@ CREATE TABLE `tbl_coupon` (
         FOREIGN KEY (business_id) 
         REFERENCES tbl_business(business_id);
      
+        
+-- ---------------------------------------------------------------------
+-- business_coupon
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_coupon_print_log`;
+  
+  CREATE TABLE `tbl_coupon_print_log` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `coupon_id` int(11) NOT NULL,
+  `print_time` timestamp NULL DEFAULT 0,
+  PRIMARY KEY (`log_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+   ALTER TABLE tbl_coupon_print_log
+   ADD CONSTRAINT fk_coupon_print_log_coupon
+        FOREIGN KEY (coupon_id) 
+        REFERENCES tbl_coupon(coupon_id);
+ 
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
