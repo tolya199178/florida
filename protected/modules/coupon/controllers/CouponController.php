@@ -391,6 +391,81 @@ class CouponController extends Controller
 
 	}
 
+	/**
+	 * Deletes an existing coupon record.
+	 * ...As an additional safety measure, only POST requests are processed.
+	 * ...Currently, instead of physically deleting the entry, the record is
+	 * ...modified with the status fields set to 'deleted'
+	 * ...We also expect a JSON request only, and return a JSON string providing
+	 * ...outcome details.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return string $result JSON encoded result and message
+	 * @access public
+	 */
+	public function actionDelete()
+	{
+
+	    // TODO: add proper error message . iether flash or raiseerror. Might
+	    // be difficult when sending ajax response.
+
+	    if(Yii::app()->request->isPostRequest)
+	    {
+
+    	    $couponId = $_GET['id'];
+    	    $couponModel = Coupon::model()->findByPk($couponId);
+
+    	    if ($couponModel == null)
+    	    {
+    	        header("Content-type: application/json");
+    	        echo '{"result":"fail", "message":"Invalid coupon"}';
+    	        Yii::app()->end();
+    	    }
+
+    	    if ($couponModel->printed == 'Y')
+    	    {
+    	        header("Content-type: application/json");
+    	        echo '{"result":"fail", "message":"You cannot delete a printed coupon."}';
+    	        Yii::app()->end();
+    	    }
+
+    	    // TODO: Retain this, until the use of expiry date is confirmed by client
+    // 	    $expiryDate = strtotime($couponModel->coupon_expiry);
+
+    // 	    if(time() > $expiryDate)
+    // 	    {
+    // 	        header("Content-type: application/json");
+    // 	        echo '{"result":"fail", "message":"You cannot delete a printed coupon."}';
+    // 	        Yii::app()->end();
+    // 	    }
+
+
+    	    $result = $couponModel->delete();
+
+    	    if ($result == false)
+    	    {
+    	        header("Content-type: application/json");
+    	        echo '{"result":"fail", "message":"Failed to mark record for deletion"}';
+    	        Yii::app()->end();
+    	    }
+    	    else
+    	    {
+    	        $this->deleteImages($couponModel->coupon_photo);
+    	    }
+
+
+
+    	    echo '{"result":"success", "message":""}';
+    	    Yii::app()->end();
+        }
+        else
+        {
+            throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+        }
+
+
+	}
 
 
     /**

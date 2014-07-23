@@ -53,7 +53,7 @@
                     	    ),
                             array(
                                 'class'=>'CButtonColumn',
-                                'template'=>'{update}',
+                                'template'=>'{update}{delete}',
                                 'updateButtonUrl'=>'Yii::app()->createUrl("coupon/coupon/updatecoupon", array("coupon_id"=>$data["coupon_id"]))',
                                 "htmlOptions" => array(
                                     'style'=>'width: 60px;',
