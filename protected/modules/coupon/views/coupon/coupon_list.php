@@ -1,111 +1,13 @@
 <?php
 
-    // $myMessagesSummary  = $data['myMessagesSummary'];
+    $arrayDataProvider  = $data['arrayDataProvider'];
 
 ?>
 
-<style>
-<!--
-#inbox {
-	background: #fff;
-}
--->
-</style>
 
-<style>
+                <h2>List of Coupons</h2>
 
-
-.badge {
-  padding: 1px 9px 2px;
-  font-size: 12.025px;
-  font-weight: bold;
-  white-space: nowrap;
-  color: #ffffff;
-  background-color: #999999;
-  -webkit-border-radius: 9px;
-  -moz-border-radius: 9px;
-  border-radius: 9px;
-}
-.badge:hover {
-  color: #ffffff;
-  text-decoration: none;
-  cursor: pointer;
-}
-.badge-error {
-  background-color: #b94a48;
-}
-.badge-error:hover {
-  background-color: #953b39;
-}
-.badge-warning {
-  background-color: #f89406;
-}
-.badge-warning:hover {
-  background-color: #c67605;
-}
-.badge-success {
-  background-color: #468847;
-}
-.badge-success:hover {
-  background-color: #356635;
-}
-.badge-info {
-  background-color: #3a87ad;
-}
-.badge-info:hover {
-  background-color: #2d6987;
-}
-.badge-inverse {
-  background-color: #333333;
-}
-.badge-inverse:hover {
-  background-color: #1a1a1a;
-}
-</style>
-
-<div id="inbox">
-
-    <div class="container">
-
-        <p>&nbsp;</p>
-
-        <!-- Main message area -->
-        <div class="row">
-
-            <!-- Coupon Summary Data -->
-            <div class="col-sm-3 col-md-2">
-
-                    <ul class="list-group">
-                        <li class="list-group-item text-muted">Business Coupon Summary</li>
-                        <li class="list-group-item text-right">
-                            <span class="pull-left"><strong>Coupons Created.</strong></span>
-                            <?php echo $myCouponSummary['countAll']; ?>
-                        </li>
-                        <li class="list-group-item text-right">
-                            <span class="pull-left"><strong>Coupons Printed.</strong></span>
-                            <?php echo $myCouponSummary['countPrinted']; ?>
-                        </li>
-                        <li class="list-group-item text-right">
-                            <span class="pull-left"><strong>Value of Coupons printed.</strong></span>
-                            <?php echo $myCouponSummary['valuePrinted']; ?>
-                        </li>
-                        <li class="list-group-item text-center">
-                            <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('coupon/coupon/'); ?>">
-                                <i class="glyphicon glyphicon-plus-sign"></i>
-                                Manage your Coupons
-                            </a>
-                        </li>
-                    </ul>
-
-            </div>
-            <!--  ./Coupon Summary Data -->
-
-            <!--  Coupon Lists -->
-            <div class="col-sm-9 col-md-10">
-
-            <h2>List of Coupons</h2>
-
-                <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('coupon/coupon/add'); ?>">
+                <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('coupon/coupon/createrequest'); ?>">
                     <i class="glyphicon glyphicon-plus-sign"></i>
                     Add a New Coupon
                 </a>
@@ -149,26 +51,16 @@
                     	        'type' => 'raw',
                     	        'value' => 'CHtml::encode($data["cost"])'
                     	    ),
-                //     		array(
-                //     			'name' => 'email',
-                //     			'type' => 'raw',
-                //     			'value' => 'CHtml::link(CHtml::encode($data["email"]), "mailto:".CHtml::encode($data["email"]))',
-                //     		),
+                            array(
+                                'class'=>'CButtonColumn',
+                                'template'=>'{update}',
+                                'updateButtonUrl'=>'Yii::app()->createUrl("coupon/coupon/updatecoupon", array("coupon_id"=>$data["coupon_id"]))',
+                                "htmlOptions" => array(
+                                    'style'=>'width: 60px;',
+                                    'class' => 'action_class'
+                                )
+                            )
                     	),
                     ));
 
                 ?>
-            </div>
-
-        </div>
-        <!-- ./Coupon area -->
-
-
-    </div>
-
-
-</div>
-
-
-
-
