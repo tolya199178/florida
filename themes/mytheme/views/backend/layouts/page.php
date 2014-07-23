@@ -156,7 +156,7 @@
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Coupons</a>
                           <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/coupon/list'); ?>">Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/couponadmin/list'); ?>">Listing</a></li>
                           </ul>
                       </li>
 

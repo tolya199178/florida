@@ -28,7 +28,7 @@
             <div class="navbar-form navbar-left" role="search">
                 <div class="form-group">
                     <a
-                        href="<?php echo Yii::app()->createUrl('coupon/create'); ?>"
+                        href="<?php echo Yii::app()->createUrl('couponadmin/create'); ?>"
                         class="btn btn-primary">Add New Coupon</a>
                 </div>
             </div>
@@ -77,9 +77,9 @@
     </table>
 
 <?php
-    $data_url = Yii::app()->createUrl('coupon/listjson');
-    $edit_url = Yii::app()->createUrl('coupon/edit');
-    $delete_url = Yii::app()->createUrl('coupon/delete');
+    $data_url = Yii::app()->createUrl('couponadmin/listjson');
+    $edit_url = Yii::app()->createUrl('couponadmin/edit');
+    $delete_url = Yii::app()->createUrl('couponadmin/delete');
 
 $script = <<<EOD
     var table = $('#coupon_table').DataTable({
