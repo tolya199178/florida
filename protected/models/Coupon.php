@@ -13,7 +13,7 @@
  * @property string $coupon_photo
  * @property string $coupon_description
  * @property string $terms
- * @property string $printed
+ * @property string $active
  * @property string $coupon_value
  * @property string $coupon_value_type
  * @property string $created_time
@@ -85,7 +85,7 @@ class Coupon extends CActiveRecord
 		return array(
 
 		    // Mandatory rules
-			array('business_id, coupon_name, count_available',           'required'),
+			array('business_id, coupon_name, count_created',             'required'),
 
 		    // Data types, sizes
 			array('business_id, count_created, count_available',         'numerical', 'integerOnly'=>true),
@@ -99,7 +99,7 @@ class Coupon extends CActiveRecord
 		    // ranges
 		    array('coupon_value_type',
 		          'in', 'range'=>array('%','$'),'allowEmpty'=>true),
-		    array('printed',
+		    array('active',
 		          'in', 'range'=>array('Y','N'),'allowEmpty'=>false),
 
 		    // Form only attributes.
@@ -107,7 +107,7 @@ class Coupon extends CActiveRecord
 
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-            array('coupon_id, business_id, coupon_name, count_created, count_available, coupon_expiry, coupon_photo, coupon_description, terms, printed, coupon_value, coupon_value_type, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
+            array('coupon_id, business_id, coupon_name, count_created, count_available, coupon_expiry, coupon_photo, coupon_description, terms, active, coupon_value, coupon_value_type, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -153,7 +153,7 @@ class Coupon extends CActiveRecord
 			'coupon_photo'           => 'Coupon Photo',
 			'coupon_description'     => 'Coupon Description',
 			'terms'                  => 'Terms',
-			'printed'                => 'Printed',
+			'active'                 => 'Active',
 			'coupon_value'           => 'Coupon Value',
 			'coupon_value_type'      => 'Coupon Value Type',
 			'created_time'           => 'Created Time',
@@ -194,7 +194,7 @@ class Coupon extends CActiveRecord
 		$criteria->compare('coupon_photo',        $this->coupon_photo,true);
 		$criteria->compare('coupon_description',  $this->coupon_description,true);
 		$criteria->compare('terms',               $this->terms,true);
-		$criteria->compare('printed',             $this->printed,true);
+		$criteria->compare('active',              $this->active);
 		$criteria->compare('coupon_value',        $this->coupon_value,true);
 		$criteria->compare('coupon_value_type',   $this->coupon_value_type,true);
 		$criteria->compare('created_time',        $this->created_time,true);
