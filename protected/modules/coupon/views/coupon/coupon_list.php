@@ -22,14 +22,14 @@
                     			'value' => 'CHtml::encode($data["coupon_name"])'
                     		),
                     	    array(
-                    	        'name' => 'number_of_uses',
+                    	        'name' => 'count_created',
                     	        'type' => 'raw',
-                    	        'value' => 'CHtml::encode($data["number_of_uses"])'
+                    	        'value' => 'CHtml::encode($data["count_created"])'
                     	    ),
                     	    array(
-                    	        'name' => 'coupon_type',
+                    	        'name' => 'count_available',
                     	        'type' => 'raw',
-                    	        'value' => 'CHtml::encode($data["coupon_type"])'
+                    	        'value' => 'CHtml::encode($data["count_available"])'
                     	    ),
                     	    array(
                     	        'name' => 'coupon_expiry',
@@ -37,23 +37,13 @@
                     	        'value' => 'CHtml::encode($data["coupon_expiry"])'
                     	    ),
                     	    array(
-                    	        'name' => 'coupon_code',
+                    	        'name' => 'active',
                     	        'type' => 'raw',
-                    	        'value' => 'CHtml::encode($data["coupon_code"])'
-                    	    ),
-                    	    array(
-                    	        'name' => 'printed',
-                    	        'type' => 'raw',
-                    	        'value' => 'CHtml::encode($data["printed"])'
-                    	    ),
-                    	    array(
-                    	        'name' => 'cost',
-                    	        'type' => 'raw',
-                    	        'value' => 'CHtml::encode($data["cost"])'
+                    	        'value' => 'CHtml::encode($data["active"])'
                     	    ),
                             array(
                                 'class'=>'CButtonColumn',
-                                'template'=>'{update}{delete}{print}',
+                                'template'=>'{update}{delete}',
                                 'updateButtonUrl'=>'Yii::app()->createUrl("coupon/coupon/updatecoupon", array("coupon_id"=>$data["coupon_id"]))',
                                 'buttons'=>array(
                                     'print' => array(

@@ -186,19 +186,17 @@ class CouponController extends Controller
         $lstAllMyCertificates       = Coupon::model()->findAll($dbCriteria);
 
         $summaryResults             = array('countAll'          => 0,
-            'countPrinted'      => 0,
-            'valuePrinted'      => 0);
+                                            'countPrinted'      => 0,
+                                            'valuePrinted'      => 0);
 
         foreach ($lstAllMyCertificates as $itemCertificate)
         {
-            $summaryResults['countAll']++;
+            $countPrinted                   = ($itemCertificate->count_created - $itemCertificate->count_available);
 
-            if ($itemCertificate->printed == 'Y')
-            {
-                $summaryResults['countPrinted']++;
-                $summaryResults['valuePrinted']++;
+            $summaryResults['countAll']     += $itemCertificate->count_created;
 
-            }
+            $summaryResults['countPrinted'] += $countPrinted;
+            $summaryResults['valuePrinted'] += $countPrinted * $itemCertificate->coupon_value;
 
         }
 
@@ -223,7 +221,7 @@ class CouponController extends Controller
 	public function actionCreaterequest()
 	{
 
-		$couponModel = new Coupon('createbatch');
+			$couponModel = new Coupon;
 
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
@@ -232,48 +230,32 @@ class CouponController extends Controller
 	    if(isset($_POST['Coupon']))
 	    {
 
+	        $couponModel->attributes=$_POST['Coupon'];
+
 	        $uploadedFile = CUploadedFile::getInstance($couponModel,'fldUploadImage');
 
-	        $countCouponsRequired = $_POST['Coupon']['fldCouponCreateCount'];
-
-	        // Create the coupons one by one.
-	        for ($indexCoupon = 0; $indexCoupon < $countCouponsRequired; $indexCoupon++)
+	        if($couponModel->save())
 	        {
 
-	            // Random code from here :
-	            // http://stackoverflow.com/questions/3521621
-	            $couponCode = strtoupper(substr(md5(time().rand(10000,99999)), 0, 10));
-
-
-                $itemCoupon = new Coupon;
-                $itemCoupon->attributes = $_POST['Coupon'];
-                $itemCoupon->coupon_code = $couponCode;
-
-
-                if($itemCoupon->save())
+                if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
+                    $imageFileName = 'coupon-'.$couponModel->coupon_id.'-'.$uploadedFile->name;
+                    $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
-                    if(!empty($uploadedFile))  // check if uploaded file is set or not
-                    {
-                        $imageFileName = 'coupon-'.$itemCoupon->coupon_id.'-'.$uploadedFile->name;
-                        $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
+                    $uploadedFile->saveAs($imagePath);
+                    $couponModel->coupon_photo = $imageFileName;
 
-                        $uploadedFile->saveAs($imagePath);
-                        $itemCoupon->coupon_photo = $imageFileName;
+                    $this->createThumbnail($imageFileName);
 
-                        $this->createThumbnail($imageFileName);
-
-                        $itemCoupon->save();
-                    }
-
+                    $couponModel->save();
                 }
-                else {
-                    Yii::app()->user->setFlash('error', "Error creating a coupon record.'");
-                }
+
+	            $this->redirect(array('index'));
 
 	        }
-
-	        $this->redirect(array('index'));
+	        else {
+                Yii::app()->user->setFlash('error', "Error creating a coupon record.'");
+	        }
 
 
 	    }
@@ -492,6 +474,11 @@ class CouponController extends Controller
 	        throw new CHttpException(400,'Invalid request. The requested coupon is already printed.');
 	        Yii::app()->end();
 	    }
+
+
+// 	    // Random code from here :
+// 	    // http://stackoverflow.com/questions/3521621
+// 	    $couponCode = strtoupper(substr(md5(time().rand(10000,99999)), 0, 10));
 
 
 	    // Show the details screen

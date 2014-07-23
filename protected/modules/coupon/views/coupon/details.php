@@ -54,25 +54,25 @@
         </div>
     </div>
 
-    <div class="row">
+	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'coupon_type',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'coupon_type',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
-                <?php echo $form->error($model,'coupon_name'); ?>
+            <?php echo $form->labelEx($model,'count_created',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-2">
+                <?php echo $form->textField($model,'count_created',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'count_created'); ?>
             </div>
         </div>
-    </div>
+	</div>
 
-    <div class="row">
+	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'coupon_code',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'coupon_code',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
-                <?php echo $form->error($model,'coupon_code'); ?>
+            <?php echo $form->labelEx($model,'count_available',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-2">
+                <?php echo $form->textField($model,'count_available',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo $form->error($model,'count_available'); ?>
             </div>
         </div>
-    </div>
+	</div>
 
     <div class="row">
         <div class="form-group">
@@ -121,16 +121,26 @@
 
 
 
+
     <div class="row">
         <div class="form-group">
             <?php echo $form->labelEx($model,'business_id',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::textField('business_name',$model->business['business_name'],array('class'=>"form-control", 'readonly'=>'readonly')); ?>
+                <?php echo $form->dropDownList($model,'business_id', CHtml::listData(Business::model()->findAll(), 'business_id', 'business_name'), array('class'=>"form-control")); ?>
+
                 <?php echo $form->error($model,'business_id'); ?>
             </div>
         </div>
     </div>
 
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'created_by',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo CHtml::textField('UserReadOnly[createdBy]', ((!empty($model->createdBy->user_name))?CHtml::encode($model->createdBy->user_name):''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+            </div>
+        </div>
+	</div>
 
 	<div class="row">
         <div class="form-group">
@@ -141,16 +151,23 @@
         </div>
 	</div>
 
-    <div class="row">
+	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'number_of_uses',array('class'=>"col-sm-2 control-label")); ?>
+            <?php echo $form->labelEx($model,'modified_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->textField($model,'number_of_uses',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'number_of_uses'); ?>
+                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', ((!empty($model->modifiedBy->user_name))?CHtml::encode($model->modifiedBy->user_name):''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>
-    </div>
+	</div>
 
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'modified_time',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-4">
+                <?php echo $form->textField($model,'modified_time',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+            </div>
+        </div>
+	</div>
 
     <div class="row">
         <div class="form-group">
@@ -176,26 +193,34 @@
         </div>
     </div>
 
-    <div class="row">
+	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'cost',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'cost',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
-                <?php echo $form->error($model,'cost'); ?>
+            <?php echo $form->labelEx($model,'coupon_value',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-2">
+                <?php echo $form->textField($model,'coupon_value',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'coupon_value'); ?>
             </div>
         </div>
-    </div>
+	</div>
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'coupon_value_type',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-2">
+                <?php echo $form->dropDownList($model, 'coupon_value_type', array('%' => '%', '$' => '$'), array('prompt'=>'Select Coupon Value Type', 'class'=>"form-control"));?>
+                <?php echo $form->error($model,'coupon_value_type'); ?>
+            </div>
+        </div>
+	</div>
 
     <div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'printed',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'printed',array('class'=>"form-control", 'readonly'=>'readonly')); ?>
-                <?php echo $form->error($model,'printed'); ?>
+            <?php echo $form->labelEx($model,'active',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-2">
+                <?php echo $form->dropDownList($model, 'active', array('Y' => 'Yes', 'N' => 'No'), array('prompt'=>'Select Status', 'class'=>"form-control"));?>
+                <?php echo $form->error($model,'active'); ?>
             </div>
         </div>
     </div>
-
 
     <div class="row buttons">
         <?php echo CHtml::submitButton('Submit'); ?>

@@ -52,25 +52,10 @@
 
     <div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'coupon_type',array('class'=>"col-sm-2 control-label")); ?>
+            <?php echo $form->labelEx($model,'count_created',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,
-                                               'coupon_type',
-                                               $model->listCouponTypes(),
-                                               array('prompt'=>'Select Coupon Type',
-                                                     'class'=>"form-control")
-                );?>
-                <?php echo $form->error($model,'coupon_type'); ?>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group">
-            <?php echo $form->labelEx($model,'fldCouponCreateCount',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'fldCouponCreateCount',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'fldCouponCreateCount'); ?>
+                <?php echo $form->textField($model,'count_created',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'count_created'); ?>
             </div>
         </div>
     </div>
@@ -133,17 +118,6 @@
 
     <div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'number_of_uses',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'number_of_uses',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'number_of_uses'); ?>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="form-group">
             <?php echo $form->labelEx($model,'coupon_expiry',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-2">
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -165,15 +139,25 @@
             </div>
         </div>
     </div>
-    <div class="row">
+
+	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'cost',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->textField($model,'cost',array('class'=>"form-control")); ?>
-                <?php echo $form->error($model,'cost'); ?>
+            <?php echo $form->labelEx($model,'coupon_value',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-2">
+                <?php echo $form->textField($model,'coupon_value',array('class'=>"form-control")); ?>
+                <?php echo $form->error($model,'coupon_value'); ?>
             </div>
         </div>
-    </div>
+	</div>
+	<div class="row">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'coupon_value_type',array('class'=>"col-sm-2 control-label")); ?>
+            <div class="col-sm-2">
+                <?php echo $form->dropDownList($model, 'coupon_value_type', array('%' => '%', '$' => '$'), array('prompt'=>'Select Coupon Value Type', 'class'=>"form-control"));?>
+                <?php echo $form->error($model,'coupon_value_type'); ?>
+            </div>
+        </div>
+	</div>
 
     <div class="row buttons">
         <?php echo CHtml::submitButton('Submit'); ?>
