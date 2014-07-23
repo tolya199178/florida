@@ -6,17 +6,16 @@
  * The followings are the available columns in table '{{coupon}}':
  * @property integer $coupon_id
  * @property integer $business_id
- * @property integer $redeemed_by
  * @property string $coupon_name
- * @property integer $number_of_uses
- * @property string $coupon_type
+ * @property integer $count_created
+ * @property string integer $count_available
  * @property string $coupon_expiry
  * @property string $coupon_photo
  * @property string $coupon_description
- * @property string $coupon_code
  * @property string $terms
  * @property string $printed
- * @property string $cost
+ * @property string $coupon_value
+ * @property string $coupon_value_type
  * @property string $created_time
  * @property string $modified_time
  * @property integer $created_by
@@ -26,6 +25,7 @@
  * @property Business $business
  * @property User $createdBy
  * @property User $modifiedBy
+ * @property CouponPrintLog[] $couponPrintLogs
  */
 
  /**
@@ -57,13 +57,6 @@ class Coupon extends CActiveRecord
     public $fldUploadImage;
 
     /**
-     *
-     * @var string fldCouponCreateCount Form only number of coupons to create
-     * @access public
-     */
-    public $fldCouponCreateCount;
-
-    /**
      * Get database table name associated with the model.
      *
      * @param <none> <none>
@@ -92,22 +85,20 @@ class Coupon extends CActiveRecord
 		return array(
 
 		    // Mandatory rules
-			array('business_id, coupon_name',                            'required'),
+			array('business_id, coupon_name, count_available',           'required'),
 
 		    // Data types, sizes
-			array('business_id, redeemed_by, number_of_uses',            'numerical', 'integerOnly'=>true),
-		    array('fldCouponCreateCount',                                'numerical', 'integerOnly'=>true),
-		    array('fldCouponCreateCount',                                'required', 'on'=>'createbatch'),
+			array('business_id, count_created, count_available',         'numerical', 'integerOnly'=>true),
 			array('coupon_name', 'length',                               'max'=>250),
 		    array('coupon_photo', 'length',                              'max'=>1024),
 		    array('coupon_description, terms',                           'length', 'max'=>4096),
 
-		    array('coupon_code, coupon_expiry',                          'length', 'max'=>32),
-		    array('cost',                                                'length', 'max'=>10),
+		    array('coupon_expiry',                                       'length', 'max'=>32),
+		    array('coupon_value',                                        'length', 'max'=>10),
 
 		    // ranges
-		    array('coupon_type',
-		          'in', 'range'=>array('Unique','Generic'),'allowEmpty'=>false),
+		    array('coupon_value_type',
+		          'in', 'range'=>array('%','$'),'allowEmpty'=>true),
 		    array('printed',
 		          'in', 'range'=>array('Y','N'),'allowEmpty'=>false),
 
@@ -116,7 +107,7 @@ class Coupon extends CActiveRecord
 
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('coupon_id, business_id, redeemed_by, coupon_name, number_of_uses, coupon_type, coupon_expiry, coupon_photo, coupon_description, coupon_code, terms, printed, cost, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
+            array('coupon_id, business_id, coupon_name, count_created, count_available, coupon_expiry, coupon_photo, coupon_description, terms, printed, coupon_value, coupon_value_type, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -135,6 +126,7 @@ class Coupon extends CActiveRecord
 			'business'           => array(self::BELONGS_TO, 'Business', 'business_id'),
 			'createdBy'          => array(self::BELONGS_TO, 'User', 'created_by'),
 			'modifiedBy'         => array(self::BELONGS_TO, 'User', 'modified_by'),
+		    'couponPrintLogs'    => array(self::HAS_MANY,   'CouponPrintLog', 'coupon_id'),
 		);
 	}
 
@@ -154,17 +146,16 @@ class Coupon extends CActiveRecord
 		return array(
 			'coupon_id'              => 'Coupon',
 			'business_id'            => 'Business',
-			'redeemed_by'            => 'Redeemed By',
 			'coupon_name'            => 'Coupon Name',
-			'number_of_uses'         => 'Number Of Uses',
-			'coupon_type'            => 'Coupon Type',
+			'count_created'          => 'Count Created',
+			'count_available'        => 'Count Available',
 			'coupon_expiry'          => 'Coupon Expiry Date',
 			'coupon_photo'           => 'Coupon Photo',
 			'coupon_description'     => 'Coupon Description',
-			'coupon_code'            => 'Coupon Code',
 			'terms'                  => 'Terms',
 			'printed'                => 'Printed',
-			'cost'                   => 'Cost',
+			'coupon_value'           => 'Coupon Value',
+			'coupon_value_type'      => 'Coupon Value Type',
 			'created_time'           => 'Created Time',
 			'modified_time'          => 'Modified Time',
 			'created_by'             => 'Created By',
@@ -196,21 +187,21 @@ class Coupon extends CActiveRecord
 
 		$criteria->compare('coupon_id',           $this->coupon_id);
 		$criteria->compare('business_id',         $this->business_id);
-		$criteria->compare('redeemed_by',         $this->redeemed_by);
 		$criteria->compare('coupon_name',         $this->coupon_name,true);
-		$criteria->compare('number_of_uses',      $this->number_of_uses);
-		$criteria->compare('coupon_type',         $this->coupon_type,true);
+		$criteria->compare('count_created',       $this->count_created);
+		$criteria->compare('count_available',     $this->count_available);
 		$criteria->compare('coupon_expiry',       $this->coupon_expiry,true);
 		$criteria->compare('coupon_photo',        $this->coupon_photo,true);
 		$criteria->compare('coupon_description',  $this->coupon_description,true);
-		$criteria->compare('coupon_code',         $this->coupon_code,true);
 		$criteria->compare('terms',               $this->terms,true);
 		$criteria->compare('printed',             $this->printed,true);
-		$criteria->compare('cost',                $this->cost,true);
+		$criteria->compare('coupon_value',        $this->coupon_value,true);
+		$criteria->compare('coupon_value_type',   $this->coupon_value_type,true);
 		$criteria->compare('created_time',        $this->created_time,true);
 		$criteria->compare('modified_time',       $this->modified_time,true);
 		$criteria->compare('created_by',          $this->created_by);
 		$criteria->compare('modified_by',         $this->modified_by);
+
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
