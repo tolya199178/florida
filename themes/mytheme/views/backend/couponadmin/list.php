@@ -65,10 +65,8 @@
                 <th>Coupon ID</th>
                 <th>Coupon Name</th>
                 <th>Description</th>
-                <th>Coupon Type</th>
-                <th>Coupon Code</th>
                 <th>Expiry Date</th>
-                <th>Printed</th>
+                <th>Active</th>
                 <th>&nbsp;</th>
                 <th>&nbsp;</th>
 
