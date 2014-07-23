@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Controller interface for Coupon management.
+ * Controller interface for Couponadmin management.
  */
 
 /**
@@ -28,7 +28,7 @@
  * @package Controllers
  * @version 1.0
  */
-class CouponController extends BackEndController
+class CouponadminController extends BackEndController
 {
 
     /**
