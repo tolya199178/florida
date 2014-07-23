@@ -66,10 +66,7 @@ class CouponController extends Controller
     public function actionList()
     {
 
-//         $listCouponsData=array(
-//             array('id'=>1, 'username'=>'from', 'email'=>'array'),
-//             array('id'=>2, 'username'=>'test 2', 'email'=>'hello@example.com'),
-//         );
+        $myCouponSummary     = $this->getCouponSummary();
 
         $listCouponsData = Coupon::model()->findAll();
 
@@ -86,8 +83,80 @@ class CouponController extends Controller
             ),
         ));
 
-        $this->render('coupon_list', array('arrayDataProvider'=>$arrayDataProvider));
+        $this->render('coupon_list', array('arrayDataProvider'=>$arrayDataProvider,
+                                           'myCouponSummary'  => $myCouponSummary));
 
+
+    }
+
+    /**
+     * Provide a summary of coupon activity for the current business.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     */
+    private function getCouponSummary($businessId = null)
+    {
+
+        $summaryResults = array();
+
+        /**
+         * If a business id is not supplied, then supply the coupon details for all
+         * ...businesses managed by this user.
+        */
+
+        if ($businessId === null)
+        {
+            // lists certificates of all business of the current user
+            $inDdbCriteria              = new CDbCriteria();
+            $inDdbCriteria->with        = array('businessUsers');
+            $inDdbCriteria->condition   = "businessUsers.user_id = :user_id";
+            $inDdbCriteria->params      = array(':user_id' => Yii::app()->user->id);
+
+            $businessList               = Business::model()->findAll($inDdbCriteria);
+            $businessIds                = array();
+
+            foreach ($businessList as $businessItem)
+            {
+                array_push($businessIds, $businessItem['business_id']);
+            }
+        }
+        else
+        {
+
+            /*
+             * Push the filtered business into the business list.
+            */
+
+            $businessIds                = array();
+            array_push($businessIds, $businessId);
+        }
+
+
+        $dbCriteria                 = new CDbCriteria();
+        $dbCriteria->addInCondition('business_id', $businessIds);
+
+        $lstAllMyCertificates       = Coupon::model()->findAll($dbCriteria);
+
+        $summaryResults             = array('countAll'          => 0,
+            'countPrinted'      => 0,
+            'valuePrinted'      => 0);
+
+        foreach ($lstAllMyCertificates as $itemCertificate)
+        {
+            $summaryResults['countAll']++;
+
+            if ($itemCertificate->printed == 'Y')
+            {
+                $summaryResults['countPrinted']++;
+                $summaryResults['valuePrinted']++;
+
+            }
+
+        }
+
+        return $summaryResults;
 
     }
 
