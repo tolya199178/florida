@@ -60,9 +60,9 @@ class Page extends CActiveRecord
 	{
 
 		return array(
-			array('page_name, page_type', 'required'),
-			array('page_type', 'numerical', 'integerOnly'=>true),
-			array('page_name', 'length', 'max'=>512),
+			array('page_name, page_type',            'required'),
+			array('page_type', 'numerical',          'integerOnly'=>true),
+			array('page_name', 'length',             'max'=>512),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('page_id, page_name, page_type', 'safe', 'on'=>'search'),
@@ -99,7 +99,7 @@ class Page extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'page_id'      => 'Page',
+			'page_id'        => 'Page',
 			'page_name'      => 'Page Name',
 			'page_type'      => 'Page Type',
 		);
@@ -126,9 +126,9 @@ class Page extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('page_id',$this->page_id);
-		$criteria->compare('page_name',$this->page_name,true);
-		$criteria->compare('page_type',$this->page_type);
+		$criteria->compare('page_id',     $this->page_id);
+		$criteria->compare('page_name',   $this->page_name,true);
+		$criteria->compare('page_type',   $this->page_type);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
