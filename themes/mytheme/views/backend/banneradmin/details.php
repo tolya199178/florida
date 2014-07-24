@@ -4,7 +4,16 @@
 /* @var $form CActiveForm */
 ?>
 
-<div class="form">
+<style>
+.form-group {
+    padding-top:10px;
+    padding-bottom:10px;
+}
+</style>
+
+    <h3>Update Banner : <?php echo CHtml::encode($model->banner_title); ?></h3>
+
+    <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
     'id'=>'banner-details-form',
@@ -19,15 +28,16 @@
 
     <?php echo $form->errorSummary($model); ?>
 
-            <div class="row">
-                <div class="form-group">
-                    <?php echo $form->labelEx($model,'business_id',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_id',array('class'=>"form-control")); ?>
-                        <?php echo $form->error($model,'business_id'); ?>
-                    </div>
-                </div>
-            </div>
+    <?php if($model->hasErrors()) {  ?>
+        <div class="alert alert-danger">
+        	<?php echo $form->errorSummary($model); ?>
+        </div>
+    <?php } ?>
+
+    <?php echo $form->hiddenField($model,'banner_id'); ?>
+
+    <?php echo $form->errorSummary($model); ?>
+
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'banner_title',array('class'=>"col-sm-2 control-label")); ?>
@@ -37,6 +47,17 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'banner_description',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-4">
+                        <?php echo $form->textArea($model,'banner_description',array('class'=>"form-control",  'rows' => 4, 'cols' => 300)); ?>
+                        <?php echo $form->error($model,'banner_description'); ?>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'banner_url',array('class'=>"col-sm-2 control-label")); ?>
@@ -46,10 +67,48 @@
                     </div>
                 </div>
             </div>
+
+        	<div class="row">
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'fldUploadImage',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-4">
+                        <?php echo CHtml::activeFileField($model,'fldUploadImage',array('class'=>"form-control")); ?>
+                        <?php echo $form->error($model,'fldUploadImage'); ?>
+                    </div>
+                </div>
+        	</div>
+
+<?php       if (!empty($model->banner_photo)) { ?>
+        	<div class="row">
+                <div class="form-group">
+                    <span class="col-sm-2 control-label">Current Image</span>
+                    <div class="col-sm-4">
+                        <div style="border: 1px solid #066A75; padding: 3px; width:  150px; height: 150px   ; " id="left">
+                            <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/banner/thumbnails/'.$model->banner_photo,
+                                                    "Image",
+                                                    array('width'=>150, 'height'=>150))); ?>
+                        </div>
+                    </div>
+                </div>
+        	</div>
+<?php       } ?>
+
+            <div class="row">
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'business_id',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-4">
+                        <?php echo $form->dropDownList($model,'business_id', CHtml::listData(Business::model()->findAll(), 'business_id', 'business_name'), array('class'=>"form-control")); ?>
+
+                        <?php echo $form->error($model,'business_id'); ?>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'banner_view_limit',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <?php echo $form->textField($model,'banner_view_limit',array('class'=>"form-control")); ?>
                         <?php echo $form->error($model,'banner_view_limit'); ?>
                     </div>
@@ -58,8 +117,8 @@
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'banner_views',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'banner_views',array('class'=>"form-control")); ?>
+                    <div class="col-sm-2">
+                        <?php echo $form->textField($model,'banner_views',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
                         <?php echo $form->error($model,'banner_views'); ?>
                     </div>
                 </div>
@@ -67,44 +126,42 @@
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'banner_clicks',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'banner_clicks',array('class'=>"form-control")); ?>
+                    <div class="col-sm-2">
+                        <?php echo $form->textField($model,'banner_clicks',array('class'=>"form-control", 'readonly' => 'readonly')); ?>
                         <?php echo $form->error($model,'banner_clicks'); ?>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group">
-                    <?php echo $form->labelEx($model,'banner_description',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'banner_description',array('class'=>"form-control")); ?>
-                        <?php echo $form->error($model,'banner_description'); ?>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <?php echo $form->labelEx($model,'banner_photo',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'banner_photo',array('class'=>"form-control")); ?>
-                        <?php echo $form->error($model,'banner_photo'); ?>
-                    </div>
-                </div>
-            </div>
+
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'banner_expiry',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'banner_expiry',array('class'=>"form-control")); ?>
+                    <div class="col-sm-2">
+                        <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                            'model' => $model,
+                            'attribute' => 'banner_expiry',
+                            'options' => array(
+                            'showAnim' => 'fold',
+                            'dateFormat' => 'mm-dd-yy', // save to db format
+                            'altField' => '#self_pointing_id',
+                            'altFormat' => 'dd-mm-yy', // show to user format
+                            ),
+                            'htmlOptions' => array(
+                                //'style' => 'height:20px;',
+                                'class' =>"form-control"
+                            ),
+                        ));
+                        ?>
                         <?php echo $form->error($model,'banner_expiry'); ?>
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'banner_status',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'banner_status',array('class'=>"form-control")); ?>
+                    <div class="col-sm-2">
+                        <?php echo $form->dropDownList($model, 'banner_status', array('Active' => 'Active', 'Inactive' => 'Inactive'), array('prompt'=>'Select Status', 'class'=>"form-control"));?>
                         <?php echo $form->error($model,'banner_status'); ?>
                     </div>
                 </div>
