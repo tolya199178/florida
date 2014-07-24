@@ -610,7 +610,7 @@ class BusinessController extends Controller
         /**
          * If a business id is not supplied, then supply the coupon details for all
          * ...businesses managed by this user.
-         */
+        */
 
         if ($businessId === null)
         {
@@ -633,7 +633,7 @@ class BusinessController extends Controller
 
             /*
              * Push the filtered business into the business list.
-             */
+            */
 
             $businessIds                = array();
             array_push($businessIds, $businessId);
@@ -643,22 +643,20 @@ class BusinessController extends Controller
         $dbCriteria                 = new CDbCriteria();
         $dbCriteria->addInCondition('business_id', $businessIds);
 
-        $lstAllMyCertificates       = Coupon::model()->findAll($dbCriteria);
+        $lstAllMyCoupons            = Coupon::model()->findAll($dbCriteria);
 
         $summaryResults             = array('countAll'          => 0,
                                             'countPrinted'      => 0,
                                             'valuePrinted'      => 0);
 
-        foreach ($lstAllMyCertificates as $itemCertificate)
+        foreach ($lstAllMyCoupons as $itemCoupon)
         {
-            $summaryResults['countAll']++;
+            $countPrinted                   = ($itemCoupon->count_created - $itemCoupon->count_available);
 
-            if ($itemCertificate->printed == 'Y')
-            {
-                $summaryResults['countPrinted']++;
-                $summaryResults['valuePrinted']++;
+            $summaryResults['countAll']     += $itemCoupon->count_created;
 
-            }
+            $summaryResults['countPrinted'] += $countPrinted;
+            $summaryResults['valuePrinted'] += $countPrinted * $itemCoupon->coupon_value;
 
         }
 
