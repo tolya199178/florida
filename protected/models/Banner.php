@@ -49,6 +49,13 @@ class Banner extends CActiveRecord
 {
 
     /**
+     *
+     * @var string fldUploadImage Business image uploader.
+     * @access public
+     */
+    public $fldUploadImage;
+
+    /**
      * Get database table name associated with the model.
      *
      * @param <none> <none>
@@ -84,11 +91,15 @@ class Banner extends CActiveRecord
 			array('banner_title, banner_url',                                'length', 'max'=>255),
 			array('banner_description',                                      'length', 'max'=>4096),
 			array('banner_photo',                                            'length', 'max'=>1024),
-		    array('banner_expiry',                                            'length', 'max'=>1024),
+		    array('banner_expiry',                                           'length', 'max'=>1024),
 
 		    // Ranges
 		    array('banner_status',
 		          'in', 'range'=>array('Active','Inactive'), 'allowEmpty'=>false),
+
+		    // Form only attributes.
+		    array('fldUploadImage',
+		          'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
 
             // The following rule is used by search(). It only contains attributes that should be searched.
