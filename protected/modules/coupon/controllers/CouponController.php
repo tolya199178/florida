@@ -183,20 +183,20 @@ class CouponController extends Controller
         $dbCriteria                 = new CDbCriteria();
         $dbCriteria->addInCondition('business_id', $businessIds);
 
-        $lstAllMyCertificates       = Coupon::model()->findAll($dbCriteria);
+        $lstAllMyCoupons            = Coupon::model()->findAll($dbCriteria);
 
         $summaryResults             = array('countAll'          => 0,
                                             'countPrinted'      => 0,
                                             'valuePrinted'      => 0);
 
-        foreach ($lstAllMyCertificates as $itemCertificate)
+        foreach ($lstAllMyCoupons as $itemCoupon)
         {
-            $countPrinted                   = ($itemCertificate->count_created - $itemCertificate->count_available);
+            $countPrinted                   = ($itemCoupon->count_created - $itemCoupon->count_available);
 
-            $summaryResults['countAll']     += $itemCertificate->count_created;
+            $summaryResults['countAll']     += $itemCoupon->count_created;
 
             $summaryResults['countPrinted'] += $countPrinted;
-            $summaryResults['valuePrinted'] += $countPrinted * $itemCertificate->coupon_value;
+            $summaryResults['valuePrinted'] += $countPrinted * $itemCoupon->coupon_value;
 
         }
 
