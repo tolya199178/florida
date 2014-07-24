@@ -117,14 +117,6 @@
                         </ul>
                       </li>
 
-                      <!-- Advertisement Menu -->
-                      <li class="nav-divider"></li>
-                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Advertisement</a>
-                          <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/advertisement/index'); ?>">Adverts Listing</a></li>
-                          </ul>
-                      </li>
-
                       <!-- Restaurant Certificates Menu -->
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Restaurant Certificate</a>
@@ -136,27 +128,15 @@
                           </ul>
                       </li>
 
-                      <!-- Packages Menu -->
-                      <li class="nav-divider"></li>
-                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Packages</a>
-                          <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/packageadmin/list'); ?>">Packages Listing</a></li>
-                          </ul>
-                      </li>
-
-                      <!-- Questionnaire Menu -->
-                      <li class="nav-divider"></li>
-                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Questionnaire</a>
-                          <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/questionnaire/index'); ?>">Listing</a></li>
-                          </ul>
-                      </li>
-
                       <!-- Coupon Menu -->
                       <li class="nav-divider"></li>
-                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Coupons</a>
+                      <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Business Tools</a>
                           <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/couponadmin/list'); ?>">Listing</a></li>
+                             <li><a href="<?php echo Yii::app()->createUrl('/advertisement/index'); ?>">Adverts</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/couponadmin/list'); ?>">Coupons</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/banneradmin/list'); ?>">Banners</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/questionnaire/index'); ?>">Questionnaires</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/packageadmin/list'); ?>">Packages</a></li>
                           </ul>
                       </li>
 
