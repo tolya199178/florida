@@ -172,6 +172,9 @@ class BanneradminController extends BackEndController
 	        if($bannerModel->save())
 	        {
 
+	            /*
+	             * process the banner photo
+	             */
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
                     $imageFileName = 'banner-'.$bannerModel->banner_id.'-'.$uploadedFile->name;
@@ -184,6 +187,22 @@ class BanneradminController extends BackEndController
 
                     $bannerModel->save();
                 }
+
+                /*
+                 * Save the pages that the banner is allocated to
+                 */
+
+                $lstBannerPages = explode(",", $_POST['lstBannerPages']);
+
+                foreach ($lstBannerPages as $selectedPageId)
+                {
+                    $modelBannerPage                = new BannerPage;
+                    $modelBannerPage->page_id       = $selectedPageId;
+                    $modelBannerPage->banner_id     = $bannerModel->banner_id;
+
+                    $modelBannerPage->save();
+                }
+
 
 	            $this->redirect(array('index'));
 
@@ -273,6 +292,27 @@ class BanneradminController extends BackEndController
 
 
 		        }
+
+		        /*
+		         * Save the pages that the banner is allocated to
+		        */
+		        $lstBannerPages = explode(",", $_POST['lstBannerPages']);
+
+
+		        /* Delete existing banner-page mappings for the banner */
+		        $modelBannerPageDelete = BannerPage::model()->deleteAll("banner_id = :banner_id",
+	                                                               array(':banner_id' => $bannerModel->banner_id
+		                                                      ));
+
+		        foreach ($lstBannerPages as $selectedPageId)
+		        {
+		            $modelBannerPage                = new BannerPage;
+		            $modelBannerPage->page_id       = $selectedPageId;
+		            $modelBannerPage->banner_id     = $bannerModel->banner_id;
+
+		            $modelBannerPage->save();
+		        }
+
 
 		        $this->redirect(array('index'));
 
@@ -514,6 +554,32 @@ class BanneradminController extends BackEndController
 	    {
 	        return true;
 	    }
+
+	}
+
+	/**
+	 * Renders JSON results of page search in {id,text} format.
+	 * Used for dropdowns
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionAutocompletepagelist()
+	{
+
+	    $strSearchFilter = $_GET['query'];
+
+	    $lstPages = Yii::app()->db
+                        	  ->createCommand()
+                        	   ->select('page_id AS id, page_name AS text')
+                        	   ->from('tbl_page')
+                        	   ->where(array('LIKE', 'page_name', '%'.$_GET['query'].'%'))
+                        	   ->queryAll();
+
+	    header('Content-type: application/json');
+	    echo CJSON::encode($lstPages);
 
 	}
 

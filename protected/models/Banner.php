@@ -56,6 +56,13 @@ class Banner extends CActiveRecord
     public $fldUploadImage;
 
     /**
+     *
+     * @var array list of assigned page (id), fk to page table
+     * @access public
+     */
+    public $lstBannerPages;
+
+    /**
      * Get database table name associated with the model.
      *
      * @param <none> <none>

@@ -3,7 +3,13 @@
 /* @var $model Banner */
 /* @var $form CActiveForm */
 ?>
+<?php
 
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
+?>
 <style>
 .form-group {
     padding-top:10px;
@@ -93,6 +99,16 @@
         	</div>
 <?php       } ?>
 
+	    	<div class="row">
+	            <div class="form-group">
+	                <?php echo $form->labelEx($model,'lstBannerPages',array('class'=>"col-sm-2 control-label")); ?>
+	                <div class="col-sm-4">
+                        <?php echo CHtml::hiddenField('lstBannerPages', '', array ('id'=>'lstBannerPages')); ?>
+	                    <?php echo $form->error($model,'lstBannerPages'); ?>
+	                </div>
+	            </div>
+	    	</div>
+
             <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_id',array('class'=>"col-sm-2 control-label")); ?>
@@ -174,3 +190,35 @@
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
+
+<?php
+
+$pageAutoCompleteURL = Yii::app()->createUrl('/banneradmin/autocompletepagelist');
+
+$script = <<<EOD
+	$('#lstBannerPages').select2({
+        placeholder: "Search Pages",
+        width : "100%",
+        multiple:true,
+       //  minimumInputLength: 3,
+        ajax: {
+            url: "$pageAutoCompleteURL",
+            dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term
+                      };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                }
+        }
+	});
+
+EOD;
+
+Yii::app()->clientScript->registerScript('details', $script, CClientScript::POS_READY);
+
+?>
