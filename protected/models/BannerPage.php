@@ -61,8 +61,8 @@ class BannerPage extends CActiveRecord
 	{
 
 		return array(
-			array('banner_id, page_id', 'required'),
-			array('banner_id, page_id', 'numerical', 'integerOnly'=>true),
+			array('banner_id, page_id',              'required'),
+			array('banner_id, page_id',              'numerical', 'integerOnly'=>true),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('banner_page_id, banner_id, page_id', 'safe', 'on'=>'search'),
@@ -81,8 +81,8 @@ class BannerPage extends CActiveRecord
 	{
 
 		return array(
-			'page'      => array(self::BELONGS_TO, 'Page', 'page_id'),
-			'banner'      => array(self::BELONGS_TO, 'Banner', 'banner_id'),
+			'page'           => array(self::BELONGS_TO, 'Page',   'page_id'),
+			'banner'         => array(self::BELONGS_TO, 'Banner', 'banner_id'),
 		);
 	}
 
@@ -100,9 +100,9 @@ class BannerPage extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'banner_page_id'      => 'Banner Page',
-			'banner_id'      => 'Banner',
-			'page_id'      => 'Page',
+			'banner_page_id'     => 'Banner Page ID',
+			'banner_id'          => 'Banner',
+			'page_id'            => 'Page',
 		);
 	}
 
@@ -127,9 +127,9 @@ class BannerPage extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('banner_page_id',$this->banner_page_id);
-		$criteria->compare('banner_id',$this->banner_id);
-		$criteria->compare('page_id',$this->page_id);
+		$criteria->compare('banner_page_id',  $this->banner_page_id);
+		$criteria->compare('banner_id',       $this->banner_id);
+		$criteria->compare('page_id',         $this->page_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
