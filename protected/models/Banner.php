@@ -75,13 +75,21 @@ class Banner extends CActiveRecord
 	{
 
 		return array(
-			array('business_id, banner_title, banner_url, created_by, modified_by', 'required'),
-			array('business_id, banner_view_limit, banner_views, banner_clicks, created_by, modified_by', 'numerical', 'integerOnly'=>true),
-			array('banner_title, banner_url', 'length', 'max'=>255),
-			array('banner_description', 'length', 'max'=>4096),
-			array('banner_photo', 'length', 'max'=>1024),
-			array('banner_status', 'length', 'max'=>8),
-			array('banner_expiry, created_time, modified_time', 'safe'),
+		    // Mandatory rules
+			array('business_id, banner_title, banner_url',                   'required'),
+
+		    // Data type and length validations
+		    array('business_id, banner_view_limit, banner_views,
+			       banner_clicks', 'numerical',                              'integerOnly'=>true),
+			array('banner_title, banner_url',                                'length', 'max'=>255),
+			array('banner_description',                                      'length', 'max'=>4096),
+			array('banner_photo',                                            'length', 'max'=>1024),
+		    array('banner_expiry',                                            'length', 'max'=>1024),
+
+		    // Ranges
+		    array('banner_status',
+		          'in', 'range'=>array('Active','Inactive'), 'allowEmpty'=>false),
+
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('banner_id, business_id, banner_title, banner_description, banner_url, banner_expiry, banner_photo, banner_status, banner_view_limit, banner_views, banner_clicks, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
@@ -100,10 +108,10 @@ class Banner extends CActiveRecord
 	{
 
 		return array(
-			'business'      => array(self::BELONGS_TO, 'Business', 'business_id'),
-			'createdBy'      => array(self::BELONGS_TO, 'User', 'created_by'),
-			'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
-			'bannerPages'      => array(self::HAS_MANY, 'BannerPage', 'banner_id'),
+			'business'           => array(self::BELONGS_TO, 'Business',   'business_id'),
+			'createdBy'          => array(self::BELONGS_TO, 'User',       'created_by'),
+			'modifiedBy'         => array(self::BELONGS_TO, 'User',       'modified_by'),
+			'bannerPages'        => array(self::HAS_MANY,   'BannerPage', 'banner_id'),
 		);
 	}
 
@@ -121,21 +129,21 @@ class Banner extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'banner_id'      => 'Banner',
-			'business_id'      => 'Business',
-			'banner_title'      => 'Banner Title',
-			'banner_description'      => 'Banner Description',
-			'banner_url'      => 'Banner Url',
-			'banner_expiry'      => 'Banner Expiry',
-			'banner_photo'      => 'Banner Photo',
-			'banner_status'      => 'Banner Status',
+			'banner_id'              => 'Banner',
+			'business_id'            => 'Business',
+			'banner_title'           => 'Banner Title',
+			'banner_description'     => 'Banner Description',
+			'banner_url'             => 'Banner Url',
+			'banner_expiry'          => 'Banner Expiry',
+			'banner_photo'           => 'Banner Photo',
+			'banner_status'          => 'Banner Status',
 			'banner_view_limit'      => 'Banner View Limit',
-			'banner_views'      => 'Banner Views',
-			'banner_clicks'      => 'Banner Clicks',
-			'created_time'      => 'Created Time',
-			'modified_time'      => 'Modified Time',
-			'created_by'      => 'Created By',
-			'modified_by'      => 'Modified By',
+			'banner_views'           => 'Banner Views',
+			'banner_clicks'          => 'Banner Clicks',
+			'created_time'           => 'Created Time',
+			'modified_time'          => 'Modified Time',
+			'created_by'             => 'Created By',
+			'modified_by'            => 'Modified By',
 		);
 	}
 
@@ -160,21 +168,21 @@ class Banner extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('banner_id',$this->banner_id);
-		$criteria->compare('business_id',$this->business_id);
-		$criteria->compare('banner_title',$this->banner_title,true);
-		$criteria->compare('banner_description',$this->banner_description,true);
-		$criteria->compare('banner_url',$this->banner_url,true);
-		$criteria->compare('banner_expiry',$this->banner_expiry,true);
-		$criteria->compare('banner_photo',$this->banner_photo,true);
-		$criteria->compare('banner_status',$this->banner_status,true);
-		$criteria->compare('banner_view_limit',$this->banner_view_limit);
-		$criteria->compare('banner_views',$this->banner_views);
-		$criteria->compare('banner_clicks',$this->banner_clicks);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('modified_time',$this->modified_time,true);
-		$criteria->compare('created_by',$this->created_by);
-		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('banner_id',           $this->banner_id);
+		$criteria->compare('business_id',         $this->business_id);
+		$criteria->compare('banner_title',        $this->banner_title,true);
+		$criteria->compare('banner_description',  $this->banner_description,true);
+		$criteria->compare('banner_url',          $this->banner_url,true);
+		$criteria->compare('banner_expiry',       $this->banner_expiry,true);
+		$criteria->compare('banner_photo',        $this->banner_photo,true);
+		$criteria->compare('banner_status',       $this->banner_status,true);
+		$criteria->compare('banner_view_limit',   $this->banner_view_limit);
+		$criteria->compare('banner_views',        $this->banner_views);
+		$criteria->compare('banner_clicks',       $this->banner_clicks);
+		$criteria->compare('created_time',        $this->created_time,true);
+		$criteria->compare('modified_time',       $this->modified_time,true);
+		$criteria->compare('created_by',          $this->created_by);
+		$criteria->compare('modified_by',         $this->modified_by);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -194,4 +202,35 @@ class Banner extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave() {
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+
+
+	    return parent::beforeSave();
+	}
+
 }
