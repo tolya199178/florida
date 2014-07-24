@@ -16,7 +16,7 @@ $listbanners         = $myBannerSummary;
                                 <?php }?>
                                 </ul>
 
-                                <a class="btn btn-lg btn-warning" href="<?php echo Yii::app()->createUrl('banner/banner/list/'); ?>">
+                                <a class="btn btn-lg btn-warning" href="<?php echo Yii::app()->createUrl('banner/banner/'); ?>">
                                     <i class="glyphicon glyphicon-plus-sign"></i>
                                     Manage your banners
                                 </a>

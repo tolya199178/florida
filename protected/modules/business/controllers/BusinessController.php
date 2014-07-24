@@ -534,6 +534,7 @@ class BusinessController extends Controller
         // /////////////////////////////////////////////////////////////////////
         $myCertificateSummary               = $this->getCertificateSummary($argCurrentBusiness);
         $myCouponSummary                    = $this->getCouponSummary($argCurrentBusiness);
+        $myBannerSummary                    = $this->getBannerTop5($argCurrentBusiness);
 
 
 
@@ -553,6 +554,7 @@ class BusinessController extends Controller
                                'viewsCount'         => $viewsCount,
                                'currentBusiness'    => Business::model()->findByPk((int) $argCurrentBusiness),
                                'myCertificateSummary' => $myCertificateSummary,
+                               'myBannerSummary'    => $myBannerSummary,
                                'myCouponSummary'    => $myCouponSummary);
 
 
@@ -661,6 +663,60 @@ class BusinessController extends Controller
         }
 
         return $summaryResults;
+
+    }
+
+    /**
+     * Provide a summary of coupon activity for the current business.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     */
+    private function getBannerTop5($businessId = null)
+    {
+
+        /**
+         * If a business id is not supplied, then supply the coupon details for all
+         * ...businesses managed by this user.
+        */
+
+        if ($businessId === null)
+        {
+            // lists certificates of all business of the current user
+            $inDdbCriteria              = new CDbCriteria();
+            $inDdbCriteria->with        = array('businessUsers');
+            $inDdbCriteria->condition   = "businessUsers.user_id = :user_id";
+            $inDdbCriteria->params      = array(':user_id' => Yii::app()->user->id);
+
+            $businessList               = Business::model()->findAll($inDdbCriteria);
+            $businessIds                = array();
+
+            foreach ($businessList as $businessItem)
+            {
+                array_push($businessIds, $businessItem['business_id']);
+            }
+        }
+        else
+        {
+
+            /*
+             * Push the filtered business into the business list.
+            */
+
+            $businessIds                = array();
+            array_push($businessIds, $businessId);
+        }
+
+        $lstBanners = Yii::app()->db->createCommand()
+                                    ->select('banner_id, banner_title')
+                                    ->from('tbl_banner')
+                                    ->where(array('in', 'business_id', $businessIds))
+                                    ->limit('5')
+                                    ->order('created_time DESC')
+                                    ->queryAll();
+
+        return $lstBanners;
 
     }
 
