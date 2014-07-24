@@ -4,7 +4,7 @@ $listMyBusiness         = $data['listMyBusiness'];
 $currentBusiness        = $data['currentBusiness'];
 $myCertificateSummary   = $data['myCertificateSummary'];
 $myCouponSummary        = $data['myCouponSummary'];
-//$myBannerSummary        = $data['myBannerSummary'];
+$myBannerSummary        = $data['myBannerSummary'];
 // $mySurveySummary        = $data['mySurveySummary'];
 
 ?>
@@ -67,4 +67,7 @@ $myCouponSummary        = $data['myCouponSummary'];
                         <?php $this->renderPartial('dashboard/components/certificate_summary', array('myCertificateSummary'=>$myCertificateSummary)); ?>
 
                         <?php $this->renderPartial('dashboard/components/coupon_summary', array('myCouponSummary'=>$myCouponSummary)); ?>
+
+                        <?php $this->renderPartial('dashboard/components/banner_summary', array('myBannerSummary'=>$myBannerSummary)); ?>
+
 
