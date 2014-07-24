@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Coupon Controller interface for the Frontend (Public) coupons Module
+ * Banner Controller interface for the Frontend (Public) banners Module
  */
 
 
 /**
- * CouponController is a class to provide access to controller actions for
+ * BannerController is a class to provide access to controller actions for
  * ...general processing of user events. The controller action interfaces
  * ...'directly' with the Client, and must therefore be responsible for input
  * ...processing and response handling.
@@ -14,34 +14,34 @@
  * Usage:
  * ...Typical usage is from a web browser, by means of a URL
  * ...
- * ...   http://application.domain/index.php?/coupon/coupon/action
+ * ...   http://application.domain/index.php?/banner/banner/action
  * ...eg.
- * ...   http://mydomain/index.php?/coupon
+ * ...   http://mydomain/index.php?/banner
  * ...
  * ...The 'action' in the request is converted to invoke the actionAction() action
- * ...eg. coupon/coupon/cart/ will invoke CouponController::actionCart()
+ * ...eg. banner/banner/cart/ will invoke BannerController::actionCart()
  * ...(case is significant)
  *
- * @coupon   Controllers
+ * @banner   Controllers
  * @author    Pradesh <pradesh@datacraft.co.za>
  * @copyright 2014 florida.com
- * @coupon Controllers
+ * @banner Controllers
  * @version 1.0
  */
 
-class CouponController extends Controller
+class BannerController extends Controller
 {
 
     public 	$layout='//layouts/front';
 
     /**
-     * @var string imagesDirPath Directory where Coupon images will be stored
+     * @var string imagesDirPath Directory where Banner images will be stored
      * @access private
      */
     private $imagesDirPath;
 
     /**
-     * @var string imagesDirPath Directory where Coupon image thumbnails will be stored
+     * @var string imagesDirPath Directory where Banner image thumbnails will be stored
      * @access private
      */
     private $thumbnailsDirPath;
@@ -67,8 +67,8 @@ class CouponController extends Controller
      */
     public function init()
     {
-        $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/coupon';
-        $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/coupon/thumbnails';
+        $this->imagesDirPath        = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/banner';
+        $this->thumbnailsDirPath    = Yii::getPathOfAlias('webroot').DIRECTORY_SEPARATOR.'/uploads/images/banner/thumbnails';
 
         /*
          *     Small-s- 100px(width)
@@ -79,7 +79,7 @@ class CouponController extends Controller
 
     /**
      * Default controller action.
-     * Shows list of all coupons.
+     * Shows list of all banners.
      *
      * @param <none> <none>
      *
@@ -90,7 +90,7 @@ class CouponController extends Controller
 	{
 
 
-        CController::forward('/coupon/coupon/list/');
+        CController::forward('/banner/banner/list/');
 
 
 	}
@@ -98,8 +98,8 @@ class CouponController extends Controller
 
 
     /**
-     * List coupons.
-     * Shows list of all coupons.
+     * List banners.
+     * Shows list of all banners.
      *
      * @param <none> <none>
      *
@@ -109,12 +109,12 @@ class CouponController extends Controller
     public function actionList()
     {
 
-        $myCouponSummary     = $this->getCouponSummary();
+        $myBannerSummary     = $this->getBannerTop5();
 
-        $listCouponsData = Coupon::model()->findAll();
+        $listBannersData = Banner::model()->findAll();
 
-        $arrayDataProvider=new CArrayDataProvider($listCouponsData, array(
-            'keyField' => 'coupon_id',
+        $arrayDataProvider=new CArrayDataProvider($listBannersData, array(
+            'keyField' => 'banner_id',
             'id'=>'id',
             /* 'sort'=>array(
              'attributes'=>array(
@@ -126,12 +126,12 @@ class CouponController extends Controller
             ),
         ));
 
-        $couponData          = array('mainview'        => 'coupon_list',
-                                     'myCouponSummary' => $this->getCouponSummary(),
+        $bannerData          = array('mainview'        => 'banner_list',
+                                     'myBannerSummary' => $this->getBannerTop5(),
                                      'arrayDataProvider'=>$arrayDataProvider);
 
         // Show the details screen
-        $this->render('coupon_main', array('data'=>$couponData));
+        $this->render('banner_main', array('data'=>$bannerData));
 
     }
 
@@ -142,10 +142,8 @@ class CouponController extends Controller
      *
      * @return <none> <none>
      */
-    private function getCouponSummary($businessId = null)
+    private function getBannerTop5($businessId = null)
     {
-
-        $summaryResults = array();
 
         /**
          * If a business id is not supplied, then supply the coupon details for all
@@ -179,82 +177,89 @@ class CouponController extends Controller
             array_push($businessIds, $businessId);
         }
 
+        $lstBanners = Yii::app()->db->createCommand()
+                                    ->select('banner_id, banner_title')
+                                    ->from('tbl_banner')
+                                    ->where(array('in', 'business_id', $businessIds))
+                                    ->limit('5')
+                                    ->order('created_time DESC')
+                                    ->queryAll();
 
-        $dbCriteria                 = new CDbCriteria();
-        $dbCriteria->addInCondition('business_id', $businessIds);
-
-        $lstAllMyCoupons            = Coupon::model()->findAll($dbCriteria);
-
-        $summaryResults             = array('countAll'          => 0,
-                                            'countPrinted'      => 0,
-                                            'valuePrinted'      => 0);
-
-        foreach ($lstAllMyCoupons as $itemCoupon)
-        {
-            $countPrinted                   = ($itemCoupon->count_created - $itemCoupon->count_available);
-
-            $summaryResults['countAll']     += $itemCoupon->count_created;
-
-            $summaryResults['countPrinted'] += $countPrinted;
-            $summaryResults['valuePrinted'] += $countPrinted * $itemCoupon->coupon_value;
-
-        }
-
-        return $summaryResults;
+        return $lstBanners;
 
     }
 
+
 	/**
-	 * Creates a new coupon record.
+	 * Creates a new banner record.
 	 * ...The function is normally invoked twice:
-	 * ... - the (initial) GET request loads and renders the coupon details capture form
-	 * ... - the (subsequent) POST request saves the submitted post data as a Coupon record.
+	 * ... - the (initial) GET request loads and renders the banner details capture form
+	 * ... - the (subsequent) POST request saves the submitted post data as a Banner record.
 	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages from the Coupon validation (Coupon::rules())
+	 * ...again with error messages from the Banner validation (Banner::rules())
 	 *
 	 * @param <none> <none>
 	 *
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionCreaterequest()
+	public function actionAdd()
 	{
 
-			$couponModel = new Coupon;
+		$bannerModel = new Banner;
 
 	    // Uncomment the following line if AJAX validation is needed
 	    // todo: broken for Jquery precedence order loading
-	    // $this->performAjaxValidation($couponModel);
+	    // $this->performAjaxValidation($bannerModel);
 
-	    if(isset($_POST['Coupon']))
+	    if(isset($_POST['Banner']))
 	    {
 
-	        $couponModel->attributes=$_POST['Coupon'];
+	        $bannerModel->attributes=$_POST['Banner'];
 
-	        $uploadedFile = CUploadedFile::getInstance($couponModel,'fldUploadImage');
+	        $uploadedFile = CUploadedFile::getInstance($bannerModel,'fldUploadImage');
 
-	        if($couponModel->save())
+	        if($bannerModel->save())
 	        {
 
+	            /*
+	             * process the banner photo
+	             */
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
-                    $imageFileName = 'coupon-'.$couponModel->coupon_id.'-'.$uploadedFile->name;
+                    $imageFileName = 'banner-'.$bannerModel->banner_id.'-'.$uploadedFile->name;
                     $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
                     $uploadedFile->saveAs($imagePath);
-                    $couponModel->coupon_photo = $imageFileName;
+                    $bannerModel->banner_photo = $imageFileName;
 
                     $this->createThumbnail($imageFileName);
 
-                    $couponModel->save();
+                    $bannerModel->save();
                 }
+
+                /*
+                 * Save the pages that the banner is allocated to
+                 */
+
+                $lstBannerPages = explode(",", $_POST['lstBannerPages']);
+
+                foreach ($lstBannerPages as $selectedPageId)
+                {
+                    $modelBannerPage                = new BannerPage;
+                    $modelBannerPage->page_id       = $selectedPageId;
+                    $modelBannerPage->banner_id     = $bannerModel->banner_id;
+
+                    $modelBannerPage->save();
+                }
+
 
 	            $this->redirect(array('index'));
 
 	        }
 	        else {
-                Yii::app()->user->setFlash('error', "Error creating a coupon record.'");
+                Yii::app()->user->setFlash('error', "Error creating a banner record.'");
 	        }
 
 
@@ -274,37 +279,37 @@ class CouponController extends Controller
 	        $myBusinessList[$businessItem->business_id] = CHtml::encode($businessItem->business_name);
 	    }
 
-	    $couponData          = array('mainview'        => 'createrequest',
-	                                 'model'           => $couponModel,
-	                                 'myCouponSummary' => $this->getCouponSummary(),
+	    $bannerData          = array('mainview'        => 'details',
+	                                 'model'           => $bannerModel,
+	                                 'myBannerSummary' => $this->getBannerTop5(),
 	                                 'myBusinessList'  => $myBusinessList);
 
 	    // Show the details screen
-	    $this->render('coupon_main', array('data'=>$couponData));
+	    $this->render('banner_main', array('data'=>$bannerData));
 
 	}
 
 	/**
-	 * Updates an existing coupon record.
+	 * Updates an existing banner record.
 	 * ...The function is normally invoked twice:
-	 * ... - the (initial) GET request loads and renders the requested coupon's
+	 * ... - the (initial) GET request loads and renders the requested banner's
 	 * ...   details capture form
 	 * ... - the (subsequent) POST request saves the submitted post data for
-	 * ...   the existing Coupon record
+	 * ...   the existing Banner record
 	 * ...If the save (POST request) is successful, the default method (index()) is called.
 	 * ...If the save (POST request) is not successful, the details form is shown
-	 * ...again with error messages from the Coupon validation (Coupon::rules())
+	 * ...again with error messages from the Banner validation (Banner::rules())
 	 *
-	 * @param integer $coupon_id the ID of the model to be updated
+	 * @param integer $banner_id the ID of the model to be updated
 	 *
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionUpdatecoupon($coupon_id)
+	public function actionUpdatebanner($banner_id)
 	{
 
-	    $couponModel = Coupon::model()->findByPk($coupon_id);
-	    if($couponModel===null)
+	    $bannerModel = Banner::model()->findByPk($banner_id);
+	    if($bannerModel===null)
 	    {
 	        throw new CHttpException(404,'The requested page does not exist.');
 	    }
@@ -312,31 +317,31 @@ class CouponController extends Controller
 
 	    // Uncomment the following line if AJAX validation is needed
 	    // TODO: Currently disabled as it breaks JQuery loading order
-	    // $this->performAjaxValidation($couponModel);
+	    // $this->performAjaxValidation($bannerModel);
 
-	    if(isset($_POST['Coupon']))
+	    if(isset($_POST['Banner']))
 	    {
 	        // Assign all fields from the form
-	        $couponModel->attributes=$_POST['Coupon'];
+	        $bannerModel->attributes=$_POST['Banner'];
 
-	        $uploadedFile = CUploadedFile::getInstance($couponModel,'fldUploadImage');
+	        $uploadedFile = CUploadedFile::getInstance($bannerModel,'fldUploadImage');
 
 	        // Make a note of the existing image file name. It will be deleted soon.
-	        $oldImageFileName = $couponModel->coupon_photo;
+	        $oldImageFileName = $bannerModel->banner_photo;
 
 	        if(!empty($uploadedFile))  // check if uploaded file is set or not
 	        {
 	            // Save the image file name
-	            $couponModel->coupon_photo = 'coupon-'.$couponModel->coupon_id.'-'.$uploadedFile->name;
+	            $bannerModel->banner_photo = 'banner-'.$bannerModel->banner_id.'-'.$uploadedFile->name;
 	        }
 
-	        if($couponModel->save())
+	        if($bannerModel->save())
 	        {
 
 	            if(!empty($uploadedFile))  // check if uploaded file is set or not
 	            {
 
-	                $imageFileName = 'coupon-'.$couponModel->coupon_id.'-'.$uploadedFile->name;
+	                $imageFileName = 'banner-'.$bannerModel->banner_id.'-'.$uploadedFile->name;
 	                $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
 	                // Remove existing images
@@ -350,7 +355,7 @@ class CouponController extends Controller
 
 	                $this->createThumbnail($imageFileName);
 
-	                $couponModel->save();
+	                $bannerModel->save();
 
 
 	            }
@@ -359,22 +364,37 @@ class CouponController extends Controller
 
 	        }
 	        else {
-	            Yii::app()->user->setFlash('error', "Error creating a coupon record.'");
+	            Yii::app()->user->setFlash('error', "Error creating a banner record.'");
 	        }
 
 	    }
 
-	    $couponData          = array('mainview'        => 'details',
-                        	         'model'           => $couponModel,
-                        	         'myCouponSummary' => $this->getCouponSummary());
+	    // Get the list of users's business
+	    $dbCriteria                = new CDbCriteria();
+	    $dbCriteria->with          = array('businessUsers');
+	    $dbCriteria->condition     = "businessUsers.user_id = :user_id";
+	    $dbCriteria->params        = array(':user_id' => Yii::app()->user->id);
+
+	    $businessList              = Business::model()->findAll($dbCriteria);
+	    $myBusinessList            = array();
+
+	    foreach($businessList as $businessItem) {
+	        $myBusinessList[$businessItem->business_id] = CHtml::encode($businessItem->business_name);
+	    }
+
+
+	    $bannerData          = array('mainview'        => 'details',
+                        	         'model'           => $bannerModel,
+                        	         'myBannerSummary' => $this->getBannerTop5(),
+	                                 'myBusinessList'  => $myBusinessList);
 
 	    // Show the details screen
-	    $this->render('coupon_main', array('data'=>$couponData));
+	    $this->render('banner_main', array('data'=>$bannerData));
 
 	}
 
 	/**
-	 * Deletes an existing coupon record.
+	 * Deletes an existing banner record.
 	 * ...As an additional safety measure, only POST requests are processed.
 	 * ...Currently, instead of physically deleting the entry, the record is
 	 * ...modified with the status fields set to 'deleted'
@@ -395,35 +415,35 @@ class CouponController extends Controller
 	    if(Yii::app()->request->isPostRequest)
 	    {
 
-    	    $couponId = $_GET['id'];
-    	    $couponModel = Coupon::model()->findByPk($couponId);
+    	    $bannerId = $_GET['id'];
+    	    $bannerModel = Banner::model()->findByPk($bannerId);
 
-    	    if ($couponModel == null)
+    	    if ($bannerModel == null)
     	    {
     	        header("Content-type: application/json");
-    	        echo '{"result":"fail", "message":"Invalid coupon"}';
+    	        echo '{"result":"fail", "message":"Invalid banner"}';
     	        Yii::app()->end();
     	    }
 
-    	    if ($couponModel->printed == 'Y')
+    	    if ($bannerModel->printed == 'Y')
     	    {
     	        header("Content-type: application/json");
-    	        echo '{"result":"fail", "message":"You cannot delete a printed coupon."}';
+    	        echo '{"result":"fail", "message":"You cannot delete a printed banner."}';
     	        Yii::app()->end();
     	    }
 
     	    // TODO: Retain this, until the use of expiry date is confirmed by client
-    // 	    $expiryDate = strtotime($couponModel->coupon_expiry);
+    // 	    $expiryDate = strtotime($bannerModel->banner_expiry);
 
     // 	    if(time() > $expiryDate)
     // 	    {
     // 	        header("Content-type: application/json");
-    // 	        echo '{"result":"fail", "message":"You cannot delete a printed coupon."}';
+    // 	        echo '{"result":"fail", "message":"You cannot delete a printed banner."}';
     // 	        Yii::app()->end();
     // 	    }
 
 
-    	    $result = $couponModel->delete();
+    	    $result = $bannerModel->delete();
 
     	    if ($result == false)
     	    {
@@ -433,7 +453,7 @@ class CouponController extends Controller
     	    }
     	    else
     	    {
-    	        $this->deleteImages($couponModel->coupon_photo);
+    	        $this->deleteImages($bannerModel->banner_photo);
     	    }
 
 
@@ -450,7 +470,7 @@ class CouponController extends Controller
 	}
 
 	/**
-	 * Print a coupon.
+	 * Print a banner.
 	 *
 	 * @param <none> <none>
 	 *
@@ -460,36 +480,36 @@ class CouponController extends Controller
 	public function actionPrint()
 	{
 
-	    $couponId = $_GET['coupon_id'];
-	    $couponModel = Coupon::model()->findByPk($couponId);
+	    $bannerId = $_GET['banner_id'];
+	    $bannerModel = Banner::model()->findByPk($bannerId);
 
-	    if ($couponModel == null)
+	    if ($bannerModel == null)
 	    {
-	        throw new CHttpException(404,'The requested coupon was not found.');
+	        throw new CHttpException(404,'The requested banner was not found.');
 	        Yii::app()->end();
 	    }
 
-	    if ($couponModel->printed == 'Y')
+	    if ($bannerModel->printed == 'Y')
 	    {
-	        throw new CHttpException(400,'Invalid request. The requested coupon is already printed.');
+	        throw new CHttpException(400,'Invalid request. The requested banner is already printed.');
 	        Yii::app()->end();
 	    }
 
 
 // 	    // Random code from here :
 // 	    // http://stackoverflow.com/questions/3521621
-// 	    $couponCode = strtoupper(substr(md5(time().rand(10000,99999)), 0, 10));
+// 	    $bannerCode = strtoupper(substr(md5(time().rand(10000,99999)), 0, 10));
 
 
 	    // Show the details screen
-	    $this->render('coupon_print', array('model'=>$couponModel));
+	    $this->render('banner_print', array('model'=>$bannerModel));
 
 
     }
 
 
     /**
-     * Delete images for the coupon. Normally invoked when coupon is being deleted.
+     * Delete images for the banner. Normally invoked when banner is being deleted.
      *
      * @param string $imageFileName the name of the file
      *
@@ -545,6 +565,32 @@ class CouponController extends Controller
         {
             return true;
         }
+
+    }
+
+    /**
+     * Renders JSON results of page search in {id,text} format.
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionAutocompletepagelist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        $lstPages = Yii::app()->db
+        ->createCommand()
+        ->select('page_id AS id, page_name AS text')
+        ->from('tbl_page')
+        ->where(array('LIKE', 'page_name', '%'.$_GET['query'].'%'))
+        ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstPages);
 
     }
 
