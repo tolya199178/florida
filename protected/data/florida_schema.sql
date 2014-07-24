@@ -1893,7 +1893,83 @@ DROP TABLE IF EXISTS `tbl_coupon_print_log`;
    ADD CONSTRAINT fk_coupon_print_log_coupon
         FOREIGN KEY (coupon_id) 
         REFERENCES tbl_coupon(coupon_id);
- 
+
+-- ---------------------------------------------------------------------
+-- pages
+-- ---------------------------------------------------------------------
+  DROP TABLE IF EXISTS `tbl_page`;
+
+  CREATE TABLE `tbl_page` (
+    `page_id` int(11) NOT NULL AUTO_INCREMENT,
+    `page_name` varchar(512) NOT NULL,
+    `page_type` int(11) NOT NULL,
+  PRIMARY KEY (`page_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+  
+-- ---------------------------------------------------------------------
+-- banners
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_banner`;
+  
+  CREATE TABLE `tbl_banner` (
+  `banner_id` int(11) NOT NULL AUTO_INCREMENT,
+  `business_id` int(11) NOT NULL,
+  `banner_title` varchar(255) NOT NULL,
+  `banner_description` varchar(4096) DEFAULT NULL,
+  `banner_url` varchar(255) NOT NULL,
+  `banner_expiry` DATE DEFAULT NULL,
+  `banner_photo` varchar(1024) DEFAULT NULL,
+  `banner_status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `banner_view_limit` int(11) NOT NULL DEFAULT 1,
+  `banner_views` int(11) NOT NULL DEFAULT 0,
+  `banner_clicks` int(11) NOT NULL DEFAULT 0,
+  `created_time` timestamp NULL DEFAULT 0,
+  `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by`  int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  PRIMARY KEY (`banner_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+   ALTER TABLE tbl_banner
+   ADD CONSTRAINT fk_banner_created_by
+        FOREIGN KEY (created_by) 
+        REFERENCES tbl_user(user_id);
+        
+   ALTER TABLE tbl_banner
+   ADD CONSTRAINT fk_banner_modified_by
+        FOREIGN KEY (modified_by) 
+        REFERENCES tbl_user(user_id);
+        
+    
+   ALTER TABLE tbl_banner
+   ADD CONSTRAINT fk_banner_business
+        FOREIGN KEY (business_id) 
+        REFERENCES tbl_business(business_id);
+     
+        
+-- ---------------------------------------------------------------------
+-- banner page list
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tbl_banner_page`;
+  
+  CREATE TABLE `tbl_banner_page` (
+  `banner_page_id` int(11) NOT NULL AUTO_INCREMENT,
+  `banner_id` int(11) NOT NULL,
+  `page_id` int(11) NOT NULL,
+  PRIMARY KEY (`banner_page_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+   ALTER TABLE tbl_banner_page
+   ADD CONSTRAINT fk_banner_page_banner
+        FOREIGN KEY (banner_id) 
+        REFERENCES tbl_banner(banner_id);
+        
+   ALTER TABLE tbl_banner_page
+   ADD CONSTRAINT fk_banner_page_page
+        FOREIGN KEY (page_id) 
+        REFERENCES tbl_page(page_id);
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
