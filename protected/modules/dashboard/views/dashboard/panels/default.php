@@ -1,12 +1,14 @@
 <?php
 
 $myMessages         = $data['listMyMessages'];
+$mySavedSearch      = $data['mySavedSearch'];
 
 ?>
                     <ul class="nav nav-tabs" id="myTab">
                             <li class="active"><a href="#messages" data-toggle="tab">Messages</a></li>
                             <li><a href="#qanda" data-toggle="tab">Q and A</a></li>
                             <li><a href="#reviews" data-toggle="tab">Reviews</a></li>
+                            <li><a href="#searches" data-toggle="tab">Saved Searches</a></li>
                         </ul>
 
                         <div class="tab-content">
@@ -35,6 +37,14 @@ $myMessages         = $data['listMyMessages'];
                             <div class="tab-pane active" id="messages">
 
                                 <?php $this->renderPartial('components/messages', array('myMessages' => $myMessages)) ?>
+
+                            </div>
+                            <!--/tab-pane-->
+
+                            <!--tab-pane-->
+                            <div class="tab-pane" id="searches">
+
+                                <?php $this->renderPartial('components/mysearches', array('mySavedSearch' => $mySavedSearch)) ?>
 
                             </div>
                             <!--/tab-pane-->

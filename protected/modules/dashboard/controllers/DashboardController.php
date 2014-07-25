@@ -157,6 +157,15 @@ class DashboardController extends Controller
                                       ));
 
         // /////////////////////////////////////////////////////////////////////
+        // Get a list of the user's saved searches
+        // /////////////////////////////////////////////////////////////////////
+        $mySavedSearch = Yii::app()->db->createCommand()
+                                       ->select("*")
+                                       ->from('tbl_saved_search')
+                                       ->where('user_id = :user_id', array(':user_id' => Yii::app()->user->id))
+                                       ->queryAll();
+
+        // /////////////////////////////////////////////////////////////////////
         // TODO: Get a list of the user's activities logs
         // /////////////////////////////////////////////////////////////////////
         // TODO:
@@ -187,6 +196,7 @@ class DashboardController extends Controller
             'myActivities'      => $listMyActivities,
             'myFriendsCount'    => $myFriendsCount,
             'myMessagesCount'   => $myMessagesCount,
+            'mySavedSearch'     => $mySavedSearch,
             'component'         => $argComponent
         );
 
