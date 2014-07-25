@@ -144,7 +144,7 @@ class DashboardController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Get a list of the user's images
         // /////////////////////////////////////////////////////////////////////
-        $listPhotos = Photo::model()->findAllByAttributes(array(
+        $listImages = Photo::model()->findAllByAttributes(array(
                         'entity_id' => Yii::app()->user->id,
                         'photo_type' => 'user'
                       ));
