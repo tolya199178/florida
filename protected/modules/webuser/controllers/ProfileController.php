@@ -213,5 +213,112 @@ class ProfileController extends Controller
 
 	}
 
+	/**
+	 * Deletes an existing search record.
+	 * ...As an additional safety measure, only POST requests are processed.
+	 * ...Currently, instead of physically deleting the entry, the record is
+	 * ...modified with the status fields set to 'deleted'
+	 * ...We also expect a JSON request only, and return a JSON string providing
+	 * ...outcome details.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return string $result JSON encoded result and message
+	 * @access public
+	 */
+	public function actionRemovesearch()
+	{
+
+	    // TODO: add proper error message . iether flash or raiseerror. Might
+	    // be difficult when sending ajax response.
+
+	    if(Yii::app()->request->isPostRequest)
+	    {
+
+	        $searchId = $_POST['search_id'];
+	        $searchModel = SavedSearch::model()->findByPk($searchId);
+
+	        if ($searchModel == null)
+	        {
+	            Yii::app()->user->setFlash('warning','Saved search not found.');
+	            echo CJSON::encode('{"result":"fail", "message":"Invalid search"}');
+	            Yii::app()->end();
+	        }
+
+
+            $result = $searchModel->delete();
+
+            if ($result == false)
+            {
+                Yii::app()->user->setFlash('warning','Failed to delete saved search.');
+                echo CJSON::encode('{"result":"fail", "message":"Failed to mark record for deletion"}');
+                Yii::app()->end();
+            }
+
+            Yii::app()->user->setFlash('success','Saved search deleted.');
+            echo CJSON::encode('{"result":"success", "message":""}');
+            Yii::app()->end();
+        }
+        else
+        {
+            throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+        }
+
+
+    }
+
+    /**
+     * Updates an existing saved search record.
+     * ...The function is normally invoked twice:
+     * ... - the (initial) GET request loads and renders the requested coupon's
+     * ...   details capture form
+     * ... - the (subsequent) POST request saves the submitted post data for
+     * ...   the existing Coupon record
+     * ...If the save (POST request) is successful, the default method (index()) is called.
+     * ...If the save (POST request) is not successful, the details form is shown
+     * ...again with error messages from the Coupon validation (Coupon::rules())
+     *
+     * @param integer $coupon_id the ID of the model to be updated
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionEditsearch()
+    {
+
+        $searchId = $_GET['id'];
+
+        $searchModel = SavedSearch::model()->findByPk($searchId);
+        if($searchModel===null)
+        {
+            throw new CHttpException(404,'The requested page does not exist.');
+        }
+
+
+        // Uncomment the following line if AJAX validation is needed
+        // TODO: Currently disabled as it breaks JQuery loading order
+        // $this->performAjaxValidation($couponModel);
+
+        if(isset($_POST['SavedSearch']))
+        {
+            // Assign all fields from the form
+            $searchModel->attributes=$_POST['SavedSearch'];
+
+            if($searchModel->save())
+            {
+                Yii::app()->user->setFlash('success', "Details saved.");
+                $this->redirect(Yii::app()->request->urlReferrer);
+            }
+            else {
+                Yii::app()->user->setFlash('error', "Error creating a coupon record.");
+            }
+
+        }
+
+
+        // Show the details screen
+        $this->renderPartial('search_update_modal', array('model'=>$searchModel));
+
+    }
 
 }
