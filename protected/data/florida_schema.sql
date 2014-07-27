@@ -555,7 +555,7 @@ ADD CONSTRAINT tbl_business_review_business
 ALTER TABLE tbl_business_category
 ADD CONSTRAINT fk_business_category_category
      FOREIGN KEY (category_id) 
-     REFERENCES tbl_category(category_id)
+     REFERENCES tbl_category(category_id);
      
      
 ALTER TABLE tbl_business_category
@@ -864,7 +864,7 @@ CREATE TABLE `tbl_mobile_carrier` (
 -- ---------------------------------------------------------------------
 -- system settings
 -- ---------------------------------------------------------------------
-
+DROP TABLE IF EXISTS `tbl_system_settings`;
 
 CREATE TABLE `tbl_system_settings` (
   `settings_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -911,7 +911,7 @@ COMMIT;
     `activity_id`     int(11) NOT NULL AUTO_INCREMENT,
     `keyword`         varchar(255) NOT NULL,
     `language`        varchar(8) NOT NULL DEFAULT 'en',
-    `related_words`   text
+    `related_words`   text,
   PRIMARY KEY (`activity_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
   
@@ -1055,6 +1055,8 @@ ALTER TABLE `businessdb_import` ADD COLUMN sync_comment TEXT;
 -- ---------------------------------------------------------------------
 -- Manta, Gogobot Import
 -- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `imported_business`;
+
 CREATE TABLE `imported_business` (
   `ID1` int(11) DEFAULT NULL,
   `ID` int(11) DEFAULT NULL,
@@ -1625,9 +1627,9 @@ CREATE TABLE IF NOT EXISTS `tbl_restaurant_certificate_purchases` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
-ALTER TABLE `tbl_restaurant_certificate_purchases`
-  ADD CONSTRAINT `tbl_restaurant_certificate_purchases_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`),
-  ADD CONSTRAINT `tbl_restaurant_certificate_purchases_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`);
+--ALTER TABLE `tbl_restaurant_certificate_purchases`
+--  ADD CONSTRAINT `tbl_certificate_purchases_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`),
+--  ADD CONSTRAINT `tbl_certificate_purchases_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`);
 
   
 -- ---------------------------------------------------------------------
@@ -1711,6 +1713,7 @@ ADD CONSTRAINT fk_package_modified_by
 -- ---------------------------------------------------------------------
 -- tbl_package_item_type
 -- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_package_item_type`;
 
 CREATE TABLE IF NOT EXISTS `tbl_package_item_type` (
   `package_item_type_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1735,6 +1738,9 @@ INSERT INTO `tbl_package_item_type` (`package_item_type_id`, `name`, `descriptio
 -- ---------------------------------------------------------------------
 -- tbl_package_item
 -- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_package_item`;
+
+
 CREATE TABLE IF NOT EXISTS `tbl_package_item` (
   `package_item_id` int(11) NOT NULL AUTO_INCREMENT,
   `package_id` int(11) NOT NULL,
@@ -1761,6 +1767,7 @@ ALTER TABLE `tbl_package_item`
 --
 -- tbl_my_package
 --
+DROP TABLE IF EXISTS `tbl_my_package`;
 
 CREATE TABLE IF NOT EXISTS `tbl_my_package` (
   `my_package_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1786,6 +1793,7 @@ ALTER TABLE `tbl_my_package`
 --
 -- tbl_my_package_item
 --
+DROP TABLE IF EXISTS `tbl_my_package_item`;
 
 CREATE TABLE IF NOT EXISTS `tbl_my_package_item` (
   `my_package_item_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1811,10 +1819,12 @@ ALTER TABLE `tbl_my_package_item`
 --
 -- tbl_package_purchase
 --
+DROP TABLE IF EXISTS `tbl_package_purchase`;
 
 CREATE TABLE IF NOT EXISTS `tbl_package_purchase` (
   `package_purchase_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
+  `package_id` int(11) NOT NULL,
   `business_id` int(11) NOT NULL,
   `status` enum('created','verified') NOT NULL,
   `total_cost` float NOT NULL,
