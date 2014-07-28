@@ -523,7 +523,7 @@ class User extends CActiveRecord
      *
      * @access public
      */
-    public function listUserType() {
+    public static function listUserType() {
 
         return array('superadmin'       => 'SuperAdmin',
                      'admin'            => 'Admin',
@@ -539,7 +539,7 @@ class User extends CActiveRecord
      *
      * @access public
      */
-    public function listStatus() {
+    public static function listStatus() {
 
         return array('inactive'     => 'Inactive',
                      'active'       => 'Active',
@@ -555,7 +555,7 @@ class User extends CActiveRecord
      *
      * @access public
      */
-    public function listActivationStatus() {
+    public static function listActivationStatus() {
 
         return array('activated' => 'Activated', 'not_activated' => 'Not Activated');
     }
@@ -568,7 +568,7 @@ class User extends CActiveRecord
      *
      * @access public
      */
-    public function listMaritalStatus() {
+    public static function listMaritalStatus() {
 
         return array('Married' =>'Married', 'Single' => 'Single', 'Unknown' => 'Unknown');
     }
@@ -581,7 +581,7 @@ class User extends CActiveRecord
      *
      * @access public
      */
-    public function listPermissions() {
+    public static function listPermissions() {
 
         return array('none' => 'Do not share','friends' => 'My Friends', 'all' => 'Everybody');
     }
