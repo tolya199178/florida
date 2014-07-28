@@ -178,11 +178,11 @@ class ProfileForm extends CFormModel
                     array('fldUploadMyGalleryImage',        'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
 
 
-                    array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-                    array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-                    array('friends_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-                    array('blogs_permissions',              'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
-                    array('travel_options_permissions',     'in','range'=>array('none','friends','all'),'allowEmpty'=>false),
+                    array('my_info_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+                    array('photos_permissions',             'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+                    array('friends_permissions',            'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+                    array('blogs_permissions',              'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
+                    array('travel_options_permissions',     'in','range'=>array('none','friends','all'),'allowEmpty'=>true),
 
 
 
