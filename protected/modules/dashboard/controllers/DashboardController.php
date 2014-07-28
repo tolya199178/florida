@@ -121,7 +121,7 @@ class DashboardController extends Controller
 
 
         // /////////////////////////////////////////////////////////////////////
-        // Get the user's messages
+        // Get the user's messages detail
         // /////////////////////////////////////////////////////////////////////
 
         /*
@@ -132,7 +132,7 @@ class DashboardController extends Controller
                                           ->select('COUNT(*) AS count')
                                           ->from('tbl_user_message')
                                           ->where('recipient = :user_id AND `read` = "N"',
-                                                  array('user_id' => Yii::app()->user->id))
+                                                  array(':user_id' => Yii::app()->user->id))
                                           ->queryRow();
 
         $myMessagesCount['countUnreadMessages'] = $countNewMessages['count'];
@@ -140,6 +140,34 @@ class DashboardController extends Controller
         $listMyMessages   = UserMessage::model()->findAllByAttributes(array(
                                 'recipient' => Yii::app()->user->id
                             ));
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the users post details
+        // /////////////////////////////////////////////////////////////////////
+
+        /*
+         * Get a list of top 10 user questions
+         */
+        $listMyNewQuestions = Yii::app()->db->createCommand()
+                                            ->select('*')
+                                            ->from('tbl_post_question')
+                                            ->where('user_id = :user_id AND `post_type` = "Question"',
+                                                array(':user_id' => Yii::app()->user->id))
+                                            ->limit("10")
+                                            ->order("modified_date")
+                                            ->queryAll();
+
+
+        $listMyNewAnswers  = Yii::app()->db->createCommand()
+                                            ->select('*')
+                                            ->from('tbl_post_answer')
+                                            ->where('user_id = :user_id',
+                                                array(':user_id' => Yii::app()->user->id))
+                                            ->limit("10")
+                                            ->order("modified_date")
+                                            ->queryAll();
+
 
         // /////////////////////////////////////////////////////////////////////
         // Get a list of the user's images
@@ -197,6 +225,8 @@ class DashboardController extends Controller
             'myFriendsCount'    => $myFriendsCount,
             'myMessagesCount'   => $myMessagesCount,
             'mySavedSearch'     => $mySavedSearch,
+            'listMyNewQuestions'=> $listMyNewQuestions,
+            'listMyNewAnswers'  => $listMyNewAnswers,
             'component'         => $argComponent
         );
 

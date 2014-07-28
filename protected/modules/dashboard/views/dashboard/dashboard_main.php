@@ -11,7 +11,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-10">
-                        <h1>Dashboard : <?php echo CHtml::encode(Yii::app()->user->getFullName()); ?>
+                        <h1>Dashboard : <?php echo CHtml::encode(Yii::app()->user->getFullName()); ?></h1>
                     </div>
                     <div class="col-sm-2">
 
