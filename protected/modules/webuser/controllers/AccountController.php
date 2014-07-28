@@ -111,17 +111,20 @@ class AccountController extends Controller
 	{
         $formModel = new ProfileForm('register');
 
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'profile-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'profile-form')
+        {
             echo CActiveForm::validate(array($formModel));
             Yii::app()->end();
         }
 
-        if (isset($_POST['ProfileForm'])) {
+        if (isset($_POST['ProfileForm']))
+        {
 
             $formModel->setAttributes($_POST['ProfileForm']);
             $formModel->user_name = $formModel->email;
 
-            if ($formModel->validate()) {
+            if ($formModel->validate())
+            {
 
                 // /////////////////////////////////////////////////////////////////
                 // Create a new user entry
@@ -148,9 +151,11 @@ class AccountController extends Controller
 
                 $uploadedFile = CUploadedFile::getInstance($formModel, 'picture');
 
-                if ($userModel->validate() && $formModel->validate()) {
+                if ($userModel->validate() && $formModel->validate())
+                {
 
-                    if ($userModel->save()) {
+                    if ($userModel->save())
+                    {
                         if (!empty($uploadedFile))
                         {
                             $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
@@ -185,10 +190,20 @@ class AccountController extends Controller
 
                         Yii::app()->end();
 
-                    } else {
+                    }
+                    else
+                    {
                         Yii::app()->user->setFlash('error', "Error creating a user record.'");
                     }
                 }
+                else
+                {
+                    Yii::app()->user->setFlash('error', "Validation error.'");
+                }
+            }
+            else
+            {
+                Yii::app()->user->setFlash('error', "Validation error.'");
             }
         }
 
@@ -356,15 +371,37 @@ class AccountController extends Controller
         // Phew. If we made it here, then process the form request.
         // /////////////////////////////////////////////////////////////////////
 
+
 	    $formModel = new ProfileForm;
 
-	    if (isset($_POST['ProfileForm'])) {
+	    $formModel->user_id                      = $userModel->attributes['user_id'];
 
+	    $formModel->user_name                    = $userModel->attributes['user_name'];
+	    $formModel->email                        = $userModel->attributes['email'];
+	    $formModel->first_name                   = $userModel->attributes['first_name'];
+	    $formModel->last_name                    = $userModel->attributes['last_name'];
+	    $formModel->places_want_to_visit         = $userModel->attributes['places_want_to_visit'];
+
+	    $formModel->date_of_birth                = $userModel->attributes['date_of_birth'];
+	    $formModel->mobile_carrier_id            = $userModel->attributes['mobile_carrier_id'];
+	    $formModel->mobile_number                = $userModel->attributes['mobile_number'];
+	    $formModel->hometown                     = $userModel->attributes['hometown'];
+	    $formModel->marital_status               = $userModel->attributes['marital_status'];
+	    $formModel->send_sms_notification        = $userModel->attributes['send_sms_notification'];
+	    $formModel->my_info_permissions          = $userModel->attributes['my_info_permissions'];
+	    $formModel->photos_permissions           = $userModel->attributes['photos_permissions'];
+	    $formModel->friends_permissions          = $userModel->attributes['friends_permissions'];
+	    $formModel->blogs_permissions            = $userModel->attributes['blogs_permissions'];
+	    $formModel->travel_options_permissions   = $userModel->attributes['travel_options_permissions'];
+
+	    if (isset($_POST['ProfileForm']))
+	    {
 
 	        $formModel->setAttributes($_POST['ProfileForm']);
 	        $formModel->user_name = $formModel->email;
 
-	        if ($formModel->validate()) {
+	        if ($formModel->validate())
+	        {
 
 	            // Copy form details
 	            $userModel->setAttributes($_POST['ProfileForm']);
@@ -382,9 +419,11 @@ class AccountController extends Controller
 
 	            $uploadedFile = CUploadedFile::getInstance($formModel, 'fldUploadImage');
 
-	            if ($userModel->validate() && $formModel->validate()) {
+	            if ($userModel->validate() && $formModel->validate())
+	            {
 
-	                if ($userModel->save()) {
+	                if ($userModel->save())
+	                {
 
 	                    if (!empty($uploadedFile))
 	                    {
@@ -406,92 +445,59 @@ class AccountController extends Controller
 
 	                    }
 
-	                    Yii::app()->user->setFlash('success', "User record saved.");
+	                    $this->redirect("dashboard/dashboard/");
 
-
-	                    $userprofileModel = UserProfile::model()->findByAttributes(array('user_id'=> $userModel->user_id));
-
-	                    if ($userprofileModel === null)
-	                    {
-	                        $userprofileModel                                = new UserProfile;
-	                        $userprofileModel->user_id                       = $userModel->user_id;
-	                    }
-
-	                    $userprofileModel->alert_business_review         =
-	                               $_POST['ProfileForm']['alert_business_review'];
-	                    $userprofileModel->alert_review_comment
-	                               = $_POST['ProfileForm']['alert_review_comment'];
-	                    $userprofileModel->alert_like_complaint_response =
-	                               $_POST['ProfileForm']['alert_like_complaint_response'];
-	                    $userprofileModel->alert_forum_response          =
-	                               $_POST['ProfileForm']['alert_forum_response'];
-	                    $userprofileModel->alert_answer_voted            =
-	                               $_POST['ProfileForm']['alert_answer_voted'];
-	                    $userprofileModel->alert_trip_question_response  =
-	                               $_POST['ProfileForm']['alert_trip_question_response'];
-
-	                    if($userprofileModel->save() === false)
-	                    {
-	                        Yii::app()->user->setFlash('warning', "User record saved, but profile settings were not saved.'");
-	                    }
-
-
-	                    $this->redirect(Yii::app()->user->returnUrl);
 	                    Yii::app()->end();
 
-	                }
-	                else
-	                {
-	                    Yii::app()->user->setFlash('error', "Error updating your profile.'");
+	                } else {
+	                    Yii::app()->user->setFlash('error', "Error creating a business record.'");
 	                }
 	            }
-	            else
-	            {
-	                Yii::app()->user->setFlash('error', "Error updating your profile.'");
-
-	            }
-	        }
-	        else
-	        {
-
-	            Yii::app()->user->setFlash('error', "Error updating your profile.'");
 	        }
 	    }
-	    else
-	    {
-	        $formModel->user_id                      = $userModel->attributes['user_id'];
-
-	        $formModel->user_name                    = $userModel->attributes['user_name'];
-	        $formModel->email                        = $userModel->attributes['email'];
-	        $formModel->first_name                   = $userModel->attributes['first_name'];
-	        $formModel->last_name                    = $userModel->attributes['last_name'];
-	        $formModel->places_want_to_visit         = unserialize($userModel->attributes['places_want_to_visit']);
-	        $formModel->places_visited               = unserialize($userModel->attributes['places_visited']);
-
-	        $formModel->date_of_birth                = $userModel->attributes['date_of_birth'];
-	        $formModel->mobile_carrier_id            = $userModel->attributes['mobile_carrier_id'];
-	        $formModel->mobile_number                = $userModel->attributes['mobile_number'];
-	        $formModel->hometown                     = $userModel->attributes['hometown'];
-	        $formModel->marital_status               = $userModel->attributes['marital_status'];
-	        $formModel->send_sms_notification        = $userModel->attributes['send_sms_notification'];
-	        $formModel->my_info_permissions          = $userModel->attributes['my_info_permissions'];
-	        $formModel->photos_permissions           = $userModel->attributes['photos_permissions'];
-	        $formModel->friends_permissions          = $userModel->attributes['friends_permissions'];
-	        $formModel->blogs_permissions            = $userModel->attributes['blogs_permissions'];
-	        $formModel->travel_options_permissions   = $userModel->attributes['travel_options_permissions'];
-	        $formModel->image                        = $userModel->attributes['image'];
-
-	        $formModel->alert_business_review        = $userModel->alert_business_review;
-	        $formModel->alert_review_comment         = $userModel->alert_review_comment;
-	        $formModel->alert_like_complaint_response = $userModel->alert_like_complaint_response;
-	        $formModel->alert_forum_response         = $userModel->alert_forum_response;
-	        $formModel->alert_answer_voted           = $userModel->alert_answer_voted;
-	        $formModel->alert_trip_question_response = $userModel->alert_trip_question_response;
 
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's friends
+	    // /////////////////////////////////////////////////////////////////////
+	    // /////////////////////////////////////////////////////////////////////
+	    // First, get a list of all local friends
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstMyFriends = MyFriend::model()->with('friend')->findAllByAttributes(array(
+	        'user_id' => Yii::app()->user->id
+	    ));
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Now, get a list of the user's facebook friends
+	    // /////////////////////////////////////////////////////////////////////
+	    // Load the component
+	    // TODO: figure why component is not autoloading.
+	    $objFacebook = Yii::app()->getComponent('facebook');
+
+	    // Establish a connection to facebook
+	    $objFacebook->connect();
+
+	    $lstMyOnlineFriends = array();
+	    if ($objFacebook->isLoggedIn()) {
+	        $lstMyOnlineFriends = $objFacebook->getFriendList();
 	    }
 
-	    $this->render('user_profile', array('model'    => $formModel));
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get the user's messages
+	    // /////////////////////////////////////////////////////////////////////
+	    $listMessages = UserMessage::model()->findAllByAttributes(array('recipient' => Yii::app()->user->id));
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's images
+	    // /////////////////////////////////////////////////////////////////////
+	    $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => Yii::app()->user->id, 'photo_type' => 'user'));
+
+	    $this->render('user_profile', array('model'            => $formModel,
+	                                        'myLocalFriends'   => $lstMyFriends,
+	                                        'myOnlineFriends'  => $lstMyOnlineFriends,
+	                                        'myMessages'       => $listMessages,
+	                                        'myPhotos'         => $listPhotos,
+	                                       ));
 	}
 
 	/**
@@ -547,7 +553,7 @@ class AccountController extends Controller
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionLogout()
+	public function actionFblogout()
 	{
 	    // Load the component
 	    // TODO: figure why component is not autoloading.
@@ -564,303 +570,6 @@ class AccountController extends Controller
 	        $this->redirect($objFacebook->getLogoutUrl());
 
 	    }
-	}
-
-	/**
-	 * Allow the user to change their own passwords
-	 * ...The function is normally invoked twice:
-	 * ... - the (initial) GET request loads and renders the change password form
-	 * ... - the (subsequent) POST request processes the change password request.
-	 * ...If the save (POST request) is processed, the user is directed back to
-	 * ...the calling url with a flash message indicating the outcome,
-	 * ...
-	 * ...The user is required to submit both their current password and new password
-	 * ...in order to process the request completely.
-	 *
-	 * @param <none> <none>
-	 *
-	 * @return <none> <none>
-	 * @access public
-	 */
-	public function actionChangepassword()
-	{
-
-	    // /////////////////////////////////////////////////////////////////////
-	    // Redirect non-logged in users to the login page
-	    // /////////////////////////////////////////////////////////////////////
-	    if (Yii::app()->user->isGuest)         // User is not logged in
-	    {
-	        Yii::app()->user->setFlash('error', "You are not logged in.");
-	        $this->redirect("login");
-	        Yii::app()->end();
-	    }
-
-	    $modelUser = new User(User::SCENARIO_CHANGE_PASSWORD);
-
-	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
-
-	    /*
-	     * Process the form if it was submitted, otherwise display the form.
-	     */
-	    if (isset($_POST['User']))
-	    {
-
-	        $modelUser = User::model()->findByPk(Yii::app()->user->id);
-	        $modelUser->scenario = User::SCENARIO_CHANGE_PASSWORD;
-
-	        $modelUser->fldCurrentPassword   = $_POST['User']['fldCurrentPassword'];
-	        $modelUser->password             = $_POST['User']['password'];
-	        $modelUser->fldVerifyPassword    = $_POST['User']['fldVerifyPassword'];
-
-	        /*
-	         * Validate user input and redirect to the previous page if valid, otherwise
-	         * ...show the login form again with error messages
-	         */
-	        if ($modelUser->validate())
-	        {
-
-	            /*
-	             * Test that the password that was entered is correct
-	             */
-                $currentuserIdentity = new UserIdentity($modelUser->user_name, $modelUser->fldCurrentPassword);
-                $currentuserIdentity->authenticate();
-
-	            if ($currentuserIdentity->errorCode === UserIdentity::ERROR_NONE)
-	            {
-
-	               if ($modelUser->save())
-	               {
-	                   Yii::app()->user->setFlash('success', "Password changed.");
-	                   $this->redirect(Yii::app()->user->returnUrl);
-	               }
-
-	            }
-	            else
-	            {
-	                Yii::app()->user->setFlash('error', "Error setting your new password. Try again.");
-	            }
-
-	        }
-	        else
-	        {
-	                Yii::app()->user->setFlash('error', "Error setting your new password. Try again.");
-	        }
-	    }
-
-	    // Display the password change capture form
-        $this->render('change_password', array('model' => $modelUser));
-
-
-	}
-
-	/**
-	 * Allow the user to initiate a system password reset.
-	 * ...The function is normally invoked twice:
-	 * ... - the (initial) GET request loads and renders the change password form
-	 * ... - the (subsequent) POST request processes the change password request.
-	 * ...If the save (POST request) is processed, the user is directed back to
-	 * ...the calling url with a flash message indicating the outcome,
-	 * ...
-	 * ...The user is required at least an email address to process the request completely.
-	 *
-	 * @param <none> <none>
-	 *
-	 * @return <none> <none>
-	 * @access public
-	 */
-	public function actionResetpassword()
-	{
-
-
-	    // If an activation code is supplied, allow the user to reset their passwords
-	    $activationCode  = Yii::app()->request->getParam('cde', null);
-
-	    if ($activationCode !== null)
-	    {
-	        // Find the corresponding user record.
-	        $modelUser = User::model()->findByAttributes(array('activation_code' => $activationCode));
-
-	        if ($modelUser === null)
-	        {
-	            throw new CHttpException(405,'There was a problem obtaining the user record.');
-	        }
-
-	        /*
-	         * Process the form if it was submitted, otherwise display the form.
-	        */
-	        if (isset($_POST['User']))
-	        {
-	            $modelUser->attributes         = $_POST['User'];
-
-                $modelUser->fldCurrentPassword = strrev($activationCode);
-	            $modelUser->fldVerifyPassword  = $_POST['User']['fldVerifyPassword'];
-	            $modelUser->activation_code    = '';
-
-	            $modelUser->scenario           = User::SCENARIO_FORGOT_PASSWORD;
-
-	            if ($modelUser->validate())
-	            {
-
-	               $modelUser->scenario = User::SCENARIO_CHANGE_PASSWORD;
-
-	               if ($modelUser->save())
-	               {
-	                   Yii::app()->user->setFlash('success', "Password changed.");
-	                   $this->redirect(Yii::app()->user->returnUrl);
-	               }
-
-	            }
-	            else
-	            {
-	                Yii::app()->user->setFlash('error', "Error resetting your account.");
-	            }
-
-	        }
-
-            $modelUser->fldCurrentPassword = strrev($activationCode);
-            $modelUser->password           = '';
-            $this->render('reset_lost_password', array('model' => $modelUser));
-
-	    }
-	    else
-	    {
-
-	        $modelUser = new User(User::SCENARIO_FORGOT_PASSWORD);
-
-	        // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
-
-	        /*
-	         * Process the form if it was submitted, otherwise display the form.
-	        */
-	        if (isset($_POST['User']))
-	        {
-
-	            // $modelUser = User::model()->findByPk(Yii::app()->user->id);
-	            $modelUser->scenario = User::SCENARIO_FORGOT_PASSWORD;
-
-	            $modelUser->email                = $_POST['User']['email'];
-
-	            /*
-	             * Validate user input and redirect to the previous page if valid, otherwise
-	            * ...show the login form again with error messages
-	            */
-	            if ($modelUser->validate())
-	            {
-
-	                // Get the user identified by the email
-	                $modelUser = User::model()->findByAttributes(array('email' => $_POST['User']['email']));
-
-	                if ($modelUser === null)
-	                {
-	                    throw new CHttpException(404,'The requested page could not be found.');
-	                }
-
-	                // /////////////////////////////////////////////////////////////
-	                // We tag the activation code with 'P[calculated_code]W' to help
-	                // ...us identify the password reset request
-	                // /////////////////////////////////////////////////////////////
-	                $modelUser->activation_code    =  'P'.HAccount::getVerificationCode(CHtml::encode($modelUser->email)).'W';
-
-	                if ($modelUser->save())
-	                {
-
-
-	                    // Get the email message and subject
-	                    $emailMessage = HAccount::getEmailMessage('password_reset_email');
-	                    $emailSubject = HAccount::getEmailSubject('password_reset_email');
-
-
-	                    // Customise the email message
-	                    $emailMessage = HAccount::CustomiseMessage($emailMessage, $modelUser->attributes);
-
-
-	                    // Send the message
-	                    HAccount::sendMessage($modelUser->attributes['email'], $modelUser->attributes['first_name'].' '.$modelUser->attributes['last_name'], $emailSubject, $emailMessage);
-
-
-	                    Yii::app()->user->setFlash('success', "Your request is being processed. Check your email.");
-	                    $this->redirect(Yii::app()->user->returnUrl);
-	                }
-	                else
-	                {
-	                    Yii::app()->user->setFlash('error', "Your request could not be processed at this time.");
-	                    $this->redirect(Yii::app()->user->returnUrl);
-	                }
-
-	            }
-	            else
-	            {
-	                Yii::app()->user->setFlash('error', "Error requesting your new password. Try again.");
-	            }
-	        }
-
-	        // Display the password change capture form
-	        $this->render('lost_password', array('model' => $modelUser));
-
-	    }
-
-
-	}
-
-	/**
-	 * Delete images for the user. Normally invoked when user is being deleted.
-	 *
-	 * @param string $imageFileName the name of the file
-	 *
-	 * @return <none> <none>
-	 * @access public
-	 */
-	private function deleteImages($imageFileName)
-	{
-	    $imagePath          = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	    @unlink($imagePath);
-
-	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	    @unlink($thumbnailPath);
-	}
-
-
-	/**
-	 * Create a thumbnail image from the filename give, Store it in the thumnails folder.
-	 *
-	 * @param <none> <none>
-	 *
-	 * @return <none> <none>
-	 * @access public
-	 */
-	private function createThumbnail($imageFileName, $sizeWidth = 0, $sizeHeight = 0)
-	{
-
-	    if ($sizeWidth == 0)
-	    {
-	        $sizeWidth     = $this->thumbnailWidth;
-	    }
-	    if ($sizeHeight == 0)
-	    {
-	        $sizeHeight    = $this->thumbnailHeight;
-	    }
-
-	    $thumbnailPath     = $this->thumbnailsDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-	    $imagePath         = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
-
-	    $imgThumbnail              = new Thumbnail;
-	    $imgThumbnail->PathImgOld  = $imagePath;
-	    $imgThumbnail->PathImgNew  = $thumbnailPath;
-
-	    $imgThumbnail->NewWidth    = $sizeWidth;
-	    $imgThumbnail->NewHeight   = $sizeHeight;
-
-	    $result = $imgThumbnail->create_thumbnail_images();
-
-	    if (!$result)
-	    {
-	        return false;
-	    }
-	    else
-	    {
-	        return true;
-	    }
-
 	}
 
 }

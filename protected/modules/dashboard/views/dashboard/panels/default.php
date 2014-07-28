@@ -2,6 +2,7 @@
 
 $myMessages         = $data['listMyMessages'];
 $mySavedSearch      = $data['mySavedSearch'];
+$myPhotos           = $data['myPhotos'];
 
 ?>
                     <ul class="nav nav-tabs" id="myTab">
@@ -9,6 +10,8 @@ $mySavedSearch      = $data['mySavedSearch'];
                             <li><a href="#qanda" data-toggle="tab">Q and A</a></li>
                             <li><a href="#reviews" data-toggle="tab">Reviews</a></li>
                             <li><a href="#searches" data-toggle="tab">Saved Searches</a></li>
+                            <li><a href="#myphotos" data-toggle="tab">My Photos</a></li>
+
                         </ul>
 
                         <div class="tab-content">
@@ -45,6 +48,14 @@ $mySavedSearch      = $data['mySavedSearch'];
                             <div class="tab-pane" id="searches">
 
                                 <?php $this->renderPartial('components/mysearches', array('mySavedSearch' => $mySavedSearch)) ?>
+
+                            </div>
+                            <!--/tab-pane-->
+
+                            <!--tab-pane-->
+                            <div class="tab-pane" id="myphotos">
+
+                                <?php $this->renderPartial('components/myphotos', array('myPhotos' => $myPhotos)) ?>
 
                             </div>
                             <!--/tab-pane-->
