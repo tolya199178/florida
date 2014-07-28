@@ -53,7 +53,7 @@ $myPhotos           = $data['myPhotos'];
                             <!--/tab-pane-->
 
                             <!--tab-pane-->
-                            <div class="tab-pane" id="searches">
+                            <div class="tab-pane" id="myphotos">
 
                                 <?php $this->renderPartial('components/myphotos', array('myPhotos' => $myPhotos)) ?>
 

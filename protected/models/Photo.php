@@ -32,6 +32,14 @@
  */
 class Photo extends CActiveRecord
 {
+
+    /**
+     *
+     * @var string fldUploadImage Business image uploader.
+     * @access public
+     */
+    public $fldUploadImage;
+
     /**
      * Get database table name associated with the model.
      *
@@ -71,6 +79,10 @@ class Photo extends CActiveRecord
 
 		    // ranges
 		    array('photo_type',      'in','range'=>array('city', 'state', 'business', 'user', 'general', 'event'),'allowEmpty'=>false),
+
+		    // Form only attributes.
+		    array('fldUploadImage',                       'file', 'types'=>'jpg, jpeg, gif, png', 'allowEmpty'=>true),
+
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('photo_id, photo_type, entity_id, caption, title, path', 'safe', 'on'=>'search'),
