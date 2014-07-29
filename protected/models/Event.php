@@ -303,6 +303,14 @@ class Event extends CActiveRecord
 	public function beforeSave()
 	{
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // All events are public events. The event type will retain the event
+	    // ...type (RFU). The event_type valuse for all new records will be
+	    // ...automatically be set to 'public'
+	    // /////////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->event_type = 'Public';
+	    }
 
         // /////////////////////////////////////////////////////////////////
         // Set the create time and user for new records

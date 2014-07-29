@@ -65,7 +65,6 @@
                 <th>Event ID</th>
                 <th>Event Title</th>
                 <th>Description</th>
-                <th>Event Type</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>&nbsp;</th>

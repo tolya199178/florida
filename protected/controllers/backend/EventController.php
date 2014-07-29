@@ -422,7 +422,6 @@ class EventController extends BackEndController
             $row = array($r->attributes['event_id'],
                          $r->attributes['event_title'],
                          $r->attributes['event_description'],
-                         $r->attributes['event_type'],
                          $r->attributes['event_start_date'],
                          $r->attributes['event_end_date'],
                          ''
