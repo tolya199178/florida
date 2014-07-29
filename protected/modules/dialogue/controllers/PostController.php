@@ -669,6 +669,87 @@ class PostController extends Controller
     }
 
     /**
+     * Delete the provided question.
+     * ...There are a few validations that must be observed.
+     * ... - The question user id must be the user making the request.
+     * ... - Only post requests are accepted.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionDeletequestion()
+    {
+
+
+        $argQuestionId = 0;
+
+        if (isset($_POST['question_id']))
+        {
+            $argQuestionId = (int) $_POST['question_id'];
+        }
+
+
+        if ($argQuestionId == 0)
+        {
+            echo CJSON::encode(array('result' => false, 'message'=>'Question not found'));
+            Yii::app()->end();
+        }
+
+        $questionModel = PostQuestion::model()->findByPk($argQuestionId);
+
+        if ($questionModel === null)
+        {
+            echo CJSON::encode(array('result' => false, 'message'=>'Question not found'));
+            Yii::app()->end();
+        }
+
+        // Only allow question owners to update the question
+        if ($questionModel->user_id != Yii::app()->user->id)
+        {
+            throw new CHttpException(400, 'Unauthorised Access Attempt. Please do not repeat this request.');
+        }
+
+
+        $refTransaction = Yii::app()->db->beginTransaction();
+        try
+        {
+
+            // /////////////////////////////////////////////////////////////////
+            // Find and delete any answers, and any subscriptions.
+            // /////////////////////////////////////////////////////////////////
+            $listAnswers = PostAnswer::model()->deleteAllByAttributes(array('question_id'=>$argQuestionId));
+
+            $listSubscibers = PostSubscribed::model()->deleteAllByAttributes(array('post_id'=>$argQuestionId));
+
+            $deleteResult = $questionModel->delete();
+
+            if ($deleteResult == false)
+            {
+                $refTransaction->rollback();
+                echo CJSON::encode(array('result' => false, 'message'=>'Failed to mark record for deletion'));
+                Yii::app()->end();
+            }
+
+            $refTransaction->commit();
+
+        }
+        catch (\Exception $e)
+        {
+
+            $refTransaction->rollback();
+            Yii::log('Unable to save order: '.$e->getMessage(), \CLogger::LEVEL_ERROR, 'core.models.store.Order');
+            return false;
+        }
+
+
+        echo CJSON::encode(array('result' => true, 'message'=>'Ok'));
+        Yii::app()->end();
+
+    }
+
+    /**
      * Displays the discussion dashboard
      *
      * @param <none> <none>

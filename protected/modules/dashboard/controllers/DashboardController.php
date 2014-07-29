@@ -160,12 +160,14 @@ class DashboardController extends Controller
 
 
         $listMyNewAnswers  = Yii::app()->db->createCommand()
-                                            ->select('*')
-                                            ->from('tbl_post_answer')
-                                            ->where('user_id = :user_id',
+                                            ->join('tbl_post_question question',
+                                                   'answer.question_id = question.id')
+                                            ->select('answer.id, answer.title, answer.modified_date, question.title')
+                                            ->from('tbl_post_answer answer')
+                                            ->where('answer.user_id = :user_id',
                                                 array(':user_id' => Yii::app()->user->id))
                                             ->limit("10")
-                                            ->order("modified_date")
+                                            ->order("answer.modified_date")
                                             ->queryAll();
 
 

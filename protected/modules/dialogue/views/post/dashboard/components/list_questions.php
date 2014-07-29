@@ -49,7 +49,7 @@ $listQuestions = $data['listQuestions'];
 <?php if ($itemQuestion->user_id == Yii::app()->user->id) { ?>
    <?php echo CHtml::link('Edit', 'edit', array('class'=>"label label-success", 'title'=>"")); ?>
 
-   <?php echo CHtml::link('Delete', 'delete', array('class'=>"label label-danger", 'title'=>"")); ?>
+   <?php echo CHtml::link('Delete', '#', array('class'=>"label label-danger deletepost", 'title'=>"", 'rel'=>$itemQuestion->id)); ?>
 
        <span class="glyphicon glyphicon-remove"></span></a>
 <?php } ?>
@@ -73,3 +73,42 @@ $listQuestions = $data['listQuestions'];
         </div>
     <?php } ?>
 </div>
+
+<?php
+
+$deletePostUrl = Yii::app()->createUrl('//dialogue/post/deletequestion/');
+
+$script = <<<EOD
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Delete event.
+    // /////////////////////////////////////////////////////////////////////////
+    // Launch the modal when the create new event link is clicked
+    $('body').on('click', '.deletepost', function(e) {
+
+            var result = window.confirm("Do you really want to Delete the event?");
+            if (result == false) {
+                e.preventDefault();
+                return false;
+            }
+            else {
+                $.ajax({
+                	type: 'POST',
+                	url: "$deletePostUrl",
+                	datatype:"json",
+                	data: {question_id: $(this).attr("rel")} ,
+
+                	success: function(data, status) {
+                 	   location.reload();
+                	}
+            	});
+                return false;
+            }
+
+    });
+    //
+
+EOD;
+
+Yii::app()->clientScript->registerScript('question_list_mgt', $script, CClientScript::POS_READY);
