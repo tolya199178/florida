@@ -72,13 +72,17 @@ class Survey extends CActiveRecord
 	{
 
 		return array(
-			array('survey_name', 'required'),
-			array('business_id, created_by, modified_by, published, template, private', 'numerical', 'integerOnly'=>true),
-			array('survey_name', 'length', 'max'=>255),
-			array('created_time, modified_time', 'safe'),
+			array('survey_name',                                             'required'),
+			array('business_id',                                             'numerical', 'integerOnly'=>true),
+			array('survey_name',                                             'length', 'max'=>255),
+
+		    array('published, template, private',                             'in', 'range'=>array('Y','N')),
+
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('survey_id, business_id, survey_name, created_by, modified_by, created_time, modified_time, published, template, private', 'safe', 'on'=>'search'),
+			array('survey_id, business_id, survey_name, created_by,
+			       modified_by, created_time, modified_time, published,
+			       template, private',                                       'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,12 +98,12 @@ class Survey extends CActiveRecord
 	{
 
 		return array(
-			'business'      => array(self::BELONGS_TO, 'Business', 'business_id'),
-			'createdBy'      => array(self::BELONGS_TO, 'User', 'created_by'),
-			'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
-			'surveyAnswers'      => array(self::HAS_MANY, 'SurveyAnswer', 'survey_id'),
-			'surveyQuestions'      => array(self::HAS_MANY, 'SurveyQuestion', 'survey_id', 'order' => 'sort'),
-			'surveyResponses'      => array(self::HAS_MANY, 'SurveyResponse', 'survey_id'),
+			'business'           => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'createdBy'          => array(self::BELONGS_TO, 'User', 'created_by'),
+			'modifiedBy'         => array(self::BELONGS_TO, 'User', 'modified_by'),
+			'surveyAnswers'      => array(self::HAS_MANY,   'SurveyAnswer', 'survey_id'),
+			'surveyQuestions'    => array(self::HAS_MANY,   'SurveyQuestion', 'survey_id', 'order' => 'sort'),
+			'surveyResponses'    => array(self::HAS_MANY,   'SurveyResponse', 'survey_id'),
 		);
 	}
 
@@ -117,16 +121,16 @@ class Survey extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'survey_id'      => 'Survey',
-			'business_id'      => 'Business',
-			'survey_name'      => 'Survey Name',
-			'created_by'      => 'Created By',
-			'modified_by'      => 'Modified By',
-			'created_time'      => 'Created Time',
+			'survey_id'          => 'Survey',
+			'business_id'        => 'Business',
+			'survey_name'        => 'Survey Name',
+			'created_by'         => 'Created By',
+			'modified_by'        => 'Modified By',
+			'created_time'       => 'Created Time',
 			'modified_time'      => 'Modified Time',
-			'published'      => 'Published',
-			'template'      => 'Template',
-			'private'      => 'Private',
+			'published'          => 'Published',
+			'template'           => 'Template',
+			'private'            => 'Private',
 		);
 	}
 
@@ -151,20 +155,43 @@ class Survey extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('survey_id',$this->survey_id);
-		$criteria->compare('business_id',$this->business_id);
-		$criteria->compare('survey_name',$this->survey_name,true);
-		$criteria->compare('created_by',$this->created_by);
-		$criteria->compare('modified_by',$this->modified_by);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('modified_time',$this->modified_time,true);
-		$criteria->compare('published',$this->published);
-		$criteria->compare('template',$this->template);
-		$criteria->compare('private',$this->private);
+		$criteria->compare('survey_id',       $this->survey_id);
+		$criteria->compare('business_id',     $this->business_id);
+		$criteria->compare('survey_name',     $this->survey_name,true);
+		$criteria->compare('created_by',      $this->created_by);
+		$criteria->compare('modified_by',     $this->modified_by);
+		$criteria->compare('created_time',    $this->created_time,true);
+		$criteria->compare('modified_time',   $this->modified_time,true);
+		$criteria->compare('published',       $this->published);
+		$criteria->compare('template',        $this->template);
+		$criteria->compare('private',         $this->private);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+
+    /**
+     * Prepares model for saving. Fill created_by, modified_by, created_time, modified_time
+     * @return type
+     */
+    public function beforeSave() {
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+
+	    return parent::beforeSave();
 	}
 
     /**
