@@ -407,10 +407,6 @@ class AccountController extends Controller
 	            $userModel->setAttributes($_POST['ProfileForm']);
 
 	            // Add additional fields
-	            $userModel->password            = isset($_POST['ProfileForm']['password'])?$_POST['ProfileForm']['password']:null;
-	            $userModel->fldVerifyPassword   = isset($_POST['ProfileForm']['confirm_password'])?$_POST['ProfileForm']['confirm_password']:null;
-	            $userModel->created_by          = 1;
-	            $userModel->user_name           = $userModel->email;
 	            $userModel->places_visited      = serialize($_POST['ProfileForm']['places_visited']);
 	            $userModel->places_want_to_visit = serialize($_POST['ProfileForm']['places_want_to_visit']);
 
@@ -425,6 +421,9 @@ class AccountController extends Controller
 	                if ($userModel->save())
 	                {
 
+	                    /**
+	                     * Save the user's image file
+	                     */
 	                    if (!empty($uploadedFile))
 	                    {
 	                        $imageFileName = 'user-' . $userModel->user_id . '-' . $uploadedFile->name;
@@ -445,14 +444,59 @@ class AccountController extends Controller
 
 	                    }
 
+	                    /**
+	                     * Save the user's profile details
+	                     */
+
+	                    $userProfileModel = UserProfile::model()->findByAttributes(array('user_id'=>$userModel->user_id));
+
+	                    if ($userProfileModel === null)
+	                    {
+	                        $userProfileModel  = new UserProfile;
+	                    }
+
+	                    $userProfileModel->alert_business_review                  = $_POST['ProfileForm']['alert_business_review'];
+	                    $userProfileModel->alert_review_comment                   = $_POST['ProfileForm']['alert_review_comment'];
+	                    $userProfileModel->alert_like_complaint_response          = $_POST['ProfileForm']['alert_like_complaint_response'];
+	                    $userProfileModel->alert_forum_response                   = $_POST['ProfileForm']['alert_forum_response'];
+	                    $userProfileModel->alert_answer_voted                     = $_POST['ProfileForm']['alert_answer_voted'];
+	                    $userProfileModel->alert_trip_question_response           = $_POST['ProfileForm']['alert_trip_question_response'];
+
+	                    $userProfileModel->alert_upcoming_event_trip              = $_POST['ProfileForm']['alert_upcoming_event_trip'];
+	                    $userProfileModel->alert_upcoming_event_places_wantogo    = $_POST['ProfileForm']['alert_upcoming_event_places_wantogo'];
+	                    $userProfileModel->alert_upcoming_event_places_visited    = $_POST['ProfileForm']['alert_upcoming_event_places_visited'];
+	                    $userProfileModel->event_alert_frequency                  = $_POST['ProfileForm']['event_alert_frequency'];
+
+	                    if($userProfileModel->save())
+	                    {
+
+	                        Yii::app()->user->setFlash('success', "Your updated profile has been saved.");
+	                        $this->redirect(array('/mytravel/mytravel/show'));
+
+	                    }
+	                    else
+	                    {
+	                        Yii::app()->user->setFlash('warning', "Your user datails were saved, but the system failed to save your notification settings.");
+	                        print_r($userProfileModel);
+	                        exit;
+
+	                    }
+
+
 	                    $this->redirect("dashboard/dashboard/");
 
 	                    Yii::app()->end();
 
-	                } else {
-	                    Yii::app()->user->setFlash('error', "Error creating a business record.'");
+	                }
+	                else
+	                {
+	                    Yii::app()->user->setFlash('warning', "Your user datails were saved, but the system failed to save your notification settings.");
 	                }
 	            }
+	        }
+	        else
+	        {
+	            Yii::app()->user->setFlash('error', "Problems encountered processing your updates. Please correct and try again.");
 	        }
 	    }
 

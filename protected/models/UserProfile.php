@@ -12,6 +12,10 @@
  * @property string $alert_forum_response
  * @property string $alert_answer_voted
  * @property string $alert_trip_question_response
+ * @property string $alert_upcoming_event_trip
+ * @property string $alert_upcoming_event_places_wantogo
+ * @property string $alert_upcoming_event_places_visited
+ * @property string $event_alert_frequency
  *
  * The followings are the available model relations:
  * @property User $user
@@ -69,8 +73,12 @@ class UserProfile extends CActiveRecord
 			array('user_id',                                             'numerical', 'integerOnly'=>true),
 			array('alert_business_review, alert_review_comment,
 			       alert_like_complaint_response, alert_forum_response,
-			       alert_answer_voted, alert_trip_question_response',    'in', 'range'=>array('Y','N'),
+			       alert_answer_voted, alert_trip_question_response
+			       alert_upcoming_event_trip, alert_upcoming_event_places_wantogo,
+			       alert_upcoming_event_places_visited',                 'in', 'range'=>array('Y','N'),
 			                                                             'allowEmpty'=>true),
+		    array('event_alert_frequency',                               'in', 'range'=>array('Daily','Immediately'),
+		                                                                 'allowEmpty'=>true),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('user_profile_id, user_id, alert_business_review, alert_review_comment,
@@ -117,6 +125,11 @@ class UserProfile extends CActiveRecord
 			'alert_forum_response'               => 'Alert Forum Responses',
 			'alert_answer_voted'                 => 'Alert Answer Votes',
 			'alert_trip_question_response'       => 'Alert Trip Question Responses',
+		    'alert_upcoming_event_trip'          => 'Alert Upcoming Event in Trips',
+		    'alert_upcoming_event_places_wantogo' => 'Alert Upcoming Event Places in Places I want to go to',
+		    'alert_upcoming_event_places_visited'      => 'Alert Upcoming Event in Places I Visited',
+		    'event_alert_frequency'               => 'Alert Me',
+
 		);
 	}
 
@@ -149,6 +162,10 @@ class UserProfile extends CActiveRecord
 		$criteria->compare('alert_forum_response',            $this->alert_forum_response);
 		$criteria->compare('alert_answer_voted',              $this->alert_answer_voted);
 		$criteria->compare('alert_trip_question_response',    $this->alert_trip_question_response);
+		$criteria->compare('alert_upcoming_event_trip',       $this->alert_upcoming_event_trip,true);
+		$criteria->compare('alert_upcoming_event_places_wantogo', $this->alert_upcoming_event_places_wantogo,true);
+		$criteria->compare('alert_upcoming_event_places_visited', $this->alert_upcoming_event_places_visited,true);
+		$criteria->compare('event_alert_frequency',           $this->event_alert_frequency,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -167,5 +184,30 @@ class UserProfile extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the user id if it has not been set already
+	    // /////////////////////////////////////////////////////////////////
+	    if (empty($this->user_id))
+	    {
+	        // If the user is not logged in this is OK, but that's ok.
+	        $this->user_id = Yii::app()->user->id;
+	    }
+
+	    return parent::beforeSave();
 	}
 }
