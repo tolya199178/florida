@@ -61,9 +61,9 @@ class SurveyQuestionOption extends CActiveRecord
 	{
 
 		return array(
-			array('question_id, value, sort', 'required'),
-			array('question_id, sort', 'numerical', 'integerOnly'=>true),
-			array('value', 'length', 'max'=>255),
+			array('question_id, value, sort',                'required'),
+			array('question_id, sort',                       'numerical', 'integerOnly'=>true),
+			array('value', 'length',                         'max'=>255),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('survey_question_option_id, question_id, value, sort', 'safe', 'on'=>'search'),
@@ -101,9 +101,9 @@ class SurveyQuestionOption extends CActiveRecord
 	{
 		return array(
 			'survey_question_option_id'      => 'Survey Question Option',
-			'question_id'      => 'Question',
-			'value'      => 'Value',
-			'sort'      => 'Sort',
+			'question_id'                    => 'Question',
+			'value'                          => 'Value',
+			'sort'                           => 'Sort',
 		);
 	}
 
@@ -128,10 +128,10 @@ class SurveyQuestionOption extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('survey_question_option_id',$this->survey_question_option_id);
-		$criteria->compare('question_id',$this->question_id);
-		$criteria->compare('value',$this->value,true);
-		$criteria->compare('sort',$this->sort);
+		$criteria->compare('survey_question_option_id',   $this->survey_question_option_id);
+		$criteria->compare('question_id',                 $this->question_id);
+		$criteria->compare('value',                       $this->value,true);
+		$criteria->compare('sort',                        $this->sort);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

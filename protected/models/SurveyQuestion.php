@@ -65,8 +65,8 @@ class SurveyQuestion extends CActiveRecord
 	{
 
 		return array(
-			array('survey_id, survey_question_type_id, question, sort', 'required'),
-			array('survey_id, survey_question_type_id, sort', 'numerical', 'integerOnly'=>true),
+			array('survey_id, survey_question_type_id, question, sort',  'required'),
+			array('survey_id, survey_question_type_id, sort',            'numerical', 'integerOnly'=>true),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('survey_question_id, survey_id, survey_question_type_id, question, sort', 'safe', 'on'=>'search'),
@@ -85,10 +85,10 @@ class SurveyQuestion extends CActiveRecord
 	{
 
 		return array(
-			'surveyAnswers'      => array(self::HAS_MANY, 'SurveyAnswer', 'survey_question_id'),
-			'survey'      => array(self::BELONGS_TO, 'Survey', 'survey_id'),
-			'surveyQuestionType'      => array(self::BELONGS_TO, 'SurveyQuestionType', 'survey_question_type_id'),
-			'surveyQuestionOptions'      => array(self::HAS_MANY, 'SurveyQuestionOption', 'question_id', 'order' => 'sort'),
+			'surveyAnswers'          => array(self::HAS_MANY,   'SurveyAnswer', 'survey_question_id'),
+			'survey'                 => array(self::BELONGS_TO, 'Survey', 'survey_id'),
+			'surveyQuestionType'     => array(self::BELONGS_TO, 'SurveyQuestionType', 'survey_question_type_id'),
+			'surveyQuestionOptions'  => array(self::HAS_MANY,   'SurveyQuestionOption', 'question_id', 'order' => 'sort'),
 		);
 	}
 
@@ -106,11 +106,11 @@ class SurveyQuestion extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'survey_question_id'      => 'Survey Question',
-			'survey_id'      => 'Survey',
-			'survey_question_type_id'      => 'Survey Question Type',
-			'question'      => 'Question',
-			'sort'      => 'Sort',
+			'survey_question_id'         => 'Survey Question',
+			'survey_id'                  => 'Survey',
+			'survey_question_type_id'    => 'Survey Question Type',
+			'question'                   => 'Question',
+			'sort'                       => 'Sort',
 		);
 	}
 
@@ -135,11 +135,11 @@ class SurveyQuestion extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('survey_question_id',$this->survey_question_id);
-		$criteria->compare('survey_id',$this->survey_id);
-		$criteria->compare('survey_question_type_id',$this->survey_question_type_id);
-		$criteria->compare('question',$this->question,true);
-		$criteria->compare('sort',$this->sort);
+		$criteria->compare('survey_question_id',          $this->survey_question_id);
+		$criteria->compare('survey_id',                   $this->survey_id);
+		$criteria->compare('survey_question_type_id',     $this->survey_question_type_id);
+		$criteria->compare('question',                    $this->question,true);
+		$criteria->compare('sort',                        $this->sort);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

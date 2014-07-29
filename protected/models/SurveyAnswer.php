@@ -90,10 +90,10 @@ class SurveyAnswer extends CActiveRecord
 	{
 
 		return array(
-			'surveyQuestion'      => array(self::BELONGS_TO, 'SurveyQuestion', 'survey_question_id'),
-			'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
-			'survey'      => array(self::BELONGS_TO, 'Survey', 'survey_id'),
-			'surveyResponse'      => array(self::BELONGS_TO, 'SurveyResponse', 'survey_response_id'),
+			'surveyQuestion'         => array(self::BELONGS_TO, 'SurveyQuestion', 'survey_question_id'),
+			'user'                   => array(self::BELONGS_TO, 'User', 'user_id'),
+			'survey'                 => array(self::BELONGS_TO, 'Survey', 'survey_id'),
+			'surveyResponse'         => array(self::BELONGS_TO, 'SurveyResponse', 'survey_response_id'),
 		);
 	}
 
@@ -111,14 +111,14 @@ class SurveyAnswer extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'survey_answer_id'      => 'Survey Answer',
-			'survey_id'      => 'Survey',
-			'survey_response_id'      => 'Survey Response',
-			'survey_question_id'      => 'Survey Question',
-			'user_id'      => 'User',
-			'answer'      => 'Answer',
-			'survey_question_option_id'      => 'Survey Question Option',
-			'created_time'      => 'Created Time',
+			'survey_answer_id'           => 'Survey Answer',
+			'survey_id'                  => 'Survey',
+			'survey_response_id'         => 'Survey Response',
+			'survey_question_id'         => 'Survey Question',
+			'user_id'                    => 'User',
+			'answer'                     => 'Answer',
+			'survey_question_option_id'  => 'Survey Question Option',
+			'created_time'               => 'Created Time',
 		);
 	}
 
@@ -143,14 +143,14 @@ class SurveyAnswer extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('survey_answer_id',$this->survey_answer_id);
-		$criteria->compare('survey_id',$this->survey_id);
-		$criteria->compare('survey_response_id',$this->survey_response_id);
-		$criteria->compare('survey_question_id',$this->survey_question_id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('answer',$this->answer,true);
-		$criteria->compare('survey_question_option_id',$this->survey_question_option_id);
-		$criteria->compare('created_time',$this->created_time,true);
+		$criteria->compare('survey_answer_id',            $this->survey_answer_id);
+		$criteria->compare('survey_id',                   $this->survey_id);
+		$criteria->compare('survey_response_id',          $this->survey_response_id);
+		$criteria->compare('survey_question_id',          $this->survey_question_id);
+		$criteria->compare('user_id',                     $this->user_id);
+		$criteria->compare('answer',                      $this->answer,true);
+		$criteria->compare('survey_question_option_id',   $this->survey_question_option_id);
+		$criteria->compare('created_time',                $this->created_time,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

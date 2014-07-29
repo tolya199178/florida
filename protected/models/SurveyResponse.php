@@ -84,9 +84,9 @@ class SurveyResponse extends CActiveRecord
 	{
 
 		return array(
-			'surveyAnswers'      => array(self::HAS_MANY, 'SurveyAnswer', 'survey_response_id'),
-			'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
-			'survey'      => array(self::BELONGS_TO, 'Survey', 'survey_id'),
+			'surveyAnswers'      => array(self::HAS_MANY,   'SurveyAnswer', 'survey_response_id'),
+			'user'               => array(self::BELONGS_TO, 'User', 'user_id'),
+			'survey'             => array(self::BELONGS_TO, 'Survey', 'survey_id'),
 		);
 	}
 
@@ -104,10 +104,10 @@ class SurveyResponse extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'survey_response_id'      => 'Survey Response',
-			'survey_id'      => 'Survey',
-			'user_id'      => 'User',
-			'created_time'      => 'Created Time',
+			'survey_response_id'     => 'Survey Response',
+			'survey_id'              => 'Survey',
+			'user_id'                => 'User',
+			'created_time'           => 'Created Time',
 		);
 	}
 
@@ -132,10 +132,10 @@ class SurveyResponse extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('survey_response_id',$this->survey_response_id);
-		$criteria->compare('survey_id',$this->survey_id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('created_time',$this->created_time,true);
+		$criteria->compare('survey_response_id',  $this->survey_response_id);
+		$criteria->compare('survey_id',           $this->survey_id);
+		$criteria->compare('user_id',             $this->user_id);
+		$criteria->compare('created_time',        $this->created_time,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
