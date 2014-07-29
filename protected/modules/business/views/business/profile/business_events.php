@@ -29,10 +29,6 @@ font-size:15px;
     <?php echo CHtml::encode($data->event_description); ?>
     <br />
 
-    <b><?php echo CHtml::encode($data->getAttributeLabel('event_type')); ?>:</b>
-    <?php echo CHtml::encode($data->event_type); ?>
-    <br />
-
     <b><?php echo CHtml::encode($data->getAttributeLabel('event_start_date')); ?>:</b>
     <?php echo CHtml::encode($data->event_start_date); ?>
     <br />

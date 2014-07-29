@@ -95,7 +95,6 @@ class SyncTnEventsCommand extends CConsoleCommand
 
             $recEvent->event_title              = $recTnEvent->tn_event_name;
             $recEvent->event_description        = $recTnEvent->tn_event_name;
-            $recEvent->event_type               = 'public';
             $recEvent->event_start_date         = $recTnEvent->tn_date;
             $recEvent->event_end_date           = $recTnEvent->tn_date;
             $recEvent->event_address1           = $recTnEvent->tn_venue;

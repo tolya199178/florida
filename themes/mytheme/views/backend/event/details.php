@@ -280,20 +280,6 @@
 
 	<div class="row">
         <div class="form-group">
-            <?php echo $form->labelEx($model,'event_type',array('class'=>"col-sm-2 control-label")); ?>
-            <div class="col-sm-4">
-                <?php echo $form->dropDownList($model,
-                                               'event_type',
-                                               $model->listEventTypes(),
-                                               array('prompt'=>'Select Event Type')
-                );?>
-                <?php echo $form->error($model,'event_type'); ?>
-            </div>
-        </div>
-	</div>
-
-	<div class="row">
-        <div class="form-group">
             <?php echo $form->labelEx($model,'event_status',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
                 <?php echo $form->dropDownList($model,
