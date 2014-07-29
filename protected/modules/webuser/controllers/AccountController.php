@@ -407,10 +407,6 @@ class AccountController extends Controller
 	            $userModel->setAttributes($_POST['ProfileForm']);
 
 	            // Add additional fields
-	            $userModel->password            = isset($_POST['ProfileForm']['password'])?$_POST['ProfileForm']['password']:null;
-	            $userModel->fldVerifyPassword   = isset($_POST['ProfileForm']['confirm_password'])?$_POST['ProfileForm']['confirm_password']:null;
-	            $userModel->created_by          = 1;
-	            $userModel->user_name           = $userModel->email;
 	            $userModel->places_visited      = serialize($_POST['ProfileForm']['places_visited']);
 	            $userModel->places_want_to_visit = serialize($_POST['ProfileForm']['places_want_to_visit']);
 
