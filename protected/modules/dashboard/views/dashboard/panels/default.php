@@ -3,6 +3,9 @@
 $myMessages         = $data['listMyMessages'];
 $mySavedSearch      = $data['mySavedSearch'];
 $myPhotos           = $data['myPhotos'];
+$listMyNewAnswers   = $data['listMyNewAnswers'];
+$listMyNewQuestions = $data['listMyNewQuestions'];
+
 
 ?>
                     <ul class="nav nav-tabs" id="myTab">
@@ -17,21 +20,31 @@ $myPhotos           = $data['myPhotos'];
                         <div class="tab-content">
 
                             <div class="tab-pane" id="qanda">
-                                <div class="table-responsive">
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-md-4 col-md-offset-4 text-center">
-                                            <ul class="pagination" id="myPager"></ul>
-                                        </div>
-                                    </div>
+
+                                <div class="col-md-6">
+                                    <?php $this->renderPartial('components/my_recent_questions', array('listMyNewQuestions' => $listMyNewQuestions)) ?>
                                 </div>
+
+                                <div class="col-md-6">
+                                    <?php $this->renderPartial('components/my_recent_answers', array('listMyNewAnswers' => $listMyNewAnswers)) ?>
+                                </div>
+
+
+<!--                                 <div class="table-responsive"> -->
+<!--                                     <hr> -->
+<!--                                     <div class="row"> -->
+<!--                                         <div class="col-md-4 col-md-offset-4 text-center"> -->
+<!--                                             <ul class="pagination" id="myPager"></ul> -->
+<!--                                         </div> -->
+<!--                                     </div> -->
+<!--                                 </div> -->
                                 <!--/table-resp-->
 
-                                <hr>
-                                <h4>Recent Activity</h4>
-                                <div class="table-responsive">
+<!--                                 <hr> -->
+<!--                                 <h4>Recent Activity</h4> -->
+<!--                                 <div class="table-responsive"> -->
 
-                                </div>
+<!--                                 </div> -->
                             </div>
 
                             <!--/tab-pane-->

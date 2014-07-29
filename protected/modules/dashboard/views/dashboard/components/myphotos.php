@@ -209,15 +209,15 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 
 /* Image gallery listings */
 
-      ul {
+      .photogallery ul {
           padding:0 0 0 0;
           margin:0 0 0 0;
       }
-      ul li {
+      .photogallery ul li {
           list-style:none;
           margin-bottom:25px;
       }
-      ul li img {
+      .photogallery ul li img {
           cursor: pointer;
       }
       .modal-body {
@@ -259,12 +259,13 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 /*       } */
   </style>
 
-
    <div class="container">
         <div class="row" style="text-align:center; border-bottom:1px dashed #ccc;  padding:0 0 20px 0; margin-bottom:40px;">
             <h3 style="font-family:arial; font-weight:bold; font-size:30px;">My Images</h3>
             <?php $this->renderPartial('//user_photos/new_image', array('model'=> new Photo)); ?>
         </div>
+
+        <div class="photogallery">
 
         <ul class="row">
 
@@ -275,10 +276,11 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
                 </a>
             </li>
 <?php }?>
-          </ul>
+        </ul>
+        </div>
+
 
     </div> <!-- /container -->
-
 
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
