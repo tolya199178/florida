@@ -1566,6 +1566,13 @@ ADD CONSTRAINT tbl_trip_leg_city
   `alert_forum_response` enum('Y','N') DEFAULT 'Y',
   `alert_answer_voted` enum('Y','N') DEFAULT 'Y',
   `alert_trip_question_response` enum('Y','N') DEFAULT 'Y',
+  
+  `alert_upcoming_event_trip` enum('Y','N') DEFAULT 'Y',
+  `alert_upcoming_event_places_wantogo` enum('Y','N') DEFAULT 'N',
+  `alert_upcoming_event_places_visited` enum('Y','N') DEFAULT 'N',
+  
+  `event_alert_frequency` enum('Daily','Immediately') DEFAULT 'Daily',
+  
   PRIMARY KEY (`user_profile_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
