@@ -719,9 +719,26 @@ class PostController extends Controller
             // /////////////////////////////////////////////////////////////////
             // Find and delete any answers, and any subscriptions.
             // /////////////////////////////////////////////////////////////////
-            $listAnswers = PostAnswer::model()->deleteAllByAttributes(array('question_id'=>$argQuestionId));
 
-            $listSubscibers = PostSubscribed::model()->deleteAllByAttributes(array('post_id'=>$argQuestionId));
+            // Alert subscribers before deleting the post.
+            $msgSubject     = 'A post you are watching has been scheduled for deletion';
+            $msgContent     = 'A post you are watching has been schduled for deletion. Click to see updates.'.
+                            Yii::app()->createAbsoluteUrl('//dialogue/post/view/', array('question'=>$argQuestionId));
+
+            $listSubscibers = PostSubscribed::model()->findAllByAttributes(array('post_id'=>$argQuestionId));
+
+            foreach ($listSubscibers as $recSubscriber)
+            {
+
+                    $subscriberId = $recSubscriber->user_id;
+
+                    MessageService::sendMessage($subscriberId, $msgSubject, $msgContent);
+
+                    $recSubscriber->delete();
+
+            }
+
+            $listAnswers = PostAnswer::model()->deleteAllByAttributes(array('question_id'=>$argQuestionId));
 
             $deleteResult = $questionModel->delete();
 
