@@ -1987,6 +1987,105 @@ DROP TABLE IF EXISTS `tbl_banner_page`;
         FOREIGN KEY (page_id) 
         REFERENCES tbl_page(page_id);
 
+
+-- ---------------------------------------------------------------------
+-- Table structure for table `tbl_survey`
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_survey`;
+
+CREATE TABLE IF NOT EXISTS `tbl_survey` (
+  `survey_id` int(11) NOT NULL AUTO_INCREMENT,
+  `business_id` int(11) NOT NULL,
+  `survey_name` varchar(255) NOT NULL,
+  `created_time` timestamp NULL DEFAULT 0,
+  `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by`  int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  `published` enum('Y','N') NOT NULL DEFAULT 'N',
+  `template` enum('Y','N') NOT NULL DEFAULT 'N',
+  `private` enum('Y','N') NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`survey_id`),
+  KEY `business_id` (`business_id`),
+  KEY `createdby` (`created_by`),
+  KEY `modifiedby` (`modified_by`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+--
+-- Constraints for table `tbl_survey`
+--
+ALTER TABLE `tbl_survey`
+  ADD CONSTRAINT `tbl_survey_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
+  ADD CONSTRAINT `tbl_survey_created)by` FOREIGN KEY (`created_by`) REFERENCES `tbl_user` (`user_id`),
+  ADD CONSTRAINT `tbl_survey_modified_by` FOREIGN KEY (`modified_by`) REFERENCES `tbl_user` (`user_id`);
+
+
+
+-- ---------------------------------------------------------------------
+-- Table structure for table `tbl_survey_question_type`
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_survey_question_type`;
+
+CREATE TABLE IF NOT EXISTS `tbl_survey_question_type` (
+  `survey_question_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`survey_question_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_survey_question_type`
+--
+
+INSERT INTO `tbl_survey_question_type` (`survey_question_type_id`, `name`) VALUES
+(1, 'text'),
+(2, 'select');
+
+
+-- ---------------------------------------------------------------------
+-- Table structure for table `tbl_survey_question`
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_survey_question`;
+
+CREATE TABLE IF NOT EXISTS `tbl_survey_question` (
+  `survey_question_id` int(11) NOT NULL AUTO_INCREMENT,
+  `survey_id` int(11) NOT NULL,
+  `survey_question_type_id` int(11) NOT NULL,
+  `question` text NOT NULL,
+  `sort` int(11) NOT NULL,
+  PRIMARY KEY (`survey_question_id`),
+  KEY `survey_id` (`survey_id`),
+  KEY `survey_question_type_id` (`survey_question_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+--
+-- Constraints for table `tbl_survey_question`
+--
+ALTER TABLE `tbl_survey_question`
+  ADD CONSTRAINT `tbl_survey_question_survey` FOREIGN KEY (`survey_id`) REFERENCES `tbl_survey` (`survey_id`),
+  ADD CONSTRAINT `tbl_survey_question_qtype` FOREIGN KEY (`survey_question_type_id`) REFERENCES `tbl_survey_question_type` (`survey_question_type_id`);
+
+
+-- ---------------------------------------------------------------------
+-- Table structure for table `tbl_survey_question_option`
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_survey_question_option`;
+
+
+CREATE TABLE IF NOT EXISTS `tbl_survey_question_option` (
+  `survey_question_option_id` int(11) NOT NULL AUTO_INCREMENT,
+  `question_id` int(11) NOT NULL,
+  `value` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `sort` int(11) NOT NULL,
+  PRIMARY KEY (`survey_question_option_id`),
+  KEY `question_id` (`question_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+--
+-- Constraints for table `tbl_survey_question_option`
+--
+ALTER TABLE `tbl_survey_question_option`
+  ADD CONSTRAINT `tbl_survey_question_option_question` FOREIGN KEY (`question_id`) REFERENCES `tbl_survey_question` (`survey_question_id`);
+
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
