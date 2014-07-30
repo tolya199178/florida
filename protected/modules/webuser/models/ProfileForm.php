@@ -50,6 +50,7 @@ class ProfileForm extends CFormModel
 	public $alert_upcoming_event_places_wantogo;
 	public $alert_upcoming_event_places_visited;
 	public $event_alert_frequency;
+	public $autoreply_giftcard_review;
 
 	/**
 	 * @var confirmAge Form only fields to request user confirming that they are over 18.

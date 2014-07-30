@@ -16,6 +16,7 @@
  * @property string $alert_upcoming_event_places_wantogo
  * @property string $alert_upcoming_event_places_visited
  * @property string $event_alert_frequency
+ * @property string $autoreply_giftcard_review
  *
  * The followings are the available model relations:
  * @property User $user
@@ -71,6 +72,9 @@ class UserProfile extends CActiveRecord
 		return array(
 			array('user_id',                                             'required'),
 			array('user_id',                                             'numerical', 'integerOnly'=>true),
+		    array('autoreply_giftcard_review',                           'length', 'max'=>4096),
+
+
 			array('alert_business_review, alert_review_comment,
 			       alert_like_complaint_response, alert_forum_response,
 			       alert_answer_voted, alert_trip_question_response
@@ -128,7 +132,8 @@ class UserProfile extends CActiveRecord
 		    'alert_upcoming_event_trip'          => 'Alert Upcoming Event in Trips',
 		    'alert_upcoming_event_places_wantogo' => 'Alert Upcoming Event Places in Places I want to go to',
 		    'alert_upcoming_event_places_visited'      => 'Alert Upcoming Event in Places I Visited',
-		    'event_alert_frequency'               => 'Alert Me',
+		    'event_alert_frequency'              => 'Alert Me',
+		    'autoreply_giftcard_review'          => 'Autoreply Giftcard Review',
 
 		);
 	}
