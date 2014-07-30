@@ -209,6 +209,7 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                               <li class="active"><a href="#mydetails" data-toggle="tab">My Details</a></li>
                               <li><a href="#myprofile" data-toggle="tab">My Public Profile</a></li>
                               <li><a href="#notifications" data-toggle="tab">Notification Settings</a></li>
+                              <li><a href="#autoreply_settings" data-toggle="tab">Auto Reply Settings</a></li>
                               <li><a href="#event_preferences" data-toggle="tab">Event Settings</a></li>
                             </ul>
                       </div>
@@ -255,6 +256,18 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                       <!-- ./ Step 3 contents -->
 
                       <!-- Step 4 contents -->
+                      <div class="tab-pane" id="autoreply_settings">
+
+                            <?php $this->renderPartial("autoreply_settings",array('form'=>$form, 'model'=>$model)); ?>
+
+                            <!-- Panel Footer -->
+                            <div class="panel-footer">
+                                <a class="btn btn-default next" href="#">Continue</a>
+                            </div>
+                      </div>
+                      <!-- ./ Step 4 contents -->
+
+                      <!-- Step 5 contents -->
                       <div class="tab-pane" id="event_preferences">
 
                             <?php $this->renderPartial("event_preferences",array('form'=>$form, 'model'=>$model)); ?>
@@ -264,7 +277,7 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                 		        <?php echo CHtml::submitButton('Save the Business Record', array('class'=>"btn btn-success btn-lg")); ?>
                             </div>
                       </div>
-                      <!-- ./ Step 4 contents -->
+                      <!-- ./ Step 5 contents -->
 
                    </div>
                    <!--  Tab Contents -->

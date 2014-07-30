@@ -1,4 +1,4 @@
-        event
+
         <div class="row">
             <div class="form-group">
                 <?php echo $form->labelEx($model,'alert_upcoming_event_trip',array('class'=>"col-sm-2 control-label")); ?>
