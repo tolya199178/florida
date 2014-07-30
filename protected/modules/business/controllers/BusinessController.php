@@ -608,7 +608,7 @@ class BusinessController extends Controller
 
         $businessId = (int) Yii::app()->request->getQuery('business_id');
 
-        $businessModel = Business::model()->findByPk($businessId);
+        $businessModel = Business::model()->findByPk((int) $businessId);
 
         if ($businessModel === null)
         {
@@ -818,6 +818,62 @@ class BusinessController extends Controller
         // change call_status
         $verification->call_status = yii::app()->request->getPost('CallStatus');
         $verification->save();
+    }
+
+
+    /**
+     * Enters request to change the telephone number of an existing business.
+     *
+     * @param <none> <none>
+     * @return <none> <none>
+     */
+    public function actionReportbusinessphone()
+    {
+
+        $businessId     = Yii::app()->request->getPost('businessId', 0);
+        $newTelephone   = Yii::app()->request->getPost('telephone', '');
+
+        $businessModel  = Business::model()->findByPk((int) $businessId);
+
+        if ($businessModel === null)
+        {
+            throw new CHttpException(404,'The requested business does not exist.');
+        }
+
+        $systemNotificationModel                = new SystemNotification;
+        $systemNotificationModel->entity_type   = 'business';
+        $systemNotificationModel->entity_id     = $businessId;
+        $systemNotificationModel->title         = 'Reported: Business Telephone Change : '.
+            $businessModel->business_name;
+
+        $userFullname                           = Yii::app()->user->getFullName();
+        $timeNow                                = date("F j, Y, g:i a");    // March 10, 2014, 5:16 pm
+
+        $noticeDescription = <<<EOD
+
+Reported: Business Telephone Change : {$businessModel->business_name}
+
+A report for changed telephone details has been issued for the above business
+
+Old telephone  : {$businessModel->business_phone} {$businessModel->business_phone_ext}
+New telephone  : {$newTelephone}
+
+Issued by      : {$userFullname}
+Time of Report : {$timeNow}
+
+EOD;
+
+        $systemNotificationModel->description   = $noticeDescription;
+        $systemNotificationModel->status        = 'new';
+
+        if ($systemNotificationModel->save() === false)
+        {
+            Yii::app()->user->setFlash('error', "Your request could not be processed at this time.");
+            $this->redirect(array('/businessuser/profile/show', 'id' => $businessId));
+        }
+
+        Yii::app()->user->setFlash('success', "Thank you. The business has been reported for further processing.");
+
     }
 
     /**
