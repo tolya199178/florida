@@ -2122,14 +2122,17 @@ ALTER TABLE `tbl_twilio_business_verification`
 -- ---------------------------------------------------------------------
 -- System notifications`
 -- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tbl_system_notification`;
+
   
 CREATE TABLE IF NOT EXISTS `tbl_system_notification` (
   `system_notification_id` int(11) NOT NULL AUTO_INCREMENT,
   `entity_type`         enum('city', 'state', 'business', 'user', 'general', 'event') DEFAULT 'general',
   `entity_id`           int(11) NOT NULL, 
-  `event_title`         varchar(255) NOT NULL,
-  `event_description`   text,
-  `updates`             text,
+  `title`               varchar(255) NOT NULL,
+  `description`         text,
+  ` `             text,
   `status`              enum('new', 'active', 'pending', 'closed', 'archived') DEFAULT 'new',
   `created_time`        TIMESTAMP NOT NULL DEFAULT 0,
   `modified_time`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

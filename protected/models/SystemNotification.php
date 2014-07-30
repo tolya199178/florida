@@ -7,9 +7,9 @@
  * @property integer $system_notification_id
  * @property string $entity_type
  * @property integer $entity_id
- * @property string $event_title
- * @property string $event_description
- * @property string $updates
+ * @property string $title
+ * @property string $description
+ * @property string $history
  * @property string $status
  * @property string $created_time
  * @property string $modified_time
@@ -69,14 +69,22 @@ class SystemNotification extends CActiveRecord
 	{
 
 		return array(
-			array('entity_id, event_title, modified_time, created_by, modified_by', 'required'),
-			array('entity_id, created_by, modified_by', 'numerical', 'integerOnly'=>true),
-			array('entity_type, status', 'length', 'max'=>8),
-			array('event_title', 'length', 'max'=>255),
-			array('event_description, updates, created_time', 'safe'),
+			array('entity_id, title',                        'required'),
+			array('entity_id', 'numerical',                  'integerOnly'=>true),
+		    array('title',                                   'length', 'max'=>255),
+		    array('description',                             'length', 'max'=>4096),
+		    array('history',                                 'length', 'max'=>64000),
+
+		    array('trip_status',
+		          'in', 'range'=>array('new', 'active', 'pending', 'closed', 'archived')),
+
+
+			array('entity_type',
+			      'in', 'range'=>array('city', 'state', 'business', 'user', 'general', 'event')),
+
 
             // The following rule is used by search(). It only contains attributes that should be searched.
-			array('system_notification_id, entity_type, entity_id, event_title, event_description, updates, status, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
+			array('system_notification_id, entity_type, entity_id, title, description, history, status, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,8 +100,8 @@ class SystemNotification extends CActiveRecord
 	{
 
 		return array(
-			'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
-			'createdBy'      => array(self::BELONGS_TO, 'User', 'created_by'),
+			'modifiedBy'         => array(self::BELONGS_TO, 'User', 'modified_by'),
+			'createdBy'          => array(self::BELONGS_TO, 'User', 'created_by'),
 		);
 	}
 
@@ -111,17 +119,17 @@ class SystemNotification extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'system_notification_id'      => 'System Notification',
-			'entity_type'      => 'Entity Type',
-			'entity_id'      => 'Entity',
-			'event_title'      => 'Event Title',
-			'event_description'      => 'Event Description',
-			'updates'      => 'Updates',
-			'status'      => 'Status',
-			'created_time'      => 'Created Time',
-			'modified_time'      => 'Modified Time',
-			'created_by'      => 'Created By',
-			'modified_by'      => 'Modified By',
+			'system_notification_id'     => 'System Notification',
+			'entity_type'                => 'Entity Type',
+			'entity_id'                  => 'Entity',
+			'title'                      => 'Event Title',
+			'description'                => 'Event Description',
+			'history'                    => 'History',
+			'status'                     => 'Status',
+			'created_time'               => 'Created Time',
+			'modified_time'              => 'Modified Time',
+			'created_by'                 => 'Created By',
+			'modified_by'                => 'Modified By',
 		);
 	}
 
@@ -146,17 +154,17 @@ class SystemNotification extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('system_notification_id',$this->system_notification_id);
-		$criteria->compare('entity_type',$this->entity_type,true);
-		$criteria->compare('entity_id',$this->entity_id);
-		$criteria->compare('event_title',$this->event_title,true);
-		$criteria->compare('event_description',$this->event_description,true);
-		$criteria->compare('updates',$this->updates,true);
-		$criteria->compare('status',$this->status,true);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('modified_time',$this->modified_time,true);
-		$criteria->compare('created_by',$this->created_by);
-		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('system_notification_id',  $this->system_notification_id);
+		$criteria->compare('entity_type',             $this->entity_type,true);
+		$criteria->compare('entity_id',               $this->entity_id);
+		$criteria->compare('title',                   $this->title,true);
+		$criteria->compare('description',             $this->description,true);
+		$criteria->compare('history',                 $this->history,true);
+		$criteria->compare('status',                  $this->status,true);
+		$criteria->compare('created_time',            $this->created_time,true);
+		$criteria->compare('modified_time',           $this->modified_time,true);
+		$criteria->compare('created_by',              $this->created_by);
+		$criteria->compare('modified_by',             $this->modified_by);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
