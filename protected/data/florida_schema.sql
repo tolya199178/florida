@@ -2088,6 +2088,39 @@ ALTER TABLE `tbl_survey_question_option`
 
 
 -- ---------------------------------------------------------------------
+-- Table structure for table `tbl_twilio_business_verification`
+-- ---------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `tbl_twilio_business_verification` (
+  `twilio_business_verification_id` int(11) NOT NULL AUTO_INCREMENT,
+  `phone` varchar(50) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `call_sid` varchar(255) NOT NULL,
+  `business_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'waiting',
+  `call_status` varchar(255) NOT NULL DEFAULT '',
+  `attempts` int(11) NOT NULL DEFAULT '0',
+  `created_time` timestamp NULL DEFAULT NULL,
+  `modified_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`twilio_business_verification_id`),
+  KEY `business_id` (`business_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tbl_twilio_business_verification`
+--
+ALTER TABLE `tbl_twilio_business_verification`
+  ADD CONSTRAINT `tbl_twilio_business_verification_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
+  ADD CONSTRAINT `tbl_twilio_business_verification_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
+
+
+-- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
 -- ---------------------------------------------------------------------
