@@ -69,11 +69,10 @@ class TwilioBusinessVerification extends CActiveRecord
 	{
 
 		return array(
-			array('phone, code, call_sid, business_id', 'required'),
-			array('business_id, user_id, attempts', 'numerical', 'integerOnly'=>true),
-			array('phone, code', 'length', 'max'=>50),
-			array('call_sid, status, call_status', 'length', 'max'=>255),
-			array('created_time, modified_time', 'safe'),
+			array('phone, code, call_sid, business_id',              'required'),
+			array('business_id, user_id, attempts',                  'numerical', 'integerOnly'=>true),
+			array('phone, code',                                     'length', 'max'=>50),
+			array('call_sid, status, call_status',                   'length', 'max'=>255),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('twilio_business_verification_id, phone, code, call_sid, business_id, user_id, status, call_status, attempts, created_time, modified_time', 'safe', 'on'=>'search'),
@@ -92,8 +91,8 @@ class TwilioBusinessVerification extends CActiveRecord
 	{
 
 		return array(
-			'business'      => array(self::BELONGS_TO, 'Business', 'business_id'),
-			'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
+			'business'       => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'user'           => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -111,17 +110,17 @@ class TwilioBusinessVerification extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'twilio_business_verification_id'      => 'Twilio Business Verification',
-			'phone'      => 'Phone',
-			'code'      => 'Code',
-			'call_sid'      => 'Call Sid',
-			'business_id'      => 'Business',
-			'user_id'      => 'User',
-			'status'      => 'Status',
-			'call_status'      => 'Call Status',
-			'attempts'      => 'Attempts',
-			'created_time'      => 'Created Time',
-			'modified_time'      => 'Modified Time',
+			'twilio_business_verification_id'    => 'Twilio Business Verification',
+			'phone'                              => 'Phone',
+			'code'                               => 'Code',
+			'call_sid'                           => 'Call Sid',
+			'business_id'                        => 'Business',
+			'user_id'                            => 'User',
+			'status'                             => 'Status',
+			'call_status'                        => 'Call Status',
+			'attempts'                           => 'Attempts',
+			'created_time'                       => 'Created Time',
+			'modified_time'                      => 'Modified Time',
 		);
 	}
 
@@ -146,17 +145,17 @@ class TwilioBusinessVerification extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('twilio_business_verification_id',$this->twilio_business_verification_id);
-		$criteria->compare('phone',$this->phone,true);
-		$criteria->compare('code',$this->code,true);
-		$criteria->compare('call_sid',$this->call_sid,true);
-		$criteria->compare('business_id',$this->business_id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('status',$this->status,true);
-		$criteria->compare('call_status',$this->call_status,true);
-		$criteria->compare('attempts',$this->attempts);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('modified_time',$this->modified_time,true);
+		$criteria->compare('twilio_business_verification_id', $this->twilio_business_verification_id);
+		$criteria->compare('phone',                           $this->phone,true);
+		$criteria->compare('code',                            $this->code,true);
+		$criteria->compare('call_sid',                        $this->call_sid,true);
+		$criteria->compare('business_id',                     $this->business_id);
+		$criteria->compare('user_id',                         $this->user_id);
+		$criteria->compare('status',                          $this->status,true);
+		$criteria->compare('call_status',                     $this->call_status,true);
+		$criteria->compare('attempts',                        $this->attempts);
+		$criteria->compare('created_time',                    $this->created_time,true);
+		$criteria->compare('modified_time',                   $this->modified_time,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -176,4 +175,5 @@ class TwilioBusinessVerification extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
 }
