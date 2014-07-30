@@ -2119,7 +2119,40 @@ ALTER TABLE `tbl_twilio_business_verification`
   ADD CONSTRAINT `tbl_twilio_business_verification_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
   ADD CONSTRAINT `tbl_twilio_business_verification_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
 
+-- ---------------------------------------------------------------------
+-- System notifications`
+-- ---------------------------------------------------------------------
 
+DROP TABLE IF EXISTS `tbl_system_notification`;
+
+  
+CREATE TABLE IF NOT EXISTS `tbl_system_notification` (
+  `system_notification_id` int(11) NOT NULL AUTO_INCREMENT,
+  `entity_type`         enum('city', 'state', 'business', 'user', 'general', 'event') DEFAULT 'general',
+  `entity_id`           int(11) NOT NULL, 
+  `title`               varchar(255) NOT NULL,
+  `description`         text,
+  ` `             text,
+  `status`              enum('new', 'active', 'pending', 'closed', 'archived') DEFAULT 'new',
+  `created_time`        TIMESTAMP NOT NULL DEFAULT 0,
+  `modified_time`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  `created_by`          int(11) NOT NULL COMMENT 'FK with user',
+  `modified_by`         int(11) NOT NULL COMMENT 'FK with user',
+  
+  PRIMARY KEY (`system_notification_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_system_notification
+ADD CONSTRAINT fk_system_notification_created_by
+     FOREIGN KEY (created_by) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_system_notification
+ADD CONSTRAINT fk_system_notification_modified_by
+     FOREIGN KEY (modified_by) 
+     REFERENCES tbl_user(user_id);
+     
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
