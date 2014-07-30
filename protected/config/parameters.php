@@ -87,6 +87,14 @@ return array(
     'PAYPALSANDBOX' => true,
     // TODO: Account settings ? Merchant account
 
+    // -------------------------------------------------------------------------
+    // Twilio API details
+    // -------------------------------------------------------------------------
+    // Twilio
+    'TWILIO_PHONE'          => '4133728587',
+    'TWILIO_ACCOUNT_SID'    => 'ACf3f693eb54ac67cb5912655faf6223eb',
+    'TWILIO_AUTH_TOKEN'     => '72dd68d7472697486f15a87a4d9cb5a9',
+
 
     // -------------------------------------------------------------------------
     // Priceline details
