@@ -1572,7 +1572,7 @@ ADD CONSTRAINT tbl_trip_leg_city
   `alert_upcoming_event_places_visited` enum('Y','N') DEFAULT 'N',
   
   `event_alert_frequency` enum('Daily','Immediately') DEFAULT 'Daily',
-  
+    
   PRIMARY KEY (`user_profile_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
@@ -1582,7 +1582,8 @@ ADD CONSTRAINT tbl_user_profile_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
      
-     
+ALTER TABLE tbl_user_profile ADD COLUMN `autoreply_giftcard_review` TEXT default null;
+
 -- ---------------------------------------------------------------------
 -- Page views
 -- ---------------------------------------------------------------------

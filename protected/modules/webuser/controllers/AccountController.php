@@ -466,6 +466,7 @@ class AccountController extends Controller
 	                    $userProfileModel->alert_upcoming_event_places_wantogo    = $_POST['ProfileForm']['alert_upcoming_event_places_wantogo'];
 	                    $userProfileModel->alert_upcoming_event_places_visited    = $_POST['ProfileForm']['alert_upcoming_event_places_visited'];
 	                    $userProfileModel->event_alert_frequency                  = $_POST['ProfileForm']['event_alert_frequency'];
+	                    $userProfileModel->autoreply_giftcard_review              = $_POST['ProfileForm']['autoreply_giftcard_review'];
 
 	                    if($userProfileModel->save())
 	                    {
