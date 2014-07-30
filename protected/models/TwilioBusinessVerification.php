@@ -176,4 +176,33 @@ class TwilioBusinessVerification extends CActiveRecord
 		return parent::model($className);
 	}
 
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord)
+	    {
+	        $this->created_time    = new CDbExpression('NOW()');
+	        $this->user_id         = Yii::app()->user->id;
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time   = new CDbExpression('NOW()');
+
+	    return parent::beforeSave();
+	}
 }
