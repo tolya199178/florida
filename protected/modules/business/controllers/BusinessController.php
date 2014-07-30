@@ -598,6 +598,229 @@ class BusinessController extends Controller
     }
 
     /**
+     * Displays view to claim business
+     *
+     * @param integer $business_id id of the business to claim
+     * @return <none> <none>
+     */
+    public function actionClaim()
+    {
+
+        $businessId = (int) Yii::app()->request->getQuery('business_id');
+
+        $businessModel = Business::model()->findByPk($businessId);
+
+        if ($businessModel === null)
+        {
+            throw new CHttpException(404,'The requested business does not exist.');
+        }
+
+        // Checks if the business has users already
+        if (count($businessModel->businessUsers) > 0)
+        {
+            $this->render('claim/isclaimed');
+            Yii::app()->end();
+        }
+
+        // renders the claim page
+        $this->render('claim/index', array('business' => $businessModel));
+    }
+
+    /**
+     * Request to make a call via twilio
+     *
+     * @param <none> <none>
+     * @return <none> <none>
+     */
+    public function actionClaimcall()
+    {
+
+        // Import twilio helper classes
+        Yii::import('application.vendor.*');
+
+        spl_autoload_unregister(array('YiiBase','autoload'));
+        require Yii::getPathOfAlias('webroot') . '/protected/vendors/Services/Twilio.php';
+        spl_autoload_register(array('YiiBase', 'autoload'));
+
+        // inits the output result
+        $result = array('success' => false);
+
+        // check basic data
+
+        // Checks if the business exists
+        $businessModel = Business::model()->findByPk((int) (Yii::app()->request->getPost('businessId', 0)));
+
+        if(!$businessModel)
+        {
+            $result['error'] = 'wrong business';
+        }
+        else
+        {
+            // checks if phone displayed to the user matches the business phone
+            $phone = Yii::app()->request->getPost('businessPhone', '');
+
+            if($phone != $businessModel->business_phone)
+            {
+                $result['error'] = 'phone missmatch: ' . $phone . ' - ' . $businessModel->business_phone;
+            }
+            else
+            {
+                // Checks if the user trying to claim the business is valid
+                $userModel = User::model()->findByPk(Yii::app()->user->id);
+                if(!$userModel)
+                {
+                    $result['error'] = 'wrong user';
+                }
+            }
+        }
+
+        // if basic data has no error generates the code and makes the call
+        if(!isset($result['error']))
+        {
+            // generate code
+            $code = rand(100000, 999999);
+
+            //Deletes previous twilio_business_verification records linked to the same phone
+            TwilioBusinessVerification::model()->deleteAllByAttributes(array('phone' => $phone));
+
+
+            // Creates twilio object
+            $twilioAcountId = Yii::app()->params['TWILIO_ACCOUNT_SID'];
+            $twilioAuthToken = Yii::app()->params['TWILIO_AUTH_TOKEN'];
+            $twilioCallerPhone = Yii::app()->params['TWILIO_PHONE'];
+            $client = new Services_Twilio($twilioAcountId, $twilioAuthToken);
+
+            try {
+
+                // URL called by twilio when makin the call
+                $callUrl                            = $this->createAbsoluteUrl('business/twiliocallback');
+                $callStatusUrl                      = $this->createAbsoluteUrl('business/twiliocallstatus/');
+                // Makes the call
+                $client->account->calls->create($twilioCallerPhone, $phone, $callUrl, array(
+                        'StatusCallback' => $callStatusUrl,
+                    ));
+
+                $callSid                            = $client->last_response->sid;
+                // Inits a new twilio_business_verification record
+                $twilioVerification                 = new TwilioBusinessVerification();
+                $twilioVerification->phone          = $phone;
+                $twilioVerification->code           = $code;
+                $twilioVerification->business_id    = $business->business_id;
+                $twilioVerification->user_id        = $user->user_id;
+                $twilioVerification->call_sid       = $callSid;
+                $twilioVerification->save();
+
+                // Update resutl data
+                $result['success']                  = true;
+                $result['code']                     = $code;
+                $result['verificationId']           = $twilioVerification->twilio_business_verification_id;
+                $result['callSid']                  = $callSid;
+                $result['error']                    = json_encode($twilioVerification->errors);
+
+            }
+            catch (Exception $ex) {
+                // error making the call
+                $result['error'] = 'error starting phone call ' . $ex->getMessage();
+            }
+        }
+
+        // output results
+        echo CJSON::encode($result);
+    }
+
+    /**
+     * Action called by twilio when it makes a call
+     */
+    public function actionTwiliocallback() {
+        // Import twilio helper classes
+        Yii::import('application.vendor.*');
+        spl_autoload_unregister(array('YiiBase','autoload'));
+        require Yii::getPathOfAlias('webroot') . '/protected/vendors/Services/Twilio.php';
+        spl_autoload_register(array('YiiBase', 'autoload'));
+
+        // creates twilio response object
+        $response = new Services_Twilio_Twiml();
+
+        // if a code entered by user in the phone isn't posted request for the code
+        if(empty($_POST['Digits'])) {
+            // request a 6 digit code
+            $gather = $response->gather(array('numDigits' => 6));
+            // request message
+            $gather->say('Please enter your verification code');
+        } else {
+            // if a code is posted find a twilio_business_verification record linked to the current phone
+            $twilioVerification = TwilioBusinessVerification::model()->findByAttributes(array('call_sid' => Yii::app()->request->getpost('CallSid', '')));
+            // if a twilio_business_verification record exists and code matches the code enteed by the user
+            if($twilioVerification && $twilioVerification->code == Yii::app()->request->getPost('Digits', '')) {
+                // finds a business user linked to the business being claimed
+                $businessUser = BusinessUser::model()->findByAttributes(array('business_id' => $twilioVerification->business_id));
+                // if a business user already exists responds with a business already claimed message
+                // else it assigns the business to the user
+                if($businessUser) {
+                    $twilioVerification->status = 'taken';
+                    $twilioVerification->save();
+                    $response->say('Business was already claimed');
+                } else {
+                    // creates and saves new business user
+                    $businessUser = new BusinessUser();
+                    $businessUser->user_id = $twilioVerification->user_id;
+                    $businessUser->business_id = $twilioVerification->business_id;
+                    $businessUser->primary_user = 'Y';
+                    $businessUser->save();
+                    // updates twilio_business_verification record to verified
+                    $twilioVerification->status = 'verified';
+                    $twilioVerification->save();
+                    // responds
+                    $response->say('Thank you! you have claimed this business');
+                }
+            } else {
+                // update twilio_business_verification record status
+                $twilioVerification->status = 'failed';
+                $twilioVerification->attempts++;
+                $twilioVerification->save();
+                if($twilioVerification->attempts > 5) {
+                    $response->say('Verification failed');
+                }else {
+                    // if code was incorrect request to enter a new one
+                    $gather = $response->gather(array('numDigits' => 6));
+                    $gather->say('Verification code incorrect, please try again.');
+                }
+            }
+        }
+
+        print $response;
+    }
+
+    /*
+     * Checks verification status.
+     */
+    public function actionTwilioverificationstatus() {
+        // inits result
+        $result = array('success' => false);
+        // find business twilio_business_verification record
+        $twilioVerification = TwilioBusinessVerification::model()->findByPk(Yii::app()->request->getPost('verificationId', 0));
+        // if record exists posts the current status
+        if($twilioVerification) {
+            $result['success'] = true;
+            $result['status'] = $twilioVerification->status;
+            $result['callStatus'] = $twilioVerification->call_status;
+        }
+        echo json_encode($result);
+    }
+
+    /**
+     * Called by twilio after call end with call result information
+     */
+    public function actionTwiliocallstatus() {
+        // get verification record
+        $attributes = array('call_sid' => Yii::app()->request->getPost('CallSid'));
+        $verification = TwilioBusinessVerification::model()->findByAttributes($attributes);
+        // change call_status
+        $verification->call_status = yii::app()->request->getPost('CallStatus');
+        $verification->save();
+    }
+
+    /**
      * Provide a summary of coupon activity for the current business.
      *
      * @param <none> <none>
