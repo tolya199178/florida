@@ -50,6 +50,7 @@ class BusinessController extends Controller
 
     public function accessRules()
     {
+
         return array(
 
             array('allow',
@@ -61,11 +62,12 @@ class BusinessController extends Controller
 
             array('allow',
                 'actions'=>array('dashboard'),
-                'roles'=>array('Business Owner'),
+                'expression' => function(){return Yii::app()->user->getState("roles") == 'Business Owner';},
             ),
-            array('deny',  // deny all users
-                'users'=>array('*'),
-            ),
+
+             array('deny',  // deny all users
+                 'users'=>array('*'),
+             ),
         );
     }
 
