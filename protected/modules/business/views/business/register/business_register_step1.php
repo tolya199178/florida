@@ -28,7 +28,6 @@
                 </div>
         	</div>
 
-        	<!--  Add a city selection dropdown -->
         	<div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_city_id',array('class'=>"col-sm-2 control-label")); ?>
@@ -60,6 +59,16 @@
                 </div>
         	</div>
 
+        	<div class="row">
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'business_phone_ext',array('class'=>"col-sm-2 control-label")); ?>
+                    <div class="col-sm-4">
+                        <?php echo $form->textField($model,'business_phone_ext',array('class'=>"form-control")); ?>
+                        <?php echo $form->error($model,'business_phone_ext'); ?>
+                    </div>
+                </div>
+        	</div>
+
        	    <div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_email',array('class'=>"col-sm-2 control-label")); ?>
@@ -86,13 +95,5 @@
 
 
 
-        	<div class="row">
-                <div class="form-group">
-                    <?php echo $form->labelEx($model,'business_phone_ext',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_phone_ext',array('class'=>"form-control")); ?>
-                        <?php echo $form->error($model,'business_phone_ext'); ?>
-                    </div>
-                </div>
-        	</div>
+
 
