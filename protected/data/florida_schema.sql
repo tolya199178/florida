@@ -2132,7 +2132,7 @@ CREATE TABLE IF NOT EXISTS `tbl_system_notification` (
   `entity_id`           int(11) NOT NULL, 
   `title`               varchar(255) NOT NULL,
   `description`         text,
-  ` `             text,
+  `history`             text,
   `status`              enum('new', 'active', 'pending', 'closed', 'archived') DEFAULT 'new',
   `created_time`        TIMESTAMP NOT NULL DEFAULT 0,
   `modified_time`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
