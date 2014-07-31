@@ -71,6 +71,26 @@ class UserIdentity extends CUserIdentity
 
             $this->__userName       = $userModel->email;
 
+            // /////////////////////////////////////////////////////////////////
+            // Set the role for the user.
+            // /////////////////////////////////////////////////////////////////
+            $lstOneBusinessUser = Yii::app()->db->createCommand()
+                            	            ->select("business_user_id")
+                                        	->from("tbl_business_user")
+                                        	->where("user_id=:user_id",array(':user_id'=>$userModel->user_id))
+                                        	->limit("1")
+                                        	->queryRow();
+
+            if ($lstOneBusinessUser === false)
+            {
+                $this->setState('roles', "User");
+            }
+            else
+            {
+                $this->setState('roles', "Business Owner");
+            }
+
+
             $userModel->last_login  = new CDbExpression("NOW()");
             $userModel->save();
             $this->errorCode = self::ERROR_NONE;

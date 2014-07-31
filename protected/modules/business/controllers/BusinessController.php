@@ -40,6 +40,36 @@ class BusinessController extends Controller
 
     public 	$layout='//layouts/front';
 
+
+    public function filters()
+    {
+        return array(
+            'accessControl', // perform access control for CRUD operations
+        );
+    }
+
+    public function accessRules()
+    {
+        return array(
+
+            array('allow',
+                  'actions'=>array('index', 'showlisting', 'browse', 'show', 'reportclosed', 'autocompletelist',
+                                   'claim', 'claimcall', 'twiliocallback', 'twilioverificationstatus',
+                                   'twilioverificationstatus', 'reportbusinessphone', 'add'),
+                  'users'=>array('*'),
+            ),
+
+            array('allow',
+                'actions'=>array('dashboard'),
+                'roles'=>array('Business Owner'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
+
+
     /**
      * The default action method
      *
@@ -281,21 +311,19 @@ class BusinessController extends Controller
 
 	            $emailAttributes['business_name']      = $businessModel->business_name;
 
-
 	            $customisedEmailMessage = HAccount::CustomiseMessage($emailMessage, $emailAttributes);
-
 
 	            // Send the message
 	            HAccount::sendMessage($myAccount->email, $myAccount->first_name.' '.$myAccount->last_name, $emailSubject, $customisedEmailMessage);
 
-
-
-
-
-
 	            Yii::app()->user->setFlash('success', "The business has been created and submitted for approval*.");
 
 	            $idNewBusiness = $businessModel->business_id;
+
+
+	            // Send an alert to the system admin users to process the business registration request.
+
+
 	            $this->redirect(array('/businessuser/profile/show', 'id' => $idNewBusiness));
 
 	        }
