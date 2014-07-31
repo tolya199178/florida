@@ -1,3 +1,24 @@
+
+<?php
+
+Yii::app()->clientScript->registerScriptFile("https://maps.googleapis.com/maps/api/js?sensor=false", CClientScript::POS_HEAD);
+
+
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
+
+?>
+
+<?php
+
+// Hack
+$data['city'] = 'Miami';
+
+?>
+
 <style>
 
 /* Remove gutter */
@@ -84,7 +105,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   box-shadow: #b0b0b0;
   z-index: 21;
   overflow-x:auto;
-
 }
 
 .rightpanel {
@@ -92,69 +112,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
    bottom: 3px;
 }
 
-.typeahead,
-.tt-query,
-.tt-hint {
-  width: 250px;
-/*   height: 30px; */
-  padding: 8px 12px;
-/*   font-size: 24px; */
-/*   line-height: 30px; */
-  border: 2px solid #ccc;
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  outline: none;
-}
--
-.typeahead {
-  background-color: #fff;
-}
 
-.typeahead:focus {
-  border: 2px solid #0097cf;
-}
-
-.tt-query {
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.tt-hint {
-  color: #999
-}
-
-.tt-dropdown-menu {
-  width: 250px;
-  margin-top: 12px;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-
-.tt-suggestion {
-  padding: 3px 20px;
-/*   font-size: 18px; */
-  line-height: 24px;
-}
-
-.tt-suggestion.tt-cursor {
-  color: #fff;
-  background-color: #0097cf;
-
-}
-
-.tt-suggestion p {
-  margin: 0;
-}
 
 .cities {
    float:right;
@@ -366,52 +324,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   background-image: url(http://webstudios.dk/resources/img/share-img.png);
 }
 
-
-/* .nav { */
-/*   background: #4f4f4f; */
-/*   height:250px; */
-/*   margin-left:0; */
-/*   top:5px; */
-/*   width:250px; */
-/*   z-index:-4; */
-/*   font-weight:700; */
-/*   color:#fff; */
-/*   font-size:12px; */
-/*   transition:.4s ease-out .1s; */
-/* } */
-
-/* .nav ul li { */
-/*   padding:13px 10px; */
-/*   width:50px; */
-/*   background:#333; */
-/*   border-bottom:1px solid #444; */
-/*   cursor:pointer; */
-/*   list-style: none; */
-/* } */
-
-/* .nav ul { */
-/*   margin-left: -35px; */
-/* } */
-
-/* .nav ul li:hover { */
-/*   background:#222; */
-/* } */
-
-/* .more:hover ~ .nav { */
-/*   margin-left:-80px; */
-/*   transition:.4s; */
-/* } */
-
-/* .nav:hover { */
-/*   margin-left:-80px; */
-/* } */
-
-/* .nav:hover .info-block { */
-/*   margin-bottom:0; */
-/* } */
-
-
-
 input[type="checkbox"] {
   display:none;
 }
@@ -434,20 +346,6 @@ input[name="play"]:checked + label span {
   background:#c0392b;
   z-index:9999;
 }
-
-/*
-.video {
-  text-align:center;
-  font-size:11px;
-  width:260px;
-  height:260px;
-  position:absolute;
-  background:#fff;
-  line-height:260px;
-  top:0;
-  z-index:-9;
-}
-*/
 
 input[name="play"]:checked ~ .video {
   z-index:999;
