@@ -75,7 +75,7 @@ class SystemNotification extends CActiveRecord
 		    array('description',                             'length', 'max'=>4096),
 		    array('history',                                 'length', 'max'=>64000),
 
-		    array('trip_status',
+		    array('status',
 		          'in', 'range'=>array('new', 'active', 'pending', 'closed', 'archived')),
 
 

@@ -275,7 +275,7 @@ class BusinessController extends Controller
 	    {
 
 	        $businessModel->attributes             = $_POST['Business'];
-	        $businessModel->lstBusinessCategories  = $_POST['Business']['lstBusinessCategories'];
+	        $businessModel->lstBusinessCategories  = $_POST['Business_lstBusinessCategories'];
 
 
 	        if($businessModel->save())
@@ -320,11 +320,44 @@ class BusinessController extends Controller
 
 	            $idNewBusiness = $businessModel->business_id;
 
+                // /////////////////////////////////////////////////////////////
+	            // Send an alert to the system admin users to process the
+	            // ...business registration request.
+	            // /////////////////////////////////////////////////////////////
 
-	            // Send an alert to the system admin users to process the business registration request.
+	            $systemNotificationModel               = new SystemNotification;
+	            $systemNotificationModel->entity_type  = 'business';
+	            $systemNotificationModel->entity_id    = $idNewBusiness;
+	            $systemNotificationModel->title        = 'New Business Registration : '.
+                                                          $businessModel->business_name;
+
+	            $userFullname                          = Yii::app()->user->getFullName();
+	            $timeNow                               = date("F j, Y, g:i a");    // March 10, 2014, 5:16 pm
+
+	            $noticeDescription = <<<EOD
+
+New Business Registration : {$businessModel->business_name}
+
+A business registration request was submitted.
+
+Business Name  : {$businessModel->business_name}
+
+Submitted by   : {$userFullname}
+Time of Report : {$timeNow}
+
+EOD;
+
+	            $systemNotificationModel->description  = $noticeDescription;
+	            $systemNotificationModel->status       = 'new';
+
+	            if ($systemNotificationModel->save() === false)
+	            {
+	                Yii::app()->user->setFlash('error', "Your request could not be processed at this time.");
+	                $this->redirect(array('/businessuser/profile/show', 'id' => $businessId));
+	            }
 
 
-	            $this->redirect(array('/businessuser/profile/show', 'id' => $idNewBusiness));
+	            $this->redirect(array('/business/business/show', 'id' => $idNewBusiness));
 
 	        }
 	        else {

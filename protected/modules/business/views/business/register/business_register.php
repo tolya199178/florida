@@ -1,7 +1,11 @@
 <?php
-//print_r($model);
-//exit;
+
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
 ?>
+
 <style>
 #main {
 	background-color: white;
@@ -202,9 +206,8 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
    <div class="navbar">
       <div class="navbar-inner">
             <ul class="nav nav-pills">
-               <li class="active"><a href="#step1" data-toggle="tab">Step 1</a></li>
-               <li><a href="#step2" data-toggle="tab">Step 2</a></li>
-               <li><a href="#step3" data-toggle="tab">Step 3</a></li>
+               <li class="active"><a href="#step1" data-toggle="tab">Contact Details</a></li>
+               <li><a href="#step2" data-toggle="tab">Business Description</a></li>
             </ul>
       </div>
    </div>
@@ -220,12 +223,9 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                                         array('form'=>$form, 'model'=>$model));
             ?>
 
-<!--          <a class="btn btn-default next" href="#">Continue</a> -->
             <!-- Panel Footer -->
             <div class="panel-footer">
                 <a class="btn btn-default next" href="#">Continue</a>
-<!--                 <a class="btn btn-success first" href="#">Start over</a> -->
-
             </div>
       </div>
       <!-- ./Step 1 contents -->
@@ -237,32 +237,12 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
                                        array('form'=>$form, 'model'=>$model));
             ?>
 
-<!--          <a class="btn btn-default next" href="#">Continue</a> -->
-            <!-- Panel Footer -->
-            <div class="panel-footer">
-                <a class="btn btn-default next" href="#">Continue</a>
-<!--                 <a class="btn btn-success first" href="#">Start over</a> -->
-
-            </div>
-      </div>
-      <!-- ./ Step 2 contents -->
-
-      <!-- Step 3 contents -->
-      <div class="tab-pane" id="step3">
-
-            <?php $this->renderPartial("register/business_register_step3",
-                                        array('form'=>$form, 'model'=>$model));
-            ?>
-
-<!--          <a class="btn btn-default next" href="#">Continue</a> -->
-<!--          <a class="btn btn-success first" href="#">Start over</a> -->
             <!-- Panel Footer -->
             <div class="panel-footer">
 		          <?php echo CHtml::submitButton('Save the Business Record', array('class'=>"btn btn-success btn-lg")); ?>
             </div>
-
       </div>
-      <!-- ./ Step 3 contents -->
+      <!-- ./ Step 2 contents -->
 
    </div>
    <!--  Tab Contents -->
@@ -296,21 +276,38 @@ ul.nav-wizard.nav-wizard-backnav .active ~ li a,ul.nav-wizard.nav-wizard-backnav
 
 
 <?php
+$baseUrl = $this->createAbsoluteUrl('/');
+
+// $cityAutoCompleteURL = Yii::app()->createUrl('/banner/banner/autocompletepagelist');
+$categoryListUrl = $baseUrl.'/business/business/autocompletecatlist/';
+
+
 $script = <<<EOD
 
+    // next wizard button
     $('.next').click(function(){
 
     	  var nextId = $(this).parents('.tab-pane').next().attr("id");
     	  $('[href=#'+nextId+']').tab('show');
 
-    	})
+	})
 
-    	$('.first').click(function(){
+    // wizard button 1
+	$('.first').click(function(){
 
-    	  $('#myWizard a:first').tab('show')
+	   $('#myWizard a:first').tab('show')
 
-    	})
+	})
 
+    $("#Business_business_city_id").select2({
+        placeholder: "Select the city",
+        allowClear: true
+    });
+
+
+    $("#Business_lstBusinessCategories").select2({
+        placeholder: "Select one or more categories",
+    });
 
 EOD;
 

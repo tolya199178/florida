@@ -7,12 +7,9 @@
 
                         <div style="overflow:auto; height: 200px">
                             <?php
-                            /* BUG: The CheckBoxList forces a '-- Choose a Category --' as a first Roo level iten */
-
-                                  $parents = Category::model()->findAll('parent_id is null');
-                                  $data = Category::model()->makeDropDown($parents);
-
-                                  echo $form->CheckBoxList($model,'lstBusinessCategories', $data);
+                              echo CHtml::dropDownList('Business_lstBusinessCategories', '',
+                                                       CHtml::listData(Category::model()->findAll(), 'category_id', 'category_name'),
+                                                       array('class'=>"form-control",'multiple'=>'multiple'));
                             ?>
                         </div>
                         <?php echo $form->error($model,'lstBusinessCategories'); ?>
