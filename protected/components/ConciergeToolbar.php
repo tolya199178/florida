@@ -10,42 +10,28 @@
   'delimiter' => ' &rarr; ', // if you want to change it
 ));
  */
-class ConciergeToolbar extends CWidget {
+class ConciergeToolbar extends CWidget
+{
 
 
 
-    public function run() {
+    public function run()
+    {
 
         // Get the top 10 popular activity types
-        $searchCriteria = new CDbCriteria();
-        $searchCriteria->order      = 'search_count';
-        $searchCriteria->limit      = 10;
-        $searchCriteria->condition  = 'search_origin = "concierge" AND search_tag_type = "activity" ';
+        // s WHERE  group by filter_activity  ORDER BY search_count DESC;
 
-        $listActivitySearch = SearchLogSummary::model()->findAll($searchCriteria);
+        $listActivitySearch     = Yii::app()->db->createCommand()
+                                            ->select("a.activity_id, a.keyword, count(s.search_id) AS search_count")
+                                            ->from('tbl_search_history s')
+                                            ->join('tbl_activity a', 'a.keyword = s.filter_activity')
+                                            ->where('a.activity_id IS NOT NULL')
+                                            ->group('s.filter_activity')
+                                            ->order('search_count DESC')
+                                            ->limit('10')
+                                            ->queryAll();
 
-        // Get the top 10 popular categories
-        $searchCriteria = new CDbCriteria();
-        $searchCriteria->order      = 'search_count';
-        $searchCriteria->limit      = 10;
-        $searchCriteria->condition  = 'search_origin = "concierge" AND search_tag_type = "activity" ';
-
-        $listCategorySearch = SearchLogSummary::model()->findAll($searchCriteria);
-
-        // Get the top 10 popular categories
-        $searchCriteria = new CDbCriteria();
-        $searchCriteria->order      = 'search_count';
-        $searchCriteria->limit      = 10;
-        $searchCriteria->condition  = 'search_origin = "concierge" AND search_tag_type = "city" ';
-
-        $listCitySearch = SearchLogSummary::model()->findAll($searchCriteria);
-
-
-
-        $this->render('concierge_toolbar', array(   'listActivitySearch'    => $listActivitySearch,
-                                                    'listCategorySearch'    => $listCategorySearch,
-                                                    'listCitySearch'        => $listCitySearch
-                                                ));
+        $this->render('concierge_toolbar', array('listActivitySearch' => $listActivitySearch));
     }
 
     /**
@@ -93,7 +79,7 @@ class ConciergeToolbar extends CWidget {
      * @return array list of actions and the route to the runnable action.
      * @access public
      */
-    public function getActivity()
+    public static function getActivity()
     {
         ;
     }
@@ -108,10 +94,10 @@ class ConciergeToolbar extends CWidget {
      * @return array list of actions and the route to the runnable action.
      * @access public
      */
-    public function getActivityType($listCategorySearch)
+    public static function getActivityType($listCategorySearch)
     {
 
-        return $this->renderPartial('application.components.views.concierge_toolbar_activitytype',
+        return Yii::app()->controller->renderPartial('application.components.views.concierge_toolbar_activitytype',
                              array('listCategorySearch'    => $listCategorySearch),
                              true
                      );

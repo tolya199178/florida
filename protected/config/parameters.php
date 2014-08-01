@@ -126,6 +126,11 @@ return array(
     'COOKIE_PWD' => 'florida_pwd',
 
 
+    // -------------------------------------------------------------------------
+    // Image paths
+    // -------------------------------------------------------------------------
+    'NOIMAGE_PATH' => "resources/images/site/no-image.jpg",
+
 
     //Ticket Net work
     'SITE_IP' => '209.208.92.70',

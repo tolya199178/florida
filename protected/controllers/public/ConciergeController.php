@@ -93,14 +93,21 @@ class ConciergeController extends Controller
 	    // Get the user's location
         $myLocation = $this->getMyLocation();
 
-        // Pre-load the list of cities
 	    $conciergeData = array();
-	    $conciergeData['city'] = $myLocation->city_name;
 
-	    // Get the users saved search list
+	    // Pre-load the list of cities
+	    $listCities                        = Yii::app()->db->createCommand()
+                                                	       ->select("*")
+                                                	       ->from('tbl_city')
+                                                	       ->queryAll();
+	    $conciergeData['listCities']       = $listCities;
+
+	    // Load the current city
+	    $conciergeData['myLocation']       = $myLocation;
+
+	    // Get the users saved search list, for logged in users
 	    if (!Yii::app()->user->isGuest)
 	    {
-	        // $listSavedSearch = SavedSearch::model()->findAllByAttributes(array('user_id' => Yii::app()->user->id));
 
 	        $listSavedSearch = Yii::app()->db->createCommand()
                                 	         ->select("*")
@@ -465,10 +472,24 @@ class ConciergeController extends Controller
                 // Get all photos for the city
                 // /////////////////////////////////////////////////////////////
                 $lstCityPhotos  = Photo::model()->findAllByAttributes(array('entity_id' => $cityId, 'photo_type' => 'city'));
-                if (count($lstCityPhotos) >0)
+
+                // If there are no images, load the no-image by creating a psudeo-model. Remember not to save!
+                if (count($lstCityPhotos) <= 0)
                 {
-                    $this->renderPartial('city_gallery', array('lstCityPhotos'=> $lstCityPhotos));
+                    $psuedoPhotoModel = new Photo();
+                    $psuedoPhotoModel->attributes =
+                        array('photo_type'  => 'city',
+                            'title'       => 'No image found',
+                            'caption'     => 'No image found',
+                            'path'        => Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH']
+                        );
+
+                    $lstCityPhotos[]    = $psuedoPhotoModel;
+
                 }
+
+                $this->renderPartial('city_gallery', array('lstCityPhotos'=> $lstCityPhotos));
+
 
                 Yii::app()->end();
 
@@ -587,12 +608,12 @@ class ConciergeController extends Controller
     public function actionLoadactivitytype()
     {
         $reqActivity   = Yii::app()->request->getQuery("activity");
-        $reqActivity   = filter_var($reqActivity,FILTER_SANITIZE_STRING);
+        $reqActivity   = filter_var($reqActivity,FILTER_SANITIZE_NUMBER_INT);
 
-        $lstActivityType    = ActivityType::model()->with('activity')->findAll("activity.keyword = :activity_keyword", array(':activity_keyword' => $reqActivity));
+        $lstActivityType    = ActivityType::model()->findAllByAttributes(array('activity_id' => $reqActivity));
+
 
         echo ConciergeToolbar::getActivityType($lstActivityType);
-
 
 
         Yii::app()->end();
@@ -973,6 +994,76 @@ LIMIT 0 , $numberOfResults
             echo CJSON::encode(array('result'=>true, 'message'=>'Saved.'));
             Yii::app()->end();
         }
+
+    }
+
+    /**
+     * Renders JSON results of activities.
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionActivitylist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 2)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstActivity = Yii::app()->db
+                                ->createCommand()
+                                ->select('activity_id AS id, keyword AS text')
+                                ->from('tbl_activity')
+                                ->where(array('LIKE', 'keyword', '%'.$_GET['query'].'%'))
+                                ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstActivity);
+
+    }
+
+    /**
+     * Renders JSON results of activity types
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionActivitytypelist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 2)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstActivityType = Yii::app()->db
+                                    ->createCommand()
+                                    ->select('activity_id AS id, keyword AS text')
+                                    ->from('tbl_activity_type')
+                                    ->where(array('LIKE', 'keyword', '%'.$_GET['query'].'%'))
+                                    ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstActivityType);
 
     }
 
