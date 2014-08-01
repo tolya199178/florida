@@ -472,10 +472,24 @@ class ConciergeController extends Controller
                 // Get all photos for the city
                 // /////////////////////////////////////////////////////////////
                 $lstCityPhotos  = Photo::model()->findAllByAttributes(array('entity_id' => $cityId, 'photo_type' => 'city'));
-                if (count($lstCityPhotos) >0)
+
+                // If there are no images, load the no-image by creating a psudeo-model. Remember not to save!
+                if (count($lstCityPhotos) <= 0)
                 {
-                    $this->renderPartial('city_gallery', array('lstCityPhotos'=> $lstCityPhotos));
+                    $psuedoPhotoModel = new Photo();
+                    $psuedoPhotoModel->attributes =
+                        array('photo_type'  => 'city',
+                            'title'       => 'No image found',
+                            'caption'     => 'No image found',
+                            'path'        => Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH']
+                        );
+
+                    $lstCityPhotos[]    = $psuedoPhotoModel;
+
                 }
+
+                $this->renderPartial('city_gallery', array('lstCityPhotos'=> $lstCityPhotos));
+
 
                 Yii::app()->end();
 

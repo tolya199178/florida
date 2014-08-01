@@ -543,8 +543,6 @@ $script = <<<EOD
 
     $("#dowhat").on("change", function() {
 
-    // debugger;
-
         doSearch();
 
         var txtActivity      = $("#dowhat").val();
@@ -584,27 +582,27 @@ $script = <<<EOD
     var last_timestamp = 0;
     function getLeftPanelFeeds()
     {
-    	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
+//     	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
 
-    	$.ajax({
-    		type 		: 'GET',
-    		url 		: url,
-    	    data 		: null,
-    		dataType 	: 'html'
-    	})
-    	// using the done promise callback
-    	.done(function(data) {
+//     	$.ajax({
+//     		type 		: 'GET',
+//     		url 		: url,
+//     	    data 		: null,
+//     		dataType 	: 'html'
+//     	})
+//     	// using the done promise callback
+//     	.done(function(data) {
 
-            var source = $('<div>' + data + '</div>');
+//             var source = $('<div>' + data + '</div>');
 
-            var feed_update_list = source.find('#feedresult').html();
-            $('#left_panel_feed').prepend(feed_update_list);
+//             var feed_update_list = source.find('#feedresult').html();
+//             $('#left_panel_feed').prepend(feed_update_list);
 
-            last_timestamp = source.find('#last_timestamp').html();
+//             last_timestamp = source.find('#last_timestamp').html();
 
-            $("time.timeago").timeago();
+//             $("time.timeago").timeago();
 
-    	});
+//     	});
     }
 
 
@@ -740,10 +738,10 @@ $script = <<<EOD
     });
 
   function loadCityGallery() {
-    var where       = $("#city").val();
 
-    var dowhat      = $("#dowhat").val();
-    var withwhat    = $("#withwhat").val();
+    var where_data       = $('#city_list').select2('data');
+
+    var where            = where_data.text;
 
     var url         = '$baseUrl/concierge/gallery/';
 
@@ -752,11 +750,11 @@ $script = <<<EOD
       city:where,
     },
     function(data,status){
-        $('#city_gallery').html(data);
-     $("#myCarousel").carousel({
-         interval : 5000,
-         pause: false
-     });
+         $('#city_gallery').html(data);
+         $("#myCarousel").carousel({
+             interval : 5000,
+             pause: false
+         });
     });
 
   }
