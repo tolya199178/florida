@@ -93,7 +93,7 @@ class ConciergeToolbar extends CWidget {
      * @return array list of actions and the route to the runnable action.
      * @access public
      */
-    public function getActivity()
+    public static function getActivity()
     {
         ;
     }
@@ -108,10 +108,10 @@ class ConciergeToolbar extends CWidget {
      * @return array list of actions and the route to the runnable action.
      * @access public
      */
-    public function getActivityType($listCategorySearch)
+    public static function getActivityType($listCategorySearch)
     {
 
-        return $this->renderPartial('application.components.views.concierge_toolbar_activitytype',
+        return Yii::app()->controller->renderPartial('application.components.views.concierge_toolbar_activitytype',
                              array('listCategorySearch'    => $listCategorySearch),
                              true
                      );
