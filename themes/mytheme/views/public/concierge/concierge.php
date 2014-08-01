@@ -1,4 +1,3 @@
-
 <?php
 
 Yii::app()->clientScript->registerScriptFile("https://maps.googleapis.com/maps/api/js?sensor=false", CClientScript::POS_HEAD);
@@ -14,8 +13,8 @@ Yii::app()->clientScript->registerScriptFile("https://maps.googleapis.com/maps/a
 
 <?php
 
-// Hack
-$data['city'] = 'Miami';
+$listCities         = $data['listCities'];
+$myLocation         = $data['myLocation'];
 
 ?>
 
@@ -55,9 +54,6 @@ $data['city'] = 'Miami';
  * @package default
  */
 $baseScriptUrl = $this->createAbsoluteUrl('/');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
 
@@ -440,33 +436,76 @@ h2{
 
 <?php
 
-$local_list = City::model()->getListjson();
-
 $baseUrl = $this->createAbsoluteUrl('/');
 
+$activityListUrl = $baseUrl.'/dialogue/post/autocompletetaglist/';
 
 $script = <<<EOD
 
-// Load the city list for type ahead
-var numbers = new Bloodhound({
-  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.city_name); },
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-   local: {$local_list}
-});
+    function loadInitialSearchValues()
+    {
 
-// initialize the bloodhound suggestion engine
-numbers.initialize();
+        $("#city_list").select2("data", {id: "{$myLocation->city_id}", text: "{$myLocation->city_name}" });
+        loadCityGallery();
+        $('#dowhat').select2('focus');       // Set focus
 
-// instantiate the typeahead UI
-$('.cities .typeahead')
-   .typeahead(null, {
-       displayKey: 'city_name',
-       source: numbers.ttAdapter()
-       })
-    .on('typeahead:selected', function(e, datum){
-          loadCityGallery();
-          $('#dowhat').tagsinput('focus');
-     });
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    // City widget
+    // /////////////////////////////////////////////////////////////////////////
+    // City list
+    $("#city_list").select2({
+        placeholder: "I am in...",
+        allowClear: true
+    });
+
+    $(document.body).on("change","#city_list",function(){
+        // TODO: Add onchange function here
+        // City id is this.value;
+        loadCityGallery();
+        $('#dowhat').select2('focus');       // Set focus
+
+    });
+
+    loadInitialSearchValues();
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Activity widget
+    // /////////////////////////////////////////////////////////////////////////
+    // Activity list
+
+    $("#dowhat").select2({
+      tags: true,
+      maximumSelectionSize: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function(term, data) {
+        if ($(data).filter(function() {
+          return this.text.localeCompare(term) === 0;
+        }).length === 0) {
+          return {
+            id: term,
+            text: term
+          };
+        }
+      },
+      multiple: true,
+      ajax: {
+        url: '{$activityListUrl}',
+        dataType: "json",
+        data: function(term, page) {
+          return {
+            query: term
+          };
+        },
+        results: function(data, page) {
+          return {
+            results: data
+          };
+        }
+      }
+    });
 
 
     // /////////////////////////////////////////////////////////////////////////
@@ -597,16 +636,13 @@ $('.cities .typeahead')
 
   }
 
-    $('#dowhat').tagsinput({
-    maxTags: 1
-    });
 
-    $('#withwhat').tagsinput({
-    maxTags: 1
-    });
 
     $("#dowhat").on("change", function() {
-      doSearch();
+
+        debugger;
+
+        doSearch();
 
         var txtActivity      = $("#dowhat").val();
 
@@ -633,9 +669,13 @@ $('.cities .typeahead')
             // Populate the list of linked activity types
             $('#concierge_toolbar_activitytype').html(data);
 
-            $('#withwhat').tagsinput('focus');
+            $('#withwhat').select2('focus');       // Set focus
+
 
 		});
+
+		$('#withwhat').select2('focus');       // Set focus
+
     });
 
     $("#withwhat").on("change", function() {
@@ -695,9 +735,10 @@ $('.cities .typeahead')
 
   }
 
-  // Load the default city on page load
-  loadCityGallery();
-  $('#dowhat').tagsinput('focus');
+//   // Load the default city on page load
+//   loadCityGallery();
+//   $('#dowhat').focus();
+
 
 
     $('body').on('change', '.rating', function() {
@@ -1135,10 +1176,14 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         </div>
                         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <div class="cities">
-                                <input class="typeahead form-control" name="city"
-                                    id="city" type="text" autocomplete="off"
-                                    value="<?php echo $data['city']; ?>"
-                                    placeholder="I am in...">
+                                    <select id="city_list" style="width:300px;" class="populate placeholder">
+                                        <option></option>
+                                    <?php foreach ($listCities as $itemCity) { ?>
+                                        <option value="<?php echo (int) $itemCity['city_id']; ?>"<?php echo (($myLocation->city_name==$itemCity['city_name'])?" selected='selected' selected":'');?>>
+                                            <?php echo CHtml::encode($itemCity['city_name']); ?>
+                                        </option>
+                                    <?php } ?>
+                                    </select>
                             </div>
                         </div>
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">

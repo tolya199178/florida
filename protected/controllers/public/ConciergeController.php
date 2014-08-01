@@ -93,14 +93,21 @@ class ConciergeController extends Controller
 	    // Get the user's location
         $myLocation = $this->getMyLocation();
 
-        // Pre-load the list of cities
 	    $conciergeData = array();
-	    $conciergeData['city'] = $myLocation->city_name;
 
-	    // Get the users saved search list
+	    // Pre-load the list of cities
+	    $listCities                        = Yii::app()->db->createCommand()
+                                                	       ->select("*")
+                                                	       ->from('tbl_city')
+                                                	       ->queryAll();
+	    $conciergeData['listCities']       = $listCities;
+
+	    // Load the current city
+	    $conciergeData['myLocation']       = $myLocation;
+
+	    // Get the users saved search list, for logged in users
 	    if (!Yii::app()->user->isGuest)
 	    {
-	        // $listSavedSearch = SavedSearch::model()->findAllByAttributes(array('user_id' => Yii::app()->user->id));
 
 	        $listSavedSearch = Yii::app()->db->createCommand()
                                 	         ->select("*")
