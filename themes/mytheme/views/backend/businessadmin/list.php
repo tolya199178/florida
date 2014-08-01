@@ -4,21 +4,21 @@
     $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/resources/libraries/DataTables-1.10.0/media/js/jquery.dataTables.js', CClientScript::POS_END);
 
 ?>
-    
+
 <style type="text/css">
     .dataTables_filter {
     	display: none;
     }
-    
+
     #popover-content {
     	margin-right: -800px;
     	max-width: 600px;
     	width: 800px;
     }
 </style>
-    
-    
-    
+
+
+
     <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Manage Cities</a>
@@ -27,7 +27,7 @@
             <div class="navbar-form navbar-left" role="search">
                 <div class="form-group">
                     <a
-                        href="<?php echo Yii::app()->createUrl('business/create'); ?>"
+                        href="<?php echo Yii::app()->createUrl('businessadmin/create'); ?>"
                         class="btn btn-primary">Add New Business</a>
                 </div>
             </div>
@@ -36,27 +36,27 @@
                     <input type="text" class="form-control" id="searchbox"
                         placeholder="Search">
                 </div>
-    
+
                 <a data-placement="bottom" data-toggle="popover" data-title=""
                     data-container="body" type="button" data-html="true" href="#"
                     id="login" class="btn btn-primary">Advanced Search</a>
                 <div id="popover-content" class="hide">
-    
+
                     some content
                     <p id="renderingEngineFilter"></p>
                     <p id="browserFilter"></p>
                     <p id="platformsFilter"></p>
                     <p id="engineVersionFilter"></p>
                     <p id="cssGradeFilter"></p>
-    
+
                 </div>
-    
+
             </div>
-    
-    
+
+
         </div>
     </nav>
-    
+
     <table id="business_table" class="table table-striped table-bordered"
         cellspacing="0" width="100%">
         <thead>
@@ -70,16 +70,16 @@
                 <th>City</th>
                 <th>&nbsp;</th>
                 <th>&nbsp;</th>
-    
+
             </tr>
         </thead>
     </table>
-    
+
 <?php
-    $data_url = Yii::app()->createUrl('business/listjson');
-    $edit_url = Yii::app()->createUrl('business/edit');
-    $delete_url = Yii::app()->createUrl('business/delete');
-    
+    $data_url = Yii::app()->createUrl('businessadmin/listjson');
+    $edit_url = Yii::app()->createUrl('businessadmin/edit');
+    $delete_url = Yii::app()->createUrl('businessadmin/delete');
+
 $script = <<<EOD
     var table = $('#business_table').DataTable({
             // Setup for Bootstrap support.
@@ -88,7 +88,7 @@ $script = <<<EOD
                 sLengthMenu: '_MENU_ records per page'
             },
             // bFilter: false,
-    
+
             'bProcessing': true,
             'bServerSide': true,
              'sPaginationType': 'full_numbers',
@@ -96,11 +96,11 @@ $script = <<<EOD
                 "url": '{$data_url}',
                 "type": "POST"
             },
-    
+
             'columnDefs': [
                 // These columns not visible
                 { 'visible': false,  'targets': [ 0 ] },
-                
+
                 // In row delete button
                 {
                     "targets": [-1],
@@ -111,7 +111,7 @@ $script = <<<EOD
                         return editurl;
                     },
                 },
-                
+
                 // In row edit button
                 {
                     "targets": [-2],
@@ -125,53 +125,53 @@ $script = <<<EOD
 
             ]
         });
-    
+
         $('#business_table tbody').on( 'click', 'button', function () {
-          
+
             var className = this.className;
-          
+
             var data = table.row( $(this).parents('tr') ).data();
-          
+
             var result = window.confirm("Do you really want to Delete the business record for " + data[1] + "?");
             if (result == false) {
                 e.preventDefault();
                 return false;
             }
             else {
-            
+
                 $.ajax({
                     type: 'POST',
                     data: { "business_id": data[0] },
                     dataType: 'json',
                     url: '{$delete_url}',
                     success: function (data) {
-                    
+
                         if (data.result == 'success') {
                             // Refresh the table
                             // var oTable = $('#tModuleListing').dataTable();
-                            table.draw();   
+                            table.draw();
                         }
                         else {
                             alert('Failed to Delete item - ' + data.message);
                         }
-                        
+
                     },
                     error: function () {
                         alert('Failed to Delete item - unexpected error');
-                        // todo: add proper error message 
+                        // todo: add proper error message
                     }
                 });
             }
-          
-    
-        
+
+
+
         return true;
-          
-          
+
+
           if (className == "editrow") {
             var data = table.row( $(this).parents('tr') ).data();
             // alert( data[0] +"'s salary is: "+ data[ 3 ] );
-        
+
             //  $('#myModal').modal('show');
             url = "{$edit_url}/business_id/" + data[0];
             $('#myModal').removeData();
@@ -179,34 +179,34 @@ $script = <<<EOD
                     remote : url
                 });
                 //$('#myModal').removeData();
-          
+
           }
           else {
                 var data = table.row( $(this).parents('tr') ).data();
           }
-          
+
         } );
-    
+
         // Search the table from the external search textbox. Limit to search string > 3 characters
         $('#searchbox').on( 'keyup', function () {
            if (($("#searchbox").val().length > 2) || ($("#searchbox").val().length == 0)) {
                 table.search( this.value ).draw();
            }
-                            
+
         } );
-                        
+
         $("[data-toggle=popover]").popover({
-            html: true, 
+            html: true,
         	content: function() {
                   return $('#popover-content').html();
                 }
         });
-    
-    
+
+
 EOD;
-    
+
     Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
-    
+
 ?>
-    
+
 
