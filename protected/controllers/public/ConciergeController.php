@@ -983,4 +983,74 @@ LIMIT 0 , $numberOfResults
 
     }
 
+    /**
+     * Renders JSON results of activities.
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionActivitylist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 2)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstActivity = Yii::app()->db
+                                ->createCommand()
+                                ->select('activity_id AS id, keyword AS text')
+                                ->from('tbl_activity')
+                                ->where(array('LIKE', 'keyword', '%'.$_GET['query'].'%'))
+                                ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstActivity);
+
+    }
+
+    /**
+     * Renders JSON results of activity types
+     * Used for dropdowns
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionActivitytypelist()
+    {
+
+        $strSearchFilter = $_GET['query'];
+
+        // Don't process short request to prevent load on the system.
+        if (strlen($strSearchFilter) < 2)
+        {
+            header('Content-type: application/json');
+            return "";
+            Yii::app()->end();
+
+        }
+
+        $lstActivityType = Yii::app()->db
+                                    ->createCommand()
+                                    ->select('activity_id AS id, keyword AS text')
+                                    ->from('tbl_activity_type')
+                                    ->where(array('LIKE', 'keyword', '%'.$_GET['query'].'%'))
+                                    ->queryAll();
+
+        header('Content-type: application/json');
+        echo CJSON::encode($lstActivityType);
+
+    }
+
 }
