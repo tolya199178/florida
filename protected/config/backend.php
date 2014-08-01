@@ -17,17 +17,29 @@ return CMap::mergeArray(
 //             'rules' => array(
 //                 // default backend url
 //                 'backend' => 'site/index',
-//                
+//
 //                 // User admin
 //                 'backend'           => 'site/index',
 //                 'backend/user'      => 'site/',
-//                
+//
 //                 // fallback
 //                 'backend/<_c>' => '<_c>',
 //                 'backend/<_c>/<_a>' => '<_c>/<_a>'
 //             )
 //         )
 // TODO: END
+
+                'urlManager'=>array(
+                    'urlFormat'=>'path',
+                    'showScriptName'=>false,
+                    'rules'=>array(
+                        'backend'=>'site/index',
+                        'backend/<_c>'=>'<_c>',
+                        'backend/<_c>/<_a>/*'=>'<_c>/<_a>/*',
+                    ),
+                ),
+
+
             )
             // NOTE: Put additional front-end settings there. Don't forget the comma
 ));
