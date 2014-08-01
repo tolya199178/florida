@@ -5,22 +5,22 @@
  */
 
 /**
- * Business Controller class to provide access to controller actions for clients.
+ * Businessadmin Controller class to provide access to controller actions for clients.
  * The contriller action interfaces 'directly' with the Client. This controller
  * ...must therefore be responsible for input processing and response handling.
  *
  * Usage:
  * ...Typical usage is from a web browser, by means of a URL
  * ...
- * ...   http://application.domain/index.php?/business/action/attribute1/parameter1/.../attribute-n/parameter-n/
+ * ...   http://application.domain/index.php?/businessadmin/action/attribute1/parameter1/.../attribute-n/parameter-n/
  * ...eg.
- * ...   http://mydomain/index.php?/business/edit/business_id/99/
+ * ...   http://mydomain/index.php?/businessadmin/edit/business_id/99/
  * ...
  * ...The 'action' in the request is converted to invoke the actionAction() action
- * ...eg. /business/edit/business_id/99/ will invoke BusinessController::actionEdit()
+ * ...eg. /businessadmin/edit/business_id/99/ will invoke BusinessadminController::actionEdit()
  * ...(case is significant)
  * ...Additional parameters after the action are passed as $_GET pairs
- * ...eg. /business/edit/business_id/99/ will pass $_GET['business_id'] = 99
+ * ...eg. /businessadmin/edit/business_id/99/ will pass $_GET['business_id'] = 99
  *
  * @package   Controllers
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -28,7 +28,7 @@
  * @package Controllers
  * @version 1.0
  */
-class BusinessController extends BackEndController
+class BusinessadminController extends BackEndController
 {
 
     /**

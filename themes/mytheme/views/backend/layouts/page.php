@@ -97,7 +97,7 @@
                       <li class="nav-divider"></li>
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>Business</a>
                           <ul class="nav nav-list tree active-trial">
-                              <li><a href="<?php echo Yii::app()->createUrl('/business/index'); ?>">Business Listing</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/businessadmin/index'); ?>">Business Listing</a></li>
                           </ul>
                       </li>
 
