@@ -347,23 +347,12 @@ input[name="play"]:checked ~ .video {
   z-index:999;
 }
 
-div.bootstrap-tagsinput {
-  width: 150px;
-  outline: none;
-  border: 0;
-  height:35px;
-}
-
 #dowhen {
   width: 150px;
   outline: none;
   border: 0;
   height:35px;
 }
-
-/* div.bootstrap-tagsinput > input{ */
-/*   width: 250px; */
-/* } */
 
 
 .result_button_link  {
@@ -438,7 +427,8 @@ h2{
 
 $baseUrl = $this->createAbsoluteUrl('/');
 
-$activityListUrl = $baseUrl.'/dialogue/post/autocompletetaglist/';
+$activityListUrl        = $baseUrl.'/concierge/activitylist/';
+$activityTypeListUrl    = $baseUrl.'/concierge/activitytypelist/';
 
 $script = <<<EOD
 
@@ -447,12 +437,13 @@ $script = <<<EOD
 
         $("#city_list").select2("data", {id: "{$myLocation->city_id}", text: "{$myLocation->city_name}" });
         loadCityGallery();
+        getLeftPanelFeeds();
         $('#dowhat').select2('focus');       // Set focus
 
     }
 
     // /////////////////////////////////////////////////////////////////////////
-    // City widget
+    // Setup Select widgets
     // /////////////////////////////////////////////////////////////////////////
     // City list
     $("#city_list").select2({
@@ -460,20 +451,6 @@ $script = <<<EOD
         allowClear: true
     });
 
-    $(document.body).on("change","#city_list",function(){
-        // TODO: Add onchange function here
-        // City id is this.value;
-        loadCityGallery();
-        $('#dowhat').select2('focus');       // Set focus
-
-    });
-
-    loadInitialSearchValues();
-
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Activity widget
-    // /////////////////////////////////////////////////////////////////////////
     // Activity list
 
     $("#dowhat").select2({
@@ -507,10 +484,66 @@ $script = <<<EOD
       }
     });
 
+    $("#withwhat").select2({
+      tags: true,
+      maximumSelectionSize: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function(term, data) {
+        if ($(data).filter(function() {
+          return this.text.localeCompare(term) === 0;
+        }).length === 0) {
+          return {
+            id: term,
+            text: term
+          };
+        }
+      },
+      multiple: true,
+      ajax: {
+        url: '{$activityTypeListUrl}',
+        dataType: "json",
+        data: function(term, page) {
+          return {
+            query: term
+          };
+        },
+        results: function(data, page) {
+          return {
+            results: data
+          };
+        }
+      }
+    });
+
+    loadInitialSearchValues();
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Activity widget
+    // /////////////////////////////////////////////////////////////////////////
+
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // On change event handlers
+    // /////////////////////////////////////////////////////////////////////////
+    $(document.body).on("change","#city_list",function(){
+        // TODO: Add onchange function here
+        // City id is this.value;
+        loadCityGallery();
+        $('#dowhat').select2('focus');       // Set focus
+
+    });
+
+
+    $("#withwhat").on("change", function() {
+      $( "#dowhen" ).focus();
+      doSearch()
+    });
 
     $("#dowhat").on("change", function() {
 
-        debugger;
+    // debugger;
 
         doSearch();
 
@@ -518,7 +551,7 @@ $script = <<<EOD
 
         if (txtActivity.length == 0)
         {
-            $('#withwhat').tagsinput('remove', $("#withwhat").val());
+            $("#withwhat").select2("val", "");
             return;
         }
 
@@ -538,27 +571,12 @@ $script = <<<EOD
 
             // Populate the list of linked activity types
             $('#concierge_toolbar_activitytype').html(data);
-
             $('#withwhat').select2('focus');       // Set focus
 
-
 		});
-
-		$('#withwhat').select2('focus');       // Set focus
+		$('#withwhat').select2('focus');          // Set focus
 
     });
-
-
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Activity Type widget
-    // /////////////////////////////////////////////////////////////////////////
-    $("#withwhat").on("change", function() {
-      $( "#dowhen" ).focus();
-      doSearch()
-    });
-
-
 
     // /////////////////////////////////////////////////////////////////////////
     // Fetch updated feeds and load the left panel
@@ -591,12 +609,7 @@ $script = <<<EOD
 
 
     // /////////////////////////////////////////////////////////////////////////
-    // On page load, load the left panel
-    // /////////////////////////////////////////////////////////////////////////
-    getLeftPanelFeeds();
-
-    // /////////////////////////////////////////////////////////////////////////
-    // On page load, load the left panel
+    // Set up left panel for automatic regular refresh
     // /////////////////////////////////////////////////////////////////////////
 
     var auto_refresh = setInterval(
@@ -613,13 +626,22 @@ $script = <<<EOD
 
 
 
-
+    // /////////////////////////////////////////////////////////////////////////
+    // Set up left panel for automatic regular refresh
+    // /////////////////////////////////////////////////////////////////////////
 
 
   function doSearch() {
-    var where       = $("#city").val();
-    var dowhat      = $("#dowhat").val();
-    var withwhat    = $("#withwhat").val();
+
+    var where_data       = $('#city_list').select2('data');
+    var dowhat_data      = $('#dowhat').select2('data');
+    var withwhat_data    = $('#withwhat').select2('data');
+
+    var where            = where_data.text;
+    // dowhat and withwhat are multiple select items
+    var dowhat           = (dowhat_data.length > 0)?dowhat_data[0].text:'';
+    var withwhat         = (withwhat_data.length > 0)?withwhat_data[0].text:'';
+
     var dowhen      = $('#dowhentimestamp').val();
 
     var search_report = 'YOU SEARCHED';
@@ -663,11 +685,7 @@ $script = <<<EOD
 
     $("#search_criteria_dowhat").val(dowhat);
 
-
     $("#report_search").html(search_report);
-
-
-
 
 
     $.post(url,
@@ -843,28 +861,40 @@ $script = <<<EOD
     // Handler for (popular) activity click
     // Response is to display related activity types
     $('body').on('click', '.concierge_activity_tag', function(event) {
+
         var txtActivity = $(this).text();
+        var idActivity = $(this).attr('rel');
 
-        $('#dowhat').tagsinput('remove', $("#dowhat").val());
-        $('#dowhat').tagsinput('add', txtActivity);
-        $('#withwhat').tagsinput('remove', $("#withwhat").val());
+        // BUG FIX: Change vent is not firing when #dowhat is populated below,
+        // ...so we manually update the activity types
+        if (txtActivity.length > 0)
+        {
+            // TODO: Find a way of calling this function from the widget
+        	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
 
+    		// process the form. Note that there is no data send as posts arguements.
+    		$.ajax({
+    			type 		: 'POST',
+    			url 		: url,
+    		    data 		: null,
+    			dataType 	: 'html'
+    		})
+        }
+
+        $("#dowhat").select2("val", "");
+        $("#dowhat").select2("data", {id: idActivity, text: txtActivity});
+        $("#withwhat").select2("val", "");
 
     });
 
     // Handler for (popular) activity type clicks
     // Response is to display related activity types
     $('body').on('click', '.concierge_activitytype_tag', function(event) {
+
         var txtActivityType = $(this).text();
+        var idActivityType = $(this).attr('rel');
 
-
-// BUG : The two statements are triggering two doSearch() calls
-// BUG : Perhaps the answer lies here :
-// BUG : http://stackoverflow.com/questions/21336457/bootstrap-tags-input-how-to-bind-function-to-event-itemadded-and-itemremoved/21336824#21336824
-// alert('Bug alert: 2 doSearch() calls triggered. FIXME.');
-        $('#withwhat').tagsinput('remove', $("#withwhat").val());
-        $('#withwhat').tagsinput('add', txtActivityType);
-
+        $("#withwhat").select2("data", {id: idActivityType, text: txtActivityType});
 
     });
 
