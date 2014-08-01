@@ -6,7 +6,7 @@
             <div id="concierge_toolbar">
                 <div class="btn-toolbar" role="toolbar" style="margin: 0;padding-bottom:1px;" id='concierge_toolbar_activity'>
 <?php           foreach ($listActivitySearch as $searchLogEntry) { ?>
-                    <button type="button" class="btn btn-sm btn-primary concierge_activity_tag" rel="<?php echo $searchLogEntry['search_summary_id']; ?>"><?php echo $searchLogEntry['search_tag']; ?></button>
+                    <button type="button" class="btn btn-sm btn-primary concierge_activity_tag" rel="<?php echo $searchLogEntry['activity_id']; ?>"><?php echo $searchLogEntry['keyword']; ?></button>
 <?php           } ?>
                 </div>
             </div>

@@ -1,3 +1,23 @@
+<?php
+
+Yii::app()->clientScript->registerScriptFile("https://maps.googleapis.com/maps/api/js?sensor=false", CClientScript::POS_HEAD);
+
+
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
+
+?>
+
+<?php
+
+$listCities         = $data['listCities'];
+$myLocation         = $data['myLocation'];
+
+?>
+
 <style>
 
 /* Remove gutter */
@@ -34,9 +54,6 @@
  * @package default
  */
 $baseScriptUrl = $this->createAbsoluteUrl('/');
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
 
@@ -84,7 +101,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   box-shadow: #b0b0b0;
   z-index: 21;
   overflow-x:auto;
-
 }
 
 .rightpanel {
@@ -92,69 +108,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
    bottom: 3px;
 }
 
-.typeahead,
-.tt-query,
-.tt-hint {
-  width: 250px;
-/*   height: 30px; */
-  padding: 8px 12px;
-/*   font-size: 24px; */
-/*   line-height: 30px; */
-  border: 2px solid #ccc;
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  outline: none;
-}
--
-.typeahead {
-  background-color: #fff;
-}
 
-.typeahead:focus {
-  border: 2px solid #0097cf;
-}
-
-.tt-query {
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.tt-hint {
-  color: #999
-}
-
-.tt-dropdown-menu {
-  width: 250px;
-  margin-top: 12px;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-
-.tt-suggestion {
-  padding: 3px 20px;
-/*   font-size: 18px; */
-  line-height: 24px;
-}
-
-.tt-suggestion.tt-cursor {
-  color: #fff;
-  background-color: #0097cf;
-
-}
-
-.tt-suggestion p {
-  margin: 0;
-}
 
 .cities {
    float:right;
@@ -366,52 +320,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
   background-image: url(http://webstudios.dk/resources/img/share-img.png);
 }
 
-
-/* .nav { */
-/*   background: #4f4f4f; */
-/*   height:250px; */
-/*   margin-left:0; */
-/*   top:5px; */
-/*   width:250px; */
-/*   z-index:-4; */
-/*   font-weight:700; */
-/*   color:#fff; */
-/*   font-size:12px; */
-/*   transition:.4s ease-out .1s; */
-/* } */
-
-/* .nav ul li { */
-/*   padding:13px 10px; */
-/*   width:50px; */
-/*   background:#333; */
-/*   border-bottom:1px solid #444; */
-/*   cursor:pointer; */
-/*   list-style: none; */
-/* } */
-
-/* .nav ul { */
-/*   margin-left: -35px; */
-/* } */
-
-/* .nav ul li:hover { */
-/*   background:#222; */
-/* } */
-
-/* .more:hover ~ .nav { */
-/*   margin-left:-80px; */
-/*   transition:.4s; */
-/* } */
-
-/* .nav:hover { */
-/*   margin-left:-80px; */
-/* } */
-
-/* .nav:hover .info-block { */
-/*   margin-bottom:0; */
-/* } */
-
-
-
 input[type="checkbox"] {
   display:none;
 }
@@ -435,29 +343,8 @@ input[name="play"]:checked + label span {
   z-index:9999;
 }
 
-/*
-.video {
-  text-align:center;
-  font-size:11px;
-  width:260px;
-  height:260px;
-  position:absolute;
-  background:#fff;
-  line-height:260px;
-  top:0;
-  z-index:-9;
-}
-*/
-
 input[name="play"]:checked ~ .video {
   z-index:999;
-}
-
-div.bootstrap-tagsinput {
-  width: 150px;
-  outline: none;
-  border: 0;
-  height:35px;
 }
 
 #dowhen {
@@ -466,10 +353,6 @@ div.bootstrap-tagsinput {
   border: 0;
   height:35px;
 }
-
-/* div.bootstrap-tagsinput > input{ */
-/*   width: 250px; */
-/* } */
 
 
 .result_button_link  {
@@ -542,34 +425,156 @@ h2{
 
 <?php
 
-$local_list = City::model()->getListjson();
-
 $baseUrl = $this->createAbsoluteUrl('/');
 
+$activityListUrl        = $baseUrl.'/concierge/activitylist/';
+$activityTypeListUrl    = $baseUrl.'/concierge/activitytypelist/';
 
 $script = <<<EOD
 
-// Load the city list for type ahead
-var numbers = new Bloodhound({
-  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.city_name); },
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-   local: {$local_list}
-});
+    function loadInitialSearchValues()
+    {
 
-// initialize the bloodhound suggestion engine
-numbers.initialize();
+        $("#city_list").select2("data", {id: "{$myLocation->city_id}", text: "{$myLocation->city_name}" });
+        loadCityGallery();
+        getLeftPanelFeeds();
+        $('#dowhat').select2('focus');       // Set focus
 
-// instantiate the typeahead UI
-$('.cities .typeahead')
-   .typeahead(null, {
-       displayKey: 'city_name',
-       source: numbers.ttAdapter()
-       })
-    .on('typeahead:selected', function(e, datum){
-          loadCityGallery();
-          $('#dowhat').tagsinput('focus');
-     });
+    }
 
+    // /////////////////////////////////////////////////////////////////////////
+    // Setup Select widgets
+    // /////////////////////////////////////////////////////////////////////////
+    // City list
+    $("#city_list").select2({
+        placeholder: "I am in...",
+        allowClear: true
+    });
+
+    // Activity list
+
+    $("#dowhat").select2({
+      tags: true,
+      maximumSelectionSize: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function(term, data) {
+        if ($(data).filter(function() {
+          return this.text.localeCompare(term) === 0;
+        }).length === 0) {
+          return {
+            id: term,
+            text: term
+          };
+        }
+      },
+      multiple: true,
+      ajax: {
+        url: '{$activityListUrl}',
+        dataType: "json",
+        data: function(term, page) {
+          return {
+            query: term
+          };
+        },
+        results: function(data, page) {
+          return {
+            results: data
+          };
+        }
+      }
+    });
+
+    $("#withwhat").select2({
+      tags: true,
+      maximumSelectionSize: 1,
+      tokenSeparators: [",", " "],
+      createSearchChoice: function(term, data) {
+        if ($(data).filter(function() {
+          return this.text.localeCompare(term) === 0;
+        }).length === 0) {
+          return {
+            id: term,
+            text: term
+          };
+        }
+      },
+      multiple: true,
+      ajax: {
+        url: '{$activityTypeListUrl}',
+        dataType: "json",
+        data: function(term, page) {
+          return {
+            query: term
+          };
+        },
+        results: function(data, page) {
+          return {
+            results: data
+          };
+        }
+      }
+    });
+
+    loadInitialSearchValues();
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Activity widget
+    // /////////////////////////////////////////////////////////////////////////
+
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // On change event handlers
+    // /////////////////////////////////////////////////////////////////////////
+    $(document.body).on("change","#city_list",function(){
+        // TODO: Add onchange function here
+        // City id is this.value;
+        loadCityGallery();
+        $('#dowhat').select2('focus');       // Set focus
+
+    });
+
+
+    $("#withwhat").on("change", function() {
+      $( "#dowhen" ).focus();
+      doSearch()
+    });
+
+    $("#dowhat").on("change", function() {
+
+        doSearch();
+
+        var txtActivity      = $("#dowhat").val();
+
+        if (txtActivity.length == 0)
+        {
+            $("#withwhat").select2("val", "");
+            return;
+        }
+
+
+        // TODO: Find a way of calling this function from the widget
+    	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: null,
+			dataType 	: 'html'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            // Populate the list of linked activity types
+            $('#concierge_toolbar_activitytype').html(data);
+            $('#withwhat').select2('focus');       // Set focus
+
+		});
+		$('#withwhat').select2('focus');          // Set focus
+
+    });
 
     // /////////////////////////////////////////////////////////////////////////
     // Fetch updated feeds and load the left panel
@@ -577,37 +582,32 @@ $('.cities .typeahead')
     var last_timestamp = 0;
     function getLeftPanelFeeds()
     {
-    	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
+//     	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
 
-    	$.ajax({
-    		type 		: 'GET',
-    		url 		: url,
-    	    data 		: null,
-    		dataType 	: 'html'
-    	})
-    	// using the done promise callback
-    	.done(function(data) {
+//     	$.ajax({
+//     		type 		: 'GET',
+//     		url 		: url,
+//     	    data 		: null,
+//     		dataType 	: 'html'
+//     	})
+//     	// using the done promise callback
+//     	.done(function(data) {
 
-            var source = $('<div>' + data + '</div>');
+//             var source = $('<div>' + data + '</div>');
 
-            var feed_update_list = source.find('#feedresult').html();
-            $('#left_panel_feed').prepend(feed_update_list);
+//             var feed_update_list = source.find('#feedresult').html();
+//             $('#left_panel_feed').prepend(feed_update_list);
 
-            last_timestamp = source.find('#last_timestamp').html();
+//             last_timestamp = source.find('#last_timestamp').html();
 
-            $("time.timeago").timeago();
+//             $("time.timeago").timeago();
 
-    	});
+//     	});
     }
 
 
     // /////////////////////////////////////////////////////////////////////////
-    // On page load, load the left panel
-    // /////////////////////////////////////////////////////////////////////////
-    getLeftPanelFeeds();
-
-    // /////////////////////////////////////////////////////////////////////////
-    // On page load, load the left panel
+    // Set up left panel for automatic regular refresh
     // /////////////////////////////////////////////////////////////////////////
 
     var auto_refresh = setInterval(
@@ -624,13 +624,22 @@ $('.cities .typeahead')
 
 
 
-
+    // /////////////////////////////////////////////////////////////////////////
+    // Set up left panel for automatic regular refresh
+    // /////////////////////////////////////////////////////////////////////////
 
 
   function doSearch() {
-    var where       = $("#city").val();
-    var dowhat      = $("#dowhat").val();
-    var withwhat    = $("#withwhat").val();
+
+    var where_data       = $('#city_list').select2('data');
+    var dowhat_data      = $('#dowhat').select2('data');
+    var withwhat_data    = $('#withwhat').select2('data');
+
+    var where            = where_data.text;
+    // dowhat and withwhat are multiple select items
+    var dowhat           = (dowhat_data.length > 0)?dowhat_data[0].text:'';
+    var withwhat         = (withwhat_data.length > 0)?withwhat_data[0].text:'';
+
     var dowhen      = $('#dowhentimestamp').val();
 
     var search_report = 'YOU SEARCHED';
@@ -674,11 +683,7 @@ $('.cities .typeahead')
 
     $("#search_criteria_dowhat").val(dowhat);
 
-
     $("#report_search").html(search_report);
-
-
-
 
 
     $.post(url,
@@ -699,51 +704,8 @@ $('.cities .typeahead')
 
   }
 
-    $('#dowhat').tagsinput({
-    maxTags: 1
-    });
-
-    $('#withwhat').tagsinput({
-    maxTags: 1
-    });
-
-    $("#dowhat").on("change", function() {
-      doSearch();
-
-        var txtActivity      = $("#dowhat").val();
-
-        if (txtActivity.length == 0)
-        {
-            $('#withwhat').tagsinput('remove', $("#withwhat").val());
-            return;
-        }
 
 
-        // TODO: Find a way of calling this function from the widget
-    	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
-
-		// process the form. Note that there is no data send as posts arguements.
-		$.ajax({
-			type 		: 'POST',
-			url 		: url,
-		    data 		: null,
-			dataType 	: 'html'
-		})
-		// using the done promise callback
-		.done(function(data) {
-
-            // Populate the list of linked activity types
-            $('#concierge_toolbar_activitytype').html(data);
-
-            $('#withwhat').tagsinput('focus');
-
-		});
-    });
-
-    $("#withwhat").on("change", function() {
-      $( "#dowhen" ).focus();
-      doSearch()
-    });
 
     $('body').on('click', 'a.result_button_link', function(event) {
 
@@ -776,10 +738,10 @@ $('.cities .typeahead')
     });
 
   function loadCityGallery() {
-    var where       = $("#city").val();
 
-    var dowhat      = $("#dowhat").val();
-    var withwhat    = $("#withwhat").val();
+    var where_data       = $('#city_list').select2('data');
+
+    var where            = where_data.text;
 
     var url         = '$baseUrl/concierge/gallery/';
 
@@ -788,18 +750,14 @@ $('.cities .typeahead')
       city:where,
     },
     function(data,status){
-        $('#city_gallery').html(data);
-     $("#myCarousel").carousel({
-         interval : 5000,
-         pause: false
-     });
+         $('#city_gallery').html(data);
+         $("#myCarousel").carousel({
+             interval : 5000,
+             pause: false
+         });
     });
 
   }
-
-  // Load the default city on page load
-  loadCityGallery();
-  $('#dowhat').tagsinput('focus');
 
 
     $('body').on('change', '.rating', function() {
@@ -901,28 +859,40 @@ $('.cities .typeahead')
     // Handler for (popular) activity click
     // Response is to display related activity types
     $('body').on('click', '.concierge_activity_tag', function(event) {
+
         var txtActivity = $(this).text();
+        var idActivity = $(this).attr('rel');
 
-        $('#dowhat').tagsinput('remove', $("#dowhat").val());
-        $('#dowhat').tagsinput('add', txtActivity);
-        $('#withwhat').tagsinput('remove', $("#withwhat").val());
+        // BUG FIX: Change vent is not firing when #dowhat is populated below,
+        // ...so we manually update the activity types
+        if (txtActivity.length > 0)
+        {
+            // TODO: Find a way of calling this function from the widget
+        	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
 
+    		// process the form. Note that there is no data send as posts arguements.
+    		$.ajax({
+    			type 		: 'POST',
+    			url 		: url,
+    		    data 		: null,
+    			dataType 	: 'html'
+    		})
+        }
+
+        $("#dowhat").select2("val", "");
+        $("#dowhat").select2("data", {id: idActivity, text: txtActivity});
+        $("#withwhat").select2("val", "");
 
     });
 
     // Handler for (popular) activity type clicks
     // Response is to display related activity types
     $('body').on('click', '.concierge_activitytype_tag', function(event) {
+
         var txtActivityType = $(this).text();
+        var idActivityType = $(this).attr('rel');
 
-
-// BUG : The two statements are triggering two doSearch() calls
-// BUG : Perhaps the answer lies here :
-// BUG : http://stackoverflow.com/questions/21336457/bootstrap-tags-input-how-to-bind-function-to-event-itemadded-and-itemremoved/21336824#21336824
-// alert('Bug alert: 2 doSearch() calls triggered. FIXME.');
-        $('#withwhat').tagsinput('remove', $("#withwhat").val());
-        $('#withwhat').tagsinput('add', txtActivityType);
-
+        $("#withwhat").select2("data", {id: idActivityType, text: txtActivityType});
 
     });
 
@@ -1237,10 +1207,14 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                         </div>
                         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <div class="cities">
-                                <input class="typeahead form-control" name="city"
-                                    id="city" type="text" autocomplete="off"
-                                    value="<?php echo $data['city']; ?>"
-                                    placeholder="I am in...">
+                                    <select id="city_list" style="width:300px;" class="populate placeholder">
+                                        <option></option>
+                                    <?php foreach ($listCities as $itemCity) { ?>
+                                        <option value="<?php echo (int) $itemCity['city_id']; ?>"<?php echo (($myLocation->city_name==$itemCity['city_name'])?" selected='selected' selected":'');?>>
+                                            <?php echo CHtml::encode($itemCity['city_name']); ?>
+                                        </option>
+                                    <?php } ?>
+                                    </select>
                             </div>
                         </div>
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
