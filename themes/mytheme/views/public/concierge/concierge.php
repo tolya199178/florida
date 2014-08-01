@@ -508,6 +508,58 @@ $script = <<<EOD
     });
 
 
+    $("#dowhat").on("change", function() {
+
+        debugger;
+
+        doSearch();
+
+        var txtActivity      = $("#dowhat").val();
+
+        if (txtActivity.length == 0)
+        {
+            $('#withwhat').tagsinput('remove', $("#withwhat").val());
+            return;
+        }
+
+
+        // TODO: Find a way of calling this function from the widget
+    	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: null,
+			dataType 	: 'html'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+            // Populate the list of linked activity types
+            $('#concierge_toolbar_activitytype').html(data);
+
+            $('#withwhat').select2('focus');       // Set focus
+
+
+		});
+
+		$('#withwhat').select2('focus');       // Set focus
+
+    });
+
+
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Activity Type widget
+    // /////////////////////////////////////////////////////////////////////////
+    $("#withwhat").on("change", function() {
+      $( "#dowhen" ).focus();
+      doSearch()
+    });
+
+
+
     // /////////////////////////////////////////////////////////////////////////
     // Fetch updated feeds and load the left panel
     // /////////////////////////////////////////////////////////////////////////
@@ -638,50 +690,6 @@ $script = <<<EOD
 
 
 
-    $("#dowhat").on("change", function() {
-
-        debugger;
-
-        doSearch();
-
-        var txtActivity      = $("#dowhat").val();
-
-        if (txtActivity.length == 0)
-        {
-            $('#withwhat').tagsinput('remove', $("#withwhat").val());
-            return;
-        }
-
-
-        // TODO: Find a way of calling this function from the widget
-    	var url         = '$baseUrl/concierge/loadactivitytype/activity/' + txtActivity;
-
-		// process the form. Note that there is no data send as posts arguements.
-		$.ajax({
-			type 		: 'POST',
-			url 		: url,
-		    data 		: null,
-			dataType 	: 'html'
-		})
-		// using the done promise callback
-		.done(function(data) {
-
-            // Populate the list of linked activity types
-            $('#concierge_toolbar_activitytype').html(data);
-
-            $('#withwhat').select2('focus');       // Set focus
-
-
-		});
-
-		$('#withwhat').select2('focus');       // Set focus
-
-    });
-
-    $("#withwhat").on("change", function() {
-      $( "#dowhen" ).focus();
-      doSearch()
-    });
 
     $('body').on('click', 'a.result_button_link', function(event) {
 
@@ -734,11 +742,6 @@ $script = <<<EOD
     });
 
   }
-
-//   // Load the default city on page load
-//   loadCityGallery();
-//   $('#dowhat').focus();
-
 
 
     $('body').on('change', '.rating', function() {
