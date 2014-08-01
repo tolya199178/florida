@@ -594,12 +594,12 @@ class ConciergeController extends Controller
     public function actionLoadactivitytype()
     {
         $reqActivity   = Yii::app()->request->getQuery("activity");
-        $reqActivity   = filter_var($reqActivity,FILTER_SANITIZE_STRING);
+        $reqActivity   = filter_var($reqActivity,FILTER_SANITIZE_NUMBER_INT);
 
-        $lstActivityType    = ActivityType::model()->with('activity')->findAll("activity.keyword = :activity_keyword", array(':activity_keyword' => $reqActivity));
+        $lstActivityType    = ActivityType::model()->findAllByAttributes(array('activity_id' => $reqActivity));
+
 
         echo ConciergeToolbar::getActivityType($lstActivityType);
-
 
 
         Yii::app()->end();
