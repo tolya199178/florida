@@ -4,10 +4,15 @@
 /* @var $model Business */
 /* @var $form CActiveForm */
 ?>
-<?
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
-Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
+<?php
+// Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
+// Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
+// Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
+
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
 
 ?>
 <?php
@@ -18,14 +23,14 @@ $data_url = Yii::app()->createUrl('concierge/prefecthlistall');
 $script = <<<EOD
 
 
-    $('#Business_business_activities').tagsinput({
-        typeahead: {
-            source:  {$listActivity}
-        }
-    });
+//     $('#Business_business_activities').tagsinput({
+//         typeahead: {
+//             source:  {$listActivity}
+//         }
+//     });
 
 
-    $('input').tagsinput();
+//     $('input').tagsinput();
 
     // Adding custom typeahead support using http://twitter.github.io/typeahead.js
     $('input').tagsinput('input').typeahead({
@@ -367,7 +372,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
         	<div class="row">
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_activities',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <?php echo $form->textField($model,'business_activities',array('class'=>"form-control", 'data-role' => "tagsinput",
                             'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business activities", "data-original-title"=>"Enter business activities.")); ?>
                         <?php echo $form->error($model,'business_activities'); ?>
@@ -554,3 +559,28 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
 
 
+<?php
+
+$jsonActivityTree = CJSON::encode($actvityTree);
+
+$script = <<<EOD
+
+    var data = {$jsonActivityTree};
+
+    $("#Business_business_activities").select2({
+        multiple: true,
+        width: "300px",
+        data: {results: data, text: "text"},
+        formatSelection: function(item) {
+            return item.text
+        },
+        formatResult: function(item) {
+            return item.text
+        }
+    });
+
+EOD;
+
+Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
+
+?>
