@@ -579,6 +579,11 @@ $script = <<<EOD
         }
     });
 
+
+
+    $("#Business_business_city_id").select2();
+
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
