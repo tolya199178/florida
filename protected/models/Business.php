@@ -418,8 +418,14 @@ class Business extends CActiveRecord
 	 *
 	 * @access public
 	 */
-	public function afterSave() {
+	public function afterSave()
+	{
 
+	    // /////////////////////////////////////////////////////////////////////
+	    // Save the categories assigned We clear all existing categories and
+	    // ...create new ones from the list provided by user input.
+	    // The list is provided by an array for category ids.
+	    // /////////////////////////////////////////////////////////////////////
 	    $dbTransaction = Yii::app()->db->beginTransaction();;
 	    try
 	    {
@@ -444,6 +450,53 @@ class Business extends CActiveRecord
 	        $dbTransaction->rollback();
 	        throw new CHttpException(405,'Something went wrong trying to replace business categories.');
 	    }
+
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Save the activties assigned to the business. We clear all existing
+	    // ...activities and re-assign create new ones from the user input.
+	    // The list is provided as a comma-delimited string.
+	    // /////////////////////////////////////////////////////////////////////
+	   $dbTransaction = Yii::app()->db->beginTransaction();;
+	    try
+	    {
+	        $modelBusinessactivity = BusinessActivity::model()->deleteAllByAttributes(array('business_id'=> $this->business_id));
+
+	        if (!empty($this->business_activities))
+	        {
+	            $lstActivityType = explode(",", $this->business_activities);
+
+	            foreach ($lstActivityType as $activityType)
+	            {
+	                // /////////////////////////////////////////////////////////
+	                // We were provided with the activity type. From this we
+	                // ...obtain the activity id and activity type id.
+	                // /////////////////////////////////////////////////////////
+	                $activityTypeModel = ActivityType::model()->findByPk((int) $activityType);
+
+	                if ($activityTypeModel != null)
+	                {
+                        $modelBusinessactivity                      = new BusinessActivity();
+                        $modelBusinessactivity->business_id         = $this->business_id;
+                        $modelBusinessactivity->activity_id         = $activityTypeModel->activity_id;
+                        $modelBusinessactivity->activity_type_id    = $activityType;
+
+                        $modelBusinessactivity->save();
+
+	                }
+
+	            }
+
+	        }
+
+	        $dbTransaction->commit();
+ 	    }
+ 	    catch(Exception $e) // an exception is raised if a query fails
+ 	    {
+ 	        $dbTransaction->rollback();
+ 	        throw new CHttpException(405,'Something went wrong trying to replace business activities.');
+ 	    }
+
 
 	    return parent::afterSave();
 	}

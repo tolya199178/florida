@@ -194,12 +194,14 @@ class BusinessadminController extends BackEndController
                 Yii::app()->user->setFlash('error', "Error creating a business record.'");
 	        }
 
-
 	    }
 
-	    // Show the details screen
+	    // Get the list of activities and activity types
+	    $actvityTree = $this->getActivityTree();
+
 	    $this->render('details',array(
-	        'model'=>$businessModel,
+	        'model'           => $businessModel,
+	        'actvityTree'     => $actvityTree
 	    ));
 
 	}
@@ -246,6 +248,7 @@ class BusinessadminController extends BackEndController
 
 		if(isset($_POST['Business']))
 		{
+
             // Assign all fields from the form
 		    $businessModel->attributes             = $_POST['Business'];
 
@@ -292,9 +295,14 @@ class BusinessadminController extends BackEndController
 
 		}
 
+		// Get the list of activities and activity types
+		$actvityTree = $this->getActivityTree();
+
 		$this->render('details',array(
-			'model'=>$businessModel,
+			'model'           => $businessModel,
+		    'actvityTree'     => $actvityTree
 		));
+
 	}
 
 	/**
@@ -560,6 +568,71 @@ class BusinessadminController extends BackEndController
 
 	    header('Content-type: application/json');
 	    echo CJSON::encode($lstUsers);
+
+	}
+
+
+	/**
+	 * Returns a list of activities and activity types
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function getActivityTree()
+	{
+
+
+	    $sqlQuery = "SELECT   tbl_activity.activity_id, tbl_activity.keyword AS activity,
+	                          tbl_activity_type.activity_type_id, tbl_activity_type.keyword AS activity_type
+	                     FROM tbl_activity
+	                LEFT JOIN tbl_activity_type ON tbl_activity.activity_id = tbl_activity_type.activity_id
+	                 ORDER BY tbl_activity.activity_id ";
+
+	    $lstRecord = Yii::app()->db->createCommand($sqlQuery)->queryAll();
+
+    	$arrayTree = array();
+
+    	$currentActivity = NULL;
+    	$lstActivityType = array();
+
+    	foreach($lstRecord as $r)
+    	{
+
+    	    // If there is a new activity, create a new top level element
+    	    if ($currentActivity == NULL || $r['activity_id'] != $currentActivity['id'])
+    	    {
+
+    	        if ($currentActivity != null)
+    	        {
+    	            // Store the tree element
+    	            $arrayTree[] = $currentActivity;
+    	        }
+
+    	        // Create a new one
+    	        $currentActivity = array(
+    	            'id' => $r['activity_id'],
+    	            'text' => $r['activity'],
+    	            'children' => array()
+    	        );
+    	        $lstActivityType[] = $currentActivity;
+    	    }
+    	    $currentActivity['children'][] = array(
+    	        'id'   => $r['activity_type_id'],
+    	        'text' => $r['activity_type'],
+    	    );
+
+            //  $arrayTree[] = $currentActivity;
+    	}
+
+	    foreach ($arrayTree as &$treeElement)
+	    {
+	        unset($treeElement['id']);
+	    }
+
+	    return $arrayTree;
+
 
 	}
 
