@@ -24,11 +24,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = BusinessAnnouncement::model()
+ * ...   $announcement = BusinessAnnouncement::model()
  * ...or
- * ...   $model = new BusinessAnnouncement;
+ * ...   $announcement = new BusinessAnnouncement;
  * ...or
- * ...   $model = new BusinessAnnouncement($scenario);
+ * ...   $announcement = new BusinessAnnouncement($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -67,11 +67,11 @@ class BusinessAnnouncement extends CActiveRecord
 	{
 
 		return array(
-			array('business_id, created_by, modified_by', 'required'),
-			array('business_id, created_by, modified_by', 'numerical', 'integerOnly'=>true),
-			array('content', 'length', 'max'=>4096),
-			array('published', 'length', 'max'=>1),
-			array('created_time, modified_time', 'safe'),
+			array('business_id',                                             'required'),
+			array('business_id',                                             'numerical', 'integerOnly'=>true),
+			array('content',                                                 'length', 'max'=>4096),
+
+		    array('published, template, private',                             'in', 'range'=>array('Y','N')),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('announcement_id, business_id, content, created_time, modified_time, created_by, modified_by, published', 'safe', 'on'=>'search'),
@@ -90,9 +90,9 @@ class BusinessAnnouncement extends CActiveRecord
 	{
 
 		return array(
-			'business'      => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'business'       => array(self::BELONGS_TO, 'Business', 'business_id'),
 			'createdBy'      => array(self::BELONGS_TO, 'User', 'created_by'),
-			'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
+			'modifiedBy'     => array(self::BELONGS_TO, 'User', 'modified_by'),
 		);
 	}
 
@@ -110,14 +110,14 @@ class BusinessAnnouncement extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'announcement_id'      => 'Announcement',
-			'business_id'      => 'Business',
-			'content'      => 'Content',
-			'created_time'      => 'Created Time',
+			'announcement_id'    => 'Announcement',
+			'business_id'        => 'Business',
+			'content'            => 'Content',
+			'created_time'       => 'Created Time',
 			'modified_time'      => 'Modified Time',
-			'created_by'      => 'Created By',
-			'modified_by'      => 'Modified By',
-			'published'      => 'Published',
+			'created_by'         => 'Created By',
+			'modified_by'        => 'Modified By',
+			'published'          => 'Published',
 		);
 	}
 
@@ -142,14 +142,14 @@ class BusinessAnnouncement extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('announcement_id',$this->announcement_id);
-		$criteria->compare('business_id',$this->business_id);
-		$criteria->compare('content',$this->content,true);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('modified_time',$this->modified_time,true);
-		$criteria->compare('created_by',$this->created_by);
-		$criteria->compare('modified_by',$this->modified_by);
-		$criteria->compare('published',$this->published,true);
+		$criteria->compare('announcement_id', $this->announcement_id);
+		$criteria->compare('business_id',     $this->business_id);
+		$criteria->compare('content',         $this->content,true);
+		$criteria->compare('created_time',    $this->created_time,true);
+		$criteria->compare('modified_time',   $this->modified_time,true);
+		$criteria->compare('created_by',      $this->created_by);
+		$criteria->compare('modified_by',     $this->modified_by);
+		$criteria->compare('published',       $this->published,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -168,5 +168,34 @@ class BusinessAnnouncement extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave() {
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+
+	    return parent::beforeSave();
 	}
 }
