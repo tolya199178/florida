@@ -85,7 +85,8 @@ body {
                                 </a>
 <?php                   } ?>
 
-                                <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('/business/business/showdetails', array('business_id' => $model->business_id  )); ?>">
+                                <br/><br/>
+                                <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('/business/business/showdetails', array('business_id' => $model->business_id  )); ?>">
                                     <i class="glyphicon glyphicon-plus-sign"></i>
                                     Show more details
                                 </a>
