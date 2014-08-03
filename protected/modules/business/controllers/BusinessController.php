@@ -56,7 +56,7 @@ class BusinessController extends Controller
             array('allow',
                   'actions'=>array('index', 'showlisting', 'browse', 'show', 'reportclosed', 'autocompletelist',
                                    'claim', 'claimcall', 'twiliocallback', 'twilioverificationstatus',
-                                   'twilioverificationstatus', 'reportbusinessphone', 'add'),
+                                   'twilioverificationstatus', 'reportbusinessphone', 'add', 'showdetails'),
                   'users'=>array('*'),
             ),
 
@@ -295,7 +295,7 @@ class BusinessController extends Controller
 
 	            if ($modelBusinessUser->save() === false)
 	            {
-	                throw new CHttpException(400,'Bad Request. Could not save business user record.');
+	                throw new CHttpException(400,'Bad Request. Could not save business business record.');
 	            }
 
 
@@ -375,7 +375,7 @@ EOD;
     }
 
     /**
-     * Displays the profile for the given Business id
+     * Displays the profile for the given Business id in a modal
      *
      * @param <none> <none>
      *
@@ -393,7 +393,7 @@ EOD;
 
             if ($modelBusiness === null)
             {
-                throw new CHttpException(404,'No such user. The requested user page does not exist.');
+                throw new CHttpException(404,'No such business. The requested business page does not exist.');
             }
             else
             {
@@ -407,7 +407,44 @@ EOD;
         }
         else
         {
-            throw new CHttpException(404,'No user supplied. The requested user page does not exist.');
+            throw new CHttpException(404,'No business supplied. The requested business page does not exist.');
+        }
+    }
+
+    /**
+     * Displays the profile for the given Business id
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionShowdetails()
+    {
+
+        $argBusinessId = (int) Yii::app()->request->getQuery('business_id', null);
+
+        if ($argBusinessId)
+        {
+            $modelBusiness = Business::model()->findByPk($argBusinessId);
+
+            if ($modelBusiness === null)
+            {
+                throw new CHttpException(404,'No such business. The requested business page does not exist.');
+            }
+            else
+            {
+                // Get photos
+                // TODO: We should look into implementing this woth relations.
+                $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => $argBusinessId, 'photo_type' => 'business'));
+
+
+                $this->render('profile/profile_details', array('model'=>$modelBusiness, 'photos' => $listPhotos));
+            }
+        }
+        else
+        {
+            throw new CHttpException(404,'No business supplied. The requested business page does not exist.');
         }
     }
 

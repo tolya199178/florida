@@ -44,7 +44,7 @@
 
                                                                 <span class="label label-lg label-danger">
                                                                     <a data-toggle="modal"
-                                                                       href="<?php echo Yii::app()->createUrl('businessuser/profile/show/', array('id' => $data->business_id  )); ?>"
+                                                                       href="<?php echo Yii::app()->createUrl('business/business/show/', array('id' => $data->business_id  )); ?>"
                                                                        data-target="#modalBusinessDetails">Details!</a>
                                                                 </span>
 
