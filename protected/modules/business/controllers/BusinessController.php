@@ -718,8 +718,10 @@ EOD;
         // Checks if the business has users already
         if (count($businessModel->businessUsers) > 0)
         {
-            $this->render('claim/isclaimed');
-            Yii::app()->end();
+
+            Yii::app()->user->setFlash('danger','You cannot claim this business. Contact the site administrator for more details.');
+            $this->redirect(array('/business/business/showdetails/business_id/'.(int)$businessId));
+            Yii::app()->end();;
         }
 
         // renders the claim page
