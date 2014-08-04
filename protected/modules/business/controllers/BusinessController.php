@@ -426,7 +426,7 @@ EOD;
 
         if ($argBusinessId)
         {
-            $modelBusiness = Business::model()->findByPk($argBusinessId);
+            $modelBusiness = Business::model()->with('businessReviews')->findByPk($argBusinessId);
 
             if ($modelBusiness === null)
             {
@@ -438,8 +438,20 @@ EOD;
                 // TODO: We should look into implementing this woth relations.
                 $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => $argBusinessId, 'photo_type' => 'business'));
 
+                // Get business owner details
+                $modelBusinessOwner = BusinessUser::model()->findByAttributes(array('business_id'=>$argBusinessId, "primary_user"=>'Y'));
 
-                $this->render('profile/profile_details', array('model'=>$modelBusiness, 'photos' => $listPhotos));
+                if ($modelBusinessOwner)
+                {
+                    $businessOwnerPhoto = Photo::model()->findByAttributes(array('entity_id' => $modelBusinessOwner->user_id, 'photo_type' => 'user'));
+                }
+
+                $this->render('profile/profile_details',
+                              array('model'                 => $modelBusiness,
+                                    'photos'                => $listPhotos,
+                                    'business_owner'        => $modelBusinessOwner,
+                                    'businessOwnerPhoto'    => $businessOwnerPhoto
+                             ));
             }
         }
         else
@@ -469,45 +481,109 @@ EOD;
         if ($userId === null)         // User is not known
         {
             Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
-            $this->redirect(array('/webuser/account/register'));
+            // Update result data
+            $arrResult              = array();
+            $result['result']       = false;
+            $result['message']      = 'You must be logged in to perform this action.';
+
+            echo CJSON::encode($result);
             Yii::app()->end();
         }
 
 
-        $argBusinessId = (int) Yii::app()->request->getQuery('business_id', null);
+        $argBusinessId = Yii::app()->request->getPost('business_id', null);
 
         if ($argBusinessId)
         {
-            $modelBusiness = Business::model()->findByPk($argBusinessId);
+            $modelBusiness = Business::model()->findByPk((int)$argBusinessId);
 
             if ($modelBusiness === null)
             {
-                throw new CHttpException(404,'No such business. The requested business page does not exist.');
+                $arrResult              = array();
+                $result['result']       = false;
+                $result['message']      = 'No such business. The requested business page does not exist.';
+
+                echo CJSON::encode($result);
+                Yii::app()->end();
             }
             else
             {
                 $modelBusiness->report_closed_reference = $_POST['reference'];
 
-                if ($friendModel->save())
+                if ($modelBusiness->save())
                 {
-                    Yii::app()->user->setFlash($flashMessageType, $flashMessage);
-                    $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+
+                    $systemNotificationModel               = new SystemNotification;
+                    $systemNotificationModel->entity_type  = 'business';
+                    $systemNotificationModel->entity_id    = $argBusinessId;
+                    $systemNotificationModel->title        = 'Report: Closed Business : '.
+                                                             $modelBusiness->business_name;
+
+                    $userFullname                          = Yii::app()->user->getFullName();
+                    $timeNow                               = date("F j, Y, g:i a");    // March 10, 2014, 5:16 pm
+
+                    $noticeDescription = <<<EOD
+
+Report - Closed Business : {$modelBusiness->business_name}
+
+A Closed Business report was submitted.
+
+Business Name  : {$modelBusiness->business_name}
+
+Submitted by   : {$userFullname}
+Time of Report : {$timeNow}
+
+EOD;
+
+                    if ($systemNotificationModel->save() === false)
+                    {
+                        $flashMessage = 'Your request could not be handled at this time. Try again later.
+    	                                 Contact the administrator if the problem persists.';
+
+                        $arrResult              = array();
+                        $result['result']       = true;
+                        $result['message']      = $flashMessage;
+                    }
+
+
+                    $flashMessage = 'Thank you.Your report has been submitted and is being processed by the Site Administrator';
+
+                    $arrResult              = array();
+                    $result['result']       = true;
+                    $result['message']      = $flashMessage;
+
+                    echo CJSON::encode($result);
                     Yii::app()->end();
 
                 }
                 else
                 {
-                    Yii::app()->user->setFlash('warning','Your request could not be handled at this time. Try again later.
-	                                           Contact the administrator if the problem persists.');
-                    $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+
+                    $flashMessage = 'Your request could not be handled at this time. Try again later.
+	                                 Contact the administrator if the problem persists.';
+
+                    $arrResult              = array();
+                    $result['result']       = true;
+                    $result['message']      = $flashMessage;
+
+                    echo CJSON::encode($result);
                     Yii::app()->end();
+
                 }
 
             }
         }
         else
         {
-            throw new CHttpException(404,'No business supplied. The requested business page does not exist.');
+
+            $flashMessage = 'No business supplied. The requested business page does not exist.';
+
+            $arrResult              = array();
+            $result['result']       = true;
+            $result['message']      = $flashMessage;
+
+            echo CJSON::encode($result);
+            Yii::app()->end();
         }
     }
 
@@ -809,7 +885,7 @@ EOD;
                 $result['code']                     = $randomCode;
                 $result['verificationId']           = $twilioVerification->twilio_business_verification_id;
                 $result['callSid']                  = $callSid;
-                $result['error']                    = json_encode($twilioVerification->errors);
+                $result['error']                    = CJSON::encode($twilioVerification->errors);
 
             }
             catch (Exception $ex) {
@@ -906,7 +982,7 @@ EOD;
             $result['status'] = $twilioVerification->status;
             $result['callStatus'] = $twilioVerification->call_status;
         }
-        echo json_encode($result);
+        echo CJSON::encode($result);
     }
 
     /**
