@@ -8,6 +8,7 @@
  * @property integer $parent_id
  * @property string $category_name
  * @property string $category_description
+ * @property string $is_featured
  *
  * The followings are the available model relations:
  * @property Category $parent
@@ -69,6 +70,8 @@ class Category extends CActiveRecord
 			array('category_name',           'length', 'max'=>128),
 			array('category_description',    'length', 'max'=>255),
 
+		    array('is_featured',             'in', 'range'=>array('Y','N')),
+
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('category_id, parent_id, category_name', 'safe', 'on'=>'search'),
 		);
@@ -112,6 +115,7 @@ class Category extends CActiveRecord
 			'parent_id'              => 'Parent',
 			'category_name'          => 'Category Name',
 			'category_description'   => 'Category Description',
+		    'is_featured'            => 'Is Featured',
 		);
 	}
 
@@ -140,6 +144,7 @@ class Category extends CActiveRecord
 		$criteria->compare('parent_id',               $this->parent_id);
 		$criteria->compare('category_name',           $this->category_name,true);
 		$criteria->compare('category_description',    $this->category_description,true);
+		$criteria->compare('is_featured',             $this->is_featured,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

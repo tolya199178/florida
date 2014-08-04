@@ -507,6 +507,8 @@ ADD CONSTRAINT fk_category_category_parent
      FOREIGN KEY (parent_id) 
      REFERENCES tbl_category(category_id);  
  
+ALTER TABLE tbl_category ADD COLUMN `is_featured` enum('Y', 'N') DEFAULT 'N';
+
 -- ---------------------------------------------------------------------
 -- Business Review
 -- ---------------------------------------------------------------------
