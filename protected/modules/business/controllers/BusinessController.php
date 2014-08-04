@@ -445,12 +445,34 @@ EOD;
                 {
                     $businessOwnerPhoto = Photo::model()->findByAttributes(array('entity_id' => $modelBusinessOwner->user_id, 'photo_type' => 'user'));
                 }
+                else
+                {
+                    $businessOwnerPhoto = null;
+                }
+
+                // Get the featured categories
+                // $lstFeaturedCategories = Category::model()->findAllByAttributes(array('is_featured'=>'Y'));
+                $lstFeaturedCategoryBusiness = Yii::app()->db->createCommand()
+                                	                     ->select('c.category_id, c.category_name, b.business_id, b.business_name, b.image')
+                                	                     ->from('tbl_business_category bc ')
+                                	                     ->join('tbl_business b', 'b.business_id = bc.business_id')
+                                	                     ->join('tbl_category c', 'c.category_id = bc.category_id')
+                                        	             ->where('c.is_featured = "Y"')
+                                        	             ->order('c.category_id')
+                                        	             ->queryAll();
+                // Group the entries by category
+                $lstFeaturedCategory = array();
+                foreach($lstFeaturedCategoryBusiness as $rowEntry)
+                {
+                    $lstFeaturedCategory[$rowEntry['category_name']][] = $rowEntry;
+                }
 
                 $this->render('profile/profile_details',
-                              array('model'                 => $modelBusiness,
-                                    'photos'                => $listPhotos,
-                                    'business_owner'        => $modelBusinessOwner,
-                                    'businessOwnerPhoto'    => $businessOwnerPhoto
+                              array('model'                     => $modelBusiness,
+                                    'photos'                    => $listPhotos,
+                                    'business_owner'            => $modelBusinessOwner,
+                                    'businessOwnerPhoto'        => $businessOwnerPhoto,
+                                    'lstFeaturedCategory'       => $lstFeaturedCategory,
                              ));
             }
         }

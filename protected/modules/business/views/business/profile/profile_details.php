@@ -175,6 +175,15 @@ hr:before {
                     <hr />
                     <div class="col-md-6">
 
+                        <div class="featured_categories">
+
+                            <?php $this->renderPartial('profile/featured_categories', array('lstFeaturedCategory'=>$lstFeaturedCategory)); ?>
+
+                        </div>
+                        <hr>
+
+
+
 <?php                   if ($model->claim_status == 'Unclaimed') { ?>
                                 <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('/business/business/claim', array('business_id' => $model->business_id  )); ?>">
                                     <i class="glyphicon glyphicon-plus-sign"></i>
@@ -242,7 +251,6 @@ hr:before {
                             <!-- Business description -->
                             <div class="col-lg-12">
                             <h3>About :</h3><br/>
-
 
                                 <span class="business_description"><?php echo CHtml::decode($model->attributes['business_description']); ?></span>
 
