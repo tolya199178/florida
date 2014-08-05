@@ -175,13 +175,27 @@ hr:before {
                     <hr />
                     <div class="col-md-6">
 
+                        <!-- Featured category listings -->
                         <div class="featured_categories">
 
                             <?php $this->renderPartial('profile/featured_categories', array('lstFeaturedCategory'=>$lstFeaturedCategory)); ?>
 
                         </div>
+                        <!-- ./Featured category listings -->
 
                         <hr>
+
+                        <!-- New business listings -->
+                        <div class="new_business_list">
+
+                            <?php $this->renderPartial('profile/new_business_listing', array('lstNewBusiness'=>$lstNewBusiness)); ?>
+
+                        </div>
+                        <!-- ./New business listings -->
+
+                        <hr>
+
+
 
 
 <?php                   if ($model->claim_status == 'Unclaimed') { ?>

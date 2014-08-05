@@ -56,7 +56,8 @@ class BusinessController extends Controller
             array('allow',
                   'actions'=>array('index', 'showlisting', 'browse', 'show', 'reportclosed', 'autocompletelist',
                                    'claim', 'claimcall', 'twiliocallback', 'twilioverificationstatus',
-                                   'twilioverificationstatus', 'reportbusinessphone', 'add', 'showdetails'),
+                                   'twilioverificationstatus', 'reportbusinessphone', 'add', 'showdetails',
+                                   'viewcoupons'),
                   'users'=>array('*'),
             ),
 
@@ -478,10 +479,21 @@ EOD;
                 // /////////////////////////////////////////////////////////////
                 $dbCriteria = new CDbCriteria;
                 $dbCriteria->condition      = 'business_id = :business_id';
+                $dbCriteria->params         = array(':business_id'=>$argBusinessId);
                 $dbCriteria->limit          = 1;
-                $dbCriteria->order          = 'created_time';
+                $dbCriteria->order          = 'created_time DESC ';
 
-                $lstCoupon                  = Coupon::model()->active()->findAllByAttributes(array('business_id'=>$argBusinessId));
+                $lstCoupon                  = Coupon::model()->active()->findAll($dbCriteria);
+
+                // /////////////////////////////////////////////////////////////
+                // Get top 10 new businesses
+                // /////////////////////////////////////////////////////////////
+                $dbCriteria = new CDbCriteria;
+                $dbCriteria->condition      = 'is_active = "Y"';
+                $dbCriteria->limit          = 10;
+                $dbCriteria->order          = 'created_time DESC';
+
+                $lstNewBusiness             = Business::model()->findAll($dbCriteria);
 
                 $this->render('profile/profile_details',
                               array('model'                     => $modelBusiness,
@@ -491,6 +503,7 @@ EOD;
                                     'lstFeaturedCategory'       => $lstFeaturedCategory,
                                     'lstBusinessAdvertisment'   => $lstBusinessAdvertisment,
                                     'lstCoupon'                 => $lstCoupon,
+                                    'lstNewBusiness'            => $lstNewBusiness,
                               ));
             }
         }
@@ -1163,7 +1176,8 @@ EOD;
     }
 
     /**
-     * Provide a summary of coupon activity for the current business.
+     * Display a list of all active coupons.
+     * Optionally filter on a business.
      *
      * @param <none> <none>
      *
@@ -1216,5 +1230,36 @@ EOD;
 
     }
 
+
+    /**
+     * Provide a summary of coupon activity for the current business.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     */
+    public function actionViewcoupons()
+    {
+
+        /**
+         * If a business id is not supplied, then supply the coupon details for all
+         * ...businesses managed by this user.
+         */
+        $argBusinessId              = (int) Yii::app()->request->getQuery('business_id', null);
+
+        $dbCriteria                 = new CDbCriteria;
+        $dbCriteria->order          = 'created_time';
+
+        if ($argBusinessId === null)
+        {
+            $dbCriteria->condition  = 'business_id = :business_id';
+            $dbCriteria->params     = array(':business_id'=>$argBusinessId);
+        }
+
+        $lstCoupon                  = Coupon::model()->active()->findAll($dbCriteria);
+
+        $this->render('coupon_list', array('lstCoupon'=>$lstCoupon));
+
+    }
 
 }
