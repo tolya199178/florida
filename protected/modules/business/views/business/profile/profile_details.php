@@ -428,9 +428,19 @@ hr:before {
 
 
                             <hr>
+                            <!-- Business Events listing -->
                             <div class="white-box">
                                 <?php $this->renderPartial('profile/business_events', array('model' => $model->events)); ?>
                             </div>
+                            <!-- ./Business Events listing -->
+
+                            <hr>
+                            <!-- Business Discussions -->
+                            <div class="white-box">
+                                <?php $this->renderPartial('profile/business_discussions', array('lstBusinessDiscussions' => $lstBusinessDiscussions)); ?>
+                            </div>
+                            <!-- ./Business Discussions -->
+
 
                         </div>
 

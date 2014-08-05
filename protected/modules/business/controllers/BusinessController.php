@@ -495,6 +495,14 @@ EOD;
 
                 $lstNewBusiness             = Business::model()->findAll($dbCriteria);
 
+                // /////////////////////////////////////////////////////////////
+                // Get the discussions about the business.
+                // /////////////////////////////////////////////////////////////
+                $lstBusinessDiscussions     = PostQuestion::model()->findAllByAttributes(
+                                                    array('entity_id'   =>$argBusinessId,
+                                                          'entity_type' =>'business'
+                                                    ));
+
                 $this->render('profile/profile_details',
                               array('model'                     => $modelBusiness,
                                     'photos'                    => $listPhotos,
@@ -504,6 +512,7 @@ EOD;
                                     'lstBusinessAdvertisment'   => $lstBusinessAdvertisment,
                                     'lstCoupon'                 => $lstCoupon,
                                     'lstNewBusiness'            => $lstNewBusiness,
+                                    'lstBusinessDiscussions'    => $lstBusinessDiscussions
                               ));
             }
         }

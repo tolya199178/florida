@@ -1404,6 +1404,7 @@ ADD CONSTRAINT post_question_parent
 
             
 ALTER TABLE `tbl_post_question` ADD COLUMN post_type enum('Question', 'Rant', 'Rave', 'Solution') DEFAULT 'Question';
+ALTER TABLE `tbl_post_question` CHANGE COLUMN post_type post_type enum('Question', 'Rant', 'Rave', 'Solution', 'Discussion') DEFAULT 'Discussion';
 ALTER TABLE `tbl_post_question` ADD COLUMN question_rating_value int(11) DEFAULT NULL;
 
 

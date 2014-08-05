@@ -87,7 +87,7 @@ class PostQuestion extends CActiveRecord
 			array('entity_type',                                                         'in',
 			                                                                             'range'=>array('city', 'state', 'business', 'user', 'general', 'event')),
 		    array('post_type',                                                           'in',
-		        'range'=>array('Question', 'Rant', 'Rave', 'Solution')),
+		        'range'=>array('Question', 'Rant', 'Rave', 'Solution', 'Discussion')),
 
 			array('content, tags',                                                       'length', 'max'=>4096),
 
