@@ -267,4 +267,21 @@ class Coupon extends CActiveRecord
 	           );
 	}
 
+	/**
+	 * Define named scopes for canned data retrieval
+	 *
+	 * @param <none> <none>
+	 * @return array associatve list of user type values
+	 *
+	 * @access public
+	 */
+	public function scopes()
+	{
+	    return array(
+	        'active'=>array(
+	            'condition'=>'coupon_expiry >= NOW()',
+	        ),
+	    );
+	}
+
 }

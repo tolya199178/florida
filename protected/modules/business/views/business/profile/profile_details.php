@@ -340,18 +340,6 @@ hr:before {
                                 </ul>
                             </div>
 
-                            <!-- Coupons -->
-                            <hr>
-                            <div class="white-box">
-                                <h5 class="sidebar-title"><b>Coupons</b>
-                                </h5>
-                                <ul class="sidebar-list">
-
-                                    <?php $this->renderPartial("profile/business_coupons", array('model'=>$model)); ?>
-
-                                </ul>
-                            </div>
-
 
 
                     </div>
@@ -378,6 +366,15 @@ hr:before {
 
                             </div>
                             <!-- /.Advertisements -->
+
+                            <!-- Latest coupon -->
+                            <hr>
+                            <div class="white-box" id='business_review'>
+
+                                    <?php $this->renderPartial("profile/business_coupons", array('lstCoupon' => $lstCoupon)); ?>
+
+                            </div>
+                            <!-- /.Latest coupon -->
 
 
                             <!-- Tell a friend -->

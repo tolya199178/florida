@@ -473,6 +473,15 @@ EOD;
                 // /////////////////////////////////////////////////////////////
                 $lstBusinessAdvertisment = Advertisement::model()->findAllByAttributes(array('business_id'=>$argBusinessId));
 
+                // /////////////////////////////////////////////////////////////
+                // Get and display the LATEST business coupon
+                // /////////////////////////////////////////////////////////////
+                $dbCriteria = new CDbCriteria;
+                $dbCriteria->condition      = 'business_id = :business_id';
+                $dbCriteria->limit          = 1;
+                $dbCriteria->order          = 'created_time';
+
+                $lstCoupon                  = Coupon::model()->active()->findAllByAttributes(array('business_id'=>$argBusinessId));
 
                 $this->render('profile/profile_details',
                               array('model'                     => $modelBusiness,
@@ -480,8 +489,9 @@ EOD;
                                     'business_owner'            => $modelBusinessOwner,
                                     'businessOwnerPhoto'        => $businessOwnerPhoto,
                                     'lstFeaturedCategory'       => $lstFeaturedCategory,
-                                    'lstBusinessAdvertisment'   => $lstBusinessAdvertisment
-                             ));
+                                    'lstBusinessAdvertisment'   => $lstBusinessAdvertisment,
+                                    'lstCoupon'                 => $lstCoupon,
+                              ));
             }
         }
         else
