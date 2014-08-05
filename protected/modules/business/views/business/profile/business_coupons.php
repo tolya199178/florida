@@ -156,7 +156,7 @@
 
             <div class="row">
         		<div class="col-sm-12">
-                    <a class="btn btn-md btn-info" href="<?php echo Yii::app()->createUrl('/business/business/viewcoupons', array('business_id' => $itemCoupon->business_id  )); ?>">
+                    <a class="btn btn-md btn-info" href="<?php echo Yii::app()->createUrl('/business/business/viewcoupons', array('business_id' => $business_id)); ?>">
                         <i class="glyphicon glyphicon-plus-sign"></i>
                         Show all Coupons for this Business.
                     </a>

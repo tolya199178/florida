@@ -195,6 +195,14 @@ hr:before {
 
                         <hr>
 
+                        <!-- Business in same category -->
+                        <div class="new_business_list">
+
+                            <?php $this->renderPartial('profile/same_category_business_listing', array('lstBusinessInSameCategory'=>$lstBusinessInSameCategory)); ?>
+
+                        </div>
+                        <!-- ./Business in same category -->
+                        <hr>
 
 
 
@@ -385,7 +393,7 @@ hr:before {
                             <hr>
                             <div class="white-box" id='business_review'>
 
-                                    <?php $this->renderPartial("profile/business_coupons", array('lstCoupon' => $lstCoupon)); ?>
+                                    <?php $this->renderPartial("profile/business_coupons", array('lstCoupon' => $lstCoupon, 'business_id' => $model->business_id)); ?>
 
                             </div>
                             <!-- /.Latest coupon -->
