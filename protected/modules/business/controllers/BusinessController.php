@@ -467,12 +467,20 @@ EOD;
                     $lstFeaturedCategory[$rowEntry['category_name']][] = $rowEntry;
                 }
 
+
+                // /////////////////////////////////////////////////////////////
+                // Get the business advertisements
+                // /////////////////////////////////////////////////////////////
+                $lstBusinessAdvertisment = Advertisement::model()->findAllByAttributes(array('business_id'=>$argBusinessId));
+
+
                 $this->render('profile/profile_details',
                               array('model'                     => $modelBusiness,
                                     'photos'                    => $listPhotos,
                                     'business_owner'            => $modelBusinessOwner,
                                     'businessOwnerPhoto'        => $businessOwnerPhoto,
                                     'lstFeaturedCategory'       => $lstFeaturedCategory,
+                                    'lstBusinessAdvertisment'   => $lstBusinessAdvertisment
                              ));
             }
         }
