@@ -451,8 +451,10 @@ EOD;
                     $businessOwnerPhoto = null;
                 }
 
+
+                // /////////////////////////////////////////////////////////////
                 // Get the featured categories
-                // $lstFeaturedCategories = Category::model()->findAllByAttributes(array('is_featured'=>'Y'));
+                // /////////////////////////////////////////////////////////////
                 $lstFeaturedCategoryBusiness = Yii::app()->db->createCommand()
                                 	                     ->select('c.category_id, c.category_name, b.business_id, b.business_name, b.image')
                                 	                     ->from('tbl_business_category bc ')
@@ -467,6 +469,34 @@ EOD;
                 {
                     $lstFeaturedCategory[$rowEntry['category_name']][] = $rowEntry;
                 }
+
+                // /////////////////////////////////////////////////////////////
+                // Get all businesses in the same category
+                // /////////////////////////////////////////////////////////////
+                // Get the current business's category
+                $allMyCategories = Yii::app()->db->createCommand()
+                                       ->select('category_id')
+                                       ->from('tbl_business_category')
+                                       ->where('business_id = :business_id', array(':business_id'=>$argBusinessId))
+                                       ->queryAll();
+
+                $businessCatagories = array();
+                foreach ($allMyCategories as $itemCategory)
+                {
+                    $businessCatagories[]   = $itemCategory['category_id'];
+                }
+
+                // Get all businesses in the list of categories
+
+
+                $lstBusinessInSameCategory = Yii::app()->db->createCommand()
+                                                         ->select('c.category_id, c.category_name, b.business_id, b.business_name, b.image')
+                                                         ->from('tbl_business_category bc ')
+                                                         ->join('tbl_business b', 'b.business_id = bc.business_id')
+                                                         ->join('tbl_category c', 'c.category_id = bc.category_id')
+                                                         ->where('c.is_featured = "Y"')
+                                                         ->where(array('in', 'c.category_id', $businessCatagories))
+                                                         ->queryAll();
 
 
                 // /////////////////////////////////////////////////////////////
@@ -512,7 +542,8 @@ EOD;
                                     'lstBusinessAdvertisment'   => $lstBusinessAdvertisment,
                                     'lstCoupon'                 => $lstCoupon,
                                     'lstNewBusiness'            => $lstNewBusiness,
-                                    'lstBusinessDiscussions'    => $lstBusinessDiscussions
+                                    'lstBusinessDiscussions'    => $lstBusinessDiscussions,
+                                    'lstBusinessInSameCategory' => $lstBusinessInSameCategory,
                               ));
             }
         }
