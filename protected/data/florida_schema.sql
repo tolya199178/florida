@@ -507,6 +507,8 @@ ADD CONSTRAINT fk_category_category_parent
      FOREIGN KEY (parent_id) 
      REFERENCES tbl_category(category_id);  
  
+ALTER TABLE tbl_category ADD COLUMN `is_featured` enum('Y', 'N') DEFAULT 'N';
+
 -- ---------------------------------------------------------------------
 -- Business Review
 -- ---------------------------------------------------------------------
@@ -2152,7 +2154,34 @@ ALTER TABLE tbl_system_notification
 ADD CONSTRAINT fk_system_notification_modified_by
      FOREIGN KEY (modified_by) 
      REFERENCES tbl_user(user_id);
+
      
+     
+-- ---------------------------------------------------------------------
+-- Table structure for table `tbl_survey`
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_business_announcement`;
+
+CREATE TABLE IF NOT EXISTS `tbl_business_announcement` (
+  `announcement_id` int(11) NOT NULL AUTO_INCREMENT,
+  `business_id` int(11) NOT NULL,
+  `content` varchar(4096) DEFAULT NULL,
+  `created_time` timestamp NULL DEFAULT 0,
+  `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by`  int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  `published` enum('Y','N') NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`announcement_id`),
+  KEY `business_id` (`business_id`),
+  KEY `createdby` (`created_by`),
+  KEY `modifiedby` (`modified_by`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+     
+
+ALTER TABLE `tbl_business_announcement`
+  ADD CONSTRAINT `tbl_announcement_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
+  ADD CONSTRAINT `tbl_announcement_created_by` FOREIGN KEY (`created_by`) REFERENCES `tbl_user` (`user_id`),
+  ADD CONSTRAINT `tbl_announcement_modified_by` FOREIGN KEY (`modified_by`) REFERENCES `tbl_user` (`user_id`);
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END

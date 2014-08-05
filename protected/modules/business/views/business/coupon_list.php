@@ -1,3 +1,18 @@
+<?php
+
+$lstCouponStyles = array('offer-success', 'offer-danger', 'offer-default', 'offer-primary', 'offer-info', 'offer-warning');
+
+?>
+
+<style>
+<!--
+
+body {
+ background:#fff;
+}
+-->
+</style>
+
 <style>
 
     .shape {
@@ -98,11 +113,13 @@
 
         <h3>Business Coupons :</h3><br/>
 
-<?php   foreach ($lstCoupon as $itemCoupon) { ?>
+<?php   foreach ($lstCoupon as $indexCoupon => $itemCoupon) { ?>
+
+            <?php $couponStyles = $lstCouponStyles[($indexCoupon % count($lstCoupon))]; ?>
 
             <div class="row">
-        		<div class="col-xs-4 col-sm-6 col-md-12 col-lg-12">
-        			<div class="offer offer-success">
+        		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        			<div class="offer <?php echo $couponStyles; ?>">
                             <div class="square-box pull-left">
 <?php
                             $imageURL = null;
@@ -153,14 +170,5 @@
         		</div>
  <?php  } ?>
             </div>
-
-            <div class="row">
-        		<div class="col-sm-12">
-                    <a class="btn btn-md btn-info" href="<?php echo Yii::app()->createUrl('/business/business/viewcoupons', array('business_id' => $itemCoupon->business_id  )); ?>">
-                        <i class="glyphicon glyphicon-plus-sign"></i>
-                        Show all Coupons for this Business.
-                    </a>
-        		</div>
-    		</div>
 
 

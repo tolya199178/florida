@@ -56,7 +56,8 @@ class BusinessController extends Controller
             array('allow',
                   'actions'=>array('index', 'showlisting', 'browse', 'show', 'reportclosed', 'autocompletelist',
                                    'claim', 'claimcall', 'twiliocallback', 'twilioverificationstatus',
-                                   'twilioverificationstatus', 'reportbusinessphone', 'add'),
+                                   'twilioverificationstatus', 'reportbusinessphone', 'add', 'showdetails',
+                                   'viewcoupons'),
                   'users'=>array('*'),
             ),
 
@@ -295,7 +296,7 @@ class BusinessController extends Controller
 
 	            if ($modelBusinessUser->save() === false)
 	            {
-	                throw new CHttpException(400,'Bad Request. Could not save business user record.');
+	                throw new CHttpException(400,'Bad Request. Could not save business business record.');
 	            }
 
 
@@ -375,7 +376,7 @@ EOD;
     }
 
     /**
-     * Displays the profile for the given Business id
+     * Displays the profile for the given Business id in a modal
      *
      * @param <none> <none>
      *
@@ -393,7 +394,7 @@ EOD;
 
             if ($modelBusiness === null)
             {
-                throw new CHttpException(404,'No such user. The requested user page does not exist.');
+                throw new CHttpException(404,'No such business. The requested business page does not exist.');
             }
             else
             {
@@ -407,7 +408,108 @@ EOD;
         }
         else
         {
-            throw new CHttpException(404,'No user supplied. The requested user page does not exist.');
+            throw new CHttpException(404,'No business supplied. The requested business page does not exist.');
+        }
+    }
+
+    /**
+     * Displays the profile for the given Business id
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionShowdetails()
+    {
+
+        $argBusinessId = (int) Yii::app()->request->getQuery('business_id', null);
+
+        if ($argBusinessId)
+        {
+            $modelBusiness = Business::model()->with('businessReviews')->findByPk($argBusinessId);
+
+            if ($modelBusiness === null)
+            {
+                throw new CHttpException(404,'No such business. The requested business page does not exist.');
+            }
+            else
+            {
+                // Get photos
+                // TODO: We should look into implementing this woth relations.
+                $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => $argBusinessId, 'photo_type' => 'business'));
+
+                // Get business owner details
+                $modelBusinessOwner = BusinessUser::model()->findByAttributes(array('business_id'=>$argBusinessId, "primary_user"=>'Y'));
+
+                if ($modelBusinessOwner)
+                {
+                    $businessOwnerPhoto = Photo::model()->findByAttributes(array('entity_id' => $modelBusinessOwner->user_id, 'photo_type' => 'user'));
+                }
+                else
+                {
+                    $businessOwnerPhoto = null;
+                }
+
+                // Get the featured categories
+                // $lstFeaturedCategories = Category::model()->findAllByAttributes(array('is_featured'=>'Y'));
+                $lstFeaturedCategoryBusiness = Yii::app()->db->createCommand()
+                                	                     ->select('c.category_id, c.category_name, b.business_id, b.business_name, b.image')
+                                	                     ->from('tbl_business_category bc ')
+                                	                     ->join('tbl_business b', 'b.business_id = bc.business_id')
+                                	                     ->join('tbl_category c', 'c.category_id = bc.category_id')
+                                        	             ->where('c.is_featured = "Y"')
+                                        	             ->order('c.category_id')
+                                        	             ->queryAll();
+                // Group the entries by category
+                $lstFeaturedCategory = array();
+                foreach($lstFeaturedCategoryBusiness as $rowEntry)
+                {
+                    $lstFeaturedCategory[$rowEntry['category_name']][] = $rowEntry;
+                }
+
+
+                // /////////////////////////////////////////////////////////////
+                // Get the business advertisements
+                // /////////////////////////////////////////////////////////////
+                $lstBusinessAdvertisment = Advertisement::model()->findAllByAttributes(array('business_id'=>$argBusinessId));
+
+                // /////////////////////////////////////////////////////////////
+                // Get and display the LATEST business coupon
+                // /////////////////////////////////////////////////////////////
+                $dbCriteria = new CDbCriteria;
+                $dbCriteria->condition      = 'business_id = :business_id';
+                $dbCriteria->params         = array(':business_id'=>$argBusinessId);
+                $dbCriteria->limit          = 1;
+                $dbCriteria->order          = 'created_time DESC ';
+
+                $lstCoupon                  = Coupon::model()->active()->findAll($dbCriteria);
+
+                // /////////////////////////////////////////////////////////////
+                // Get top 10 new businesses
+                // /////////////////////////////////////////////////////////////
+                $dbCriteria = new CDbCriteria;
+                $dbCriteria->condition      = 'is_active = "Y"';
+                $dbCriteria->limit          = 10;
+                $dbCriteria->order          = 'created_time DESC';
+
+                $lstNewBusiness             = Business::model()->findAll($dbCriteria);
+
+                $this->render('profile/profile_details',
+                              array('model'                     => $modelBusiness,
+                                    'photos'                    => $listPhotos,
+                                    'business_owner'            => $modelBusinessOwner,
+                                    'businessOwnerPhoto'        => $businessOwnerPhoto,
+                                    'lstFeaturedCategory'       => $lstFeaturedCategory,
+                                    'lstBusinessAdvertisment'   => $lstBusinessAdvertisment,
+                                    'lstCoupon'                 => $lstCoupon,
+                                    'lstNewBusiness'            => $lstNewBusiness,
+                              ));
+            }
+        }
+        else
+        {
+            throw new CHttpException(404,'No business supplied. The requested business page does not exist.');
         }
     }
 
@@ -432,45 +534,109 @@ EOD;
         if ($userId === null)         // User is not known
         {
             Yii::app()->user->setFlash('warning','You must be logged in to perform this action.');
-            $this->redirect(array('/webuser/account/register'));
+            // Update result data
+            $arrResult              = array();
+            $result['result']       = false;
+            $result['message']      = 'You must be logged in to perform this action.';
+
+            echo CJSON::encode($result);
             Yii::app()->end();
         }
 
 
-        $argBusinessId = (int) Yii::app()->request->getQuery('business_id', null);
+        $argBusinessId = Yii::app()->request->getPost('business_id', null);
 
         if ($argBusinessId)
         {
-            $modelBusiness = Business::model()->findByPk($argBusinessId);
+            $modelBusiness = Business::model()->findByPk((int)$argBusinessId);
 
             if ($modelBusiness === null)
             {
-                throw new CHttpException(404,'No such business. The requested business page does not exist.');
+                $arrResult              = array();
+                $result['result']       = false;
+                $result['message']      = 'No such business. The requested business page does not exist.';
+
+                echo CJSON::encode($result);
+                Yii::app()->end();
             }
             else
             {
                 $modelBusiness->report_closed_reference = $_POST['reference'];
 
-                if ($friendModel->save())
+                if ($modelBusiness->save())
                 {
-                    Yii::app()->user->setFlash($flashMessageType, $flashMessage);
-                    $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+
+                    $systemNotificationModel               = new SystemNotification;
+                    $systemNotificationModel->entity_type  = 'business';
+                    $systemNotificationModel->entity_id    = $argBusinessId;
+                    $systemNotificationModel->title        = 'Report: Closed Business : '.
+                                                             $modelBusiness->business_name;
+
+                    $userFullname                          = Yii::app()->user->getFullName();
+                    $timeNow                               = date("F j, Y, g:i a");    // March 10, 2014, 5:16 pm
+
+                    $noticeDescription = <<<EOD
+
+Report - Closed Business : {$modelBusiness->business_name}
+
+A Closed Business report was submitted.
+
+Business Name  : {$modelBusiness->business_name}
+
+Submitted by   : {$userFullname}
+Time of Report : {$timeNow}
+
+EOD;
+
+                    if ($systemNotificationModel->save() === false)
+                    {
+                        $flashMessage = 'Your request could not be handled at this time. Try again later.
+    	                                 Contact the administrator if the problem persists.';
+
+                        $arrResult              = array();
+                        $result['result']       = true;
+                        $result['message']      = $flashMessage;
+                    }
+
+
+                    $flashMessage = 'Thank you.Your report has been submitted and is being processed by the Site Administrator';
+
+                    $arrResult              = array();
+                    $result['result']       = true;
+                    $result['message']      = $flashMessage;
+
+                    echo CJSON::encode($result);
                     Yii::app()->end();
 
                 }
                 else
                 {
-                    Yii::app()->user->setFlash('warning','Your request could not be handled at this time. Try again later.
-	                                           Contact the administrator if the problem persists.');
-                    $this->redirect(array('/myfriend/myfriend/show/allfriends'));
+
+                    $flashMessage = 'Your request could not be handled at this time. Try again later.
+	                                 Contact the administrator if the problem persists.';
+
+                    $arrResult              = array();
+                    $result['result']       = true;
+                    $result['message']      = $flashMessage;
+
+                    echo CJSON::encode($result);
                     Yii::app()->end();
+
                 }
 
             }
         }
         else
         {
-            throw new CHttpException(404,'No business supplied. The requested business page does not exist.');
+
+            $flashMessage = 'No business supplied. The requested business page does not exist.';
+
+            $arrResult              = array();
+            $result['result']       = true;
+            $result['message']      = $flashMessage;
+
+            echo CJSON::encode($result);
+            Yii::app()->end();
         }
     }
 
@@ -681,8 +847,10 @@ EOD;
         // Checks if the business has users already
         if (count($businessModel->businessUsers) > 0)
         {
-            $this->render('claim/isclaimed');
-            Yii::app()->end();
+
+            Yii::app()->user->setFlash('danger','You cannot claim this business. Contact the site administrator for more details.');
+            $this->redirect(array('/business/business/showdetails/business_id/'.(int)$businessId));
+            Yii::app()->end();;
         }
 
         // renders the claim page
@@ -715,75 +883,67 @@ EOD;
 
         if(!$businessModel)
         {
-            $result['error'] = 'wrong business';
+            $result['error'] = 'The business you requested does not exist. We cannot process this request.';
         }
-        else
-        {
-            // checks if phone displayed to the user matches the business phone
-            $phone = Yii::app()->request->getPost('businessPhone', '');
 
-            if($phone != $businessModel->business_phone)
-            {
-                $result['error'] = 'phone missmatch: ' . $phone . ' - ' . $businessModel->business_phone;
-            }
-            else
-            {
-                // Checks if the user trying to claim the business is valid
-                $userModel = User::model()->findByPk(Yii::app()->user->id);
-                if(!$userModel)
-                {
-                    $result['error'] = 'wrong user';
-                }
-            }
+        $businessPhone  = $businessModel->business_phone;
+
+        // Checks if the user trying to claim the business is valid
+        $userModel = User::model()->findByPk(Yii::app()->user->id);
+        if(!$userModel)
+        {
+            $result['error'] = 'This function is only available to logged in users. We cannot process this request.';
         }
 
         // if basic data has no error generates the code and makes the call
         if(!isset($result['error']))
         {
             // generate code
-            $code = rand(100000, 999999);
+            $randomCode = rand(100000, 999999);
 
-            //Deletes previous twilio_business_verification records linked to the same phone
-            TwilioBusinessVerification::model()->deleteAllByAttributes(array('phone' => $phone));
+            // Deletes previous twilio_business_verification records linked to the same phone
+            TwilioBusinessVerification::model()->deleteAllByAttributes(array('phone' => $businessPhone));
 
 
             // Creates twilio object
-            $twilioAcountId = Yii::app()->params['TWILIO_ACCOUNT_SID'];
-            $twilioAuthToken = Yii::app()->params['TWILIO_AUTH_TOKEN'];
-            $twilioCallerPhone = Yii::app()->params['TWILIO_PHONE'];
-            $client = new Services_Twilio($twilioAcountId, $twilioAuthToken);
+            $twilioAcountId         = Yii::app()->params['TWILIO_ACCOUNT_SID'];
+            $twilioAuthToken        = Yii::app()->params['TWILIO_AUTH_TOKEN'];
+            $twilioCallerPhone      = Yii::app()->params['TWILIO_PHONE'];
+            $client                 = new Services_Twilio($twilioAcountId, $twilioAuthToken);
 
             try {
 
-                // URL called by twilio when makin the call
-                $callUrl                            = $this->createAbsoluteUrl('business/twiliocallback');
-                $callStatusUrl                      = $this->createAbsoluteUrl('business/twiliocallstatus/');
+                // URL called by twilio when making the call
+                $callUrl                            = $this->createAbsoluteUrl('business/business/twiliocallback');
+                $callStatusUrl                      = $this->createAbsoluteUrl('business/business/twiliocallstatus/');
+
+
                 // Makes the call
-                $client->account->calls->create($twilioCallerPhone, $phone, $callUrl, array(
+                $client->account->calls->create($twilioCallerPhone, $businessPhone, $callUrl, array(
                         'StatusCallback' => $callStatusUrl,
                     ));
 
                 $callSid                            = $client->last_response->sid;
                 // Inits a new twilio_business_verification record
                 $twilioVerification                 = new TwilioBusinessVerification();
-                $twilioVerification->phone          = $phone;
-                $twilioVerification->code           = $code;
+                $twilioVerification->phone          = $businessPhone;
+                $twilioVerification->code           = $randomCode;
                 $twilioVerification->business_id    = $business->business_id;
                 $twilioVerification->user_id        = $user->user_id;
                 $twilioVerification->call_sid       = $callSid;
                 $twilioVerification->save();
 
-                // Update resutl data
+                // Update result data
                 $result['success']                  = true;
-                $result['code']                     = $code;
+                $result['code']                     = $randomCode;
                 $result['verificationId']           = $twilioVerification->twilio_business_verification_id;
                 $result['callSid']                  = $callSid;
-                $result['error']                    = json_encode($twilioVerification->errors);
+                $result['error']                    = CJSON::encode($twilioVerification->errors);
 
             }
             catch (Exception $ex) {
                 // error making the call
-                $result['error'] = 'error starting phone call ' . $ex->getMessage();
+                $result['error'] = 'Error placing call: ' . $ex->getMessage();
             }
         }
 
@@ -793,8 +953,12 @@ EOD;
 
     /**
      * Action called by twilio when it makes a call
+     *
+     * @param <none> <none>
+     * @return <none> <none>
      */
-    public function actionTwiliocallback() {
+    public function actionTwiliocallback()
+    {
         // Import twilio helper classes
         Yii::import('application.vendor.*');
         spl_autoload_unregister(array('YiiBase','autoload'));
@@ -805,12 +969,15 @@ EOD;
         $response = new Services_Twilio_Twiml();
 
         // if a code entered by user in the phone isn't posted request for the code
-        if(empty($_POST['Digits'])) {
+        if(empty($_POST['Digits']))
+        {
             // request a 6 digit code
             $gather = $response->gather(array('numDigits' => 6));
             // request message
             $gather->say('Please enter your verification code');
-        } else {
+        }
+        else
+        {
             // if a code is posted find a twilio_business_verification record linked to the current phone
             $twilioVerification = TwilioBusinessVerification::model()->findByAttributes(array('call_sid' => Yii::app()->request->getpost('CallSid', '')));
             // if a twilio_business_verification record exists and code matches the code enteed by the user
@@ -868,7 +1035,7 @@ EOD;
             $result['status'] = $twilioVerification->status;
             $result['callStatus'] = $twilioVerification->call_status;
         }
-        echo json_encode($result);
+        echo CJSON::encode($result);
     }
 
     /**
@@ -1009,7 +1176,8 @@ EOD;
     }
 
     /**
-     * Provide a summary of coupon activity for the current business.
+     * Display a list of all active coupons.
+     * Optionally filter on a business.
      *
      * @param <none> <none>
      *
@@ -1062,5 +1230,36 @@ EOD;
 
     }
 
+
+    /**
+     * Provide a summary of coupon activity for the current business.
+     *
+     * @param <none> <none>
+     *
+     * @return <none> <none>
+     */
+    public function actionViewcoupons()
+    {
+
+        /**
+         * If a business id is not supplied, then supply the coupon details for all
+         * ...businesses managed by this user.
+         */
+        $argBusinessId              = (int) Yii::app()->request->getQuery('business_id', null);
+
+        $dbCriteria                 = new CDbCriteria;
+        $dbCriteria->order          = 'created_time';
+
+        if ($argBusinessId === null)
+        {
+            $dbCriteria->condition  = 'business_id = :business_id';
+            $dbCriteria->params     = array(':business_id'=>$argBusinessId);
+        }
+
+        $lstCoupon                  = Coupon::model()->active()->findAll($dbCriteria);
+
+        $this->render('coupon_list', array('lstCoupon'=>$lstCoupon));
+
+    }
 
 }

@@ -400,26 +400,35 @@ h2{
 
 <style>
 
-/* .modal.large { */
-/*     width: 1200; /* respsonsive width */ */
-/*     margin-left:-40%; /* width/2) */ */
+/* .modal { */
+/*   width: 80%; /* desired relative width */ */
+/*   left: 5%; /* (100%-width)/2 */ */
+/*   /* place center */ */
+/*   margin-left:auto; */
+/*   margin-right:auto; */
 /* } */
 
-.modal {
-  width: 80%; /* desired relative width */
-  left: 5%; /* (100%-width)/2 */
-  /* place center */
-  margin-left:auto;
-  margin-right:auto;
+/* @media screen and (min-width: 768px) { */
+/*     .biz-details-modal { */
+/*         width: 70%; */
+/*         /* either % (e.g. 60%) or px (400px) */ */
+/*     } */
+/* } */
+
+</style>
+
+<style>
+
+.modal-dialog {
+  width: 1200px;
 }
 
-@media screen and (min-width: 768px) {
-    .biz-details-modal {
-        width: 70%;
-        /* either % (e.g. 60%) or px (400px) */
-    }
+.modal-content {
+  width: 1200px;
+    margin-left:  0px;
+    margin-top: -60px;
 }
--->
+
 </style>
 
 

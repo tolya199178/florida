@@ -5,44 +5,83 @@
     #claim-code {
         font-size: 24px;
     }
+
+    #claim-error {
+        font-size: 18px;
+
+    }
+
+
 </style>
 
 <div id="business">
     <div class="container">
         <h1>
-            Claim Business <?php echo CHtml::encode($business->business_name); ?>
+            Claim Business : <?php echo CHtml::encode($business->business_name); ?>
         </h1>
        <?php if ($business->business_phone) { ?>
         <div id="claim-request">
             <div>
-                In our records this business is associated to the phone number <?php echo CHtml::encode($business->business_phone)?>. Do you want to be called to this phone number validate your claim on this business?
+                <p>If this business belongs to you, you can claim the business.</p>
+
+                <p>In order to proceed to claim your business, select the button below that says
+                   <strong>'Claim your Business Now'</strong>. You will require a valid telephone service
+                   that is listed against your business.</p>
+
+                <p>Our records indicate that this business is associated to the phone number
+                   <h3><?php echo CHtml::encode($business->business_phone)?></h3></p>
+
+                <p>If this number is not correct:
+                   <a class="btn btn-md btn-info" href="<?php echo Yii::app()->createUrl('/business/business/showdetails', array('business_id' => $business->business_id  )); ?>">
+                        <i class="glyphicon glyphicon glyphicon-earphone"></i>
+                        Submit new business number
+                   </a>
+
+                   <p>&nbsp;</p>
+
+                   <p>To proceed, press the button below to start the Claim Process.</p>
+
+                   <a id='claim-button' class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('/business/business/showdetails', array('business_id' => $business->business_id  )); ?>">
+                        <i class="glyphicon glyphicon-thumbs-up"></i>
+                        Claim your Business Now.
+                   </a>
+                   <p>&nbsp;</p>
+                   <p>&nbsp;</p>
+
             </div>
-            <a href="#" class="btn btn-primary btn-md" id="claim-button">yes</a> <a href="" class="btn btn-primary btn-md">no</a>
         </div>
+
         <div id="claim-error">
 
         </div>
+        <p>&nbsp;</p>
+
         <div id="claim-container" style="display: none">
-            <div>You will receive a call to the phone number <?php echo CHtml::encode($business->business_phone); ?>. When you do please enter the following code to claim this business:</div>
+            <div>You will receive a call to the phone number <?php echo CHtml::encode($business->business_phone); ?>.
+                 When you do please enter the following code to claim this business:</div>
             <div id="claim-code"></div>
         </div>
+       <p>&nbsp;</p>
         <div id="claim-status">
 
         </div>
+        <p>&nbsp;</p>
        <?php } else { ?>
             We don't have a phone associated to this business
        <?php } ?>
     </div>
 </div>
 
+<br/>
+<br/><br/>
 
 <?php
 
 $baseUrl = $this->createAbsoluteUrl('/');
 
-$phoneNumber = $business->business_phone;
-$makeCallUrl = $baseUrl.'/business/business/claimcall';
-$statusUpdateUrl = $baseUrl.'/business/business/twilioverificationstatus';
+$phoneNumber        = $business->business_phone;
+$makeCallUrl        = $baseUrl.'/business/business/claimcall';
+$statusUpdateUrl    = $baseUrl.'/business/business/twilioverificationstatus';
 
 $script = <<<EOD
 
@@ -55,7 +94,8 @@ $script = <<<EOD
     // check if verification status has changed
     function checkStatus() {
         var data = {verificationId: twilioVerificationData.verificationId};
-        $.post('$statusUpdateUrl', data, function(e) {
+        $.post('$statusUpdateUrl', data, function(e)
+        {
             res = $.parseJSON(e);
             if(res.success) {
                 if(res.callStatus == 'no-answer') {
@@ -64,18 +104,18 @@ $script = <<<EOD
                     $('#claim-code').html('');
                 }
                 else if(res.status == 'taken') {
-                    $('#claim-status').html('business was already claimed');
+                    $('#claim-status').html('Business was already claimed');
                 }
                 else if(res.status == 'verified') {
                     $('#claim-status').html('Congratulations! you have claimed this business');
                 }
                 else if(res.callStatus == 'completed') {
-                    $('#claim-status').html('verification failed');
+                    $('#claim-status').html('Verification failed');
                     $('#claim-request').show();
                     $('#claim-code').html('');
                 }
                 else if(res.status == 'failed') {
-                    $('#claim-status').html('wrong code please try again');
+                    $('#claim-status').html('Wrong code please try again');
                     setTimeout(checkStatus, 3000);
                 }
                 else if(res.status == 'waiting') {
@@ -102,6 +142,8 @@ $script = <<<EOD
                 checkStatus();
             } else {
                 $('#claim-error').html('There was an error making the call, please try again');
+                $('#claim-error').attr('class', 'alert alert-danger');
+                alert(res.error);
             }
         });
         return false;

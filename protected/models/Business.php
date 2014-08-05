@@ -67,6 +67,7 @@
  * @property SubscribedBusiness[] $subscribedBusinesses
  * @property BusinessReviews[] $businessReviews
  * @property Coupon[] $coupons
+ * @property BusinessAnnouncement[] $businessAnnouncements
  */
 
 /**
@@ -213,6 +214,7 @@ class Business extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+		    'businessAnnouncements'  => array(self::HAS_MANY,   'BusinessAnnouncement', 'business_id'),
 			'businessCity'           => array(self::BELONGS_TO, 'City', 'business_city_id'),
 			'claimedBy'              => array(self::BELONGS_TO, 'User', 'claimed_by'),
 			'createdBy'              => array(self::BELONGS_TO, 'User', 'created_by'),
