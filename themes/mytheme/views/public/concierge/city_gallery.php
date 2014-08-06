@@ -1,3 +1,9 @@
+<?php
+
+$imageBaseUrl = Yii::app()->request->baseUrl .'/uploads/images/city/';
+
+
+?>
     <div id="myCarousel" class="carousel slide" data-interval="4000" data-ride="carousel">
     	<!-- Carousel indicators -->
         <ol class="carousel-indicators">
@@ -10,7 +16,7 @@
             <?php foreach ($lstCityPhotos as $index => $cityPhoto ) { ?>
                 <div class="<?php echo ($index==0)?'active':''; ?> item">
                     <h2>
-                    <?php echo CHtml::image($cityPhoto->path, CHtml::encode($cityPhoto->path)); ?>
+                    <?php echo CHtml::image($imageBaseUrl.$cityPhoto->path, CHtml::encode($cityPhoto->caption)); ?>
                     </h2>
                     <div class="carousel-caption">
                       <h3><?php echo CHtml::encode($cityPhoto->title); ?></h3>
