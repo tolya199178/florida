@@ -497,7 +497,7 @@ $script = <<<EOD
                         text: item[1]
                     });
                 });
-                //$(element).val('');
+                $(element).val('');
                 callback(data);
             }
     });
