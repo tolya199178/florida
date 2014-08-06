@@ -402,8 +402,23 @@ EOD;
                 // TODO: We should look into implementing this woth relations.
                 $listPhotos = Photo::model()->findAllByAttributes(array('entity_id' => $argBusinessId, 'photo_type' => 'business'));
 
+                // /////////////////////////////////////////////////////////////
+                // Get and display the LATEST business coupon
+                // /////////////////////////////////////////////////////////////
+                $dbCriteria = new CDbCriteria;
+                $dbCriteria->condition      = 'business_id = :business_id';
+                $dbCriteria->params         = array(':business_id'=>$argBusinessId);
+                $dbCriteria->limit          = 1;
+                $dbCriteria->order          = 'created_time DESC ';
 
-                $this->renderPartial('profile/profile_modal', array('model'=>$modelBusiness, 'photos' => $listPhotos));
+                $lstCoupon                  = Coupon::model()->active()->findAll($dbCriteria);
+
+
+                $this->renderPartial('profile_modal/profile_modal',
+                              array('model'         => $modelBusiness,
+                                    'photos'        => $listPhotos,
+                                    'lstCoupon'     => $lstCoupon
+                       ));
             }
         }
         else

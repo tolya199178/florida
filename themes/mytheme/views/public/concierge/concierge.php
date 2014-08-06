@@ -752,7 +752,9 @@ $script = <<<EOD
 
     var where            = where_data.text;
 
-    var url         = '$baseUrl/concierge/gallery/';
+    var url              = '$baseUrl/concierge/gallery/';
+
+    where                = where.trim()
 
     $.post(url,
     {
@@ -1003,9 +1005,46 @@ $script = <<<EOD
         return false; // avoid to execute the actual submit of the form.
     });
 
+    function initialize_map()
+    {
+
+        var latitude= $("#map_latitude").val();
+        var longitude= $("#map_longitude").val();
+
+    	var mapCanvas = document.getElementById('map_canvas');
+        var myLatLng = new google.maps.LatLng(latitude,longitude);
+        var mapOptions = {
+            center: myLatLng,
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.LARGE
+            }
+        }
+        try {
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title:"Business Location"
+            });
+        } catch (err) {
+            // Error Handling
+        }
+    }
+
+
     // Clear the modal each time
     $('body').on('hidden.bs.modal', '.modal', function () {
         $(this).removeData('bs.modal');
+    });
+
+
+    // When the modal is loaded
+    $('#modalBusinessDetails').on('shown.bs.modal', function(e) {
+        // Show map
+        initialize_map();
     });
 
     $('#dowhen').datetimepicker({
