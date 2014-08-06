@@ -5,48 +5,23 @@
 /* @var $form CActiveForm */
 ?>
 <?php
-// Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/js/vendor/typeahead/typeahead.bundle.js', CClientScript::POS_END);
-// Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.js', CClientScript::POS_END);
-// Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-tagsinput/bootstrap-tagsinput.css');
 
     Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
     Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
     Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
 
-
 ?>
 <?php
 
-$listActivity = Activity::model()->getListjson();
-$data_url = Yii::app()->createUrl('concierge/prefecthlistall');
+    $arrBusinessActivities = array();
+    foreach ($lstBusinessActivities as $itemBusinessActivity)
+    {
+        $arrBusinessActivities[] = $itemBusinessActivity['activity_type_id'].':'.$itemBusinessActivity['keyword'];
+    }
 
-$script = <<<EOD
-
-
-//     $('#Business_business_activities').tagsinput({
-//         typeahead: {
-//             source:  {$listActivity}
-//         }
-//     });
-
-
-//     $('input').tagsinput();
-
-    // Adding custom typeahead support using http://twitter.github.io/typeahead.js
-    $('input').tagsinput('input').typeahead({
-        prefetch: '{$data_url}'
-    }).bind('typeahead:selected', $.proxy(function (obj, datum) {
-        this.tagsinput('add', datum.value);
-        this.tagsinput('input').typeahead('setQuery', '');
-    }, $('input')));
-
-
-EOD;
-
-Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
-
+    $strInitialActivityValue = join(",", $arrBusinessActivities);
+    $model->business_activities = $strInitialActivityValue;
 ?>
-
 <style>
 .row > .form-group
 /* .form-group */
@@ -54,71 +29,6 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
     padding-top:10px;
     padding-bottom:10px;
 }
-
-<style>
-<!--
-.typeahead,.tt-query,.tt-hint {
-	width: 250px;
-	/*   height: 30px; */
-	padding: 8px 12px;
-	/*   font-size: 24px; */
-	/*   line-height: 30px; */
-	border: 2px solid #ccc;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
-	outline: none;
-}
-
-.typeahead {
-	background-color: #fff;
-}
-
-.typeahead:focus {
-	border: 2px solid #0097cf;
-}
-
-.tt-query {
-	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.tt-hint {
-	color: #999
-}
-
-.tt-dropdown-menu {
-	width: 250px;
-	margin-top: 12px;
-	padding: 8px 0;
-	background-color: #fff;
-	border: 1px solid #ccc;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
-	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-	box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
-}
-
-.tt-suggestion {
-	padding: 3px 20px;
-	/*   font-size: 18px; */
-	line-height: 24px;
-}
-
-.tt-suggestion.tt-cursor {
-	color: #fff;
-	background-color: #0097cf;
-}
-
-.tt-suggestion p {
-	margin: 0;
-}
-
-
 </style>
 
     <h3>Update Business : <?php echo CHtml::encode($model->business_name); ?></h3>
@@ -362,7 +272,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_keywords',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->textField($model,'business_keywords',array('class'=>"form-control", 'data-role' => "tagsinput",
+                        <?php echo $form->textField($model,'business_keywords',array('class'=>"form-control",
                             'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business keywords", "data-original-title"=>"Enter business keywords.")); ?>
                         <?php echo $form->error($model,'business_keywords'); ?>
                     </div>
@@ -373,7 +283,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'business_activities',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-8">
-                        <?php echo $form->textField($model,'business_activities',array('class'=>"form-control", 'data-role' => "tagsinput",
+                        <?php echo $form->textField($model,'business_activities',array('class'=>"form-control",
                             'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Enter business activities", "data-original-title"=>"Enter business activities.")); ?>
                         <?php echo $form->error($model,'business_activities'); ?>
                     </div>
@@ -576,7 +486,20 @@ $script = <<<EOD
         },
         formatResult: function(item) {
             return item.text
-        }
+        },
+        initSelection: function(element, callback) {
+
+                var data = [];
+                $(element.val().split(",")).each(function(i) {
+                    var item = this.split(':');
+                    data.push({
+                        id: item[0],
+                        text: item[1]
+                    });
+                });
+                //$(element).val('');
+                callback(data);
+            }
     });
 
 

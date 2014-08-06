@@ -237,15 +237,6 @@ class BusinessadminController extends BackEndController
 		// TODO: Currently disabled as it breaks JQuery loading order
 		// $this->performAjaxValidation($businessModel);
 
-		// Get the list of business categories
-		$arrayBusinessCategories;
-		$lstBusinessCategories = BusinessCategory::model()->findAllByAttributes(array('business_id' => (int) $business_id));
-		foreach ($lstBusinessCategories as $itemBusinessCategory)
-		{
-		    $arrayBusinessCategory[] = $itemBusinessCategory->attributes['category_id'];
-		}
-		$businessModel->lstBusinessCategories = $arrayBusinessCategory;
-
 		if(isset($_POST['Business']))
 		{
 
@@ -295,14 +286,35 @@ class BusinessadminController extends BackEndController
 
 		}
 
+
+		//  select * from tbl_business_activity LEFT JOIN tbl_activity_type ON tbl_activity_type.activity_type_id = tbl_business_activity.activity_type_id where business_id = 775588;
+		$lstBusinessActivities = Yii::app()->db->createCommand()
+	           ->select('tbl_activity_type.keyword, tbl_activity_type.activity_type_id')
+	           ->from('tbl_business_activity')
+	           ->join('tbl_activity_type',
+	                  'tbl_activity_type.activity_type_id = tbl_business_activity.activity_type_id')
+	           ->where('business_id=:business_id', array(':business_id'=>(int)$business_id))
+	           ->queryAll();
+
+
+
+		// Get the list of business categories
+		$arrayBusinessCategories;
+		$lstBusinessCategories = BusinessCategory::model()->findAllByAttributes(array('business_id' => (int) $business_id));
+		foreach ($lstBusinessCategories as $itemBusinessCategory)
+		{
+		    $arrayBusinessCategory[] = $itemBusinessCategory->attributes['category_id'];
+		}
+		$businessModel->lstBusinessCategories = $arrayBusinessCategory;
+
+
 		// Get the list of activities and activity types
 		$actvityTree = $this->getActivityTree();
 
-		print_r($actvityTree);
-
 		$this->render('details',array(
-			'model'           => $businessModel,
-		    'actvityTree'     => $actvityTree
+			'model'                   => $businessModel,
+		    'actvityTree'             => $actvityTree,
+		    'lstBusinessActivities'   => $lstBusinessActivities
 		));
 
 	}
