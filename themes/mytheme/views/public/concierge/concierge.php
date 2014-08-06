@@ -636,9 +636,9 @@ $script = <<<EOD
         return false; // avoid to execute the actual submit of the form.
     });
 
-    // User click on single result picture.
-    $('body').on('click', '[name="play"]', function(event) {
-    });
+//     // User click on single result picture.
+//     $('body').on('click', '[name="play"]', function(event) {
+//     });
 
 
      $("#myCarousel").carousel({
@@ -691,7 +691,7 @@ $script = <<<EOD
 
         $("#withwhat").select2("data", {id: idActivityType, text: txtActivityType});
 
-        // doSearch();
+        doSearch();
 
 
     });

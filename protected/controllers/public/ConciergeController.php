@@ -291,12 +291,18 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         if (!empty($argDoWhat))
         {
-            $seachCriteria->addCondition( "FIND_IN_SET(:activity_keyword_tag,`activity`.keyword) OR
-                                           FIND_IN_SET(:activity_related_word_tag,`activity`.related_words)"
-                                        );
+               // TODO: Keep this query just in case the alternate proves too heavy
+//             $seachCriteria->addCondition( "FIND_IN_SET(:activity_keyword_tag,`activity`.keyword) OR
+//                                            FIND_IN_SET(:activity_related_word_tag,`activity`.related_words)"
+//                                         );
+//             $seachCriteria->params       = array_merge($seachCriteria->params,
+//                                                        array(':activity_keyword_tag'=>$argDoWhat,
+//                                                              ':activity_related_word_tag'=>$argDoWhat));
+
+            $seachCriteria->addCondition( "FIND_IN_SET(:activity_keyword_tag,
+                                          CONCAT(`activity`.keyword,',',`activity`.related_words))");
             $seachCriteria->params       = array_merge($seachCriteria->params,
-                                                       array(':activity_keyword_tag'=>$argDoWhat,
-                                                             ':activity_related_word_tag'=>$argDoWhat));
+                                                       array(':activity_keyword_tag'=>$argDoWhat));
         }
 
         // /////////////////////////////////////////////////////////////////////
@@ -306,12 +312,18 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         if (!empty($argWithWhat))
         {
-            $seachCriteria->addCondition( "FIND_IN_SET(:activity_type_keyword_tag,`activityType`.keyword) OR
-                                           FIND_IN_SET(:activity_type_related_word_tag,`activityType`.related_words)"
-            );
+            $seachCriteria->addCondition( "FIND_IN_SET(:activity_type_keyword_tag,
+                                          CONCAT(`activityType`.keyword,',',`activityType`.related_words))");
+
             $seachCriteria->params       = array_merge($seachCriteria->params,
-                                                       array(':activity_type_keyword_tag'=>$argWithWhat,
-                                                             ':activity_type_related_word_tag'=>$argWithWhat));
+                                                       array(':activity_type_keyword_tag'=>$argWithWhat));
+               // TODO: Keep this query just in case the alternate proves too heavy
+//             $seachCriteria->addCondition( "FIND_IN_SET(:activity_type_keyword_tag,`activityType`.keyword) OR
+//                                            FIND_IN_SET(:activity_type_related_word_tag,`activityType`.related_words)"
+//             );
+//             $seachCriteria->params       = array_merge($seachCriteria->params,
+//                 array(':activity_type_keyword_tag'=>$argWithWhat,
+//                     ':activity_type_related_word_tag'=>$argWithWhat));
         }
 
         // /////////////////////////////////////////////////////////////////////
