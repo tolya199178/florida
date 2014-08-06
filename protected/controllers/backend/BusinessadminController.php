@@ -298,6 +298,8 @@ class BusinessadminController extends BackEndController
 		// Get the list of activities and activity types
 		$actvityTree = $this->getActivityTree();
 
+		print_r($actvityTree);
+
 		$this->render('details',array(
 			'model'           => $businessModel,
 		    'actvityTree'     => $actvityTree
@@ -583,7 +585,6 @@ class BusinessadminController extends BackEndController
 	public function getActivityTree()
 	{
 
-
 	    $sqlQuery = "SELECT   tbl_activity.activity_id, tbl_activity.keyword AS activity,
 	                          tbl_activity_type.activity_type_id, tbl_activity_type.keyword AS activity_type
 	                     FROM tbl_activity
@@ -597,42 +598,29 @@ class BusinessadminController extends BackEndController
     	$currentActivity = NULL;
     	$lstActivityType = array();
 
-    	foreach($lstRecord as $r)
-    	{
-
-    	    // If there is a new activity, create a new top level element
-    	    if ($currentActivity == NULL || $r['activity_id'] != $currentActivity['id'])
-    	    {
-
-    	        if ($currentActivity != null)
-    	        {
-    	            // Store the tree element
-    	            $arrayTree[] = $currentActivity;
-    	        }
-
-    	        // Create a new one
-    	        $currentActivity = array(
-    	            'id' => $r['activity_id'],
-    	            'text' => $r['activity'],
-    	            'children' => array()
-    	        );
-    	        $lstActivityType[] = $currentActivity;
-    	    }
-    	    $currentActivity['children'][] = array(
-    	        'id'   => $r['activity_type_id'],
-    	        'text' => $r['activity_type'],
-    	    );
-
-            //  $arrayTree[] = $currentActivity;
+    	foreach ($lstRecord as $res) {
+    	    $lstActivity[ $res['activity'] ][ $res['activity_type_id'] ] = $res;
     	}
 
-	    foreach ($arrayTree as &$treeElement)
-	    {
-	        unset($treeElement['id']);
-	    }
+    	foreach ($lstActivity as $activityName => $activityTypeList) {
+
+    	    $elmActivityType = array();
+
+            foreach ($activityTypeList as $itemActivityTypeList)
+            {
+                $elmActivityType[] = array('id'     => $itemActivityTypeList['activity_type_id'],
+                                           'text'   => $itemActivityTypeList['activity_type']);
+            }
+
+            $elmActivity = array('text'         => $activityName,
+                                 'children'   => $elmActivityType);
+
+
+            $arrayTree[] = $elmActivity;
+
+    	}
 
 	    return $arrayTree;
-
 
 	}
 
