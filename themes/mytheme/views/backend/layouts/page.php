@@ -77,6 +77,7 @@
                       <li><a class="tree-toggler nav-header"><i class="glyphicon glyphicon-home"></i>System</a>
                           <ul class="nav nav-list tree active-trial">
                               <li><a href="<?php echo Yii::app()->createUrl('/activity/index'); ?>">Activities</a></li>
+                              <li><a href="<?php echo Yii::app()->createUrl('/activitytype/index'); ?>">&gt;&gt; Activity Types</a></li>
                               <li><a href="<?php echo Yii::app()->createUrl('/mailtemplate/index'); ?>">Email Templates</a></li>
                               <li><a href="<?php echo Yii::app()->createUrl('/category/index'); ?>">Categories</a></li>
                               <li><a href="<?php echo Yii::app()->createUrl('/mobilecarrier/index'); ?>">Mobile Carriers</a></li>
