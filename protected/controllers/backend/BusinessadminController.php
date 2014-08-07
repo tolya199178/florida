@@ -237,15 +237,6 @@ class BusinessadminController extends BackEndController
 		// TODO: Currently disabled as it breaks JQuery loading order
 		// $this->performAjaxValidation($businessModel);
 
-		// Get the list of business categories
-		$arrayBusinessCategories;
-		$lstBusinessCategories = BusinessCategory::model()->findAllByAttributes(array('business_id' => (int) $business_id));
-		foreach ($lstBusinessCategories as $itemBusinessCategory)
-		{
-		    $arrayBusinessCategory[] = $itemBusinessCategory->attributes['category_id'];
-		}
-		$businessModel->lstBusinessCategories = $arrayBusinessCategory;
-
 		if(isset($_POST['Business']))
 		{
 
@@ -295,12 +286,35 @@ class BusinessadminController extends BackEndController
 
 		}
 
+
+		//  select * from tbl_business_activity LEFT JOIN tbl_activity_type ON tbl_activity_type.activity_type_id = tbl_business_activity.activity_type_id where business_id = 775588;
+		$lstBusinessActivities = Yii::app()->db->createCommand()
+	           ->select('tbl_activity_type.keyword, tbl_activity_type.activity_type_id')
+	           ->from('tbl_business_activity')
+	           ->join('tbl_activity_type',
+	                  'tbl_activity_type.activity_type_id = tbl_business_activity.activity_type_id')
+	           ->where('business_id=:business_id', array(':business_id'=>(int)$business_id))
+	           ->queryAll();
+
+
+
+		// Get the list of business categories
+		$arrayBusinessCategories;
+		$lstBusinessCategories = BusinessCategory::model()->findAllByAttributes(array('business_id' => (int) $business_id));
+		foreach ($lstBusinessCategories as $itemBusinessCategory)
+		{
+		    $arrayBusinessCategory[] = $itemBusinessCategory->attributes['category_id'];
+		}
+		$businessModel->lstBusinessCategories = $arrayBusinessCategory;
+
+
 		// Get the list of activities and activity types
 		$actvityTree = $this->getActivityTree();
 
 		$this->render('details',array(
-			'model'           => $businessModel,
-		    'actvityTree'     => $actvityTree
+			'model'                   => $businessModel,
+		    'actvityTree'             => $actvityTree,
+		    'lstBusinessActivities'   => $lstBusinessActivities
 		));
 
 	}
@@ -583,7 +597,6 @@ class BusinessadminController extends BackEndController
 	public function getActivityTree()
 	{
 
-
 	    $sqlQuery = "SELECT   tbl_activity.activity_id, tbl_activity.keyword AS activity,
 	                          tbl_activity_type.activity_type_id, tbl_activity_type.keyword AS activity_type
 	                     FROM tbl_activity
@@ -597,42 +610,29 @@ class BusinessadminController extends BackEndController
     	$currentActivity = NULL;
     	$lstActivityType = array();
 
-    	foreach($lstRecord as $r)
-    	{
-
-    	    // If there is a new activity, create a new top level element
-    	    if ($currentActivity == NULL || $r['activity_id'] != $currentActivity['id'])
-    	    {
-
-    	        if ($currentActivity != null)
-    	        {
-    	            // Store the tree element
-    	            $arrayTree[] = $currentActivity;
-    	        }
-
-    	        // Create a new one
-    	        $currentActivity = array(
-    	            'id' => $r['activity_id'],
-    	            'text' => $r['activity'],
-    	            'children' => array()
-    	        );
-    	        $lstActivityType[] = $currentActivity;
-    	    }
-    	    $currentActivity['children'][] = array(
-    	        'id'   => $r['activity_type_id'],
-    	        'text' => $r['activity_type'],
-    	    );
-
-            //  $arrayTree[] = $currentActivity;
+    	foreach ($lstRecord as $res) {
+    	    $lstActivity[ $res['activity'] ][ $res['activity_type_id'] ] = $res;
     	}
 
-	    foreach ($arrayTree as &$treeElement)
-	    {
-	        unset($treeElement['id']);
-	    }
+    	foreach ($lstActivity as $activityName => $activityTypeList) {
+
+    	    $elmActivityType = array();
+
+            foreach ($activityTypeList as $itemActivityTypeList)
+            {
+                $elmActivityType[] = array('id'     => $itemActivityTypeList['activity_type_id'],
+                                           'text'   => $itemActivityTypeList['activity_type']);
+            }
+
+            $elmActivity = array('text'         => $activityName,
+                                 'children'   => $elmActivityType);
+
+
+            $arrayTree[] = $elmActivity;
+
+    	}
 
 	    return $arrayTree;
-
 
 	}
 

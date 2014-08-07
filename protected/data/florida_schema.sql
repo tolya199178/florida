@@ -564,6 +564,12 @@ ALTER TABLE tbl_business_category
 ADD CONSTRAINT fk_business_category_business
      FOREIGN KEY (business_id) 
      REFERENCES tbl_business(business_id); 
+     
+-- Create index
+
+ALTER TABLE tbl_business_category ADD INDEX (business_id);
+ALTER TABLE tbl_business_category ADD INDEX (category_id);
+     
 -- ---------------------------------------------------------------------
 -- event
 -- ---------------------------------------------------------------------

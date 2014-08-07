@@ -22,7 +22,20 @@
 
   </style>
 
+<style>
 
+.business_profile_heading
+{
+    border: 1px solid silver;
+}
+
+.business_details
+{
+    border: 1px solid silver;
+}
+
+
+</style>
 
    <input type="hidden" id="business_id" name="business_id"  value="<?php echo (int) $model->attributes['business_id']; ?>" /><br/>
 
@@ -42,60 +55,71 @@
 
                 <div class="panel panel-warning">
 
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <?php echo CHtml::link(CHtml::encode($model->attributes['business_name']), $model->attributes['business_id'], array('title' => CHtml::encode($model->attributes['business_name']))); ?>
-                        </h3>
-                    </div>
-
                     <div class="panel-body">
 
-                    <div class="row">
+                        <!--  Business name and address -->
+                        <div class='row '>
+                            <div class="business_profile_heading">
+                                <div class="col-md-12">
+                                    <div id='business_name'>
+                                        <a href="<?php echo Yii::app()->createUrl('/business/business/showdetails', array('business_id' => $model->business_id  )); ?>">
+                                            <h3>
+                                                <?php echo CHtml::encode($model->attributes['business_name']); ?>
+                                            </h3>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div id='business_address'>
+                                            <?php echo CHtml::encode($model->attributes['business_address1']); ?>&nbsp;
+                                            <?php echo CHtml::encode($model->attributes['business_address2']); ?>&nbsp;
+                                            <?php echo CHtml::encode($model->attributes['business_city_id']); ?>&nbsp;
+                                            <?php echo CHtml::encode($model->attributes['business_zipcode']); ?>&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--  Business name and address -->
 
-                        <div class="col-md-6">
+                        <br />
+
+                        <div class="row">
+
+                            <div class="col-md-6">
                                 <!--  Photo -->
                                 <div class="col-lg-12">
-                                    <div
-                                        style="border: 1px solid #066A75; padding: 3px; width: 450px; height: 450px;"
+                                    <div style="border: 1px solid #066A75; padding: 3px; width: 450px; height: 450px;"
                                         id="left">
-                                        <a href="#">
-                                        <?php
-                                            if(filter_var($model->attributes['image'], FILTER_VALIDATE_URL))
+                                        <a href="#" class='thumbnail'>
+<?php
+                                            if (!empty($model->attributes['image']))
                                             {
-                                                $imageURL = $model->attributes['image'];
+                                                if(filter_var($model->attributes['image'], FILTER_VALIDATE_URL))
+                                                {
+                                                    $imageURL = $model->attributes['image'];
+                                                }
+                                                else
+                                                {
+                                                    if (file_exists(Yii::getPathOfAlias('webroot').'/uploads/images/business/'.$model->attributes['image']))
+                                                    {
+                                                        $imageURL = Yii::app()->request->baseUrl .'/uploads/images/business/'.$model->attributes['image'];
+                                                    }
+                                                    else
+                                                    {
+                                                        $imageURL   = Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH'];
+                                                    }
+                                                }
                                             }
                                             else
                                             {
-                                                $imageURL = Yii::app()->request->baseUrl .'/uploads/images/business/'.$model->attributes['image'];
+                                                $imageURL   = Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH'];
                                             }
-                                        ?>
+?>
                                         <?php echo CHtml::image($imageURL, 'Business Image', array("width"=>"450px" ,"height"=>"450px", 'id'=>'business_main_image_view')); ?>
                                         </a>
                                     </div>
                                 </div>
                                 <!-- Photo -->
-                        </div>
-                        <div class="col-md-6">
-
-                                <div class="map_box">
-
-                                    <?php $this->renderPartial('profile/business_map', array('model'=>$model)); ?>
-
-                                </div>
-                                <hr>
-
-                                <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('/business/business/showdetails', array('business_id' => $model->business_id  )); ?>">
-                                    <i class="glyphicon glyphicon-plus-sign"></i>
-                                    Show more details
-                                </a>
-
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-8">
-
 
 
                                 <!-- Image Gallery-->
@@ -122,13 +146,41 @@
                                 </div>
                                 <!-- Image gallery -->
 
-                                <!-- Business description -->
-                                <div class="col-lg-12">
+                            </div>
+                            <div class="col-md-6">
 
-                                    <span class="business_description"><?php echo CHtml::encode($model->attributes['business_description']); ?></span>
+                                    <div class="map_box">
+
+                                        <?php $this->renderPartial('profile/business_map', array('model'=>$model)); ?>
+
+                                    </div>
+                                    <hr>
+
+                                    <a class="btn btn-md btn-success" href="<?php echo Yii::app()->createUrl('/business/business/showdetails', array('business_id' => $model->business_id  )); ?>">
+                                        <i class="glyphicon glyphicon-plus-sign"></i>
+                                        Show more details
+                                    </a>
+
+                            </div>
+
+                        </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                                <div id='business_details'>
+
+                                    <!-- Business description -->
+                                    <div class="col-lg-12">
+
+                                        <span class="business_description"><?php echo CHtml::decode($model->attributes['business_description']); ?></span>
+
+                                    </div>
+
+                                    <!-- ./Business description -->
 
                                 </div>
-                                <!-- ./Business description -->
+
 
                                 <!-- Tags -->
                                 <div class="col-lg-12">
@@ -154,12 +206,7 @@
                                 <div class="col-lg-12">
                                     <h4>Contact Details</h4>
                                     <p>Address:<br/>
-                                       <?php echo CHtml::encode($model->attributes['business_address1']); ?></p>
-                                    <p><?php echo CHtml::encode($model->attributes['business_address2']); ?></p>
-                                    <br/>
-                                    <p><?php echo CHtml::encode($model->attributes['business_city_id']); ?></p>
-                                    <br/>
-                                    <p><?php echo CHtml::encode($model->attributes['business_zipcode']); ?></p>
+
                                     <br/>
                                     <p>Phone : <?php echo CHtml::encode($model->attributes['business_phone']); ?></p>
                                     <p>Ext : <?php echo CHtml::encode($model->attributes['business_phone_ext']); ?></p>
@@ -178,7 +225,8 @@
                                     </h5>
                                     <ul class="sidebar-list">
 
-                                        <?php $this->renderPartial("profile/business_coupons", array('model'=>$model)); ?>
+                                    <?php $this->renderPartial("profile_modal/business_coupons", array('lstCoupon' => $lstCoupon, 'business_id' => $model->business_id)); ?>
+
 
                                     </ul>
                                 </div>

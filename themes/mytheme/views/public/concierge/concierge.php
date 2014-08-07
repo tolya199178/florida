@@ -126,252 +126,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 -->
 </style>
 
-<style>
-<!--
-.product, .product-img {
-  width:260px;
-  height:260px;
-  position:relative;
-  transition:.7s;
-  -webkit-transition:.7s;
-  z-index:2;
-}
-
-
-.product-img-container {
-    display: inline-block;
-}
-
-.product-img-container img {
-    display: block;
-    transition: all 0.5s linear;
-    -webkit-transition: all 0.5s linear;
-    -moz-transition: all 0.5s linear;
-    -ms-transition: all 0.5s linear;
-    -o-transition: all 0.5s linear;
-}
-
-
-.product-actions {
-  width:260px;
-  height:260px;
-  position:relative;
-  overflow: hidden;
-  margin-top:-263px;
-  transition:.7s;
-  -webkit-transition:.7s;
-  z-index:2;
-}
-
-.product {
-  margin: 20px auto;
-  -webkit-box-shadow: -2px 3px 2px rgba(0,0,0,0.5);
-          box-shadow: -2px 3px 2px rgba(0,0,0,0.5);
-  background:#000;
-}
-
-.sale, .info-block, .product-title, .product-description, .product-sale, .product-prize, .button-buy, .play, .more, .add {
-  position:absolute;
-  z-index:3;
-}
-
-.sale-tile {
-  width: 50px;
-  height: 100px;
-  background: #e74c3c;
-  position: absolute;
-  top: -45px;
-  right: -10px;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  z-index:2;
-}
-
-.sale {
-  font-size:11px;
-  color:#fff;
-  -webkit-transform:rotate(45deg);
-  top:52px;
-  left:2px;
-}
-
-.info-block {
-  height:130px;
-  width:260px;
-  background:rgba(255,255,255,.85);
-  bottom:0px;
-  margin-bottom:-70px;
-  transition:.7s;
-}
-
-.product-title {
-  color:#222;
-  font-size:1em:
-  font-weight:400;
-  top:12px;
-  left:15px;
-}
-
-.product-description {
-  width:228px;
-  top:32px;
-  left:16px;
-  font-family: 'helvetica neue';
-  font-size: 0.8em;
-  font-weight: 400;
-  color: #7d7d7d;
-  border-bottom:1px solid #dadada;
-  padding-bottom:15px;
-}
-
-.product-sale {
-  color: #e74c3c;
-  font-size: 1em;
-  font-weight: 700;
-  font-family: 'helvetica neue';
-  right:15px;
-  top:12px;
-}
-
-.product-prize {
-  color:#7d7d7d;
-  font-size:0.8em;
-  font-weight:400;
-  font-family:'helvetica neue';
-  right:17px;
-  top:32px;
-}
-
-.button-buy {
-/*   background: #e74c3c; */
-  text-align: center;
-/*   line-height: 46px; */
-  font-weight: 700;
-  color: #fff;
-  border: 0px solid #c0392b;
-  border-bottom-width: 2px;
-/*   width:70px; */
-/*   height:44px; */
-  bottom:15px;
-  left:15px;
-  cursor:pointer;
-  transition:.4s;
-}
-
-.button-buy:hover {
-/*   background:#c0392b; */
-}
-
-.add {
-  background: #2ecc71;
-  text-align: center;
-  line-height: 46px;
-  font-weight: 700;
-  color: #fff;
-  border: 0px solid #27ae60;
-  border-bottom-width: 2px;
-/*   width:50px; */
-  height:44px;
-  bottom:15px;
-  right:35px;
-  cursor:pointer;
-  transition:.4s;
-}
-
-.add:hover {
-  background:#27ae60;
-}
-
-.product:hover .info-block {
-  margin-bottom:0;
-}
-
-.product:hover .product-img {
-  margin-bottom:0;
-  opacity:0.4;
-}
-
-.product:hover input[name="play"] + label span {
-  opacity:1;
-}
-
- .product:hover .more {
-   opacity:1;
- }
-
-.more {
-  background-color: #4f4f4f;
-  top: 50px;
-  left: 15px;
-  background-image: url(http://webstudios.dk/resources/img/share-img.png);
-  width: 30px;
-  height: 30px;
-  cursor:pointer;
-  opacity:0;
-  transition:.7s;
-  z-index:2;
-}
-
-.more:hover {
-  background-color: #3f3f3f;
-  background-image: url(http://webstudios.dk/resources/img/share-img.png);
-}
-
-input[type="checkbox"] {
-  display:none;
-}
-
-input[name="play"] + label span {
-  opacity:0;
-  position:absolute;
-  background-color: #e74c3c;
-  top: 15px;
-  left: 15px;
-  width: 30px;
-  height: 30px;
-  cursor:pointer;
-  background-image: url(http://webstudios.dk/resources/img/play-img.png);
-  transition:.7s;
-  z-index:99;
-}
-
-input[name="play"]:checked + label span {
-  background:#c0392b;
-  z-index:9999;
-}
-
-input[name="play"]:checked ~ .video {
-  z-index:999;
-}
-
-#dowhen {
-  width: 150px;
-  outline: none;
-  border: 0;
-  height:35px;
-}
-
-
-.result_button_link  {
-  color: #fff;
-}
-
-.add:hover {
-  color: #fff;
-}
-
-/* Hide on page load */
-#panel_search_details {
-    display:none;
-}
--->
-
-
-</style>
-
 <!--  City gallery -->
 <style type="text/css">
 h2{
@@ -440,6 +194,36 @@ $activityListUrl        = $baseUrl.'/concierge/activitylist/';
 $activityTypeListUrl    = $baseUrl.'/concierge/activitytypelist/';
 
 $script = <<<EOD
+
+    $("[rel='tooltip']").tooltip();
+
+    $(document.body).on({
+    mouseenter: function(){
+            $(this).find('.caption').slideDown(250); //.fadeIn(250)
+
+    },
+    mouseleave: function(){
+            $(this).find('.caption').slideUp(250); //.fadeOut(205)
+
+    }
+}, '.thumbnail');
+
+
+//     $(document.body).on("hover",'.thumbnail',
+
+//         function(){
+//          //   debugger;
+
+//             $(this).find('.caption').slideDown(250); //.fadeIn(250)
+//         },
+//         function(){
+//         //    debugger;
+
+//             $(this).find('.caption').slideUp(250); //.fadeOut(205)
+//         }
+//     );
+
+
 
     function loadInitialSearchValues()
     {
@@ -752,7 +536,9 @@ $script = <<<EOD
 
     var where            = where_data.text;
 
-    var url         = '$baseUrl/concierge/gallery/';
+    var url              = '$baseUrl/concierge/gallery/';
+
+    where                = where.trim()
 
     $.post(url,
     {
@@ -850,9 +636,9 @@ $script = <<<EOD
         return false; // avoid to execute the actual submit of the form.
     });
 
-    // User click on single result picture.
-    $('body').on('click', '[name="play"]', function(event) {
-    });
+//     // User click on single result picture.
+//     $('body').on('click', '[name="play"]', function(event) {
+//     });
 
 
      $("#myCarousel").carousel({
@@ -892,6 +678,8 @@ $script = <<<EOD
         $("#dowhat").select2("data", {id: idActivity, text: txtActivity});
         $("#withwhat").select2("val", "");
 
+        doSearch();
+
     });
 
     // Handler for (popular) activity type clicks
@@ -902,6 +690,9 @@ $script = <<<EOD
         var idActivityType = $(this).attr('rel');
 
         $("#withwhat").select2("data", {id: idActivityType, text: txtActivityType});
+
+        doSearch();
+
 
     });
 
@@ -1003,9 +794,46 @@ $script = <<<EOD
         return false; // avoid to execute the actual submit of the form.
     });
 
+    function initialize_map()
+    {
+
+        var latitude= $("#map_latitude").val();
+        var longitude= $("#map_longitude").val();
+
+    	var mapCanvas = document.getElementById('map_canvas');
+        var myLatLng = new google.maps.LatLng(latitude,longitude);
+        var mapOptions = {
+            center: myLatLng,
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.LARGE
+            }
+        }
+        try {
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title:"Business Location"
+            });
+        } catch (err) {
+            // Error Handling
+        }
+    }
+
+
     // Clear the modal each time
     $('body').on('hidden.bs.modal', '.modal', function () {
         $(this).removeData('bs.modal');
+    });
+
+
+    // When the modal is loaded
+    $('#modalBusinessDetails').on('shown.bs.modal', function(e) {
+        // Show map
+        initialize_map();
     });
 
     $('#dowhen').datetimepicker({
