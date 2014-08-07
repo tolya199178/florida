@@ -581,11 +581,27 @@ class AccountController extends Controller
 	        $loginDuration = 3600*24*30; // 30 days
 	        Yii::app()->user->login($userIdentity, $loginDuration);
 
+	        $modelCurrentUser  = User::model()->findByPk((int) Yii::app()->user->id);
+	        if ($modelCurrentUser === null)
+	        {
+	            Yii::app()->user->setFlash('error', 'You cannot log in using this Facebook user details.');
+	            $this->redirect($objFacebook->getLoginUrl());
+	        }
+	        else
+	        {
+	            $modelCurrentUser->loggedin_with_fb = 'Y';
+	            $modelCurrentUser->save();
+	        }
+
+
+	        // /////////////////////////////////////////////////////////////////
+	        // Sync friends list locally
+	        // /////////////////////////////////////////////////////////////////
+	        $this->synchFriendListToLocal();
+
 	        $this->redirect(Yii::app()->user->returnUrl);
 
 	    }
-
-
 
 
 	}
@@ -600,6 +616,17 @@ class AccountController extends Controller
 	 */
 	public function actionFblogout()
 	{
+
+	    // Get the user. We can ignore any errors from the fetch and save
+	    $modelCurrentUser  = User::model()->findByPk((int) Yii::app()->user->id);
+	    if ($modelCurrentUser != null)
+	    {
+	        $modelCurrentUser->loggedin_with_fb = 'N';
+	        $modelCurrentUser->save();
+	    }
+
+	    Yii::app()->user->logout();
+
 	    // Load the component
 	    // TODO: figure why component is not autoloading.
 	    $objFacebook  = Yii::app()->getComponent('facebook');
@@ -612,9 +639,116 @@ class AccountController extends Controller
 
 	    if ($objFacebook->isLoggedIn())
 	    {
+
 	        $this->redirect($objFacebook->getLogoutUrl());
 
 	    }
+	}
+
+	/**
+	 * Copy the current user's FB friemds list locally
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access private
+	 */
+	private function synchFriendListToLocal()
+	{
+
+	    // NOTE: Facebook responses take a looonnng time to complete the friend
+	    // NOTE: ...list query, and thus the script often times out with the
+	    // NOTE: ...default 30 second time limit.
+	    set_time_limit(0);
+
+	    $setFriendListing                      = array();
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Now, get a list of the user's facebook friends
+	    // /////////////////////////////////////////////////////////////////////
+	    // Load the component
+	    // TODO: figure why component is not autoloading.
+	    $objFacebook                           = Yii::app()->getComponent('facebook');
+
+	    // Establish a connection to facebook
+	    $objFacebook->connect();
+
+	    $lstMyOnlineFriends                    = array();
+	    if ($objFacebook->isLoggedIn())
+	    {
+	       $lstMyOnlineFriends                 = $objFacebook->getFriendList();
+	    }
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Copy each one locally
+	    // /////////////////////////////////////////////////////////////////////
+
+
+	    $userRecordtemplate = array(
+	            'user_name'               => '',
+	            'email'                   => '',
+	            'password'                => '',
+	            'first_name'              => '',
+	            'last_name'               => '',
+	            'status'                  => 'inactive',
+	            'activation_status'       => 'not_activated',
+	            'registered_with_fb'      => 'Y',
+	            'facebook_id'             => '',
+	            'facebook_name'           => '',
+	            'image'                   => '',
+	            'created_time'            => date("Y-m-d H:i:s"),
+                'modified_time'           => date("Y-m-d H:i:s"),
+	            'created_by'              => 1,
+	            'modified_by'             => 1,
+
+
+	    );
+
+	    foreach ($lstMyOnlineFriends as $myFriend)
+	    {
+            $userDetails = Yii::app()->db->createCommand()
+                                     ->select('user_id')
+                                     ->from('tbl_user')
+                                     ->where('facebook_id = :facebook_id', array(':facebook_id'=>(int)$myFriend["id"]))
+                                     ->limit(1)
+                                     ->queryRow();
+
+            if ($userDetails === false)
+            {
+                // Re-use the record template, on;y changing the relevant indexes.
+
+                // The email address is ficticious, but must meet the validation rules of the site
+                $userRecordtemplate['user_name']    = $myFriend["id"].'@facebook.com';
+                $userRecordtemplate['email']        = $myFriend["id"].'@facebook.com';
+
+                $userRecordtemplate['password']     = $myFriend["id"].'@facebook.com';
+
+                $userRecordtemplate['first_name']   = $myFriend["first_name"];
+                $userRecordtemplate['last_name']    = $myFriend["last_name"];
+
+                $userRecordtemplate['facebook_id']  = $myFriend["id"];
+                $userRecordtemplate['facebook_name']= $myFriend["name"];
+                $userRecordtemplate['image']        = 'https://graph.facebook.com/' . $myFriend["id"] . '/picture';
+
+                $newUserQuery                       = Yii::app()->db->createCommand()
+                	                                            ->insert('tbl_user', $userRecordtemplate);
+
+                $newUserId                          = Yii::app()->db->getLastInsertID();
+
+                $newFriendRecord                    = array('user_id'       => Yii::app()->user->id,
+                                                            'friend_id'     => $newUserId,
+                                                            'friend_status' => 'Approved',
+                                                            'created_time'  => date("Y-m-d H:i:s"),
+                                                            'request_time'  => date("Y-m-d H:i:s"),
+                                                            'process_time'  => date("Y-m-d H:i:s")
+                                                      );
+
+                $newFriendQuery                     = Yii::app()->db->createCommand()
+                                                                ->insert('tbl_my_friend', $newFriendRecord);
+            }
+
+	    }
+
 	}
 
 }
