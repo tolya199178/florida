@@ -193,17 +193,17 @@ class AccountController extends Controller
                     }
                     else
                     {
-                        Yii::app()->user->setFlash('error', "Error creating a user record.'");
+                        Yii::app()->user->setFlash('error', "Error creating a user record.");
                     }
                 }
                 else
                 {
-                    Yii::app()->user->setFlash('error', "Validation error.'");
+                    Yii::app()->user->setFlash('error', "Validation error.");
                 }
             }
             else
             {
-                Yii::app()->user->setFlash('error', "Validation error.'");
+                Yii::app()->user->setFlash('error', "Validation error.");
             }
         }
 
@@ -614,8 +614,21 @@ class AccountController extends Controller
 	 * @return <none> <none>
 	 * @access public
 	 */
-	public function actionFblogout()
+	public function actionLogout()
 	{
+
+	    // Logout from the Yii login mechanism
+	    Yii::app()->user->logout();
+
+	    // Load the component
+	    // TODO: figure why component is not autoloading.
+	    $objFacebook  = Yii::app()->getComponent('facebook');
+
+	    // Establish a connection to facebook
+	    $objFacebook->connect();
+
+
+	    $objFacebook->logout();
 
 	    // Get the user. We can ignore any errors from the fetch and save
 	    $modelCurrentUser  = User::model()->findByPk((int) Yii::app()->user->id);
@@ -625,24 +638,14 @@ class AccountController extends Controller
 	        $modelCurrentUser->save();
 	    }
 
-	    Yii::app()->user->logout();
-
-	    // Load the component
-	    // TODO: figure why component is not autoloading.
-	    $objFacebook  = Yii::app()->getComponent('facebook');
-
-	    // Establish a connection to facebook
-	    $objFacebook->connect();
-	    $objFacebook->logout();
-
-	    Yii::app()->user->logout();
+	    Yii::app()->user->setFlash('success', "You have been logged out.");
 
 	    if ($objFacebook->isLoggedIn())
 	    {
-
 	        $this->redirect($objFacebook->getLogoutUrl());
-
 	    }
+
+	    $this->redirect(Yii::app()->user->returnUrl);
 	}
 
 	/**
