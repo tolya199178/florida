@@ -264,32 +264,34 @@ class FacebookUtility extends CApplicationComponent
 
             $userProfile = $this->handleFacebook->api('/me');
 
-            $userFriends = $this->handleFacebook->api('/me/friends');
+            $userFriends = $this->handleFacebook->api('/me/friends',
+                                  array('fields' => 'name, username, id, first_name, last_name, email'));
 
             $accessToken = $this->handleFacebook->getAccessToken();
 
         } catch (FacebookApiException $e) {
-            // print_r($e);
+             print_r($e);
             $user = null;
 
         }
 
-        return $userFriends['data'];
+// print_r($userFriends);exit;
+//         $token = $this->handleFacebook->getAccessToken();
+//         foreach ($userFriends["data"] as $value) {
 
-//         $total_friends = count($user_friends['data']);
+//             $uid = $value["id"];
 
-//         echo 'Total friends: '.$total_friends.'.<br />';
+//             // get all friends who has given our app permissions to access their data
+//             $fql = "SELECT uid, first_name, last_name, email FROM user WHERE uid = $uid";
 
-//         echo '<ul>';
-//         foreach ($user_friends["data"] as $value) {
-//             echo '<li>';
-//             echo '<div class="pic">';
-//             echo '<img src="https://graph.facebook.com/' . $value["id"] . '/picture"/>';
-//             echo '</div>';
-//             echo '<div class="picName">'.$value["name"].'</div>';
-//             echo '</li>';
+//             $friendDetails = $this->handleFacebook->api(array(
+//                                         'method'       => 'fql.query',
+//                                         'access_token' => $token,
+//                                         'query'        => $fql,
+//                                     ));
 //         }
-//         echo '</ul>';
+
+        return $userFriends['data'];
 
     }
 
