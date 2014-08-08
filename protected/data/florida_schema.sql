@@ -88,6 +88,9 @@ ALTER TABLE tbl_user CHANGE `places_want_to_visit`  `places_want_to_visit` TEXT 
 ALTER TABLE tbl_user ADD COLUMN `places_visited` TEXT  DEFAULT NULL;
 
 ALTER TABLE tbl_user ADD COLUMN `language` VARCHAR(255)  DEFAULT NULL;
+
+ALTER TABLE tbl_user ADD COLUMN `registration_source` ENUM('florida.com', 'facebook')  DEFAULT 'florida.com';
+
      
 -- ---------------------------------------------------------------------
 -- country

@@ -696,6 +696,8 @@ class AccountController extends Controller
 	            'status'                  => 'inactive',
 	            'activation_status'       => 'not_activated',
 	            'registered_with_fb'      => 'Y',
+	            'registration_source'     => 'facebook',
+
 	            'facebook_id'             => '',
 	            'facebook_name'           => '',
 	            'image'                   => '',
