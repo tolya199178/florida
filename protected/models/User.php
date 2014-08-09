@@ -40,6 +40,7 @@
  * @property string $image
  * @property string $places_visited
  * @property string $language
+ * @property string registration_source
  *
  * The followings are the available model relations:
  * @property User $modifiedBy
@@ -242,7 +243,13 @@ class User extends CActiveRecord
             // other
 
             // compare entered and verified password. Only for change password and register screens.
-            array('fldVerifyPassword', 'compare', 'compareAttribute'=>'password', 'on'=>array(self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_REGISTER, self::SCENARIO_FORGOT_PASSWORD)),
+            array('fldVerifyPassword',
+                  'compare',
+                  'compareAttribute'=>'password',
+                  'on'=>array(self::SCENARIO_CHANGE_PASSWORD,
+                              self::SCENARIO_REGISTER,
+                              self::SCENARIO_FORGOT_PASSWORD
+            )),
 
             array('date_of_birth',                  'validateAge', 'age_limit' => 18, 'on' => array(self::SCENARIO_REGISTER)),
 
@@ -251,7 +258,7 @@ class User extends CActiveRecord
                    created_by, modified_by, activation_code, activation_status, activation_time,
                    facebook_id, facebook_name, registered_with_fb, loggedin_with_fb,
                    login_status, last_login, mobile_number, mobile_carrier_id, send_sms_notification,
-                   date_of_birth, hometown, marital_status, places_want_to_visit, places_visited',
+                   date_of_birth, hometown, marital_status, places_want_to_visit, places_visited, registration_source',
                   'safe', 'on'=>'search'),
         );
     }
@@ -349,6 +356,7 @@ class User extends CActiveRecord
             'fldVerifyPassword'     => 'Re-enter Password',
             'fldCurrentPassword'    => 'Current Password',
             'language'              => 'Language',
+            'registration_source'   => 'registration_source',
         );
     }
 
@@ -400,6 +408,7 @@ class User extends CActiveRecord
         $criteria->compare('places_want_to_visit',  $this->places_want_to_visit,true);
         $criteria->compare('places_visited',        $this->places_visited,true);
         $criteria->compare('language',              $this->language,true);
+        $criteria->compare('registration_source',   $this->registration_source);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -514,6 +523,23 @@ class User extends CActiveRecord
             'condition'=>"status <> 'deleted'"
         );
     }
+
+    /**
+     * Definition of filters is applied to named seaches in the model.
+     *
+     * @param <none> <none>
+     * @return array DbCriteria directives
+     *
+     * @access public
+     */
+    public function scopes()
+    {
+        return array(
+            'local'     => array( 'condition'=>'registration_source="florida.com"' ),
+            'online'    => array( 'condition'=>'registration_source="facebook"' ),
+        );
+    }
+
 
     /**
      * Build an associative list of user type values.
