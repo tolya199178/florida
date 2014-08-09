@@ -27,11 +27,11 @@
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = MyInvitation::model()
+ * ...   $invitation = MyInvitation::model()
  * ...or
- * ...   $model = new MyInvitation;
+ * ...   $invitation = new MyInvitation;
  * ...or
- * ...   $model = new MyInvitation($scenario);
+ * ...   $invitation = new MyInvitation($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -70,11 +70,10 @@ class MyInvitation extends CActiveRecord
 	{
 
 		return array(
-			array('business_id, user_id, event_date, created_by, modified_by', 'required'),
-			array('business_id, user_id, created_by, modified_by', 'numerical', 'integerOnly'=>true),
-			array('event_time', 'length', 'max'=>255),
-			array('message', 'length', 'max'=>4096),
-			array('created_time, modified_time', 'safe'),
+			array('business_id, event_date',                             'required'),
+			array('business_id',                                         'numerical', 'integerOnly'=>true),
+			array('event_time',                                          'length', 'max'=>255),
+			array('message',                                             'length', 'max'=>4096),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('invitation_id, business_id, user_id, event_date, event_time, message, created_time, modified_time, created_by, modified_by', 'safe', 'on'=>'search'),
@@ -93,10 +92,10 @@ class MyInvitation extends CActiveRecord
 	{
 
 		return array(
-			'business'      => array(self::BELONGS_TO, 'Business', 'business_id'),
+			'business'       => array(self::BELONGS_TO, 'Business', 'business_id'),
 			'createdBy'      => array(self::BELONGS_TO, 'User', 'created_by'),
-			'modifiedBy'      => array(self::BELONGS_TO, 'User', 'modified_by'),
-			'user'      => array(self::BELONGS_TO, 'User', 'user_id'),
+			'modifiedBy'     => array(self::BELONGS_TO, 'User', 'modified_by'),
+			'user'           => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -115,15 +114,15 @@ class MyInvitation extends CActiveRecord
 	{
 		return array(
 			'invitation_id'      => 'Invitation',
-			'business_id'      => 'Business',
-			'user_id'      => 'User',
-			'event_date'      => 'Event Date',
-			'event_time'      => 'Event Time',
-			'message'      => 'Message',
-			'created_time'      => 'Created Time',
+			'business_id'        => 'Business',
+			'user_id'            => 'User',
+			'event_date'         => 'Event Date',
+			'event_time'         => 'Event Time',
+			'message'            => 'Message',
+			'created_time'       => 'Created Time',
 			'modified_time'      => 'Modified Time',
-			'created_by'      => 'Created By',
-			'modified_by'      => 'Modified By',
+			'created_by'         => 'Created By',
+			'modified_by'        => 'Modified By',
 		);
 	}
 
@@ -148,16 +147,16 @@ class MyInvitation extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('invitation_id',$this->invitation_id);
-		$criteria->compare('business_id',$this->business_id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('event_date',$this->event_date,true);
-		$criteria->compare('event_time',$this->event_time,true);
-		$criteria->compare('message',$this->message,true);
-		$criteria->compare('created_time',$this->created_time,true);
-		$criteria->compare('modified_time',$this->modified_time,true);
-		$criteria->compare('created_by',$this->created_by);
-		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('invitation_id',       $this->invitation_id);
+		$criteria->compare('business_id',         $this->business_id);
+		$criteria->compare('user_id',             $this->user_id);
+		$criteria->compare('event_date',          $this->event_date,true);
+		$criteria->compare('event_time',          $this->event_time,true);
+		$criteria->compare('message',             $this->message,true);
+		$criteria->compare('created_time',        $this->created_time,true);
+		$criteria->compare('modified_time',       $this->modified_time,true);
+		$criteria->compare('created_by',          $this->created_by);
+		$criteria->compare('modified_by',         $this->modified_by);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -176,5 +175,37 @@ class MyInvitation extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave() {
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Set the create time and user for new records
+	    // /////////////////////////////////////////////////////////////////
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+	        $this->created_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+	        // Will fail, but this is ok. We want it to.
+	        $this->user_id      = Yii::app()->user->id;
+	    }
+
+	    // /////////////////////////////////////////////////////////////////
+	    // The modified log details is set for record creation and update
+	    // /////////////////////////////////////////////////////////////////
+	    $this->modified_time = new CDbExpression('NOW()');
+	    $this->modified_by   = (Yii::app() instanceof CConsoleApplication || (!(Yii::app()->user->id)) ? 1 : Yii::app()->user->id);
+
+
+	    return parent::beforeSave();
 	}
 }

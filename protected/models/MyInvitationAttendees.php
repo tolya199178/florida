@@ -58,9 +58,11 @@ class MyInvitationAttendees extends CActiveRecord
 	{
 
 		return array(
-			array('invitation_id, user_id', 'required'),
-			array('invitation_id, user_id', 'numerical', 'integerOnly'=>true),
-			array('status', 'length', 'max'=>13),
+			array('invitation_id, user_id',                  'required'),
+			array('invitation_id, user_id',                  'numerical', 'integerOnly'=>true),
+
+		    array('banner_status',
+		          'in', 'range'=>array('No response','Attending', 'Not attending')),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('invitation_attendees_id, invitation_id, user_id, status', 'safe', 'on'=>'search'),
@@ -78,7 +80,11 @@ class MyInvitationAttendees extends CActiveRecord
 	public function relations()
 	{
 
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
 		return array(
+			'invitation' => array(self::BELONGS_TO, 'MyInvitation', 'invitation_id'),
+			'user'       => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -96,10 +102,10 @@ class MyInvitationAttendees extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'invitation_attendees_id'      => 'Invitation Attendees',
-			'invitation_id'      => 'Invitation',
-			'user_id'      => 'User',
-			'status'      => 'Status',
+			'invitation_attendees_id'        => 'Invitation Attendees',
+			'invitation_id'                  => 'Invitation',
+			'user_id'                        => 'User',
+			'status'                         => 'Status',
 		);
 	}
 
@@ -124,10 +130,10 @@ class MyInvitationAttendees extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('invitation_attendees_id',$this->invitation_attendees_id);
-		$criteria->compare('invitation_id',$this->invitation_id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('status',$this->status,true);
+		$criteria->compare('invitation_attendees_id',     $this->invitation_attendees_id);
+		$criteria->compare('invitation_id',               $this->invitation_id);
+		$criteria->compare('user_id',                     $this->user_id);
+		$criteria->compare('status',                      $this->status,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
