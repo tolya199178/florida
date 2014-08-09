@@ -52,7 +52,7 @@
                          <p class="btn-add">
                              <i class="fa fa-envelope-o"></i><br/>
                                 <?php if (!Yii::app()->user->isGuest) { ?>
-                                    <a class="label label-lg label-info launch-modal" href="#modalInviteMyFriends" data-href="/concierge/invitefriends/business/<?php echo $data->business_id; ?>">Invite My Friends</a>
+                                    <a class="label label-lg label-info invite_friends-modal" href="#modalInviteMyFriends" data-href="/concierge/invitefriends/business/<?php echo $data->business_id; ?>">Invite My Friends</a>
                                 <?php }?>
                              </p>
                          <p class="btn-details">

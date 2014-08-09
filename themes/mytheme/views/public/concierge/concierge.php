@@ -9,6 +9,8 @@ Yii::app()->clientScript->registerScriptFile("https://maps.googleapis.com/maps/a
 
     Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/bootstrap-rating-input/src/bootstrap-rating-input.js', CClientScript::POS_END);
 
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/jquery-searchable/dist/jquery.searchable-1.1.0.min.js', CClientScript::POS_END);
+
 ?>
 
 <?php
@@ -148,40 +150,45 @@ h2{
 }
 
 
-.invited {border:solid 3px red}
+.invited {
+    border:solid 3px red;
+    background: #FAE4E4;
+}
 
 </style>
 
 <style>
 
-/* .modal { */
-/*   width: 80%; /* desired relative width */ */
-/*   left: 5%; /* (100%-width)/2 */ */
-/*   /* place center */ */
-/*   margin-left:auto; */
-/*   margin-right:auto; */
-/* } */
+.modal.modal-wide .modal-dialog {
+  width: 90%;
+}
 
-/* @media screen and (min-width: 768px) { */
-/*     .biz-details-modal { */
-/*         width: 70%; */
-/*         /* either % (e.g. 60%) or px (400px) */ */
-/*     } */
-/* } */
+.modal.modal-medium .modal-dialog {
+  width: 60%;
+}
+
+
+
+
+.modal-wide .modal-body {
+  overflow-y: auto;
+}
+
+#tallModal .modal-body p { margin-bottom: 900px }
 
 </style>
 
 <style>
 
-.modal-dialog {
-  width: 1200px;
-}
+/* .modal-dialog { */
+/*   width: 1200px; */
+/* } */
 
-.modal-content {
-  width: 1200px;
-    margin-left:  0px;
-    margin-top: -60px;
-}
+/* .modal-content { */
+/*   width: 1200px; */
+/*     margin-left:  0px; */
+/*     margin-top: -60px; */
+/* } */
 
 </style>
 
@@ -696,19 +703,7 @@ $script = <<<EOD
 
     });
 
-    $('body').on('click', '.myfriend', function(event) {
-        var $$          = $(this)
-        var user_id     = $(this).attr('rel');
 
-        if( !$$.is('.invited')){
-            $$.addClass('invited');
-            $('#my_friend_'+user_id).prop('checked', true);
-        } else {
-            $$.removeClass('invited');
-            $('#my_friend_'+user_id).prop('checked', false);
-
-        }
-    })
 
     // ////////////////////////////////////////////////////
     // Wizard
@@ -756,43 +751,7 @@ $script = <<<EOD
     });
 
 
-    // /////////////////////////////////////////////////////////////////////////
-    // Invite my friends invitation
-    // /////////////////////////////////////////////////////////////////////////
-    // Launch the modal when the invite friends link is clicked
-    $('body').on('click', '.launch-modal', function(e) {
 
-        var remote = $(this).attr("data-href");
-
-        $("#modalInviteMyFriends").modal({
-
-            keyboard: false,
-            remote: remote
-
-        });
-    });
-
-    // Submit the modal form and close the modal
-    $('body').on('submit', '#frmInviteMyFriends', function(event) {
-
-        event.preventDefault();
-
-        var form_values = $(this).serialize();
-
-        var url = '$baseUrl/concierge/sendfriendinvitations/';
-
-        $.ajax({
-               type: "POST",
-               url: url,
-               data: $(this).serialize(),
-               success: function(data)
-               {
-                    $('#modalInviteMyFriends').modal('hide');
-               }
-        });
-
-        return false; // avoid to execute the actual submit of the form.
-    });
 
     function initialize_map()
     {
@@ -919,54 +878,188 @@ $script = <<<EOD
     });
 
 
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
 
 ?>
 
+<?php
 
-<!-- Modal Invite Friends -->
-<div class="modal fade" id="modalInviteMyFriends" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
+// Invite friends
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+$script = <<<EOD
 
-<?php /*
-<!-- Modal Business Details -->
-<div class="modal fade" id="modalBusinessDetails" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="titleBusinessDetails">Modal title</h4>
-      </div>
-      <div class="modal-body">
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-*/
+    $('body').on('click', '.myfriend', function(event) {
+        var $$          = $(this)
+        var user_id     = $(this).attr('rel');
+
+        if( !$$.is('.invited')){
+            $$.addClass('invited');
+            $('#my_friend_'+user_id).prop('checked', true);
+            alert ( $(this).find('.name').html() );
+        } else {
+            $$.removeClass('invited');
+            $('#my_friend_'+user_id).prop('checked', false);
+
+        }
+    })
+
+
+// when .modal-wide opened, set content-body height based on browser height;
+        //200 is appx height of modal padding, modal title and button bar
+
+$("#modalInviteMyFriends").on("show.bs.modal", function() {
+  var height = $(window).height() - 200;
+  $(this).find(".modal-body").css("max-height", height);
+
+//     debugger;
+
+//     $('#contact-list').searchable({
+//         searchField: '#contact-list-search',
+//         selector: 'li',
+//         childSelector: '.col-xs-12',
+//         show: function( elem ) {
+//             elem.slideDown(100);
+//         },
+//         hide: function( elem ) {
+//             elem.slideUp( 100 );
+//         }
+//     })
+
+});
+
+    $('#modalInviteMyFriends').on('loaded.bs.modal', function (e) {
+        $('#meeting_date').val($('#dowhen').val());
+    })
+
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+
+    // $('[data-command="toggle-search"]').on('click', function(event) {
+    $('body').on('click', '[data-command="toggle-search"]', function(event) {
+
+        event.preventDefault();
+        $(this).toggleClass('hide-search');
+
+        if ($(this).hasClass('hide-search')) {
+            $('.c-search').closest('.row').slideUp(100);
+        }else{
+            $('.c-search').closest('.row').slideDown(100);
+        }
+
+        $('#contact-list').searchable({
+            searchField: '#contact-list-search',
+            selector: 'li',
+            childSelector: '.col-xs-12',
+            show: function( elem ) {
+                elem.slideDown(100);
+            },
+            hide: function( elem ) {
+                elem.slideUp( 100 );
+            }
+        })
+
+
+    })
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Invite my friends invitation
+    // /////////////////////////////////////////////////////////////////////////
+    // Launch the modal when the invite friends link is clicked
+    $('body').on('click', '.invite_friends-modal', function(e){
+
+        // Check that the date has been chosen.
+        var dowhen      = $('#dowhentimestamp').val();
+        if (dowhen == '')
+        {
+            alert('Please select a date for your planned invitation');
+            $('#dowhen').focus();
+            return false;
+        }
+
+        var remote = $(this).attr("data-href");
+
+        $("#modalInviteMyFriends").modal({
+
+            keyboard: false,
+            remote: remote
+
+        });
+    });
+
+    // Submit the modal form and close the modal
+    $('body').on('submit', '#frmInviteMyFriends', function(event) {
+
+        event.preventDefault();
+
+        var form_values = $(this).serialize();
+
+        var url = '$baseUrl/concierge/sendfriendinvitations/';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: $(this).serialize(),
+               success: function(data)
+               {
+                    $('#modalInviteMyFriends').modal('hide');
+               }
+        });
+
+        return false; // avoid to execute the actual submit of the form.
+    });
+
+
+EOD;
+
+Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::POS_READY);
+
 ?>
-<div class="modal fade" id="modalBusinessDetails" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
+
+
+<div id="modalInviteMyFriends" class="modal modal-medium fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Invite your Friends</h4>
+      </div>
+      <div class="modal-body">
+        <p><!--  Body goes here --></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="modalBusinessDetails" class="modal modal-wide fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Business Details</h4>
+      </div>
+      <div class="modal-body">
+        <p><!--  Body goes here --></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div class="modal fade" id="modalBusinessDetailssssssssssss" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
     <div class="modal-dialog biz-details-modal">
         <div class="modal-content">
             <div class="modal-header">
