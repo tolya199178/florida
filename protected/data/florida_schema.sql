@@ -2192,6 +2192,52 @@ ALTER TABLE `tbl_business_announcement`
   ADD CONSTRAINT `tbl_announcement_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
   ADD CONSTRAINT `tbl_announcement_created_by` FOREIGN KEY (`created_by`) REFERENCES `tbl_user` (`user_id`),
   ADD CONSTRAINT `tbl_announcement_modified_by` FOREIGN KEY (`modified_by`) REFERENCES `tbl_user` (`user_id`);
+  
+  
+-- ---------------------------------------------------------------------
+-- Table structure for table my_invitations
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_my_invitation`;
+
+CREATE TABLE IF NOT EXISTS `tbl_my_invitation` (
+  `invitation_id` int(11) NOT NULL AUTO_INCREMENT,
+  `business_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `event_date` date NOT NULL,
+  `event_time` varchar(255) DEFAULT NULL,
+  `message` varchar(4096) DEFAULT NULL,
+  `created_time` timestamp NULL DEFAULT 0,
+  `modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_by`  int(11) NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  PRIMARY KEY (`invitation_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+     
+
+ALTER TABLE `tbl_my_invitation`
+  ADD CONSTRAINT `invitation_business` FOREIGN KEY (`business_id`) REFERENCES `tbl_business` (`business_id`),
+  ADD CONSTRAINT `invitation_created_by` FOREIGN KEY (`created_by`) REFERENCES `tbl_user` (`user_id`),
+  ADD CONSTRAINT `invitation_modified_by` FOREIGN KEY (`modified_by`) REFERENCES `tbl_user` (`user_id`),
+  ADD CONSTRAINT `invitation_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
+  
+  
+-- ---------------------------------------------------------------------
+-- Table structure for table my_invitation_attendees
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `my_invitation_attendees`;
+
+CREATE TABLE IF NOT EXISTS `my_invitation_attendees` (
+  `invitation_attendees_id` int(11) NOT NULL AUTO_INCREMENT,
+  `invitation_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status`   enum('No response','Attending', 'Not attending') DEFAULT 'No response',
+  PRIMARY KEY (`invitation_attendees_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  
+ALTER TABLE `my_invitation_attendees`
+  ADD CONSTRAINT `invite_attendees_invitation` FOREIGN KEY (`invitation_id`) REFERENCES `tbl_my_invitation` (`invitation_id`),
+  ADD CONSTRAINT `invite_attendees__user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
+  
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
