@@ -645,34 +645,27 @@ class ConciergeController extends Controller
 
         $businessId = $reqPanel   = Yii::app()->request->getQuery("business");
 
+        $dbCriteria             = new CDbCriteria;
+
+        $dbCriteria->condition  = "t.user_id = :user_id AND friend.status = 'active'";
+        $dbCriteria->params     = array(':user_id' => Yii::app()->user->id);
+
+
         // /////////////////////////////////////////////////////////////////////
         // First, get a list of all local friends
         // /////////////////////////////////////////////////////////////////////
-        $lstMyFriends = MyFriend::model()->with('friend')->findAllByAttributes(array(
-            'user_id' => Yii::app()->user->id
-        ));
+        $lstMyFriends = MyFriend::model()->with('friend')->findAll($dbCriteria);
 
-// TODO: We may not need to connect to Facebook at this stage.
-//         // /////////////////////////////////////////////////////////////////////
-//         // Now, get a list of the user's facebook friends
-//         // /////////////////////////////////////////////////////////////////////
-//         // Load the component
-//         // TODO: figure why component is not autoloading.
-//         $objFacebook = Yii::app()->getComponent('facebook');
+        // /////////////////////////////////////////////////////////////////////
+        // Get the business details
+        // /////////////////////////////////////////////////////////////////////
+        $modelBusiness  = Business::model()->findByPk((int) $businessId);
 
-//         // Establish a connection to facebook
-//         $objFacebook->connect();
 
-//         $lstMyOnlineFriends = array();
-//         if ($objFacebook->isLoggedIn()) {
-//             $lstMyOnlineFriends = $objFacebook->getFriendList();
-//         }
-// TODO: We may not need to connect to Facebook at this stage.
-
-        $this->renderPartial("invite_friend_list", array(
-            'myLocalFriends' => $lstMyFriends,
-            'myOnlineFriends' => array(),
-            'business_id'   => $businessId
+        $this->renderPartial("invite_friends_modal", array(
+            'myLocalFriends'    => $lstMyFriends,
+            'myOnlineFriends'   => array(),
+            'modelBusiness'     => $modelBusiness
         ));
     }
 
@@ -692,7 +685,8 @@ class ConciergeController extends Controller
 
         $argInvitationList      = Yii::app()->request->getPost('invitation_list', array());
 
-        $argMeetingDateTime     = Yii::app()->request->getPost('meeting_date_time', null);
+        $argMeetingDate         = Yii::app()->request->getPost('meeting_date', null);
+        $argMeetingTime         = Yii::app()->request->getPost('meeting_time', null);
 
         $argMessage             = Yii::app()->request->getPost('my_message', null);
         $argMessage             = filter_var($argMessage,FILTER_SANITIZE_STRING);
@@ -708,7 +702,29 @@ class ConciergeController extends Controller
                                     'result' => false,
                                     'message' => 'Cannot locate selected business '.$argBusinessId
                                ));
+            Yii::app()->end();
         }
+
+
+        // /////////////////////////////////////////////////////////////////////
+        // Get the business entry
+        // /////////////////////////////////////////////////////////////////////
+        $modelInvitation                = new MyInvitation;
+        $modelInvitation->business_id   = $argBusinessId;
+        $modelInvitation->event_date    = $argMeetingDate;
+        $modelInvitation->event_time    = $argMeetingTime;
+        $modelInvitation->message       = $argMessage;
+
+        if ($modelInvitation->save() === false)
+        {
+            header('Content-type: application/json');
+            echo CJSON::encode(array(
+                'result' => false,
+                'message' => 'Failed to save the invitation'
+            ));
+            Yii::app()->end();
+        }
+
 
         // /////////////////////////////////////////////////////////////////////
         // Get the email message template
@@ -725,14 +741,36 @@ class ConciergeController extends Controller
 
         foreach ($lstFriends as $itemMyFriend)
         {
+            // /////////////////////////////////////////////////////////////////
+            // Save the attendees list
+            // /////////////////////////////////////////////////////////////////
+
+            $modelAttendee                  = new MyInvitationAttendee;
+            $modelAttendee->invitation_id   = $modelInvitation->invitation_id;
+            $modelAttendee->user_id         = $itemMyFriend->user_id;
+            $modelAttendee->status          = 'No response';
+
+            if ($modelAttendee->save() === false)
+            {
+                header('Content-type: application/json');
+                echo CJSON::encode(array(
+                    'result' => false,
+                    'message' => 'Failed to save the invitation'
+                ));
+                Yii::app()->end();
+            }
+
+
+            // /////////////////////////////////////////////////////////////////
             // Customise the email message
+            // /////////////////////////////////////////////////////////////////
             $emailAttributes = array();
             $emailAttributes['friend_name']         = $itemMyFriend->first_name;
             $emailAttributes['venue']               = $modelBusiness->business_name;
             $emailAttributes['address']             = $modelBusiness->business_address1."\n".
                                                       $modelBusiness->business_address2."\n".
                                                       $modelBusiness->businessCity->city_name;
-            $emailAttributes['meeting_date_time']   = $argMeetingDateTime;
+            $emailAttributes['meeting_date_time']   = $argMeetingDate.' '.$argMeetingTime;
             $emailAttributes['my_message']          = $argMessage;
             $emailAttributes['venue_url']           = Yii::app()->createAbsoluteUrl('businessuser/profile/show/', array('id' => $modelBusiness->business_id  ));
             $emailAttributes['my_name']             = Yii::app()->user->getFirstName();
@@ -742,6 +780,28 @@ class ConciergeController extends Controller
 
             // Send the message
             HAccount::sendMessage($itemMyFriend->email, $itemMyFriend->first_name.' '.$itemMyFriend->last_name, $emailSubject, $customisedEmailMessage);
+
+
+            // /////////////////////////////////////////////////////////////////
+            // Send an internal message
+            // /////////////////////////////////////////////////////////////////
+            $modelUserMessage                       = new UserMessage;
+            $modelUserMessage->sender               = Yii::app()->user->id;
+            $modelUserMessage->recipient            = $itemMyFriend->user_id;
+            $modelUserMessage->sent                 = new CDbExpression('NOW()');
+            $modelUserMessage->subject              = $emailSubject;
+            $modelUserMessage->message              = $customisedEmailMessage;
+            $modelUserMessage->message_category     = 'invitation';
+
+            if ($modelUserMessage->save() === false)
+            {
+                header('Content-type: application/json');
+                echo CJSON::encode(array(
+                    'result' => false,
+                    'message' => 'Failed to save the invitation'
+                ));
+                Yii::app()->end();
+            }
 
         }
 
