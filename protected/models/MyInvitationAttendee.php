@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "my_invitation_attendees".
+ * This is the model class for table "{{my_invitation_attendee}}".
  *
- * The followings are the available columns in table 'my_invitation_attendees':
+ * The followings are the available columns in table '{{my_invitation_attendee}}':
  * @property integer $invitation_attendees_id
  * @property integer $invitation_id
  * @property integer $user_id
@@ -28,7 +28,7 @@
  * @version 1.0
  */
 
-class MyInvitationAttendees extends CActiveRecord
+class MyInvitationAttendee extends CActiveRecord
 {
 
     /**
@@ -41,7 +41,7 @@ class MyInvitationAttendees extends CActiveRecord
      */
 	public function tableName()
 	{
-		return 'my_invitation_attendees';
+		return '{{my_invitation_attendee}}';
 	}
 
     /**
@@ -61,7 +61,7 @@ class MyInvitationAttendees extends CActiveRecord
 			array('invitation_id, user_id',                  'required'),
 			array('invitation_id, user_id',                  'numerical', 'integerOnly'=>true),
 
-		    array('banner_status',
+		    array('status',
 		          'in', 'range'=>array('No response','Attending', 'Not attending')),
 
             // The following rule is used by search(). It only contains attributes that should be searched.

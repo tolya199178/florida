@@ -2224,9 +2224,9 @@ ALTER TABLE `tbl_my_invitation`
 -- ---------------------------------------------------------------------
 -- Table structure for table my_invitation_attendees
 -- ---------------------------------------------------------------------
-DROP TABLE IF EXISTS `my_invitation_attendees`;
+DROP TABLE IF EXISTS `tbl_my_invitation_attendee`;
 
-CREATE TABLE IF NOT EXISTS `my_invitation_attendees` (
+CREATE TABLE IF NOT EXISTS `tbl_my_invitation_attendee` (
   `invitation_attendees_id` int(11) NOT NULL AUTO_INCREMENT,
   `invitation_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -2234,9 +2234,9 @@ CREATE TABLE IF NOT EXISTS `my_invitation_attendees` (
   PRIMARY KEY (`invitation_attendees_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
   
-ALTER TABLE `my_invitation_attendees`
-  ADD CONSTRAINT `invite_attendees_invitation` FOREIGN KEY (`invitation_id`) REFERENCES `tbl_my_invitation` (`invitation_id`),
-  ADD CONSTRAINT `invite_attendees__user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
+ALTER TABLE `tbl_my_invitation_attendee`
+  ADD CONSTRAINT `invite_attendee_invitation` FOREIGN KEY (`invitation_id`) REFERENCES `tbl_my_invitation` (`invitation_id`),
+  ADD CONSTRAINT `invite_attendee__user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
   
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
