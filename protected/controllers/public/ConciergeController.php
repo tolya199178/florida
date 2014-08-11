@@ -420,7 +420,7 @@ class ConciergeController extends Controller
         {
             if (!empty(Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE']))
             {
-                $lastTimestamp = Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE'];
+                $lastTimestamp = strtotime(Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE']);
             }
             else
             {
