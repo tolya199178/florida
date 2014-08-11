@@ -88,7 +88,7 @@ class ConciergeController extends Controller
 	    // Clear search
 	    // /////////////////////////////////////////////////////////////////////
 
-	    unset(Yii::app()->session['last_saved_search_id']);
+	    unset(Yii::app()->session['last_search_history_id']);
 
 	    // Get the user's location
         $myLocation = $this->getMyLocation();
@@ -413,7 +413,21 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         $lastTimestamp = Yii::app()->request->getQuery("last_timestamp", null);
 
-        if (($lastTimestamp === null) OR ((int) $lastTimestamp == 0))
+        // /////////////////////////////////////////////////////////////////////
+        // If a timestamp was not provided, then go back a week
+        // /////////////////////////////////////////////////////////////////////
+        if (!empty($lastTimestamp))
+        {
+            if (!empty(Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE']))
+            {
+                $lastTimestamp = Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE'];
+            }
+            else
+            {
+                $lastTimestamp = strtotime("-1 week");
+            }
+        }
+        else
         {
             $lastTimestamp = strtotime("-1 week");
         }
@@ -429,21 +443,26 @@ class ConciergeController extends Controller
 
         $dbCriteria = new CDbCriteria;
         // TODO: Move the search limit to parameters file
-        $dbCriteria->condition = " unix_timestamp(created_time) > :lastTimestamp ";
+        $dbCriteria->condition = "unix_timestamp(created_time) > :lastTimestamp";
         $dbCriteria->params    = array(':lastTimestamp' => $lastTimestamp);
-        $dbCriteria->limit     = 100;
+        $dbCriteria->limit     = Yii::app()->params['LEFTPANEL_QUERY_LIMIT'];
         $dbCriteria->order     = 'created_time DESC';
 
-        if (isset(Yii::app()->session['last_saved_search_id']))
+        if (isset(Yii::app()->session['last_search_history_id']))
         {
 
-            $lastSearch = SavedSearch::model()->findByPk(Yii::app()->session['last_saved_search_id']);
+            $lastSearch = SearchHistory::model()->findByPk((int)Yii::app()->session['last_search_history_id']);
 
             if ($lastSearch != null)
             {
-                $dbCriteria->addCondition(' filter_activity = :filter_activity AND filter_activitytype = :filter_activitytype ');
-                $dbCriteria->params    = array_merge($dbCriteria->params, array(':filter_activity' => $lastSearch->filter_activity,
-                                                                                ':filter_activitytype' => $lastSearch->filter_activitytype
+                $dbCriteria->addCondition('filter_activity = :filter_activity');
+                $dbCriteria->addCondition('filter_activitytype = :filter_activitytype');
+                $dbCriteria->addCondition('user_location = :user_location');
+
+                $dbCriteria->params    = array_merge($dbCriteria->params,
+                                                     array(':filter_activity'     => $lastSearch->filter_activity,
+                                                           ':filter_activitytype' => $lastSearch->filter_activitytype,
+                                                           ':user_location'       => $lastSearch->user_location
                                                      ));
             }
 
@@ -525,15 +544,28 @@ class ConciergeController extends Controller
     private function logSearch($argDoWhat, $argWithWhat, $argWhere, $argWhen)
     {
 
+        $searchFilterCityId = null;
+
+
         $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argWhere, 'when'=> $argWhen));
 
 
         if (!empty($argWhere))
         {
 
-            // /////////////////////////////////////////////////////////////////////
+            // /////////////////////////////////////////////////////////////////
+            // Get the city record details
+            // /////////////////////////////////////////////////////////////////
+            $modelSearchLocation            = City::model()->findByAttributes(array('city_name'=>trim($argWhere)));
+            if ($modelSearchLocation)
+            {
+                $searchFilterCityId         = $modelSearchLocation->city_id;
+            }
+
+
+            // /////////////////////////////////////////////////////////////////
             // Log place - Insert search log (update if search already exists)
-            // /////////////////////////////////////////////////////////////////////
+            // /////////////////////////////////////////////////////////////////
             $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argWhere));
             if(!$modelSearchLogSummary)
             {
@@ -593,8 +625,9 @@ class ConciergeController extends Controller
         $searchHistory = array('user_id'          => ((Yii::app()->user->id===null)?1:Yii::app()->user->id),
             'search_origin'      => 'concierge',
             'created_time'       => new CDbExpression('NOW()'),
+            'user_location'      => $searchFilterCityId,
             'filter_activity'    => $argDoWhat,
-            'filter_activitytype'   => $argWithWhat,
+            'filter_activitytype'=> $argWithWhat,
             'search_details'     => $serialisedSearchDetails
         );
         $modelSearchHistory  = new SearchHistory;
@@ -604,7 +637,7 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Save the search to the Session
         // /////////////////////////////////////////////////////////////////////
-        Yii::app()->session['last_saved_search_id'] = $modelSearchHistory->search_id;
+        Yii::app()->session['last_search_history_id'] = $modelSearchHistory->search_id;
 
 
     }
@@ -1019,7 +1052,7 @@ LIMIT 0 , $numberOfResults
         }
 
         // Do not action if there is no search saved in the session.
-        if (!isset(Yii::app()->session['last_saved_search_id']))
+        if (!isset(Yii::app()->session['last_search_history_id']))
         {
             echo CJSON::encode(array('result'=>false, 'message'=>'No search found'));
             Yii::app()->end();
@@ -1028,7 +1061,7 @@ LIMIT 0 , $numberOfResults
         // Search the search history log. The search history is a temporary transactional
         // ...log table and may be cleaned up from time to time for operational reasons. If
         // ...the search is no longer available, we exit with an error message.
-        $itemSearchLog = SearchHistory::model()->findByPk(Yii::app()->session['last_saved_search_id']);
+        $itemSearchLog = SearchHistory::model()->findByPk(Yii::app()->session[' ']);
 
         $searchDetails = unserialize($itemSearchLog->search_details);
 

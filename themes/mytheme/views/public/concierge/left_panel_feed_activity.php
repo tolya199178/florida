@@ -4,6 +4,7 @@
     <div id='feedresult'>
             <?php foreach ($model as $value) { ?>
                 <?php
+
                     $search_results = unserialize($value->search_details);
 
                     $doWhat                     = CHtml::encode($search_results['dowhat']);
@@ -28,13 +29,28 @@
                         }
                         else
                         {
-                            if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$value->user->image))
+
+                            if (!empty($value->user->image))
                             {
-                               $searchUserImage = Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$value->user->image;
+                                if(filter_var($value->user->image, FILTER_VALIDATE_URL))
+                                {
+                                    $searchUserImage = $value->user->image;
+                                }
+                                else
+                                {
+                                    if (file_exists(Yii::getPathOfAlias('webroot').'/uploads/images/user/'.$value->user->image))
+                                    {
+                                        $searchUserImage = Yii::app()->request->baseUrl .'/uploads/images/user/'.$value->user->image;
+                                    }
+                                    else
+                                    {
+                                        $searchUserImage   = Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH'];
+                                    }
+                                }
                             }
                             else
                             {
-                                $searchUserImage = Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg';
+                                $searchUserImage   = Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH'];
                             }
 
                             $searchUserName     = CHtml::link($value->user->first_name, Yii::app()->createUrl('/webuser/profile/show'), array('id' => $value->user->user_id));

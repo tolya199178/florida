@@ -76,16 +76,17 @@ class FBIdentity extends CUserIdentity
 
                 // Save new facebook user to database
                 $modelUser = new User();
-                $modelUser->facebook_id = $fbUserInfo['id'];
-                $modelUser->email = $fbUserInfo['email'];
-                $modelUser->activation_status = 'activated';
-                $modelUser->registered_with_fb = 'Y';
+                $modelUser->facebook_id         = $fbUserInfo['id'];
+                $modelUser->email               = $fbUserInfo['email'];
+                $modelUser->activation_status   = 'activated';
+                $modelUser->registered_with_fb  = 'Y';
                 $modelUser->registration_source = 'facebook';
-                $modelUser->facebook_name = $fbUserInfo['name'];
-                $modelUser->first_name = $fbUserInfo['first_name'];
-                $modelUser->last_name = $fbUserInfo['last_name'];
-                $modelUser->user_type = 'user';
-                $modelUser->status = 'active';
+                $modelUser->facebook_name       = $fbUserInfo['name'];
+                $modelUser->first_name          = $fbUserInfo['first_name'];
+                $modelUser->last_name           = $fbUserInfo['last_name'];
+                $modelUser->user_type           = 'user';
+                $modelUser->status              = 'active';
+                $modelUser['image']             = 'https://graph.facebook.com/' . $fbUserInfo['id'] . '/picture';
 
             } else {
                 // //////////////////////////////////////////////////////////////
@@ -108,8 +109,8 @@ class FBIdentity extends CUserIdentity
                 } elseif (($modelUser->facebook_id == $fbUserInfo['id']) && ($modelUser->email != $fbUserInfo['email'])) {
                     // The user matches on the facebook id only. This is an old
                     // ...user, with a new email address. Store the user details
-                    $modelUser->email = $fbUserInfo['email'];
-                    $modelUser->user_name = $fbUserInfo['email'];
+                    $modelUser->email       = $fbUserInfo['email'];
+                    $modelUser->user_name   = $fbUserInfo['email'];
                 } elseif (($modelUser->facebook_id != $fbUserInfo['id']) && ($modelUser->email == $fbUserInfo['email'])) {
                     // The user matches on an email address only. This is an old
                     // ...(possibly legacy) user, who is now logging in via
