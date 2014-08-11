@@ -413,9 +413,19 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         $lastTimestamp = Yii::app()->request->getQuery("last_timestamp", null);
 
+        // /////////////////////////////////////////////////////////////////////
+        // If a timestamp was not provided, then go back a week
+        // /////////////////////////////////////////////////////////////////////
         if (($lastTimestamp === null) OR ((int) $lastTimestamp == 0))
         {
-            $lastTimestamp = strtotime("-1 week");
+            if (!empty(Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE']))
+            {
+                $lastTimestamp = Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE'];
+            }
+            else
+            {
+                $lastTimestamp = strtotime("-1 week");
+            }
         }
 
 
@@ -431,7 +441,7 @@ class ConciergeController extends Controller
         // TODO: Move the search limit to parameters file
         $dbCriteria->condition = " unix_timestamp(created_time) > :lastTimestamp ";
         $dbCriteria->params    = array(':lastTimestamp' => $lastTimestamp);
-        $dbCriteria->limit     = 100;
+        $dbCriteria->limit     = Yii::app()->params['LEFTPANEL_QUERY_LIMIT'];
         $dbCriteria->order     = 'created_time DESC';
 
         if (isset(Yii::app()->session['last_saved_search_id']))
@@ -525,15 +535,28 @@ class ConciergeController extends Controller
     private function logSearch($argDoWhat, $argWithWhat, $argWhere, $argWhen)
     {
 
+        $searchFilterCityId = null;
+
+
         $serialisedSearchDetails = serialize(array('dowhat'=>$argDoWhat, 'withwhat'=>$argWithWhat, 'where'=> $argWhere, 'when'=> $argWhen));
 
 
         if (!empty($argWhere))
         {
 
-            // /////////////////////////////////////////////////////////////////////
+            // /////////////////////////////////////////////////////////////////
+            // Get the city record details
+            // /////////////////////////////////////////////////////////////////
+            $modelSearchLocation            = City::model()->findByAttributes(array('city_name'=>trim($argWhere)));
+            if ($modelSearchLocation)
+            {
+                $searchFilterCityId         = $modelSearchLocation->city_id;
+            }
+
+
+            // /////////////////////////////////////////////////////////////////
             // Log place - Insert search log (update if search already exists)
-            // /////////////////////////////////////////////////////////////////////
+            // /////////////////////////////////////////////////////////////////
             $modelSearchLogSummary = SearchLogSummary::model()->findByAttributes(array('search_tag' => $argWhere));
             if(!$modelSearchLogSummary)
             {
@@ -593,8 +616,9 @@ class ConciergeController extends Controller
         $searchHistory = array('user_id'          => ((Yii::app()->user->id===null)?1:Yii::app()->user->id),
             'search_origin'      => 'concierge',
             'created_time'       => new CDbExpression('NOW()'),
+            'user_location'      => $searchFilterCityId,
             'filter_activity'    => $argDoWhat,
-            'filter_activitytype'   => $argWithWhat,
+            'filter_activitytype'=> $argWithWhat,
             'search_details'     => $serialisedSearchDetails
         );
         $modelSearchHistory  = new SearchHistory;

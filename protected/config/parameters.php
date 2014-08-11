@@ -150,5 +150,27 @@ return array(
 
     //Version
     'VERSION' => '1.0',
-    'SYSTEM_USER' =>'careers,support'
+    'SYSTEM_USER' =>'careers,support',
+
+
+    // -------------------------------------------------------------------------
+    // Concierge runtime settings
+    // -------------------------------------------------------------------------
+    // Feed refresh interval (in seconds)
+    'LEFTPANEL_REFRESH_INTERVAL'    => '60',
+
+    // PHP time() compliant time interval expression to indicate how far in
+    // ...the search history to go back to. the value is applied to the PHP
+    // ...strtotime() function
+    // Example is
+    // "-1 week"    // ==> resolves to strtotime("-1 week");
+    // ...
+    'LEFTPANEL_HISTORY_BACKTRACE'   => '-1 week',
+
+    'LEFTPANEL_QUERY_LIMIT'         => '100',
+
+
+
+
+
 );

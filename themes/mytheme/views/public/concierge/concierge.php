@@ -197,10 +197,14 @@ h2{
 
 $baseUrl = $this->createAbsoluteUrl('/');
 
-$activityListUrl        = $baseUrl.'/concierge/activitylist/';
-$activityTypeListUrl    = $baseUrl.'/concierge/activitytypelist/';
+$activityListUrl            = $baseUrl.'/concierge/activitylist/';
+$activityTypeListUrl        = $baseUrl.'/concierge/activitytypelist/';
+
+$leftpanelRefreshInterval   = Yii::app()->params['LEFTPANEL_REFRESH_INTERVAL'];
 
 $script = <<<EOD
+
+    var last_timestamp = 0;
 
     $("[rel='tooltip']").tooltip();
 
@@ -379,30 +383,30 @@ $script = <<<EOD
     // /////////////////////////////////////////////////////////////////////////
     // Fetch updated feeds and load the left panel
     // /////////////////////////////////////////////////////////////////////////
-    var last_timestamp = 0;
+
     function getLeftPanelFeeds()
     {
-//     	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
+    	var url         = '$baseUrl/concierge/loadpanel/panel/left/last_timestamp/' + last_timestamp;
 
-//     	$.ajax({
-//     		type 		: 'GET',
-//     		url 		: url,
-//     	    data 		: null,
-//     		dataType 	: 'html'
-//     	})
-//     	// using the done promise callback
-//     	.done(function(data) {
+    	$.ajax({
+    		type 		: 'GET',
+    		url 		: url,
+    	    data 		: null,
+    		dataType 	: 'html'
+    	})
+    	// using the done promise callback
+    	.done(function(data) {
 
-//             var source = $('<div>' + data + '</div>');
+            var source = $('<div>' + data + '</div>');
 
-//             var feed_update_list = source.find('#feedresult').html();
-//             $('#left_panel_feed').prepend(feed_update_list);
+            var feed_update_list = source.find('#feedresult').html();
+            $('#left_panel_feed').prepend(feed_update_list);
 
-//             last_timestamp = source.find('#last_timestamp').html();
+            last_timestamp = source.find('#last_timestamp').html();
 
-//             $("time.timeago").timeago();
+            $("time.timeago").timeago();
 
-//     	});
+    	});
     }
 
 
@@ -420,7 +424,7 @@ $script = <<<EOD
             last_timestamp = -1;
        }
 
-    }, (1000 * 60)); // refresh every 60 seconds
+    }, (1000 * {$leftpanelRefreshInterval}));
 
 
 
@@ -436,6 +440,8 @@ $script = <<<EOD
     var withwhat_data    = $('#withwhat').select2('data');
 
     var where            = where_data.text;
+        where            = where.trim();
+
     // dowhat and withwhat are multiple select items
     var dowhat           = (dowhat_data.length > 0)?dowhat_data[0].text:'';
     var withwhat         = (withwhat_data.length > 0)?withwhat_data[0].text:'';
