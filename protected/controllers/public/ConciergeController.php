@@ -88,7 +88,7 @@ class ConciergeController extends Controller
 	    // Clear search
 	    // /////////////////////////////////////////////////////////////////////
 
-	    unset(Yii::app()->session['last_saved_search_id']);
+	    unset(Yii::app()->session['last_search_history_id']);
 
 	    // Get the user's location
         $myLocation = $this->getMyLocation();
@@ -444,10 +444,10 @@ class ConciergeController extends Controller
         $dbCriteria->limit     = Yii::app()->params['LEFTPANEL_QUERY_LIMIT'];
         $dbCriteria->order     = 'created_time DESC';
 
-        if (isset(Yii::app()->session['last_saved_search_id']))
+        if (isset(Yii::app()->session['last_search_history_id']))
         {
 
-            $lastSearch = SavedSearch::model()->findByPk(Yii::app()->session['last_saved_search_id']);
+            $lastSearch = SavedSearch::model()->findByPk(Yii::app()->session['last_search_history_id']);
 
             if ($lastSearch != null)
             {
@@ -628,7 +628,7 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // Save the search to the Session
         // /////////////////////////////////////////////////////////////////////
-        Yii::app()->session['last_saved_search_id'] = $modelSearchHistory->search_id;
+        Yii::app()->session['last_search_history_id'] = $modelSearchHistory->search_id;
 
 
     }
@@ -1043,7 +1043,7 @@ LIMIT 0 , $numberOfResults
         }
 
         // Do not action if there is no search saved in the session.
-        if (!isset(Yii::app()->session['last_saved_search_id']))
+        if (!isset(Yii::app()->session['last_search_history_id']))
         {
             echo CJSON::encode(array('result'=>false, 'message'=>'No search found'));
             Yii::app()->end();
@@ -1052,7 +1052,7 @@ LIMIT 0 , $numberOfResults
         // Search the search history log. The search history is a temporary transactional
         // ...log table and may be cleaned up from time to time for operational reasons. If
         // ...the search is no longer available, we exit with an error message.
-        $itemSearchLog = SearchHistory::model()->findByPk(Yii::app()->session['last_saved_search_id']);
+        $itemSearchLog = SearchHistory::model()->findByPk(Yii::app()->session['last_search_history_id']);
 
         $searchDetails = unserialize($itemSearchLog->search_details);
 
