@@ -1159,6 +1159,24 @@ ALTER TABLE `restaurant_import` ADD COLUMN sync_comment TEXT;
 ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL;
 
 -- ---------------------------------------------------------------------
+-- Ticket Network Category
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `tbl_tn_category`;
+
+ CREATE TABLE `tbl_tn_category` (
+  `tn_category_id`                  int(11) NOT NULL AUTO_INCREMENT,
+  `ChildCategoryDescription`        varchar(255),
+  `ChildCategoryID`                 int(11),
+  `GrandchildCategoryDescription`   varchar(255),
+  `GrandchildCategoryID`            int(11),
+  `ParentCategoryDescription`       varchar(255),
+  `ParentCategoryID`                int(11),
+  PRIMARY KEY (`tn_category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ---------------------------------------------------------------------
 -- Ticket Network Events
 -- ---------------------------------------------------------------------
 
