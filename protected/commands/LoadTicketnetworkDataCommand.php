@@ -43,18 +43,15 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
 
         date_default_timezone_set('America/New_York');
 
-
-        // Show the help screen and exit is the user requests
-        if (($args[0] == '-h') || ($args[0] == '--help'))
-        {
-            $this->showUsage();
-            exit();
-        }
-
         // Process the command line options
         $resolvedArgs = $this->resolveRequest($args);
         $userOptions = $resolvedArgs[1];
 
+        if (isset($userOptions['help']))
+        {
+            $this->showUsage();
+            Yii::app()->end();
+        }
         // Set default options or override them from the command line
         if (!isset($userOptions['categories']))
         {
@@ -100,14 +97,15 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
 
             foreach ($listCategories as $itemCategory)
             {
-                // Get the main category details from local storage
-                $parentCategoryId = $this->loadCategory($itemCategory->ParentCategoryDescription, $itemCategory->ParentCategoryID);
+                $modelcategory  = new TnCategory;
+                $modelcategory->ChildCategoryDescription        = $itemCategory->ChildCategoryDescription;
+                $modelcategory->ChildCategoryID                 = $itemCategory->ChildCategoryID;
+                $modelcategory->GrandchildCategoryDescription   = $itemCategory->GrandchildCategoryDescription;
+                $modelcategory->GrandchildCategoryID            = $itemCategory->GrandchildCategoryID;
+                $modelcategory->ParentCategoryDescription       = $itemCategory->ParentCategoryDescription;
+                $modelcategory->ParentCategoryID                = $itemCategory->ParentCategoryID;
 
-                // Get the main category details from local storage
-                $childCategoryId = $this->loadCategory($itemCategory->ChildCategoryDescription, $itemCategory->ChildCategoryID, $parentCategoryId);
-
-                // Get the grandchild category
-                $childCategoryId = $this->loadCategory($itemCategory->GrandchildCategoryDescription, $itemCategory->GrandchildCategoryID, $childCategoryId);
+                $modelcategory->save();
 
             }
         }
@@ -219,45 +217,6 @@ EOD;
         echo $usage;
     }
 
-    /**
-     * Get the category record.
-     * Add the category if it does not exist.
-     *
-     * @param
-     *            <none> <none>
-     *
-     * @return array validation rules for model attributes.
-     * @access public
-     */
-    private function loadCategory($categoryName, $categoryId, $parentCategoryId = null)
-    {
-
-        // Get the main category details from local storage
-        $modelCategory = EventCategory::model()->findByPk((int)$categoryId);
-
-        // If there is no local storage, or if it there is and details have
-        // ...changed. then local storage must be updated
-        if ($modelCategory == null)
-        {
-            $modelCategory = new EventCategory;
-        }
-
-        if ($modelCategory->category_name != $categoryNamen)
-        {
-            $modelCategory->category_name        = $categoryName;
-            $modelCategory->category_description = $categoryName;
-            $modelCategory->parent_id            = $parentCategoryId;
-
-            if ($modelCategory->save() === false)
-            {
-                echo 'Error saving category '.$categoryName."\n";
-                return null;
-            }
-
-        }
-        return $modelCategory->category_id;
-
-    }
 }
 
 ?>
