@@ -14,7 +14,7 @@
  */
 
  /**
- * TnCategory activerecord model class provides a mechanism to keep data and their
+ * TnImportCategory activerecord model class provides a mechanism to keep data and their
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-class TnCategory extends CActiveRecord
+class TnImportCategory extends CActiveRecord
 {
 
     /**
