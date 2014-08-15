@@ -671,7 +671,20 @@ ADD CONSTRAINT fk_event_user
      REFERENCES tbl_user(user_id);
 
      
-ALTER TABLE tbl_event ADD COLUMN `event_venue_ref`  int(11) NOT NULL;
+ALTER TABLE tbl_event ADD COLUMN `event_venue_ref`  int(11);
+
+ALTER TABLE tbl_event ADD COLUMN `venue_box_office_phone`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_directions`        varchar(4096);
+ALTER TABLE tbl_event ADD COLUMN `venue_parking`           varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_public_ransportation`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_url`  varchar(512);
+ALTER TABLE tbl_event ADD COLUMN `zip_code`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_capacity`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `event_rules`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `event_child_rules`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `notes`   text;
+  
+  
 
          
 -- ---------------------------------------------------------------------
