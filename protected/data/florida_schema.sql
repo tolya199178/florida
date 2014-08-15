@@ -670,6 +670,9 @@ ADD CONSTRAINT fk_event_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
 
+     
+ALTER TABLE tbl_event ADD COLUMN `event_venue_ref`  int(11) NOT NULL;
+
          
 -- ---------------------------------------------------------------------
 -- tbl_user_event
@@ -1203,7 +1206,35 @@ ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL
   PRIMARY KEY (`tn_event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ---------------------------------------------------------------------
+-- Ticket Network Events
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_tn_venue`;
 
+ CREATE TABLE `tbl_tn_venue` (
+  `tbl_tn_venue_id`                 int(11) NOT NULL AUTO_INCREMENT,
+  `tn_ID`                           int(11),
+  `tn_Name`                         varchar(255),
+  `tn_Street1`                      varchar(255),
+  `tn_Street2`                      varchar(255),
+  `tn_StateProvince`                varchar(255),
+  `tn_City`                         varchar(255),
+  `tn_Country`                      varchar(255),
+  `tn_BoxOfficePhone`               varchar(255),
+  `tn_Directions`                   varchar(255),
+  `tn_Parking`                      varchar(255),
+  `tn_PublicTransportation`         varchar(255),
+  `tn_URL`                          varchar(255),
+  `tn_ZipCode`                      varchar(255),
+  `tn_Capacity`                     varchar(255),
+  `tn_ChildRules`                   varchar(255),
+  `tn_Rules`                        varchar(255),
+  
+  `tn_Notes`                        text,
+  `tn_NumberOfConfigurations`       int(11),
+  `WillCall`                        varchar(255),
+  PRIMARY KEY (`tbl_tn_venue_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 -- ---------------------------------------------------------------------

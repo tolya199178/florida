@@ -37,10 +37,12 @@
  * @property string $external_event_source
  * @property string $external_event_id
  * @property integer $user_id
+ * @property integer $event_venue_ref
  *
  * The followings are the available model relations:
  * @property EventCategory $eventCategory
  * @property Business $eventBusiness
+ * @property EventCategory $eventCategory
  * @property City $eventCity
  * @property User $createdBy
  * @property User $modifiedBy
@@ -123,7 +125,8 @@ class Event extends CActiveRecord
 			       event_tag',                                            'required'),
 
 		    // Data types, sizes
-		    array('event_city_id, event_category_id, event_business_id',  'numerical', 'integerOnly'=>true),
+		    array('event_city_id, event_category_id, event_business_id,
+		           event_venue_ref',                                      'numerical', 'integerOnly'=>true),
 			array('event_title, cost',                                    'length', 'max'=>255),
 		    array('event_frequency',                                      'length', 'max'=>64),
 		    array('event_address1, event_address2, event_description',    'length', 'max'=>1024),
@@ -214,6 +217,7 @@ class Event extends CActiveRecord
 		    'external_event_source'  => 'External Event Source',
 		    'external_event_id'      => 'External Event',
 		    'user_id'                => 'User',
+		    'event_venue_ref'        => 'Event Venue',
 		);
 	}
 
@@ -270,6 +274,7 @@ class Event extends CActiveRecord
 		$criteria->compare('external_event_source',$this->external_event_source);
 		$criteria->compare('external_event_id',   $this->external_event_id,true);
 		$criteria->compare('user_id',             $this->user_id);
+		$criteria->compare('event_venue_ref',     $this->event_venue_ref);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
