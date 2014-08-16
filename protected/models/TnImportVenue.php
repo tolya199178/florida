@@ -27,15 +27,15 @@
  */
 
  /**
- * TnVenue activerecord model class provides a mechanism to keep data and their
+ * TnImportVenue activerecord model class provides a mechanism to keep data and their
  * ...relevant business rules. A model instant represents a single database row.
  * ...
  * ...Usage:
- * ...   $model = TnVenue::model()
+ * ...   $model = TnImportVenue::model()
  * ...or
- * ...   $model = new TnVenue;
+ * ...   $model = new TnImportVenue;
  * ...or
- * ...   $model = new TnVenue($scenario);
+ * ...   $model = new TnImportVenue($scenario);
  *
  * @package   Components
  * @author    Pradesh <pradesh@datacraft.co.za>
@@ -44,7 +44,7 @@
  * @version 1.0
  */
 
-class TnVenue extends CActiveRecord
+class TnImportVenue extends CActiveRecord
 {
 
     /**
