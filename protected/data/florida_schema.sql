@@ -1251,6 +1251,25 @@ ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL
 
 
 -- ---------------------------------------------------------------------
+-- Ticket Network Event Configuration
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_tn_venue_configuration`;
+
+ CREATE TABLE `tbl_tn_venue_configuration` (
+  `tbl_tn_configuration_id`         int(11) NOT NULL AUTO_INCREMENT,
+  `tn_ID`                           int(11),
+  `tn_Capacity`                     varchar(255),
+  `tn_MapSite`                      varchar(255),
+  `tn_MapURL`                       varchar(255),
+  `tn_TypeDescription`              varchar(255),
+  `tn_TypeID`                       varchar(255),
+  `tn_VenueID`                      varchar(255),
+  PRIMARY KEY (`tbl_tn_configuration_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+-- ---------------------------------------------------------------------
 -- Getyourguide Imports
 -- ---------------------------------------------------------------------
  DROP TABLE IF EXISTS `getyourguide_import`;
