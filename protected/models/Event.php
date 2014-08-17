@@ -37,10 +37,22 @@
  * @property string $external_event_source
  * @property string $external_event_id
  * @property integer $user_id
+ * @property integer $event_venue_ref
+ * @property string $venue_box_office_phone
+ * @property string $venue_directions
+ * @property string $venue_parking
+ * @property string $venue_public_ransportation
+ * @property string $venue_url
+ * @property string $zip_code
+ * @property string $venue_capacity
+ * @property string $venue_rules
+ * @property string $venue_child_rules
+ * @property string $tn_Notes
  *
  * The followings are the available model relations:
  * @property EventCategory $eventCategory
  * @property Business $eventBusiness
+ * @property EventCategory $eventCategory
  * @property City $eventCity
  * @property User $createdBy
  * @property User $modifiedBy
@@ -123,7 +135,8 @@ class Event extends CActiveRecord
 			       event_tag',                                            'required'),
 
 		    // Data types, sizes
-		    array('event_city_id, event_category_id, event_business_id',  'numerical', 'integerOnly'=>true),
+		    array('event_city_id, event_category_id, event_business_id,
+		           event_venue_ref',                                      'numerical', 'integerOnly'=>true),
 			array('event_title, cost',                                    'length', 'max'=>255),
 		    array('event_frequency',                                      'length', 'max'=>64),
 		    array('event_address1, event_address2, event_description',    'length', 'max'=>1024),
@@ -132,6 +145,12 @@ class Event extends CActiveRecord
 		    array('event_latitude, event_longitude',                      'length', 'max'=>10),
 		    array('external_event_source',                                'length', 'max'=>255),
 		    array('external_event_id',                                    'length', 'max'=>64),
+
+		    array('venue_box_office_phone, venue_rules , venue_parking,
+		           venue_public_ransportation, venue_url, zip_code,
+		           venue_capacity, venue_child_rules',                    'length', 'max'=>255),
+
+		    array('venue_directions, notes',                               'length', 'max'=>4096),
 
 		    // ranges
 		    array('is_featured, event_show_map,
@@ -214,6 +233,17 @@ class Event extends CActiveRecord
 		    'external_event_source'  => 'External Event Source',
 		    'external_event_id'      => 'External Event',
 		    'user_id'                => 'User',
+		    'event_venue_ref'        => 'Event Venue',
+			'venue_box_office_phone' => 'Venue Box Office Phone',
+			'venue_directions'       => 'Venue Directions',
+			'venue_parking'          => 'Venue Parking',
+			'venue_public_ransportation' => 'Venue Public Ransportation',
+			'venue_url'              => 'Venue Url',
+			'zip_code'               => 'Zip Code',
+			'venue_capacity'         => 'Venue Capacity',
+			'venue_rules'            => 'Venue Rules',
+			'venue_child_rules'      => 'Venue Child Rules',
+			'tn_Notes'               => 'Tn Notes',
 		);
 	}
 
@@ -267,9 +297,20 @@ class Event extends CActiveRecord
 		$criteria->compare('event_status',        $this->event_status,true);
 		$criteria->compare('cost',                $this->cost,true);
 		$criteria->compare('event_views',         $this->event_views);
-		$criteria->compare('external_event_source',$this->external_event_source);
+		$criteria->compare('external_event_source',   $this->external_event_source);
 		$criteria->compare('external_event_id',   $this->external_event_id,true);
 		$criteria->compare('user_id',             $this->user_id);
+		$criteria->compare('event_venue_ref',     $this->event_venue_ref);
+		$criteria->compare('venue_box_office_phone',  $this->venue_box_office_phone,true);
+		$criteria->compare('venue_directions',    $this->venue_directions,true);
+		$criteria->compare('venue_parking',       $this->venue_parking,true);
+		$criteria->compare('venue_public_ransportation',  $this->venue_public_ransportation,true);
+		$criteria->compare('venue_url',           $this->venue_url,true);
+		$criteria->compare('zip_code',            $this->zip_code,true);
+		$criteria->compare('venue_capacity',      $this->venue_capacity,true);
+		$criteria->compare('venue_rules',         $this->venue_rules,true);
+		$criteria->compare('venue_child_rules',   $this->venue_child_rules,true);
+		$criteria->compare('tn_Notes',            $this->tn_Notes,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

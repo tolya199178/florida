@@ -28,8 +28,11 @@ require_once __DIR__ . '/../extensions/ticket-network/src/Exception/CustomExcept
 require_once __DIR__ . '/../extensions/ticket-network/ticketnetwork.class.php';
 require_once __DIR__ . '/../extensions/ticket-network/ticketnetwork_category.class.php';
 require_once __DIR__ . '/../extensions/ticket-network/ticketnetwork_state.class.php';
+require_once __DIR__ . '/../extensions/ticket-network/ticketnetwork_venue.class.php';
 
 require_once __DIR__ . '/../extensions/ticket-network/tnsample.php';
+
+require_once __DIR__ . 'services_utils.php';
 
 
 
@@ -43,18 +46,15 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
 
         date_default_timezone_set('America/New_York');
 
-
-        // Show the help screen and exit is the user requests
-        if (($args[0] == '-h') || ($args[0] == '--help'))
-        {
-            $this->showUsage();
-            exit();
-        }
-
         // Process the command line options
         $resolvedArgs = $this->resolveRequest($args);
         $userOptions = $resolvedArgs[1];
 
+        if (isset($userOptions['help']))
+        {
+            $this->showUsage();
+            Yii::app()->end();
+        }
         // Set default options or override them from the command line
         if (!isset($userOptions['categories']))
         {
@@ -67,6 +67,14 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
         if (!isset($userOptions['events']))
         {
             $userOptions['events'] = 'yes';
+        }
+        if (!isset($userOptions['venues']))
+        {
+            $userOptions['venues'] = 'yes';
+        }
+        if (!isset($userOptions['performers']))
+        {
+            $userOptions['performers'] = 'yes';
         }
         if (isset($userOptions['startdate']))
         {
@@ -100,14 +108,15 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
 
             foreach ($listCategories as $itemCategory)
             {
-                // Get the main category details from local storage
-                $parentCategoryId = $this->loadCategory($itemCategory->ParentCategoryDescription, $itemCategory->ParentCategoryID);
+                $modelcategory  = new TnCategory;
+                $modelcategory->ChildCategoryDescription        = $itemCategory->ChildCategoryDescription;
+                $modelcategory->ChildCategoryID                 = $itemCategory->ChildCategoryID;
+                $modelcategory->GrandchildCategoryDescription   = $itemCategory->GrandchildCategoryDescription;
+                $modelcategory->GrandchildCategoryID            = $itemCategory->GrandchildCategoryID;
+                $modelcategory->ParentCategoryDescription       = $itemCategory->ParentCategoryDescription;
+                $modelcategory->ParentCategoryID                = $itemCategory->ParentCategoryID;
 
-                // Get the main category details from local storage
-                $childCategoryId = $this->loadCategory($itemCategory->ChildCategoryDescription, $itemCategory->ChildCategoryID, $parentCategoryId);
-
-                // Get the grandchild category
-                $childCategoryId = $this->loadCategory($itemCategory->GrandchildCategoryDescription, $itemCategory->GrandchildCategoryID, $childCategoryId);
+                $modelcategory->save();
 
             }
         }
@@ -184,7 +193,13 @@ class LoadTicketnetworkDataCommand extends CConsoleCommand
                         print_r($eventModel->attributes);
                         print_r($eventModel->getErrors());
 
+                        // Go ahead and read the next ine anyway.
+                        continue;
+
                     }
+
+                    // Getting here means a successful event record save. Save the venue details
+                    $this->getVenueDetails($eventDetails->VenueID);
 
                 }
 
@@ -220,44 +235,125 @@ EOD;
     }
 
     /**
-     * Get the category record.
-     * Add the category if it does not exist.
+     * Save the venue details
      *
-     * @param
-     *            <none> <none>
+     * @param integer venue_id The TN venue reference.
      *
-     * @return array validation rules for model attributes.
+     * @return boolean save result
      * @access public
      */
-    private function loadCategory($categoryName, $categoryId, $parentCategoryId = null)
+    private function getVenueDetails($venueId)
     {
 
-        // Get the main category details from local storage
-        $modelCategory = EventCategory::model()->findByPk((int)$categoryId);
+        // Get the venue details
+        $servicesHost       = "tnwebservices-test.ticketnetwork.com";
+        $servicesQuery      = "/tnwebservice/v3.1/tnwebservicestringinputs.asmx/GetVenue";
 
-        // If there is no local storage, or if it there is and details have
-        // ...changed. then local storage must be updated
-        if ($modelCategory == null)
+        $servicesParameters = http_build_query(
+            array('websiteConfigID'  => WEB_CONF_ID,
+                  'venueID'          => $venueId));
+
+        $serviceRequest     = $servicesHost.$servicesQuery.'?'.$servicesParameters;
+
+        $venueResults       = sendGetRequest($serviceRequest);
+        $venueXmlResults    = simplexml_load_string($venueResults);
+        $allVenues          = simpleXMLToArray($venueXmlResults);
+        $venuDetails        = $allVenues['Venue'];
+
+        $modelTnVenue       = TnImportVenue::model()->findByAttributes(array('tn_ID'=>$venueId));
+
+        if ($modelTnVenue)      // Already exists
         {
-            $modelCategory = new EventCategory;
+            return true;
+        }
+        else                    // Not found
+        {
+            // Save the venue details
+            $modelTnVenue                   = new TnImportVenue;
+
+            $modelTnVenue->tn_ID            = ((!empty($venuDetails['ID']))?$venuDetails['ID']:null);
+            $modelTnVenue->tn_Name          = ((!empty($venuDetails['Name']))?$venuDetails['Name']:null);
+            $modelTnVenue->tn_Street1       = ((!empty($venuDetails['Street1']))?$venuDetails['Street1']:null);
+            $modelTnVenue->tn_Street2       = ((!empty($venuDetails['Street2']))?$venuDetails['Street2']:null);
+            $modelTnVenue->tn_StateProvince = ((!empty($venuDetails['StateProvince']))?$venuDetails['StateProvince']:null);
+            $modelTnVenue->tn_City          = ((!empty($venuDetails['City']))?$venuDetails['City']:null);
+            $modelTnVenue->tn_Country       = ((!empty($venuDetails['Country']))?$venuDetails['Country']:null);
+            $modelTnVenue->tn_BoxOfficePhone = ((!empty($venuDetails['BoxOfficePhone']))?$venuDetails['BoxOfficePhone']:null);
+            $modelTnVenue->tn_Directions    = ((!empty($venuDetails['Directions']))?$venuDetails['Directions']:null);
+            $modelTnVenue->tn_Parking       = ((!empty($venuDetails['Parking']))?$venuDetails['Parking']:null);
+            $modelTnVenue->tn_PublicTransportation = ((!empty($venuDetails['PublicTransportation']))?$venuDetails['PublicTransportation']:null);
+            $modelTnVenue->tn_URL           = ((!empty($venuDetails['URL']))?$venuDetails['URL']:null);
+            $modelTnVenue->tn_ZipCode       = ((!empty($venuDetails['ZipCode']))?$venuDetails['ZipCode']:null);
+            $modelTnVenue->tn_Capacity      = ((!empty($venuDetails['Capacity']))?$venuDetails['Capacity']:null);
+            $modelTnVenue->tn_ChildRules    = ((!empty($venuDetails['ChildRules']))?$venuDetails['ChildRules']:null);
+            $modelTnVenue->tn_Rules         = ((!empty($venuDetails['Rules']))?$venuDetails['Rules']:null);
+            $modelTnVenue->tn_Notes         = ((!empty($venuDetails['Notes']))?$venuDetails['Notes']:null);
+            $modelTnVenue->tn_NumberOfConfigurations = ((!empty($venuDetails['NumberOfConfigurations']))?$venuDetails['NumberOfConfigurations']:null);
+            $modelTnVenue->WillCall         = ((!empty($venuDetails['WillCall']))?$venuDetails['WillCall']:null);
+
+            if ($modelTnVenue->save())
+            {
+                // Saved the venue ok. Get the venue configuration file
+                $this->getVenueConfigurationDetails($venueId);
+            }
+            else
+            {
+                echo 'Error saving venue details for venue id : '.$venuDetails['ID'].'. Continuing despite error';
+            }
         }
 
-        if ($modelCategory->category_name != $categoryNamen)
-        {
-            $modelCategory->category_name        = $categoryName;
-            $modelCategory->category_description = $categoryName;
-            $modelCategory->parent_id            = $parentCategoryId;
 
-            if ($modelCategory->save() === false)
+    }
+
+    /**
+     * Save the venue details
+     *
+     * @param integer venue_id The TN venue reference.
+     *
+     * @return boolean save result
+     * @access public
+     */
+    private function getVenueConfigurationDetails($venueId)
+    {
+
+        // Get the venue details
+        $servicesHost       = "tnwebservices-test.ticketnetwork.com";
+        $servicesQuery      = "/tnwebservice/v3.1/tnwebservicestringinputs.asmx/GetVenueConfigurations";
+
+        $servicesParameters = http_build_query(
+            array('websiteConfigID'  => WEB_CONF_ID,
+                  'venueID'          => $venueId));
+
+        $serviceRequest         = $servicesHost.$servicesQuery.'?'.$servicesParameters;
+
+        $venueResults           = sendGetRequest($serviceRequest);
+        $venueXmlResults        = simplexml_load_string($venueResults);
+        $allVenueConfigurations = simpleXMLToArray($venueXmlResults);
+
+        $lstVenueConfigurations = $allVenueConfigurations['VenueConfiguration'];
+
+        foreach ($lstVenueConfigurations as $itemVenueConfiguration)
+        {
+            $modelVenueConfiguration                        = new TnImportVenueConfiguration;
+            $modelVenueConfiguration->tn_ID                 = ((!empty($itemVenueConfiguration['ID']))?$itemVenueConfiguration['ID']:null);
+            $modelVenueConfiguration->tn_Capacity           = ((!empty($itemVenueConfiguration['Capacity']))?$itemVenueConfiguration['Capacity']:null);
+            $modelVenueConfiguration->tn_MapSite            = ((!empty($itemVenueConfiguration['MapSite']))?$itemVenueConfiguration['MapSite']:null);
+            $modelVenueConfiguration->tn_MapURL             = ((!empty($itemVenueConfiguration['MapURL']))?$itemVenueConfiguration['MapURL']:null);
+            $modelVenueConfiguration->tn_VenueID            = ((!empty($itemVenueConfiguration['VenueID']))?$itemVenueConfiguration['VenueID']:null);
+            $modelVenueConfiguration->tn_TypeID             = ((!empty($itemVenueConfiguration['TypeID']))?$itemVenueConfiguration['TypeID']:null);
+            $modelVenueConfiguration->tn_TypeDescription    = ((!empty($itemVenueConfiguration['TypeDescription']))?$itemVenueConfiguration['TypeDescription']:null);
+
+            if ($modelVenueConfiguration->save() === false)
             {
-                echo 'Error saving category '.$categoryName."\n";
-                return null;
+                echo 'Error saving venue configuration details for venue id : '.$venueId.'. Continuing despite error';
             }
 
         }
-        return $modelCategory->category_id;
 
     }
+
 }
+
+
 
 ?>

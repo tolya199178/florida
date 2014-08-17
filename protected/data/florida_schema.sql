@@ -670,6 +670,22 @@ ADD CONSTRAINT fk_event_user
      FOREIGN KEY (user_id) 
      REFERENCES tbl_user(user_id);
 
+     
+ALTER TABLE tbl_event ADD COLUMN `event_venue_ref`  int(11);
+
+ALTER TABLE tbl_event ADD COLUMN `venue_box_office_phone`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_directions`        varchar(4096);
+ALTER TABLE tbl_event ADD COLUMN `venue_parking`           varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_public_ransportation`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_url`  varchar(512);
+ALTER TABLE tbl_event ADD COLUMN `zip_code`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `venue_capacity`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `event_rules`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `event_child_rules`  varchar(255);
+ALTER TABLE tbl_event ADD COLUMN `notes`   text;
+  
+  
+
          
 -- ---------------------------------------------------------------------
 -- tbl_user_event
@@ -713,6 +729,10 @@ ADD CONSTRAINT fk_event_category_category_parent
      REFERENCES tbl_event_category(category_id);
      
 ALTER TABLE tbl_event_category ADD COLUMN `search_tags`  text  DEFAULT NULL;
+ALTER TABLE tbl_event_category ADD COLUMN `external_reference`  VARCHAR(64)  DEFAULT NULL;
+ALTER TABLE tbl_event_category ADD COLUMN `external_source`  VARCHAR(128)  DEFAULT NULL;
+
+
 
 
 -- ---------------------------------------------------------------------
@@ -1155,6 +1175,24 @@ ALTER TABLE `restaurant_import` ADD COLUMN sync_comment TEXT;
 ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL;
 
 -- ---------------------------------------------------------------------
+-- Ticket Network Category
+-- ---------------------------------------------------------------------
+
+ DROP TABLE IF EXISTS `tbl_tn_category`;
+
+ CREATE TABLE `tbl_tn_category` (
+  `tn_category_id`                  int(11) NOT NULL AUTO_INCREMENT,
+  `ChildCategoryDescription`        varchar(255),
+  `ChildCategoryID`                 int(11),
+  `GrandchildCategoryDescription`   varchar(255),
+  `GrandchildCategoryID`            int(11),
+  `ParentCategoryDescription`       varchar(255),
+  `ParentCategoryID`                int(11),
+  PRIMARY KEY (`tn_category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ---------------------------------------------------------------------
 -- Ticket Network Events
 -- ---------------------------------------------------------------------
 
@@ -1181,6 +1219,53 @@ ALTER TABLE `restaurant_import` ADD COLUMN sync_business_id int(11) DEFAULT NULL
   PRIMARY KEY (`tn_event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ---------------------------------------------------------------------
+-- Ticket Network Events
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_tn_venue`;
+
+ CREATE TABLE `tbl_tn_venue` (
+  `tbl_tn_venue_id`                 int(11) NOT NULL AUTO_INCREMENT,
+  `tn_ID`                           int(11),
+  `tn_Name`                         varchar(255),
+  `tn_Street1`                      varchar(255),
+  `tn_Street2`                      varchar(255),
+  `tn_StateProvince`                varchar(255),
+  `tn_City`                         varchar(255),
+  `tn_Country`                      varchar(255),
+  `tn_BoxOfficePhone`               varchar(255),
+  `tn_Directions`                   varchar(255),
+  `tn_Parking`                      varchar(255),
+  `tn_PublicTransportation`         varchar(255),
+  `tn_URL`                          varchar(255),
+  `tn_ZipCode`                      varchar(255),
+  `tn_Capacity`                     varchar(255),
+  `tn_ChildRules`                   varchar(255),
+  `tn_Rules`                        varchar(255),
+  
+  `tn_Notes`                        text,
+  `tn_NumberOfConfigurations`       int(11),
+  `WillCall`                        varchar(255),
+  PRIMARY KEY (`tbl_tn_venue_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ---------------------------------------------------------------------
+-- Ticket Network Event Configuration
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_tn_venue_configuration`;
+
+ CREATE TABLE `tbl_tn_venue_configuration` (
+  `tbl_tn_configuration_id`         int(11) NOT NULL AUTO_INCREMENT,
+  `tn_ID`                           int(11),
+  `tn_Capacity`                     varchar(255),
+  `tn_MapSite`                      varchar(255),
+  `tn_MapURL`                       varchar(255),
+  `tn_TypeDescription`              varchar(255),
+  `tn_TypeID`                       varchar(255),
+  `tn_VenueID`                      varchar(255),
+  PRIMARY KEY (`tbl_tn_configuration_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
