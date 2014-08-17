@@ -2356,7 +2356,21 @@ CREATE TABLE IF NOT EXISTS `manta_business_import` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
-  
+-- ---------------------------------------------------------------------
+-- throwaway batch log
+-- 2014 08 18
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `batch_log`;
+
+CREATE TABLE IF NOT EXISTS `batch_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tag` varchar(255),
+  `log_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `message` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
