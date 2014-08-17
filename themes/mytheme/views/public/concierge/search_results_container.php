@@ -128,6 +128,12 @@
 </style>
 
 
+<?php
+
+// print_r($listEvent);exit;
+
+?>
+
 
 <!--  Business search results -->
 <div class="container">
@@ -160,17 +166,7 @@
 				</div>
 
 				<div class="row margin-top-10">
-
-                    <?php
-                        // $this->renderPartial('result_event_details', array('data' => $listEvent));
-
-                        foreach ($listEvent as $eventItem)
-                        {
-                            $this->renderPartial('result_event_details', array('eventItem' => $eventItem));
-                            // $this->renderPartial('result_business_entity', array('data'              => $objBusiness));
-                        }
-                    ?>
-
+				    <?php $this->renderPartial('result_event_details', array('listEvent' => $listEvent)); ?>
 				</div>
 			</div>
 		</div>
