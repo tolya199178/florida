@@ -2322,6 +2322,40 @@ CREATE TABLE IF NOT EXISTS `tbl_my_invitation_attendee` (
 ALTER TABLE `tbl_my_invitation_attendee`
   ADD CONSTRAINT `invite_attendee_invitation` FOREIGN KEY (`invitation_id`) REFERENCES `tbl_my_invitation` (`invitation_id`),
   ADD CONSTRAINT `invite_attendee__user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`user_id`);
+
+  
+-- ---------------------------------------------------------------------
+-- Manta original data import file
+-- 2014 08 18
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `manta_business_import`;
+
+CREATE TABLE IF NOT EXISTS `manta_business_import` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `import_record_id` int(11) NOT NULL,
+  `breadcrumb` VARCHAR(512),
+  `category` VARCHAR(512),
+  `sub_category` VARCHAR(512),
+  `industry` VARCHAR(512),
+  `company_name` VARCHAR(512),
+  `address` VARCHAR(512),
+  `city` VARCHAR(512),
+  `state` VARCHAR(512),
+  `zip` VARCHAR(512),
+  `phone` VARCHAR(512),
+  `website` VARCHAR(512),
+  `email` VARCHAR(512),
+  `contact` VARCHAR(512),
+  `brands` VARCHAR(512),
+  `latitude` VARCHAR(512),
+  `longitude` VARCHAR(512),
+  `businesshours` VARCHAR(512),
+  `manta_url` VARCHAR(512),
+  `keywords` VARCHAR(512),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
   
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
