@@ -442,6 +442,9 @@ ALTER TABLE tbl_business CHANGE COLUMN `star_rating` `star_rating`  double      
 
 ALTER TABLE tbl_business ADD COLUMN `is_for_review` enum('Y', 'N') DEFAULT 'N';
 
+ALTER TABLE tbl_business ADD COLUMN `contact`  VARCHAR(1024)  DEFAULT NULL;
+
+
 -- ---------------------------------------------------------------------
 -- Business User
 -- ---------------------------------------------------------------------

@@ -51,6 +51,7 @@
  * @property string $report_closed_reference
  * @property integer $report_closed_by
  * @property string $report_closed_date
+* @property string $contact
  *
  *
  * The followings are the available model relations:
@@ -174,6 +175,7 @@ class Business extends CActiveRecord
 		    array('business_type',                                                'length', 'max'=>128),
 		    array('opening_time, closing_time',                                   'length', 'max'=>255),
 		    array('import_reference, import_source',                              'length', 'max'=>255),
+		    array('contact',                                                      'length', 'max'=>1024),
 
 		    // ranges
 			array('business_allow_review,
@@ -197,7 +199,7 @@ class Business extends CActiveRecord
 			       add_request_processed_by, add_request_rejection_reason, claim_status, claim_processing_time,
 			       claimed_by, claim_rejection_reason, is_active, is_featured, is_closed, activation_code,
 			       activation_status, activation_time, star_rating, room_count, business_type
-			       low_rate, opening_time, closing_time', 'safe', 'on'=>'search'),
+			       low_rate, opening_time, closing_time, contact', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -285,6 +287,7 @@ class Business extends CActiveRecord
 		    'report_closed_reference'            => 'Report Closed Reference',
 		    'report_closed_by'                   => 'Report Closed By',
 		    'report_closed_date'                 => 'Report Closed Date',
+		    'contact'                            => 'Contact',
 		);
 	}
 
@@ -353,6 +356,7 @@ class Business extends CActiveRecord
 		$criteria->compare('report_closed_reference',         $this->report_closed_reference,true);
 		$criteria->compare('report_closed_by',                $this->report_closed_by);
 		$criteria->compare('report_closed_date',              $this->report_closed_date);
+		$criteria->compare('contact',                         $this->contact);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
