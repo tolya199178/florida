@@ -417,7 +417,7 @@ class ConciergeController extends Controller
         // /////////////////////////////////////////////////////////////////////
         // If a timestamp was not provided, then go back a week
         // /////////////////////////////////////////////////////////////////////
-        if (!empty($lastTimestamp))
+        if (empty($lastTimestamp))
         {
             if (!empty(Yii::app()->params['LEFTPANEL_HISTORY_BACKTRACE']))
             {
@@ -430,7 +430,7 @@ class ConciergeController extends Controller
         }
         else
         {
-            $lastTimestamp = strtotime("-1 week");
+            $lastTimestamp = strtotime($lastTimestamp);
         }
 
 
