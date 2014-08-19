@@ -57,7 +57,7 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
         // /////////////////////////////////////////////////////////////////////
 
         $dataProvider = new CActiveDataProvider('MantaBusinessImport');
-        $providerIterator = new CDataProviderIterator($dataProvider);
+        $providerIterator = new CDataProviderIterator($dataProvider, (int) 1000);
 
 
         $recordsProcessed       = 0;
@@ -67,6 +67,8 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
         $toplevelCategoryId     = $this->addCategory('Manta');
 
         $qryDisableKeyChecks = Yii::app()->db->createCommand("SET foreign_key_checks = 0;")->execute();
+
+        $optionOverwrite = false;
 
 
         echo "\n";
@@ -82,7 +84,6 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
             // For now, we just write records without checking that they
             // already exist;
             // ////////////////////////////////////////////////////////////////
-            $optionOverwrite = true;
 
             if ($optionOverwrite === false)
             {
@@ -90,18 +91,35 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
                 // Check if the business exists by checking the biz name
                 // ...and location? and ??  // TODO: Check with Client
                 // ////////////////////////////////////////////////////////////////
-                $recBusiness = Business::model()->findByAttributes(
-                    array('business_name' => $recImportedBusiness->company_name
-                    ));
+                $recBusiness = Yii::app()->db->createCommand()
+                                         ->select('business_id')
+                                         ->from('tbl_business')
+                                         ->where('business_name=:business_name AND image=:image',
+                                                array(':business_name'=>$recImportedBusiness->company_name,
+                                                      ':image'=>$recImportedBusiness->manta_url))
+                                         ->limit('1')
+                                         ->queryRow();
 
-                // Do not process an existing business record
-                if ($recBusiness != null)
+                if ($recBusiness != false)
                 {
-                    $rowOutput .= ' ** Record already exists at position ' . $recBusiness->business_id;
+                    $rowOutput .= ' ** Record already exists at position ' . $recordsProcessed;
                     $rowOutput .= ' ** Ingoring.' . "\n";
+
+                    // /////////////////////////////////////////////////////////////////
+                    // Log the row putput
+                    // /////////////////////////////////////////////////////////////////
+                    $rowLogEntry = Yii::app()->db->createCommand()->insert('batch_log',
+                                                        array('tag'     => 'manta_import',
+                                                            'message' => $rowOutput
+                                                        ));
+
                     continue;
                 }
             }
+
+            // NOTE: Use this trick to restart the sync job. Once we reach here. Set the  option to
+            // NOTE: ...TRUE for all proc
+            $optionOverwrite = true;
 
 
             // ////////////////////////////////////////////////////////////////
