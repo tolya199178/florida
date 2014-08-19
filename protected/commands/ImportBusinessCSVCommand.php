@@ -9,16 +9,19 @@ class ImportBusinessCSVCommand extends CConsoleCommand
             $this->showUsage();
             exit();
         }
-        
+
         $csvFileName = $args[0];
-        
+
 
         try {
-            $transaction = Yii::app()->db->beginTransaction();
+            // $transaction = Yii::app()->db->beginTransaction();
             $handle = fopen($csvFileName, "r");
             $row = 1;
 
-            while ( ($data = fgetcsv($handle) ) !== FALSE )
+            $business_import_command = Yii::app()->db->createCommand();
+
+            while ( ($data = fgetcsv($handle, null, "\t") ) !== FALSE )
+
             {
                 $number_of_fields = count($data);
                 if ($row == 1)
@@ -37,21 +40,22 @@ class ImportBusinessCSVCommand extends CConsoleCommand
                         $data_array[$header_array[$c]] = $data[$c];
                     }
 
-                    $objHotel = new HotelImport;
-                    $objHotel->attributes = $data_array;
-                    $objHotel->save();                    
-                    
+                   // print_r($data_array);exit;
+
+                   $business_import_command->insert('manta_business_import', $data_array);
+
+                    //  print_r($business_import_command->text);exit;
                 }
                 $row++;
             }
-            
-            
-            $transaction->commit();
+
+
+        //    $transaction->commit();
         } catch (Exception $error) {
             print_r($objHotel);
-            $transaction->rollback();
+       //     $transaction->rollback();
         }
-        
+
         $numRecords = $row - 2;     // One for header, one for end of loop
         echo "\n\nFinished.\nLoaded $numRecords records.\n";
         Yii::app()->end();
@@ -66,11 +70,11 @@ Usage: yiic ImportBusinessCSV [filename] [overwrite]
 
 where :
 -filename	  {filename} - Path to CSV file to import
--overwrite	  yes|no     - Option to overwrite existing record. 
+-overwrite	  yes|no     - Option to overwrite existing record.
 
 
 EOD;
-        
+
         echo $usage;
     }
 }

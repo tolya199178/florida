@@ -17,7 +17,7 @@ return array(
 					'username' => 'root',
 					'password' => 'bluebell',
 					'charset' => 'utf8',
-			        'tablePrefix' => 'tbl_',
+			        	'tablePrefix' => 'tbl_',
 					'enableParamLogging' => true,
 			),
         'log'=>array(
@@ -29,13 +29,13 @@ return array(
                     'logFile'=>'console_info',
                     'maxLogFiles'=>10
                 ),
-                array(
-                    'class'=>'CFileLogRoute',
-                    'levels'=>'trace',
-                    'logFile'=>'console_info',
-                    'maxLogFiles'=>10,
-                    'categories'=>'system.db.CDbCommand'
-                ),
+//                array(
+//                    'class'=>'CFileLogRoute',
+//                    'levels'=>'trace',
+//                    'logFile'=>'console_info',
+//                    'maxLogFiles'=>10,
+//                    'categories'=>'system.db.CDbCommand'
+//                ),
                 array(
                     'class'=>'CFileLogRoute',
                     'levels'=>'trace, error, warning',
