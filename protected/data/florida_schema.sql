@@ -681,6 +681,8 @@ ALTER TABLE tbl_event ADD COLUMN `venue_directions`        varchar(4096);
 ALTER TABLE tbl_event ADD COLUMN `venue_parking`           varchar(255);
 ALTER TABLE tbl_event ADD COLUMN `venue_public_ransportation`  varchar(255);
 ALTER TABLE tbl_event ADD COLUMN `venue_url`  varchar(512);
+ALTER TABLE tbl_event ADD COLUMN `venue_interactive_url`  varchar(512);
+ALTER TABLE tbl_event ADD COLUMN `event_url`  varchar(512);
 ALTER TABLE tbl_event ADD COLUMN `zip_code`  varchar(255);
 ALTER TABLE tbl_event ADD COLUMN `venue_capacity`  varchar(255);
 ALTER TABLE tbl_event ADD COLUMN `event_rules`  varchar(255);

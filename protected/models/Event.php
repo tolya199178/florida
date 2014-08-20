@@ -48,6 +48,8 @@
  * @property string $venue_rules
  * @property string $venue_child_rules
  * @property string $tn_Notes
+ * @property string $venue_interactive_url
+ * @property string $event_url
  *
  * The followings are the available model relations:
  * @property EventCategory $eventCategory
@@ -148,7 +150,8 @@ class Event extends CActiveRecord
 
 		    array('venue_box_office_phone, venue_rules , venue_parking,
 		           venue_public_ransportation, venue_url, zip_code,
-		           venue_capacity, venue_child_rules',                    'length', 'max'=>255),
+		           venue_capacity, venue_child_rules, event_url,
+		           venue_interactive_url',                                'length', 'max'=>255),
 
 		    array('venue_directions, notes',                               'length', 'max'=>4096),
 
@@ -244,6 +247,8 @@ class Event extends CActiveRecord
 			'venue_rules'            => 'Venue Rules',
 			'venue_child_rules'      => 'Venue Child Rules',
 			'tn_Notes'               => 'Tn Notes',
+		    'venue_interactive_url'      => 'Venue Interactive Url',
+		    'event_url'      => 'Event Url',
 		);
 	}
 
@@ -311,6 +316,8 @@ class Event extends CActiveRecord
 		$criteria->compare('venue_rules',         $this->venue_rules,true);
 		$criteria->compare('venue_child_rules',   $this->venue_child_rules,true);
 		$criteria->compare('tn_Notes',            $this->tn_Notes,true);
+		$criteria->compare('venue_interactive_url',   $this->venue_interactive_url,true);
+		$criteria->compare('event_url',           $this->event_url,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
