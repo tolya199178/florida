@@ -556,6 +556,34 @@ class CalendarController extends Controller
 	}
 
 	/**
+	 * Displays the event booking page.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionMakebooking()
+	{
+
+	    $argEventId        = (int) Yii::app()->request->getQuery('id', 0);
+
+	    if ($argEventId == 0)
+	    {
+	        throw new CHttpException(404,'The requested page does not exist.');
+	    }
+
+	    $itemEvent         = Event::model()->findByPk($argEventId);
+
+	    if ($itemEvent->external_event_source == "ticketnetwork")
+	    {
+	        $this->render('ticketnetwork/event_booking', array('eventItem' => $itemEvent));
+	    }
+
+	}
+
+
+	/**
 	 * Delete images for the event. Normally invoked when event is being deleted.
 	 *
 	 * @param string $imageFileName the name of the file
