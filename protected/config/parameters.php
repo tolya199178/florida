@@ -133,20 +133,21 @@ return array(
 
 
     //Ticket Net work
-    'SITE_IP' => '209.208.92.70',
-    'BROKERID' => '1447',
-    'SITENO' => '6',
-    'SITECONFIG' => '11150',
-
-    //Getyourguide
-    'GG_CATEGORYLIST' => 'https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=category_list',
-    'GG_DESTINATIONLIST' => 'https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=destination_list',
-    'GG_API_CONTENTS' => 'https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=product_list&where=florida',
+    'TN_SITE_IP'        => '209.208.92.70',
+    'TN_BROKERID'       => '1447',
+    'TN_SITENO'         => '5',
+    'TN_SITECONFIG'     => '11150',
 
     //TicketNetwork
-    'TN_URL' => "https://tickettransaction2.com/Checkout.aspx?brokerid={brokerid}&sitenumber={sitenumber}&tgid={tgid}&treq=1&evtID={evtID}&price={price}&SessionId={SessionId}",
-    'WSDL' => "http://tnwebservices.ticketnetwork.com/tnwebservice/v3.2/TNWebServiceStringInputs.asmx?WSDL",
+    'TN_URL'    => "https://tickettransaction2.com/Checkout.aspx?brokerid={brokerid}&sitenumber={sitenumber}&tgid={tgid}&treq=1&evtID={evtID}&price={price}&SessionId={SessionId}",
+    'WSDL'      => "http://tnwebservices.ticketnetwork.com/tnwebservice/v3.2/TNWebServiceStringInputs.asmx?WSDL",
 
+
+
+    //Getyourguide
+    'GG_CATEGORYLIST'       => 'https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=category_list',
+    'GG_DESTINATIONLIST'    => 'https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=destination_list',
+    'GG_API_CONTENTS'       => 'https://api.getyourguide.com/?partner_id=5073458F48&language=en&q=product_list&where=florida',
 
     //Version
     'VERSION' => '1.0',
@@ -157,7 +158,7 @@ return array(
     // Concierge runtime settings
     // -------------------------------------------------------------------------
     // Feed refresh interval (in seconds)
-    'LEFTPANEL_REFRESH_INTERVAL'    => '60',
+    'LEFTPANEL_REFRESH_INTERVAL'    => '6000',
 
     // PHP time() compliant time interval expression to indicate how far in
     // ...the search history to go back to. the value is applied to the PHP

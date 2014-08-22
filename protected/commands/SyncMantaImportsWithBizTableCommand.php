@@ -52,6 +52,10 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
 
         ini_set('memory_limit', '-1');
 
+        $qryDisableKeyChecks = Yii::app()->db->createCommand("LOCK TABLES tbl_city WRITE, manta_business_import WRITE, manta_business_import AS `t` WRITE, tbl_business WRITE, tbl_business_category WRITE, tbl_category WRITE, batch_log WRITE")->execute();
+        $qryDisableKeyChecks = Yii::app()->db->createCommand("SET foreign_key_checks = 0")->execute();
+
+
         // /////////////////////////////////////////////////////////////////////
         // Read all ImportedBusiness records
         // /////////////////////////////////////////////////////////////////////
@@ -65,8 +69,6 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
 
         // Set up a top level category for Manta
         $toplevelCategoryId     = $this->addCategory('Manta');
-
-        $qryDisableKeyChecks = Yii::app()->db->createCommand("SET foreign_key_checks = 0;")->execute();
 
         $optionOverwrite = false;
 
@@ -87,6 +89,7 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
 
             if ($optionOverwrite === false)
             {
+
                 // ////////////////////////////////////////////////////////////////
                 // Check if the business exists by checking the biz name
                 // ...and location? and ??  // TODO: Check with Client
@@ -100,18 +103,19 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
                                          ->limit('1')
                                          ->queryRow();
 
+
                 if ($recBusiness != false)
                 {
-                    $rowOutput .= ' ** Record already exists at position ' . $recordsProcessed;
-                    $rowOutput .= ' ** Ingoring.' . "\n";
+//                     $rowOutput .= ' ** Record already exists at position ' . $recordsProcessed;
+//                     $rowOutput .= ' ** Ingoring.' . "\n";
 
-                    // /////////////////////////////////////////////////////////////////
-                    // Log the row putput
-                    // /////////////////////////////////////////////////////////////////
-                    $rowLogEntry = Yii::app()->db->createCommand()->insert('batch_log',
-                                                        array('tag'     => 'manta_import',
-                                                            'message' => $rowOutput
-                                                        ));
+//                     // /////////////////////////////////////////////////////////////////
+//                     // Log the row putput
+//                     // /////////////////////////////////////////////////////////////////
+//                     $rowLogEntry = Yii::app()->db->createCommand()->insert('batch_log',
+//                                                         array('tag'     => 'manta_import',
+//                                                             'message' => $rowOutput
+//                                                         ));
 
                     continue;
                 }
@@ -249,7 +253,8 @@ class SyncMantaImportsWithBizTableCommand extends CConsoleCommand
 
         }
 
-        $qryEnableKeyChecks = Yii::app()->db->createCommand("SET foreign_key_checks = 1;")->execute();
+        $qryEnableKeyChecks = Yii::app()->db->createCommand("SET foreign_key_checks = 1")->execute();
+        // $qryDisableKeyChecks = Yii::app()->db->createCommand("UNLOCK TABLES")->execute();
 
 
         echo "\n\nFinished.\nLoaded $recordsProcessed records.\nSucessful loads : $recordsSuccessfull\n";

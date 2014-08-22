@@ -1,4 +1,3 @@
-
 <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
 <?php if ( (!empty($event->event_latitude)) && (!empty($event->event_longitude)) ) { ?>
@@ -36,7 +35,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 	top: 66px;
 	bottom: 3px;
 	/*   left: 0px; */
-	width: 74%;
+	width: 100%;
 	padding-top: 10px;
 	padding-right: 10px;
 	padding-bottom: 10px;
@@ -57,6 +56,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 
 <div class='row' id='mainpanel'>
+
+    <?php echo CHtml::link('Make a booking', Yii::app()->createUrl('calendar/calendar/makebooking/', array('id' => $event->event_id  )), array('title' => $event->event_title)); ?>
+
+
 
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 
@@ -128,3 +131,4 @@ google.maps.event.addDomListener(window, 'load', initialize);
     </div>
 
 </div>
+

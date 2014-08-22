@@ -217,7 +217,7 @@ class SyncTnEventsCommand extends CConsoleCommand
                 $recEvent->event_title              = $recTnEvent->tn_event_name;
                 $recEvent->event_description        = $recTnEvent->tn_event_name;
                 $recEvent->event_start_date         = $recTnEvent->tn_date;
-                $recEvent->event_end_date           = $recTnEvent->tn_date;
+                $recEvent->event_end_date           = $recTnEvent->tn_display_date;
                 $recEvent->event_address1           = $recTnEvent->tn_venue;
                 $recEvent->event_city_id            = $cityId;
                 $recEvent->event_show_map           = 'N';
@@ -231,22 +231,18 @@ class SyncTnEventsCommand extends CConsoleCommand
 
                 $recEvent->event_tag                = implode(",", $tagEvents);
 
-                // We assign the event to teh control business.
+                // We assign the event to the control business.
                 $recEvent->event_business_id        = 1;
 
                 $recEvent->event_category_id        = $modelChildCategory->category_id;
 
-                $recEvent->event_photo              = $recTnEvent->tn_map_url;
-
-
-
-
+                $recEvent->venue_url                = $recTnEvent->tn_map_url;
+                $recEvent->venue_interactive_url    = $recTnEvent->tn_interactive_map_url;
 
 
                 // NOTE: The following fields from the business tables are not set
                 // NOTE: ...explicitly and remain unset or use default values.
-                // $recEvent->event_start_time              = '';
-                // $recEvent->event_end_time                = '';
+
                 // $recEvent->event_frequency               = 0;
                 // $recEvent->event_address2                = 0;
                 // $recEvent->event_street                  = 0;

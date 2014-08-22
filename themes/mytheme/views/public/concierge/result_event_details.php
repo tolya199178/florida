@@ -170,6 +170,11 @@ body {
         width: 120px;
         float: left;
     }
+    .event_thumbnail {
+        width: 120px;
+        float: left;
+    }
+
     .event-list>li>.info {
         background-color: rgb(245, 245, 245);
         overflow: hidden;
@@ -214,7 +219,7 @@ body {
         padding: 10px 0px 9px;
     }
 }
-            </style>
+</style>
 
             <div class="container">
                 <div class="row">
@@ -227,21 +232,26 @@ body {
 
                         <div class="col-sm-6">
                             <ul class="event-list">
-                                <li class="col-sm-4"><time datetime="<?php echo  CHtml::encode($eventItem['event_start_date']); ?>">
-                                        <span class="day"><?php echo date("j", strtotime($eventItem['event_start_date'])); ?></span> <span class="month"><?php echo date("M", strtotime($eventItem['event_start_date'])); ?></span>
-                                        <span class="year">2014</span> <span class="time">ALL
-                                            DAY</span>
-                                    </time> <img alt="<?php echo CHtml::encode($eventTitle); ?>"
-                                    src="<?php echo  CHtml::encode($eventItem['event_photo']); ?>" />
-                                    <div class="info">
-                                        <h2 class="title"><?php echo CHtml::encode($eventTitle); ?></h2>
-                                        <p class="desc"><?php echo  CHtml::encode($eventDescription); ?></p>
-                                        <p class="address"><?php echo  CHtml::encode($eventItem['event_address1']); ?></p>
-                							<ul>
-                								<li style="width:50%;"><a href="#website"><span class="fa fa-globe"></span> Website</a></li>
-                								<li style="width:50%;"><span class="fa fa-money"></span> $ <?php echo  CHtml::encode($eventItem['cost']); ?></li>
-                							</ul>
-                                    </div>
+                                <li class="col-sm-4">
+                                        <time datetime="<?php echo  CHtml::encode($eventItem['event_start_date']); ?>">
+                                            <span class="day"><?php echo date("j", strtotime($eventItem['event_start_date'])); ?></span>
+                                            <span class="month"><?php echo date("M", strtotime($eventItem['event_start_date'])); ?></span>
+                                            <span class="year"><?php echo date("Y", strtotime($eventItem['event_start_date'])); ?></span>
+<!--                                         <span class="time">ALL DAY</span> -->
+                                        </time>
+                                        <a href="<?php echo Yii::app()->createUrl('//calendar/calendar/showevent', array('event' => $eventItem['event_id'])); ?>">
+                                            <img alt="<?php echo CHtml::encode($eventTitle); ?>" class="event_thumbnail"
+                                                 src="<?php echo  CHtml::encode($eventItem['event_photo']); ?>" />
+                                        </a>
+                                        <div class="info">
+                                            <h2 class="title"><?php echo CHtml::encode($eventTitle); ?></h2>
+                                            <p class="desc"><?php echo  CHtml::encode($eventDescription); ?></p>
+                                            <p class="address"><?php echo  CHtml::encode($eventItem['event_address1']); ?></p>
+                    							<ul>
+                    								<li style="width:50%;"><a href="#website"><span class="fa fa-globe"></span> Website</a></li>
+                    								<li style="width:50%;"><span class="fa fa-money"></span> $ <?php echo  CHtml::encode($eventItem['cost']); ?></li>
+                    							</ul>
+                                        </div>
     <!--
                                     <div class="social">
                                         <ul>
