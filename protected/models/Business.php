@@ -51,7 +51,8 @@
  * @property string $report_closed_reference
  * @property integer $report_closed_by
  * @property string $report_closed_date
-* @property string $contact
+ * @property string $contact
+ * @property string $products
  *
  *
  * The followings are the available model relations:
@@ -175,7 +176,7 @@ class Business extends CActiveRecord
 		    array('business_type',                                                'length', 'max'=>128),
 		    array('opening_time, closing_time',                                   'length', 'max'=>255),
 		    array('import_reference, import_source',                              'length', 'max'=>255),
-		    array('contact',                                                      'length', 'max'=>1024),
+		    array('contact, products',                                            'length', 'max'=>1024),
 
 		    // ranges
 			array('business_allow_review,
@@ -288,6 +289,7 @@ class Business extends CActiveRecord
 		    'report_closed_by'                   => 'Report Closed By',
 		    'report_closed_date'                 => 'Report Closed Date',
 		    'contact'                            => 'Contact',
+		    'products'                           => 'Products',
 		);
 	}
 
@@ -339,7 +341,7 @@ class Business extends CActiveRecord
 		$criteria->compare('is_active',                       $this->is_active);
 		$criteria->compare('is_featured',                     $this->is_featured);
 		$criteria->compare('is_closed',                       $this->is_closed);
-		$criteria->compare('activation_code',                 $this->activation_code,true);
+		$criteria->compare('activation_code',                 $this->activation_code);
 		$criteria->compare('activation_status',               $this->activation_status);
 		$criteria->compare('activation_time',                 $this->activation_time,true);
 		$criteria->compare('latitude',                        $this->latitude,true);
@@ -356,7 +358,8 @@ class Business extends CActiveRecord
 		$criteria->compare('report_closed_reference',         $this->report_closed_reference,true);
 		$criteria->compare('report_closed_by',                $this->report_closed_by);
 		$criteria->compare('report_closed_date',              $this->report_closed_date);
-		$criteria->compare('contact',                         $this->contact);
+		$criteria->compare('contact',                         $this->contact, true);
+		$criteria->compare('products',                        $this->products,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
