@@ -444,6 +444,8 @@ ALTER TABLE tbl_business ADD COLUMN `is_for_review` enum('Y', 'N') DEFAULT 'N';
 
 ALTER TABLE tbl_business ADD COLUMN `contact`  VARCHAR(1024)  DEFAULT NULL;
 
+ALTER TABLE tbl_business ADD COLUMN `products`  VARCHAR(1024)  DEFAULT NULL;
+
 
 -- ---------------------------------------------------------------------
 -- Business User

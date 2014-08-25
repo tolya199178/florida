@@ -10,6 +10,11 @@ body {
     background-color: rgb(220, 220, 220);
 }
 
+
+.event_item:hover {
+    background-color: rgb(237, 245, 252);
+}
+
 .event-list {
     list-style: none;
     font-family: 'Lato', sans-serif;
@@ -232,7 +237,7 @@ body {
 
                         <div class="col-sm-6">
                             <ul class="event-list">
-                                <li class="col-sm-4">
+                                <li class="col-sm-4 event_item">
                                         <time datetime="<?php echo  CHtml::encode($eventItem['event_start_date']); ?>">
                                             <span class="day"><?php echo date("j", strtotime($eventItem['event_start_date'])); ?></span>
                                             <span class="month"><?php echo date("M", strtotime($eventItem['event_start_date'])); ?></span>
@@ -244,7 +249,14 @@ body {
                                                  src="<?php echo  CHtml::encode($eventItem['event_photo']); ?>" />
                                         </a>
                                         <div class="info">
-                                            <h2 class="title"><?php echo CHtml::encode($eventTitle); ?></h2>
+                                            <h2 class="title">
+                                                <a data-toggle="modal"
+                                                   href="<?php echo Yii::app()->createUrl('//calendar/calendar/showevent', array('event' => $eventItem['event_id'])); ?>"
+                                                   data-target="#modalEventDetails"><?php echo CHtml::encode($eventTitle); ?>
+                                                </a>
+                                            </h2>
+
+                                            <!-- <h2 class="title"><?php echo CHtml::encode($eventTitle); ?></h2>   -->
                                             <p class="desc"><?php echo  CHtml::encode($eventDescription); ?></p>
                                             <p class="address"><?php echo  CHtml::encode($eventItem['event_address1']); ?></p>
                     							<ul>
@@ -274,4 +286,41 @@ body {
 <!-- COUNTRY ITEM -->
 
 
+<?php
 
+$script = <<<EOD
+
+    $('body').on('click', 'a.result_button_link', function(event) {
+
+        var url         = $(this).attr("href");
+
+		// process the form. Note that there is no data send as posts arguements.
+		$.ajax({
+			type 		: 'POST',
+			url 		: url,
+		    data 		: null,
+			dataType 	: 'json'
+		})
+		// using the done promise callback
+		.done(function(data) {
+
+
+            var results = JSON.parse(data);
+
+            if (results.result == false)
+            {
+                alert(results.message);
+            }
+
+		});
+
+       event.preventDefault();
+       return false;
+
+
+    });
+EOD;
+
+Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::POS_READY);
+
+?>

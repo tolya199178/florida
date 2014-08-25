@@ -247,7 +247,8 @@ class CalendarController extends Controller
 
 	    $itemEvent     = Event::model()->findByPk($argEventId);
 
-	    $this->render('event_details', array('event' => $itemEvent));
+	    // $this->render('event_details', array('event' => $itemEvent));
+	    $this->renderPartial('modal/event_details', array('event' => $itemEvent));
 	}
 
 	/**

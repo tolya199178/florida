@@ -1026,7 +1026,6 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
 
 ?>
 
-
 <div id="modalInviteMyFriends" class="modal modal-medium fade">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -1064,27 +1063,91 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
 </div><!-- /.modal -->
 
 
+<?php
 
-<div class="modal fade" id="modalBusinessDetailssssssssssss" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
-    <div class="modal-dialog biz-details-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                 <h4 class="modal-title" id="titleBusinessDetails">Business Details</h4>
+// Event details
 
-            </div>
-            <div class="modal-body"><div class="te"></div></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
+$script = <<<EOD
+
+function initialize_event_map() {
+
+        var latitude= $("#map_event_latitude").val();
+        var longitude= $("#map_event_longitude").val();
+
+    	var mapCanvas = document.getElementById('map_canvas');
+        var myLatLng = new google.maps.LatLng(latitude,longitude);
+        var mapOptions = {
+            center: myLatLng,
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.LARGE
+            }
+        }
+        try {
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title:"Event Location"
+            });
+        } catch (err) {
+            // Error Handling
+        }
 
 
+
+
+// 	var latitude  = < ? php echo $ event->event_latitude; ? >;
+// 	var longitude = < ? php echo $ event->event_longitude; ? >;
+
+//     var map_canvas = document.getElementById('map_canvas');
+
+//     var map_options = {
+//         center: new google.maps.LatLng(latitude, longitude),
+//         zoom:8,
+//         mapTypeId: google.maps.MapTypeId.ROADMAP
+//     }
+
+//     var map = new google.maps.Map(map_canvas, map_options)
+
+}
+
+// google.maps.event.addDomListener(window, 'load', initialize);
+
+    // When the modal is loaded
+    $('#modalEventDetails').on('shown.bs.modal', function(e) {
+        // Show map
+        initialize_event_map();
+    });
+
+EOD;
+
+Yii::app()->clientScript->registerScript('event_list', $script, CClientScript::POS_READY);
+
+
+
+?>
+
+
+<div id="modalEventDetails" class="modal modal-wide fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Event Details</h4>
+      </div>
+      <div class="modal-body">
+        <p><!--  Body goes here --></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
     <!-- Main concierge page .container -->
