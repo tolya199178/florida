@@ -446,6 +446,9 @@ ALTER TABLE tbl_business ADD COLUMN `contact`  VARCHAR(1024)  DEFAULT NULL;
 
 ALTER TABLE tbl_business ADD COLUMN `products`  VARCHAR(1024)  DEFAULT NULL;
 
+ALTER TABLE tbl_business CHANGE COLUMN `latitude` `latitude`  DECIMAL (11,8)  DEFAULT NULL;
+ALTER TABLE tbl_business CHANGE COLUMN `longitude` `longitude` DECIMAL (11,8)  DEFAULT NULL;
+
 
 -- ---------------------------------------------------------------------
 -- Business User
