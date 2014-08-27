@@ -743,6 +743,7 @@ class AccountController extends Controller
                 $newFriendRecord                    = array('user_id'       => Yii::app()->user->id,
                                                             'friend_id'     => $newUserId,
                                                             'friend_status' => 'Approved',
+                                                            'connected_by'  => 'facebook',
                                                             'created_time'  => date("Y-m-d H:i:s"),
                                                             'request_time'  => date("Y-m-d H:i:s"),
                                                             'process_time'  => date("Y-m-d H:i:s")

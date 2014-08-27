@@ -142,6 +142,7 @@
                             <li><a href="<?php echo Yii::app()->createUrl('webuser/account/changepassword/'); ?>">Change Password</a></li>
                             <li class="divider"></li>
                             <li><a href="<?php echo Yii::app()->createUrl('mytravel/'); ?>">My Travels</a></li>
+                            <li><a href="<?php echo Yii::app()->createUrl('myfriend/myfriend/joinapp/'); ?>">Invite Friends</a></li>
 
                             <li class="divider"></li>
                             <li><a href="<?php echo Yii::app()->createUrl('webuser/account/logout/'); ?>">Logout</a></li>
