@@ -664,4 +664,57 @@ class MyfriendController extends Controller
 
 	}
 
+     /**
+      * Renders join app request to FB friends.
+      * Used for dropdowns
+      *
+      * @param <none> <none>
+      *
+      * @return <none> <none>
+      * @access public
+      */
+     public function actionJoinapp()
+     {
+
+         // /////////////////////////////////////////////////////////////////////
+         // Redirect non-logged in users to the login page
+         // /////////////////////////////////////////////////////////////////////
+         if (Yii::app()->user->isGuest)         // User is not logged in
+         {
+             $this->redirect("login");
+             Yii::app()->end();
+         }
+
+         // /////////////////////////////////////////////////////////////////////
+         // Get the login details from the WebUser component
+         // /////////////////////////////////////////////////////////////////////
+         $userId = Yii::app()->user->id;
+
+         if ($userId === null)         // User is not known
+         {
+             $this->redirect("login");
+             Yii::app()->end();
+         }
+
+         // /////////////////////////////////////////////////////////////////////
+         // Get a list of all local friends
+         // /////////////////////////////////////////////////////////////////////
+         $dbCriteria             = new CDbCriteria;
+
+         $dbCriteria->condition  = "t.user_id      = :user_id AND
+                                    friend.status  = 'active' AND
+                                    t.connected_by = :connected_by";
+         $dbCriteria->params     = array(':user_id'     => Yii::app()->user->id,
+                                         ':connected_by'=> 'facebook');
+         $lstMyFriends = MyFriend::model()->with('friend')->findAll($dbCriteria);
+
+         $this->render("invite_joinapp", array(
+             'myLocalFriends'    => $lstMyFriends
+         ));
+
+
+     }
+
+
+
 }
