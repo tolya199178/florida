@@ -1,6 +1,9 @@
 <?php
-//print_r($model);
-//exit;
+
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.css');
+    Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2-bootstrap.css');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resources/libraries/select2/select2.js', CClientScript::POS_END);
+
 ?>
 <style>
 #main {
@@ -92,7 +95,9 @@
                                 <?php echo $form->labelEx($model,'places_visited',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-4">
                                     <div style="overflow:auto; height: 200px">
-                                        <?php echo $form->CheckBoxList($model,'places_visited', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?>
+                                        <?php echo CHtml::hiddenField('ProfileForm[places_visited]', '', array ('id'=>'places_visited')); ?>
+
+                                        <?php /* echo $form->CheckBoxList($model,'places_visited', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); */ ?>
                                     </div>
                                     <?php echo $form->error($model,'places_visited'); ?>
                                 </div>
@@ -104,7 +109,9 @@
                                 <?php echo $form->labelEx($model,'places_want_to_visit',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-4">
                                     <div style="overflow:auto; height: 200px">
-                                        <?php echo $form->CheckBoxList($model,'places_want_to_visit', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); ?>
+                                        <?php echo CHtml::hiddenField('ProfileForm[places_want_to_visit]', '', array ('id'=>'places_want_to_visit')); ?>
+
+                                        <?php /* echo $form->CheckBoxList($model,'places_want_to_visit', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name')); */ ?>
                                     </div>
                                     <?php echo $form->error($model,'places_want_to_visit'); ?>
                                 </div>
@@ -141,7 +148,7 @@
                             <div class="form-group">
                                 <?php echo $form->labelEx($model,'confirmAge',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-4">
-                                   <?php echo CHtml::checkBox('ProfileForm[confirm_age]', false, array('id'=>'ProfileForm_confirm_age' )); ?>
+                                   <?php echo CHtml::checkBox('ProfileForm[confirmAge]', false, array('id'=>'ProfileForm_confirm_age' )); ?>
                                    Please confirm that you are over 18 years old.
                                    <?php echo $form->error($model,'confirmAge'); ?>
                                 </div>
@@ -164,3 +171,34 @@
         <!--  end panel -->
     </div>
 
+<?php
+
+$pageAutoCompleteURL = Yii::app()->createUrl('/location/location/autocompletecitylist');
+
+$script = <<<EOD
+	$('#places_want_to_visit, #places_visited').select2({
+        placeholder: "Search Cities",
+        width : "100%",
+        multiple:true,
+       //  minimumInputLength: 3,
+        ajax: {
+            url: "$pageAutoCompleteURL",
+            dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        query: term
+                      };
+                },
+                results: function (data, page) {
+                    return {
+                        results: data
+                    };
+                }
+        }
+	});
+
+EOD;
+
+Yii::app()->clientScript->registerScript('details', $script, CClientScript::POS_READY);
+
+?>

@@ -123,6 +123,7 @@ class AccountController extends Controller
             $formModel->setAttributes($_POST['ProfileForm']);
             $formModel->user_name = $formModel->email;
 
+
             if ($formModel->validate())
             {
 
@@ -142,9 +143,6 @@ class AccountController extends Controller
                 $userModel->user_name           = $userModel->email;
                 $userModel->status              = 'inactive';
                 $userModel->activation_status   = 'not_activated';
-                $userModel->places_visited      = serialize($_POST['ProfileForm']['places_visited']);
-                $userModel->places_want_to_visit = serialize($_POST['ProfileForm']['places_want_to_visit']);
-
 
                 // Create a verification code, before the entry is saved
                 $userModel->activation_code = HAccount::getVerificationCode(CHtml::encode($userModel->email));
@@ -203,7 +201,7 @@ class AccountController extends Controller
             }
             else
             {
-                Yii::app()->user->setFlash('error', "Validation error.");
+                Yii::app()->user->setFlash('error', "An error occured when processing your entry. Please retry.");
             }
         }
 
