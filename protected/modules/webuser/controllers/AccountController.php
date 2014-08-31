@@ -647,6 +647,81 @@ class AccountController extends Controller
 	}
 
 	/**
+	 * Process the user's change password request.
+	 * ...The function is normally invoked twice:
+	 * ... - the (initial) GET request loads and renders the change password form
+	 * ... - the (subsequent) POST request processes the change password request.
+	 * ...If the save (POST request) is successful, the user is directed back to
+	 * ...the calling url
+	 * ...If the save (POST request) is not successful, the form is shown
+	 * ...again with error messages from the validation (Loginform::rules())
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionChangepassword()
+	{
+
+	    $modelPasswordForm = new PasswordForm('change_password');
+
+	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
+
+	    // collect user input data
+	    if (isset($_POST['PasswordForm']))
+	    {
+
+	        $modelPasswordForm->attributes = $_POST['PasswordForm'];
+
+	        // validate user input and redirect to the previous page if valid
+	        if ($modelPasswordForm->validate() && $modelPasswordForm->login())
+	        {
+
+	            $modelPasswordForm->changePassword();
+
+	            // Send back a JSON request for Ajax submissions
+	            if (Yii::app()->request->isAjaxRequest == 1)
+	            {
+	                header("Content-type: application/json");
+	                echo CJSON::encode(array(
+	                    'authenticated'    => true,
+	                    'redirectUrl'      => Yii::app()->user->returnUrl,
+	                ));
+	                Yii::app()->end();
+	            }
+
+	            // For normal page submissions, redirect
+	            Yii::app()->user->setFlash('success', "Password changed.");
+	            $this->redirect(Yii::app()->user->returnUrl);
+	        }
+	        else
+	        {
+
+	            // Send back a JSON request for Ajax submissions
+	            if (Yii::app()->request->isAjaxRequest == 1)
+	            {
+	                header("Content-type: application/json");
+	                echo CJSON::encode(array(
+	                    'authenticated'    => false,
+	                    'redirectUrl'      => Yii::app()->user->returnUrl,
+	                ));
+	                Yii::app()->end();
+	            }
+
+	            // For normal page submissions, redirect
+	            Yii::app()->user->setFlash('error', "Error setting your new password.");
+	            $this->redirect(Yii::app()->user->returnUrl);
+
+	        }
+	    }
+
+	    // Show the change password form
+	    $this->render('change_password', array('model' => $modelPasswordForm));
+
+	}
+
+	/**
 	 * Copy the current user's FB friemds list locally
 	 *
 	 * @param <none> <none>
