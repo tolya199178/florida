@@ -92,6 +92,9 @@ ALTER TABLE tbl_user ADD COLUMN `language` VARCHAR(255)  DEFAULT NULL;
 ALTER TABLE tbl_user ADD COLUMN `registration_source` ENUM('florida.com', 'facebook')  DEFAULT 'florida.com';
 
      
+ALTER TABLE tbl_user ADD COLUMN `request_token` VARCHAR(255)  DEFAULT NULL;
+
+
 -- ---------------------------------------------------------------------
 -- country
 -- ---------------------------------------------------------------------

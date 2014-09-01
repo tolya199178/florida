@@ -41,6 +41,7 @@
  * @property string $places_visited
  * @property string $language
  * @property string registration_source
+ * @property string request_token
  *
  * The followings are the available model relations:
  * @property User $modifiedBy
@@ -207,6 +208,8 @@ class User extends CActiveRecord
                    places_visited',                 'length', 'max'=>4096),
 
             array('mobile_number',                  'length', 'max'=>64),
+
+            array('request_token',                  'length', 'max'=>255),
 
             // mobile carrier is mandatory if mobile number is entered, and vice-versa, and if
             // ...the send SMS notification flag is set, then both mobile carrier  and mobile
@@ -409,6 +412,7 @@ class User extends CActiveRecord
         $criteria->compare('places_visited',        $this->places_visited,true);
         $criteria->compare('language',              $this->language,true);
         $criteria->compare('registration_source',   $this->registration_source);
+        $criteria->compare('request_token',         $this->request_token);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
