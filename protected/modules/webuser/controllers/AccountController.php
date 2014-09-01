@@ -722,6 +722,129 @@ class AccountController extends Controller
 	}
 
 	/**
+	 * Process the user's forgot password request.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionForgotpassword()
+	{
+
+	    $modelPasswordForm = new PasswordForm('forgot_password');
+
+	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
+
+	    // collect user input data
+	    if (isset($_POST['PasswordForm']))
+	    {
+
+	        $userModel = User::model()->findByAttributes(array('user_name'=>$_POST['PasswordForm']['email']));
+
+	        if ($userModel === null)
+	        {
+	            Yii::app()->user->setFlash('error', "Authentication error.");
+	            $this->redirect(Yii::app()->user->returnUrl);
+	        }
+
+	        // Generate a random token
+	        $getToken          = rand(0, 99999);
+	        $getTime           = date("H:i:s");
+
+	        // Get the email message and subject
+	        $emailMessage = HAccount::getEmailMessage('forgot_password_email');
+	        $emailSubject = HAccount::getEmailSubject('forgot_password_email');
+
+	        $userModel->request_token  = md5($getToken.$getTime);
+
+	        $messageValues             = $userModel->attributes;
+
+	        if ($userModel->save() === false)
+	        {
+	            Yii::app()->user->setFlash('error', "Cannot save user token.");
+	            $this->redirect(Yii::app()->user->returnUrl);
+	        }
+
+
+	        // Customise the email message
+	        $emailMessage = HAccount::CustomiseMessage($emailMessage, $userModel->attributes);
+
+
+	        // Send the message
+	        HAccount::sendMessage($userModel->attributes['email'], $userModel->attributes['first_name'].' '.$userModel->attributes['last_name'], $emailSubject, $emailMessage);
+
+	        Yii::app()->user->setFlash('success', "Your request is being processed. Check your email.");
+	        $this->redirect(Yii::app()->user->returnUrl);
+
+	    }
+
+	    // Show the change password form
+	    $this->render('lost_password', array('model' => $modelPasswordForm));
+
+	}
+
+	/**
+	 * Process the user lostpassword reset from the email link
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionResetforgotpassword()
+	{
+
+	    $modelPasswordForm = new PasswordForm('reset_forgot_password');
+
+	    // NOTE; To process ajax requests, check (Yii::app()->request->isAjaxRequest == 1)
+
+	    // collect user input data
+	    if (isset($_POST['PasswordForm']))
+	    {
+
+	        $userModel = User::model()->findByAttributes(array('user_name'=>$_POST['PasswordForm']['email']));
+
+	        if ($userModel === null)
+	        {
+	            Yii::app()->user->setFlash('error', "Authentication error.");
+	            $this->redirect(Yii::app()->user->returnUrl);
+	        }
+
+
+	        if ($userModel->request_token  != filter_var($_POST['PasswordForm']['request_token'], FILTER_SANITIZE_STRING))
+	        {
+	            Yii::app()->user->setFlash('error', "Authentication error.");
+	            $this->redirect(Yii::app()->user->returnUrl);
+	        }
+
+	        $modelPasswordForm->request_token        = $_POST['PasswordForm']['request_token'];
+	        $modelPasswordForm->email                = $_POST['PasswordForm']['email'];
+	        $modelPasswordForm->new_password         = $_POST['PasswordForm']['new_password'];
+	        $modelPasswordForm->confirm_new_password = $_POST['PasswordForm']['confirm_new_password'];
+
+	        if ($modelPasswordForm->changePassword($_POST['PasswordForm']['email']) === false)
+	        {
+	            // For normal page submissions, redirect
+	            Yii::app()->user->setFlash('error', "Error setting your new password.");
+	            $this->redirect("/");
+	        }
+	        else
+	        {
+	            Yii::app()->user->setFlash('success', "Password changed.");
+	            $this->redirect("/");
+	        }
+
+	    }
+
+	    $modelPasswordForm->request_token = filter_var($_GET['cde'], FILTER_SANITIZE_STRING);
+
+	    // Show the change password form
+	    $this->render('reset_lost_password', array('model' => $modelPasswordForm));
+
+	}
+
+	/**
 	 * Copy the current user's FB friemds list locally
 	 *
 	 * @param <none> <none>

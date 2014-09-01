@@ -21,6 +21,12 @@ class PasswordForm extends CFormModel
     private $userModel;
 
     /**
+     *
+     * @var String request token for forgot password reset
+     */
+    public $request_token;
+
+    /**
      * Various field values
      */
     public $user_id;
@@ -117,8 +123,15 @@ class PasswordForm extends CFormModel
     /**
      * Changes the user's password
      */
-    public function changePassword()
+    public function changePassword($userEmail = null)
     {
+
+        if ($userEmail != null)
+        {
+            $this->userModel = User::model()->findByAttributes(array('user_name'=>$userEmail));
+        }
+
+
         if ($this->userModel === null)        // Account not found
         {
             return false;
@@ -130,8 +143,8 @@ class PasswordForm extends CFormModel
         $this->userModel->password              = $this->new_password;
         $this->userModel->fldVerifyPassword     = $this->confirm_new_password;
 
-        return $this->userModel->save();
-
+        //return $this->userModel->save();
+        $this->userModel->save();
 
     }
 

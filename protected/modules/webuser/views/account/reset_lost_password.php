@@ -26,33 +26,34 @@
 
                     <?php echo $form->errorSummary($model); ?>
 
+                        <?php echo $form->hiddenField($model,'request_token'); ?>
 
                     	<div class="row">
                             <div class="form-group">
-                                <?php echo $form->labelEx($model,'fldCurrentPassword',array('class'=>"col-sm-2 control-label")); ?>
+                                <?php echo $form->labelEx($model,'email',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-4">
-                                    <?php echo $form->textField($model,'fldCurrentPassword',array('class'=>"form-control", 'readonly'=> 'readonly')); ?>
-                                    <?php echo $form->error($model,'fldCurrentPassword'); ?>
+                                    <?php echo $form->textField($model,'email',array('class'=>"form-control")); ?>
+                                    <?php echo $form->error($model,'email'); ?>
                                 </div>
                             </div>
                     	</div>
 
                     	<div class="row">
                             <div class="form-group">
-                                <?php echo $form->labelEx($model,'password',array('class'=>"col-sm-2 control-label")); ?>
+                                <?php echo $form->labelEx($model,'new_password',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-4">
-                                    <?php echo $form->textField($model,'password',array('class'=>"form-control")); ?>
-                                    <?php echo $form->error($model,'password'); ?>
+                                    <?php echo $form->textField($model,'new_password',array('class'=>"form-control")); ?>
+                                    <?php echo $form->error($model,'new_password'); ?>
                                 </div>
                             </div>
                     	</div>
 
                     	<div class="row">
                             <div class="form-group">
-                                <?php echo $form->labelEx($model,'fldVerifyPassword',array('class'=>"col-sm-2 control-label")); ?>
+                                <?php echo $form->labelEx($model,'confirm_new_password',array('class'=>"col-sm-2 control-label")); ?>
                                 <div class="col-sm-4">
-                                    <?php echo $form->textField($model,'fldVerifyPassword',array('class'=>"form-control")); ?>
-                                    <?php echo $form->error($model,'fldVerifyPassword'); ?>
+                                    <?php echo $form->textField($model,'confirm_new_password',array('class'=>"form-control")); ?>
+                                    <?php echo $form->error($model,'confirm_new_password'); ?>
                                 </div>
                             </div>
                     	</div>

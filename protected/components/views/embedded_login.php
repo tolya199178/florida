@@ -36,7 +36,7 @@
                 &nbsp;&nbsp;&nbsp;
 
                 <a
-                    href="<?php echo Yii::app()->createUrl('webuser/account/resetpassword/'); ?>">Lost password?
+                    href="<?php echo Yii::app()->createUrl('webuser/account/forgotpassword/'); ?>">Lost password?
                 </a>
                 &nbsp;&nbsp;&nbsp;
 
