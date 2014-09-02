@@ -88,8 +88,23 @@ class PostController extends Controller
     public function actionView()
     {
         $questionId         = Yii::app()->request->getParam('question', null);
+        $answerId           = Yii::app()->request->getParam('answer', null);
+
+        // If the user wants to view an answer, show the entire question
+        if ($answerId)
+        {
+            // Find the question
+            $modelAnswer    = PostAnswer::model()->findByPK($answerId);
+            if ($modelAnswer === null)
+            {
+                throw new CHttpException(404,'The requested page does not exist.');
+            }
+            // Otherwise get the question reference from the answer
+            $questionId = $modelAnswer->question_id;
+        }
 
         $modelQuestion      = PostQuestion::model()->findByPk($questionId);
+
 
         if ($modelQuestion)
         {
@@ -108,7 +123,7 @@ class PostController extends Controller
         }
         else
         {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new CHttpException(404,'The requested page does not exist.');
         }
     }
 
@@ -156,7 +171,8 @@ class PostController extends Controller
 
             $this->notifySubscribers($questionId);
 
-            if ($formValues['notify_updates'] == 1)
+            if (isset($formValues['notify_updates']) && ($formValues['notify_updates'] == 1))
+
             {
 
                 $modelPostSubscription          = PostSubscribed::model()->findByAttributes(
@@ -196,6 +212,9 @@ class PostController extends Controller
     public function actionQuestion()
     {
 
+//         print_r($_POST);
+//         exit;
+
         $formValues         = Yii::app()->request->getPost('PostQuestion');
 
         $modelQuestion      = new PostQuestion;
@@ -225,7 +244,7 @@ class PostController extends Controller
 
             $questionId = $modelQuestion->id;
 
-            if ($formValues['notify_updates'] == 1)
+            if (isset($formValues['notify_updates']) && ($formValues['notify_updates'] == 1))
             {
                 $modelPostSubscription          = new PostSubscribed;
                 $modelPostSubscription->user_id = Yii::app()->user->id;

@@ -237,11 +237,11 @@ class ProfileController extends Controller
 	    // Get a list of the user's posts
 	    // /////////////////////////////////////////////////////////////////////
 	    $lstQuestions  = PostQuestion::model()->findAllByAttributes(array(
-            	               'user_id' => $userModel->user_id, 'status'=>'Published'
+            	               'user_id' => $userModel->user_id, 'status'=>'Open'
             	         ));
 
 	    $lstAnswers    = PostAnswer::model()->findAllByAttributes(array(
-            	               'user_id' => $userModel->user_id, 'status'=>'Published'
+            	               'user_id' => $userModel->user_id, 'status'=>'Open'
             	         ));
 
 
