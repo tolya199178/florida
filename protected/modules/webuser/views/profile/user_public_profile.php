@@ -226,7 +226,7 @@
                                         <div class="panel-body">
                                             <ul class="list-group">
                                             <?php foreach ($lstEvents as $itemEvent) { ?>
-                                                <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/calendar/calendar/details/', array('id' => $itemEvent->event_id))?>"><?php echo $itemEvent->event_title; ?></a></li>
+                                                <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/calendar/calendar/details/', array('id' => CHtml::encode($itemEvent->event_id))); ?>"><?php echo $itemEvent->event_title; ?></a></li>
                                             <?php }?>
                                             </ul>
 
@@ -251,14 +251,14 @@
                                             <h3>Questions Posted</h3>
                                             <ul class="list-group">
                                             <?php foreach ($lstQuestions as $itemQuestion) { ?>
-                                                <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/dialogue/post/view/', array('question' => $itemEvent->id))?>"><?php echo $itemEvent->title; ?></a></li>
+                                                <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/dialogue/post/view/', array('question' => $itemQuestion->id))?>"><?php echo CHtml::encode($itemQuestion->title); ?></a></li>
                                             <?php }?>
                                             </ul>
 
                                             <h3>Answers Posted</h3>
                                             <ul class="list-group">
                                             <?php foreach ($lstAnswers as $itemAnswer) { ?>
-                                                <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/dialogue/post/view/', array('answer' => $itemEvent->id))?>"><?php echo $itemEvent->title; ?></a></li>
+                                                <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/dialogue/post/view/', array('answer' => $itemAnswer->id))?>"><?php echo substr(CHtml::encode($itemAnswer->content), 0, 50); ?></a></li>
                                             <?php }?>
                                             </ul>
 
