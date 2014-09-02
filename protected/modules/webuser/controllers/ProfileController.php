@@ -34,6 +34,8 @@
 class ProfileController extends Controller
 {
 
+    public 	$layout='//layouts/front';
+
     /**
      * Adds a business to a user's profile
      *
@@ -206,15 +208,57 @@ class ProfileController extends Controller
 	public function actionShow()
 	{
 
-	    // TODO: Placeholder function (so that link testing does not break system)
-	    // TODO: Functionality will be added in later version
-	    	    throw new CHttpException(404,'TODO: This function is not ready for testing and must be coded.');
+	    $argUserId = (int) Yii::app()->request->getQuery('business_id', Yii::app()->user->id);
 
+	    $userModel = User::model()->findByPk($argUserId);
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's friends
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstFriends = MyFriend::model()->with('friend')->findAllByAttributes(array(
+	        'user_id' => $userModel->user_id, 'friend_status'=>'Approved'
+	    ));
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's images
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstPhotos  = Photo::model()->findAllByAttributes(
+	                       array('entity_id'   => $userModel->user_id,
+	                             'photo_type'  => 'user'));
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's events
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstEvents = Event::model()->findAllByAttributes(array(
+                	        'user_id' => $userModel->user_id,
+                	    ));
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get a list of the user's posts
+	    // /////////////////////////////////////////////////////////////////////
+	    $lstQuestions  = PostQuestion::model()->findAllByAttributes(array(
+            	               'user_id' => $userModel->user_id, 'status'=>'Published'
+            	         ));
+
+	    $lstAnswers    = PostAnswer::model()->findAllByAttributes(array(
+            	               'user_id' => $userModel->user_id, 'status'=>'Published'
+            	         ));
+
+
+        $this->render('user_public_profile', array(
+                        'userModel'     => $userModel,
+                        'lstFriends'    => $lstFriends,
+                        'lstPhotos'     => $lstPhotos,
+                        'lstEvents'     => $lstEvents,
+                        'lstQuestions'  => $lstQuestions,
+                        'lstAnswers'    => $lstAnswers,
+
+               ));
 
 	}
 
 	/**
-	 * Deletes an existing search record.
+	 * Deletes an existing search record.lst
 	 * ...As an additional safety measure, only POST requests are processed.
 	 * ...Currently, instead of physically deleting the entry, the record is
 	 * ...modified with the status fields set to 'deleted'
