@@ -85,7 +85,7 @@
                                 </a>
         					</div>
 
-                            <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('webuser/account/connect/', array('user_id'=>$userModel->user_id)); ?>">
+                            <a class="btn btn-md btn-warning" href="<?php echo Yii::app()->createUrl('//myfriend/myfriend/friendrequest/', array('friend'=>$userModel->user_id)); ?>">
                                     <i class="glyphicon glyphicon-plus-sign"></i>
                                     Connect with <?php echo CHtml::encode($userModel->first_name); ?>
                             </a>

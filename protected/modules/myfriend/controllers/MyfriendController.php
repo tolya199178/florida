@@ -298,6 +298,100 @@ class MyfriendController extends Controller
 
 	}
 
+
+	/**
+	 * Remove a previously issued request to connect to another user.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionFriendrequest()
+	{
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Redirect non-logged in users to the login page
+	    // /////////////////////////////////////////////////////////////////////
+	    if (Yii::app()->user->isGuest)         // User is not logged in
+	    {
+	        $this->redirect("login");
+	        Yii::app()->end();
+	    }
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Get the login details from the WebUser component
+	    // /////////////////////////////////////////////////////////////////////
+	    $userId = Yii::app()->user->id;
+
+	    if ($userId === null)         // User is not known
+	    {
+	        $this->redirect("login");
+	        Yii::app()->end();
+	    }
+
+	    $argFriendId = Yii::app()->request->getQuery('friend', 'default');
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Search for the friend record
+	    // /////////////////////////////////////////////////////////////////////
+	    $modelFriend = User::model()->findbyPK($argFriendId);
+
+	    if ($modelFriend === null)
+	    {
+	        $errMsg = 'Something went wrong. The requested user was not found. Try again later';
+	        Yii::app()->user->setFlash('error', $errMsg);
+	        $this->redirect(YII::app()->request->urlReferrer);
+	        Yii::app()->end();
+	    }
+
+	    // /////////////////////////////////////////////////////////////////////
+	    // Check for an existing friend relationship betwewn the two users
+	    // /////////////////////////////////////////////////////////////////////
+	    $modelMyFriend = MyFriend::model()->findByAttributes(array(
+	        'user_id'      => $userId,
+	        'friend_id'    => $argFriendId
+	    ));
+
+	    if ($modelMyFriend != null)
+	    {
+	        $errMsg = 'We found an existing '.$modelMyFriend->friend_status.' request for the user.';
+	        Yii::app()->user->setFlash('warning', $errMsg);
+	        $this->redirect(YII::app()->request->urlReferrer);
+	        Yii::app()->end();
+	    }
+
+	    // We can process the friend request
+	    $modelMyFriend                 = new MyFriend;
+	    $modelMyFriend->user_id        = $userId;
+	    $modelMyFriend->friend_id      = $argFriendId;
+	    $modelMyFriend->friend_status  = 'Pending';
+	    $modelMyFriend->request_time   =  new CDbExpression('NOW()');
+
+	    if (!$modelMyFriend->save())
+	    {
+	        $errMsg = 'We failed to send the friend request.';
+	        Yii::app()->user->setFlash('error', $errMsg);
+	        $this->redirect(YII::app()->request->urlReferrer);
+	        Yii::app()->end();
+	    }
+
+        // Send the user an alert message
+
+	    $msgSubject = 'You have received a friend request from '.Yii::app()->user->getFirstName();
+	    $msgContent = 'You have received a friend request from '.Yii::app()->user->getFirstName()."\n".
+	                  "Click on the link below to see the invitation \n".
+	                   Yii::app()->createAbsoluteUrl('//myfriend/myfriend/show/allfriends/')."\n\n".
+	                   "Best Regards\n"."Your florida.com team.";
+
+	    MessageService::sendSystemMessage($argFriendId, 'Notice', $msgSubject, $msgContent);
+
+	    Yii::app()->user->setFlash('success', $errMsg);
+	    $this->redirect(YII::app()->request->urlReferrer);
+	    Yii::app()->end();
+	}
+
+
 	/**
 	 * Remove a previously issued request to connect to another user.
 	 *

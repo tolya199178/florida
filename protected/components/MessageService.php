@@ -80,4 +80,57 @@ class MessageService
 
     }
 
+    /**
+     * Sends a message.
+     *
+     * @param $toAddress string The recpient ID reference
+     * @param $msgSubject string The message subject
+     * @param $msgContent string The message to be sent
+     *
+     * @return boolean result of send.
+     * @access public
+     */
+    public static function sendSystemMessage($toAddress, $messageCategory = 'Alert', $msgSubject = null, $msgContent = null)
+    {
+
+        /**
+         * We can't do anything if :-
+         * - A recipient is not supplied
+         * - A message to be sent is not supplied
+         */
+
+        if (empty($toAddress) || empty($msgContent))
+        {
+            return false;
+        }
+
+        /*
+         * Validate the recipient id, and check that the record is pointing to a true friend,
+        * ...and that the sender is not blocked.
+        */
+//         $recipientModel = MyFriend::model()->findByAttributes(array('user_id'=> Yii::app()->user->id,
+//             'friend_id'=>(int) $toAddress));
+
+        if ($recipientModel && ($recipientModel->friend_status == 'Approved'))
+        {
+
+            $messageModel                   = new UserMessage;
+
+            $messageModel->recipient        = (int) $toAddress;
+            $messageModel->sender           = 1;                    // Send from System
+            $messageModel->subject          = $msgSubject;
+            $messageModel->message          = $msgContent;
+            $message_type->nessage_category = $messageCategory;
+
+            return ($messageModel->save());
+        }
+        else
+        {
+            Yii::app()->user->setFlash('error','You cannot send messages to this user.');
+            return false;
+        }
+
+
+    }
+
 }
