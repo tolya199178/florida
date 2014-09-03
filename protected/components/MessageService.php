@@ -108,11 +108,6 @@ class MessageService
          * Validate the recipient id, and check that the record is pointing to a true friend,
         * ...and that the sender is not blocked.
         */
-//         $recipientModel = MyFriend::model()->findByAttributes(array('user_id'=> Yii::app()->user->id,
-//             'friend_id'=>(int) $toAddress));
-
-        if ($recipientModel && ($recipientModel->friend_status == 'Approved'))
-        {
 
             $messageModel                   = new UserMessage;
 
@@ -120,16 +115,9 @@ class MessageService
             $messageModel->sender           = 1;                    // Send from System
             $messageModel->subject          = $msgSubject;
             $messageModel->message          = $msgContent;
-            $message_type->nessage_category = $messageCategory;
+            $messageModel->message_category = $messageCategory;
 
             return ($messageModel->save());
-        }
-        else
-        {
-            Yii::app()->user->setFlash('error','You cannot send messages to this user.');
-            return false;
-        }
-
 
     }
 
