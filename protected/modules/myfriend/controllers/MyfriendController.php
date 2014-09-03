@@ -386,7 +386,7 @@ class MyfriendController extends Controller
 
 	    MessageService::sendSystemMessage($argFriendId, 'Notice', $msgSubject, $msgContent);
 
-	    Yii::app()->user->setFlash('success', $errMsg);
+	    Yii::app()->user->setFlash('success', 'Your connect request was submitted.');
 	    $this->redirect(YII::app()->request->urlReferrer);
 	    Yii::app()->end();
 	}
