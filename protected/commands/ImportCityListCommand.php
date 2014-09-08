@@ -121,7 +121,7 @@ class ImportCityListCommand extends CConsoleCommand
                                              'is_featured'          => 'N',
                                              'time_zone'            => null,
                                              'isactive'             => 'N',
-                                             'description'          => 'Florida Control City - not used as valid data city',
+                                             'description'          => '',
                                              'more_information'     => '...imported from maxmind...',
                                              'image'                => null,
                                              'latitude'             => null,
