@@ -265,7 +265,7 @@ class FacebookUtility extends CApplicationComponent
             $userProfile = $this->handleFacebook->api('/me');
 
             $userFriends = $this->handleFacebook->api('/me/friends',
-                                  array('fields' => 'name, username, id, first_name, last_name, email'));
+                                  array('fields' => 'name, id, first_name, last_name, email'));
 
             $accessToken = $this->handleFacebook->getAccessToken();
 

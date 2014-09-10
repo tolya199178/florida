@@ -78,6 +78,7 @@ class FBIdentity extends CUserIdentity
                 $modelUser = new User();
                 $modelUser->facebook_id         = $fbUserInfo['id'];
                 $modelUser->email               = $fbUserInfo['email'];
+                $modelUser->user_name           = $fbUserInfo['email'];
                 $modelUser->activation_status   = 'activated';
                 $modelUser->registered_with_fb  = 'Y';
                 $modelUser->registration_source = 'facebook';
