@@ -19,4 +19,7 @@
         <span class="glyphicon glyphicon-chevron-down"></span>
     </a>
 <?php } ?>
+
+<span class="glyphicon glyphicon-ok green"></span>
+
 </div>

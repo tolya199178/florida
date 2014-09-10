@@ -228,6 +228,7 @@ class PostController extends Controller
                         'status'        => 'Open',
                         'category_id'   => $formValues['category_id'],
                         'entity_type'   => 'general',
+                        'post_type'     => 'Question',
                         'entity_id'     => '1',
         );
 

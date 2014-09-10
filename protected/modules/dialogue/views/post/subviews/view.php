@@ -93,6 +93,18 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
 ?>
 
+<style>
+<!--
+.green {
+    color: green;
+}
+
+glyphicon.green {
+    font-size: 3.4em;
+}
+-->
+</style>
+
 <div class="container" style="background:#fff;">
     <div class="qa-view row">
         <div class="col-md-12">
@@ -105,6 +117,30 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                     <?php $this->renderPartial("subviews/post",array('model' => $modelQuestion, 'type' => 'question')); ?>
                 </div>
             </div>
+
+<?php
+            $linkedItem = '';
+
+            if (!empty($modelQuestion->entity_id)) {
+                if ($modelQuestion->entity_type == 'city') {
+                    $linkedItem = CHtml::link('Click here to view the linked city', Yii::app()->createURL('location/location/viewcity', array('city_id'=>$modelQuestion->entity_id)));
+                }
+                if ($modelQuestion->entity_type == 'business') {
+                    $linkedItem = CHtml::link('Click here to view the linked business', Yii::app()->createURL('business/business/showdetails', array('business_id'=>$modelQuestion->entity_id)));
+                }
+                if ($modelQuestion->entity_type == 'user') {
+                    $linkedItem = CHtml::link('Click here to view the linked user', Yii::app()->createURL('webuser/profile/show/', array('user_id'=>$modelQuestion->entity_id)));
+                }
+                if ($modelQuestion->entity_type == 'event') {
+                    $linkedItem = CHtml::link('Click here to view the linked event', Yii::app()->createURL('calendar/calendar/showevent', array('event'=>$modelQuestion->entity_id)));
+                }
+            }
+?>
+            <div>
+                <?php  echo $linkedItem; ?>
+                <p>&nbsp;</p>
+            </div>
+
 
             <div class="qa-view-answers-heading clearfix">
                 <h3 class="qa-view-title">

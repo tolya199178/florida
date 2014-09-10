@@ -208,7 +208,7 @@ class ProfileController extends Controller
 	public function actionShow()
 	{
 
-	    $argUserId = (int) Yii::app()->request->getQuery('business_id', Yii::app()->user->id);
+	    $argUserId = (int) Yii::app()->request->getQuery('user_id', Yii::app()->user->id);
 
 	    $userModel = User::model()->findByPk($argUserId);
 
