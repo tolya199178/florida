@@ -1514,7 +1514,14 @@ ALTER TABLE `tbl_post_question` ADD COLUMN post_type enum('Question', 'Rant', 'R
 ALTER TABLE `tbl_post_question` CHANGE COLUMN post_type post_type enum('Question', 'Rant', 'Rave', 'Solution', 'Discussion') DEFAULT 'Discussion';
 ALTER TABLE `tbl_post_question` ADD COLUMN question_rating_value int(11) DEFAULT NULL;
 
+ALTER TABLE `tbl_post_question` ADD COLUMN post_category_id int(11) DEFAULT NULL;
 
+
+ALTER TABLE tbl_post_question
+ADD CONSTRAINT fk_post_question_post_category
+     FOREIGN KEY (post_category_id) 
+     REFERENCES tbl_post_category(category_id);
+     
      
 -- ---------------------------------------------------------------------
 -- Answer
@@ -1615,6 +1622,27 @@ ADD CONSTRAINT fk_post_subscribed_post
      FOREIGN KEY (post_id) 
      REFERENCES tbl_post_question(id);
      
+     
+-- ---------------------------------------------------------------------
+-- post categories
+-- ---------------------------------------------------------------------
+ 
+DROP TABLE IF EXISTS `tbl_post_category`; 
+     
+CREATE TABLE `tbl_post_category` (
+  `category_id`             int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id`               int(11) DEFAULT NULL,
+  `category_name`           varchar(128) NOT NULL,
+  `category_description`    varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_post_category
+ADD CONSTRAINT fk_post_category_post_category_parent
+     FOREIGN KEY (parent_id) 
+     REFERENCES tbl_post_category(category_id);  
+ 
+
      
      
 -- ---------------------------------------------------------------------

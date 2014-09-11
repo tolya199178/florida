@@ -221,13 +221,14 @@ class PostController extends Controller
 
         $modelQuestion->attributes = array(
                         'user_id'       => Yii::app()->user->id,
-                        'title'         => $formValues['content'],
-                        'alias'         => $formValues['content'],
+                        'title'         => $formValues['title'],
+                        'alias'         => $formValues['title'],
                         'content'       => $formValues['content'],
                         'tags'          => '',
                         'status'        => 'Open',
                         'category_id'   => $formValues['category_id'],
                         'entity_type'   => 'general',
+                        'post_type'     => 'Question',
                         'entity_id'     => '1',
         );
 
@@ -730,6 +731,12 @@ class PostController extends Controller
             throw new CHttpException(400, 'Unauthorised Access Attempt. Please do not repeat this request.');
         }
 
+        // Only allow question owners to update the question
+        if (!empty($questionModel->answers))
+        {
+            throw new CHttpException(400, 'Question with a chosen answer cannot be deleted.');
+        }
+
 
         $refTransaction = Yii::app()->db->beginTransaction();
         try
@@ -888,6 +895,67 @@ class PostController extends Controller
 
         }
 
+
+    }
+
+    /**
+     * Select an answer as the chosen one
+     *
+     * @param
+     *            <none> <none>
+     *
+     * @return <none> <none>
+     * @access public
+     */
+    public function actionSelectanswer()
+    {
+
+        $argAnswerId    = (int) Yii::app()->request->getQuery('answer', null);
+
+        // Find the corresponding question, from the answer
+
+        $modelAnswer = PostAnswer::model()->findByPk($argAnswerId);
+
+        if ($modelAnswer === false)
+        {
+            echo CJSON::encode(array(
+                'result'    => false,
+                'message'   => 'The answer could not be found.'
+            ));
+            Yii::app()->end();
+        }
+
+        $questionId = $modelAnswer->question_id;
+
+        $modelQuestion = PostQuestion::model()->findByPk($questionId);
+
+        if ($modelQuestion === false)
+        {
+            echo CJSON::encode(array(
+                'result'    => false,
+                'message'   => 'The linked question could not be found.'
+            ));
+            Yii::app()->end();
+        }
+
+        $modelQuestion->answers = $argAnswerId;
+
+        if ($modelQuestion->save())
+        {
+            echo CJSON::encode(array(
+                'result' => true,
+                'message' => 'OK'
+            ));
+            Yii::app()->end();
+        }
+        else
+        {
+            echo CJSON::encode(array(
+                'result' => false,
+                'votes' => 'Failed to save the question details.'
+            ));
+            Yii::app()->end();
+        }
 
     }
 

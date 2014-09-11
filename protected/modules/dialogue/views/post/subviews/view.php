@@ -87,11 +87,63 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 
            });
 
+            $('.qa-selected-answer').on('click',function(event){
+
+                event.preventDefault();
+
+                var url         = $(this).attr('href');
+                var target      = $(this).attr('target');
+
+        		// process the form. Note that there is no data send as posts arguements.
+        		$.ajax({
+        			type 		: 'POST',
+        			url 		: url,
+        		    data 		: null,
+        			dataType 	: 'json'
+        		})
+        		// using the done promise callback
+        		.done(function(data) {
+
+                    if (data.result == false)
+                    {
+                        alert(data.message);
+                        return false;
+                    }
+
+                    $( ".glyphicon-ok" ).removeClass( "green" );
+                    $( ".glyphicon-ok" ).addClass( "silver" );
+                    $( '#'+target ).removeClass( "silver" );
+                    $( '#'+target ).addClass("green");
+
+
+        		});
+
+                return false;
+
+
+           });
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
 
 ?>
+
+<style>
+<!--
+.green {
+    color: green;
+}
+
+.silver {
+    color: silver;
+}
+
+glyphicon.green {
+    font-size: 3.4em;
+}
+-->
+</style>
 
 <div class="container" style="background:#fff;">
     <div class="qa-view row">
@@ -106,6 +158,30 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                 </div>
             </div>
 
+<?php
+            $linkedItem = '';
+
+            if (!empty($modelQuestion->entity_id)) {
+                if ($modelQuestion->entity_type == 'city') {
+                    $linkedItem = CHtml::link('Click here to view the linked city', Yii::app()->createURL('location/location/viewcity', array('city_id'=>$modelQuestion->entity_id)));
+                }
+                if ($modelQuestion->entity_type == 'business') {
+                    $linkedItem = CHtml::link('Click here to view the linked business', Yii::app()->createURL('business/business/showdetails', array('business_id'=>$modelQuestion->entity_id)));
+                }
+                if ($modelQuestion->entity_type == 'user') {
+                    $linkedItem = CHtml::link('Click here to view the linked user', Yii::app()->createURL('webuser/profile/show/', array('user_id'=>$modelQuestion->entity_id)));
+                }
+                if ($modelQuestion->entity_type == 'event') {
+                    $linkedItem = CHtml::link('Click here to view the linked event', Yii::app()->createURL('calendar/calendar/showevent', array('event'=>$modelQuestion->entity_id)));
+                }
+            }
+?>
+            <div>
+                <?php  echo $linkedItem; ?>
+                <p>&nbsp;</p>
+            </div>
+
+
             <div class="qa-view-answers-heading clearfix">
                 <h3 class="qa-view-title">
                     <?php echo  ((count($listAnswers) == 0)?'No Answers yet': ((count($listAnswers) == 1)?'One Answer.': count($listAnswers).' answers.') ); ?>
@@ -118,7 +194,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
                     <div class="qa-view-answer">
                         <div class="qa-view-actions">
 
-                            <?php $this->renderPartial("subviews/vote",array('model' => $row, 'type' => 'answer')); ?>
+                            <?php $this->renderPartial("subviews/vote",array('model' => $row, 'type' => 'answer', 'selected'=>$modelQuestion->answers)); ?>
 
                         </div>
                         <div class="qa-view-body">
@@ -159,7 +235,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 
 
                         <div class="form-group">
-                    	   <?php echo CHtml::submitButton(($answer->isNewRecord ? 'Create' : 'Update'), array('class'=>"btn btn-inverse")); ?>
+                    	   <?php echo CHtml::submitButton(($answer->isNewRecord ? 'Create' : 'Update'), array('class'=>"btn btn-default")); ?>
                         </div>
 
                 <?php $this->endWidget(); ?>
@@ -184,6 +260,6 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
             <div class="help-block"></div>
         </div>
         <div class="form-group">
-    	<input class="btn btn-inverse" type="submit" name="yt0" value="Save Updated Post" />    </div>
+    	<input class="btn btn-default" type="submit" name="yt0" value="Save Updated Post" />    </div>
     </form>
 </div>

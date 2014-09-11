@@ -22,11 +22,15 @@
  * @property integer $reply_to
  * @property string $post_type
  * @property integer $question_rating_value
+ * @property integer $post_category_id
  *
  * The followings are the available model relations:
+ * @property PostAnswer[] $postAnswers
+ * @property PostCategory $postCategory
  * @property PostQuestion $replyTo
  * @property PostQuestion[] $postQuestions
  * @property User $user
+ * @property PostSubscribed[] $postSubscribeds
  */
 
  /**
@@ -79,7 +83,7 @@ class PostQuestion extends CActiveRecord
 		return array(
 			array('user_id, title, alias, content, entity_id',                           'required'),
 			array('user_id, answers, views, votes, category_id, entity_id, reply_to',    'numerical', 'integerOnly'=>true),
-		    array('question_rating_value',                                               'numerical', 'integerOnly'=>true),
+		    array('question_rating_value, post_category_id',                             'numerical', 'integerOnly'=>true),
 
 			array('title, alias',                                                        'length', 'max'=>255),
 			array('status',                                                              'in',
@@ -106,11 +110,13 @@ class PostQuestion extends CActiveRecord
 	 */
 	public function relations()
 	{
-
 		return array(
-			'replyTo'            => array(self::BELONGS_TO, 'PostQuestion', 'reply_to'),
-			'postQuestions'      => array(self::HAS_MANY, 'PostQuestion', 'reply_to'),
-			'user'               => array(self::BELONGS_TO, 'User', 'user_id'),
+		    'postAnswers'        => array(self::HAS_MANY, 'PostAnswer', 'question_id'),
+		    'postCategory'       => array(self::BELONGS_TO, 'PostCategory', 'post_category_id'),
+		    'replyTo'            => array(self::BELONGS_TO, 'PostQuestion', 'reply_to'),
+		    'postQuestions'      => array(self::HAS_MANY, 'PostQuestion', 'reply_to'),
+		    'user'               => array(self::BELONGS_TO, 'User', 'user_id'),
+		    'postSubscribeds'    => array(self::HAS_MANY, 'PostSubscribed', 'post_id'),
 		);
 	}
 
@@ -146,6 +152,7 @@ class PostQuestion extends CActiveRecord
 			'reply_to'       => 'Reply To',
 		    'post_type'      => 'Post Type',
 		    'question_rating_value'       => 'Question Rating Value',
+		    'post_category_id' => 'Post Category',
 		);
 	}
 
@@ -188,6 +195,7 @@ class PostQuestion extends CActiveRecord
 		$criteria->compare('reply_to',        $this->reply_to);
 		$criteria->compare('post_type',       $this->post_type);
 		$criteria->compare('question_rating_value',$this->question_rating_value);
+		$criteria->compare('post_category_id',$this->post_category_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
