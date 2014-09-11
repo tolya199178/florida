@@ -155,4 +155,20 @@ class PostCategory extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	public function scopes()
+	{
+	    return array(
+	        'question'=>array(
+	            'condition'=>'parent_id=1',
+	        ),
+	        'rant'=>array(
+	            'condition'=>'parent_id=1',
+	        ),
+	        'rave'=>array(
+	            'condition'=>'parent_id=1',
+	        ),
+
+	    );
+	}
 }

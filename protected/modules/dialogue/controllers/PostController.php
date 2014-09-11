@@ -221,8 +221,8 @@ class PostController extends Controller
 
         $modelQuestion->attributes = array(
                         'user_id'       => Yii::app()->user->id,
-                        'title'         => $formValues['content'],
-                        'alias'         => $formValues['content'],
+                        'title'         => $formValues['title'],
+                        'alias'         => $formValues['title'],
                         'content'       => $formValues['content'],
                         'tags'          => '',
                         'status'        => 'Open',

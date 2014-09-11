@@ -21,6 +21,9 @@
 
             <div class="col-sm-7">
 
+                <?php echo $form->textField($question,'title', array('class'=>"form-control", 'placeholder'=>'Enter your title...')); ?>
+                <p>&nbsp;</p>
+
                 <?php echo $form->textArea($question,'content',array(
                                                                     'id'=>'questiontext',
                                                                     'class'=>'form-control',
@@ -31,7 +34,7 @@
             <div class="col-sm-3">
                 <?php echo $form->dropDownList($question,
                                                'category_id',
-                                               CHtml::listData(Category::model()->findAll(),'category_id', 'category_name'),
+                                               CHtml::listData(PostCategory ::model()->question()->findAll(),'category_id', 'category_name'),
                                                array('id'=>'questiontext',
                                                      'class'=>'form-control',
                                                      'empty' => '(Select a category)',

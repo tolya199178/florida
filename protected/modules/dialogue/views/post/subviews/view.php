@@ -195,7 +195,7 @@ glyphicon.green {
 
 
                         <div class="form-group">
-                    	   <?php echo CHtml::submitButton(($answer->isNewRecord ? 'Create' : 'Update'), array('class'=>"btn btn-inverse")); ?>
+                    	   <?php echo CHtml::submitButton(($answer->isNewRecord ? 'Create' : 'Update'), array('class'=>"btn btn-default")); ?>
                         </div>
 
                 <?php $this->endWidget(); ?>
@@ -220,6 +220,6 @@ glyphicon.green {
             <div class="help-block"></div>
         </div>
         <div class="form-group">
-    	<input class="btn btn-inverse" type="submit" name="yt0" value="Save Updated Post" />    </div>
+    	<input class="btn btn-default" type="submit" name="yt0" value="Save Updated Post" />    </div>
     </form>
 </div>
