@@ -87,6 +87,42 @@ Yii::app()->clientScript->registerCssFile(Yii::app()->theme->baseUrl. '/resource
 
            });
 
+            $('.qa-selected-answer').on('click',function(event){
+
+                event.preventDefault();
+
+                var url         = $(this).attr('href');
+                var target      = $(this).attr('target');
+
+        		// process the form. Note that there is no data send as posts arguements.
+        		$.ajax({
+        			type 		: 'POST',
+        			url 		: url,
+        		    data 		: null,
+        			dataType 	: 'json'
+        		})
+        		// using the done promise callback
+        		.done(function(data) {
+
+                    if (data.result == false)
+                    {
+                        alert(data.message);
+                        return false;
+                    }
+
+                    $( ".glyphicon-ok" ).removeClass( "green" );
+                    $( ".glyphicon-ok" ).addClass( "silver" );
+                    $( '#'+target ).removeClass( "silver" );
+                    $( '#'+target ).addClass("green");
+
+
+        		});
+
+                return false;
+
+
+           });
+
 EOD;
 
 Yii::app()->clientScript->registerScript('register_script_name', $script, CClientScript::POS_READY);
@@ -97,6 +133,10 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 <!--
 .green {
     color: green;
+}
+
+.silver {
+    color: silver;
 }
 
 glyphicon.green {
@@ -154,7 +194,7 @@ glyphicon.green {
                     <div class="qa-view-answer">
                         <div class="qa-view-actions">
 
-                            <?php $this->renderPartial("subviews/vote",array('model' => $row, 'type' => 'answer')); ?>
+                            <?php $this->renderPartial("subviews/vote",array('model' => $row, 'type' => 'answer', 'selected'=>$modelQuestion->answers)); ?>
 
                         </div>
                         <div class="qa-view-body">

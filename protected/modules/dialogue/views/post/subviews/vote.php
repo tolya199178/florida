@@ -20,6 +20,31 @@
     </a>
 <?php } ?>
 
-<span class="glyphicon glyphicon-ok green"></span>
+<?php if ($type == 'answer') { ?>
+
+ <?php if ($model->user_id != Yii::app()->user->id) { ?>
+
+    <h1 id="<?php echo 'selected_'.$type.'_'.$model->id; ?>" class="glyphicon glyphicon-ok silver"></h1>
+
+<?php } else {  ?>
+
+<a class="qa-selected-answer"
+       href="<?php echo Yii::app()->createUrl('//dialogue/post/selectanswer/', array($type => $model->id)); ?>"
+       title="Select As Answer" posttype='<?php echo $type; ?>'  target="<?php echo 'selected_'.$type.'_'.$model->id; ?>">
+
+
+<?php       if ($model->id == $selected) { ?>
+                <h1 id="<?php echo 'selected_'.$type.'_'.$model->id; ?>" class="glyphicon glyphicon-ok green"></h1>
+<?php       } else { ?>
+                <h1 id="<?php echo 'selected_'.$type.'_'.$model->id; ?>" class="glyphicon glyphicon-ok silver"></h1>
+<?php       } ?>
+
+    </a>
+
+<?php } ?>
+
+
+
+<?php } ?>
 
 </div>

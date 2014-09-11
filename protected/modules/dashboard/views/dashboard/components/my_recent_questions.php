@@ -4,10 +4,19 @@
 
 <?php                                   foreach ($listMyNewQuestions as $itemQuestion) { ?>
                                             <li class="list-group-item text-right">
-                                                <span class="pull-left">
-                                                    <?php echo CHtml::link($itemQuestion['title'], Yii::app()->createUrl('/dialogue/post/view/', array('question'=> $itemQuestion['id']))); ?>
-                                                </span>
-                                                     <?php echo CHtml::encode($itemQuestion['modified_date']); ?>
+                                                <div>
+                                                    <span class="pull-left">
+                                                        <?php echo CHtml::link($itemQuestion['title'], Yii::app()->createUrl('/dialogue/post/view/', array('question'=> $itemQuestion['id']))); ?>
+                                                    </span>
+                                                         <?php echo CHtml::encode($itemQuestion['modified_date']); ?>
+                                                </div>
+                                                <div>
+                                                    <span class="pull-left">
+                                                        <?php echo (isset($itemQuestion->postCategory['category_name']))?$itemQuestion->postCategory['category_name']:''; ?>
+                                                    </span>
+                                                         <?php echo CHtml::encode($itemQuestion['views']); ?> views.
+                                                </div>
+
                                             </li>
 <?php                                   } ?>
 

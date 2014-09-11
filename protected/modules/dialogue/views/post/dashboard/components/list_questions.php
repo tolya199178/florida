@@ -87,15 +87,19 @@ $script = <<<EOD
     // Launch the modal when the create new event link is clicked
     $('body').on('click', '.deletepost', function(e) {
 
-            var result = window.confirm("Do you really want to Delete the event?");
+            var result = window.confirm("Do you really want to Delete the post?");
             if (result == false) {
                 e.preventDefault();
                 return false;
             }
             else {
+
+                var id      = $(this).attr('rel');
+
+
                 $.ajax({
                 	type: 'POST',
-                	url: "$deletePostUrl",
+                	url: "$deletePostUrl/question_id/"+id,
                 	datatype:"json",
                 	data: {question_id: $(this).attr("rel")} ,
 

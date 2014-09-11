@@ -6,34 +6,7 @@ $myInboxCount       = $data['myMessagesCount'];
 
 ?>
 
-
-                        <div class="container">
-                            <ul class="nav nav-tabs" id="myTab">
-                                <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
-                                <li><a href="#settings" data-toggle="tab">Settings</a></li>
-                                <li><a href="#preferences" data-toggle="tab">Preferences</a></li>
-                            </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="details">TODO: Details...</div>
-                                <div class="tab-pane" id="settings">TODO: Settings...</div>
-                                <div class="tab-pane" id="preferences">TODO: Preferences...</div>
-                            </div>
-                        </div>
-
-                        <p>&nbsp;</p>
-
-
-
                         <!--left col-->
-                        <ul class="list-group">
-                            <li class="list-group-item text-muted">Profile</li>
-                            <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span>
-                                2.13.2014</li>
-                            <li class="list-group-item text-right"><span class="pull-left"><strong>Last
-                                        seen</strong></span> Yesterday</li>
-                            <li class="list-group-item text-right"><span class="pull-left"><strong>Real
-                                        name</strong></span> Joseph Doe</li>
-                        </ul>
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
