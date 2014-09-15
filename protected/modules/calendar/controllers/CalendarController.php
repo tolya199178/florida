@@ -332,7 +332,10 @@ class CalendarController extends Controller
 	    if(isset($_POST['Event']))
 	    {
 
+	        print_r($_POST);
+
 	        $eventModel->attributes=$_POST['Event'];
+	        $eventModel->event_business_id = 1;
 
 	        $uploadedFile = CUploadedFile::getInstance($eventModel,'fldUploadImage');
 
@@ -363,8 +366,15 @@ class CalendarController extends Controller
 
 	    }
 
+	    $listCities        = Yii::app()->db->createCommand()
+                        	           ->select("*")
+                        	           ->from('tbl_city')
+                        	           ->queryAll();
+
 	    // Show the details screen
-	    $this->renderPartial('event_details_form',array('model'=>$eventModel), false, true);
+	    $this->renderPartial('event_details_form',
+	        array('model'=>$eventModel, 'listCities' => $listCities),
+	        false, true);
 
 	}
 
@@ -460,7 +470,17 @@ class CalendarController extends Controller
 	    }
 
 	    // Show the details screen
-	    $this->renderPartial('event_details_form',array('model'=>$eventModel), false, true);
+// 	    $this->renderPartial('',array('model'=>$eventModel), false, true);
+
+	    $listCities        = Yii::app()->db->createCommand()
+                                	   ->select("*")
+                                	   ->from('tbl_city')
+                                	   ->queryAll();
+
+	    // Show the details screen
+	    $this->renderPartial('event_details_form',
+	        array('model'=>$eventModel, 'listCities' => $listCities),
+	        false, true);
 
 	}
 
@@ -548,8 +568,12 @@ class CalendarController extends Controller
                             	           'user_id' => Yii::app()->user->id,
                             	      ));
 
+	    $listCities        = Yii::app()->db->createCommand()
+                                	   ->select("*")
+                                	   ->from('tbl_city')
+                                	   ->queryAll();
 
-	    $this->render('my_event_list', array('data' => array(
+	    $this->render('my_event_list', array('listCities' => $listCities, 'data' => array(
 	                                               'listEvents'=>$listEvents,
 	    	                                       'listUpcomingEvents' => $listUpcomingEvents
                      )));

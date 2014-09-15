@@ -86,7 +86,7 @@ h2 {
 
 
 <!-- New Event Modal -->
-<div class="modal fade" id="modalNewEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalNewEvent" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -138,6 +138,10 @@ h2 {
                                         </div>
 
                                     <?php } ?>
+
+                                        <div id='event_details_panel'>
+
+                                        </div>
 
                                         <div class="panel panel-warning">
                                             <div class="panel-heading">
@@ -207,10 +211,10 @@ h2 {
                                                             }
                                                             else
                                                             {
-                                                                $imageURL = Yii::app()->request->baseUrl .'/uploads/images/business/'.$myEvent->event_photo;
+                                                                $imageURL = Yii::app()->request->baseUrl .'/uploads/images/event/'.$myEvent->event_photo;
                                                             }
                                                         ?>
-                                                        <?php echo CHtml::image($imageURL, 'Business Image', array("width"=>"180px" ,"height"=>"180px", 'id'=>'business_main_image_view')); ?>
+                                                        <?php echo CHtml::image($imageURL, 'Event Image', array("width"=>"180px" ,"height"=>"180px", 'id'=>'event_main_image_view')); ?>
 
                                                     </div>
 
@@ -242,7 +246,10 @@ h2 {
                                                         <br/>
                                                         <?php echo CHtml::Encode($myEvent->event_address2); ?>
                                                         <br/>
-                                                        <?php echo CHtml::Encode($myEvent->eventCity->city_name); ?>
+<?php                                                   if (isset($myEvent->eventCity)) { ?>
+                                                            <?php echo CHtml::Encode($myEvent->eventCity->city_name); ?>
+<?php                                                   } ?>
+
                                                     </div>
 
                                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -299,10 +306,20 @@ $baseUrl = $this->createAbsoluteUrl('/');
 
 $neweventURL    = $baseUrl.'/calendar/calendar/newevent/';
 
-$bizAutoCompleteURL    = Yii::app()->createUrl('/business/business/autocompletelist');
-
-
 $script = <<<EOD
+
+
+
+    // Fix for bug with select 2 render in modal
+ //   $.fn.modal.Constructor.prototype.enforceFocus = function () {};
+
+
+
+// $("#event_city_id").select2({
+//     placeholder: "I am in...",
+//     allowClear: true
+// });
+
 
     // /////////////////////////////////////////////////////////////////////////
     // Create new event
@@ -317,6 +334,8 @@ $script = <<<EOD
             remote: '$neweventURL'
 
         });
+
+
     });
 
     // /////////////////////////////////////////////////////////////////////////
@@ -342,6 +361,11 @@ $script = <<<EOD
     // Launch the modal when the create new event link is clicked
     $('body').on('click', '#delete_event', function(e) {
 
+        $("#event_city_id").select2({
+            placeholder: "I am in...",
+            allowClear: true
+        });
+
             var result = window.confirm("Do you really want to Delete the event?");
             if (result == false) {
                 e.preventDefault();
@@ -362,34 +386,16 @@ $script = <<<EOD
             }
 
     });
-    //
+
 
     $('#modalNewEvent').on('shown.bs.modal', function(e) {
-            $("#event_business_id").select2({
-                placeholder: "Choose business",
-                allowClear: true
-            });
 
-            $('#event_business_id').select2({
-                placeholder: "Search User",
-                width : "100%",
-                minimumInputLength: 3,
-                ajax: {
-                    url: "$bizAutoCompleteURL",
-                    dataType: 'json',
-                        data: function (term, page) {
-                            return {
-                                query: term
-                              };
-                        },
-                        results: function (data, page) {
-                            return {
-                                results: data
-                            };
-                        }
-                }
-        	});
+        $.fn.modal.Constructor.prototype.enforceFocus = function () {};
 
+        $("#event_city_id").select2({
+            placeholder: "I am in...",
+            allowClear: true
+        });
 
     });
 
