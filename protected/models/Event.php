@@ -144,7 +144,7 @@ class Event extends CActiveRecord
 		    array('event_address1, event_address2, event_description',    'length', 'max'=>1024),
 		    array('event_street, event_start_time, event_end_time',       'length', 'max'=>512),
 		    array('event_phone_no',                                       'length', 'max'=>32),
-		    array('event_latitude, event_longitude',                      'length', 'max'=>10),
+		    array('event_latitude, event_longitude',                      'length', 'max'=>16),
 		    array('external_event_source',                                'length', 'max'=>255),
 		    array('external_event_id',                                    'length', 'max'=>64),
 
@@ -160,6 +160,15 @@ class Event extends CActiveRecord
 		           is_featured, is_popular',                     'in','range'=>array('Y','N'),'allowEmpty'=>true),
 			array('event_type',                                  'in','range'=>array('public', 'private', 'meetups'),'allowEmpty'=>true),
 		    array('event_status',                                'in','range'=>array('Inactive', 'Active','Closed', 'Cancelled'),'allowEmpty'=>true),
+
+		    array(
+		        'event_end_date',
+		        'compare',
+		        'compareAttribute'=>'event_start_date',
+		        'operator'=>'>',
+		        'allowEmpty'=>false ,
+		        'message'=>'{attribute} must be greater than "{compareValue}".'
+		    ),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('event_id, event_title, event_description, event_type,

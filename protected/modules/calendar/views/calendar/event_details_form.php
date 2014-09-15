@@ -201,7 +201,16 @@
                             <div class="form-group">
                                 <?php echo $form->labelEx($model,'event_city_id',array('class'=>"col-sm-2 control-label", 'id'=>'event_city_id')); ?>
                                 <div class="col-sm-10">
-                                    <?php echo $form->dropDownList($model,'event_city_id', CHtml::listData(City::model()->findAll(), 'city_id', 'city_name'), array('class'=>"form-control")); ?>
+
+                                    <select id="event_city_id" style="width:300px;" class="populate placeholder">
+                                        <option></option>
+                                    <?php foreach ($listCities as $itemCity) { ?>
+                                        <option value="<?php echo (int) $itemCity['city_id']; ?>">
+                                            <?php echo CHtml::encode($itemCity['city_name']); ?>
+                                        </option>
+                                    <?php } ?>
+                                    </select>
+
                                     <?php echo $form->error($model,'event_city_id'); ?>
                                     <!--  todo: styling for dropdown -->
                                 </div>
@@ -263,7 +272,7 @@
                                     <div
                                         style="border: 1px solid #066A75; padding: 3px; width: 150px; height: 150px;"
                                         id="left">
-                                        <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/business/thumbnails/'.$model->event_photo,
+                                        <?php echo CHtml::link(CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/event/thumbnails/'.$model->event_photo,
                                                                 "Image",
                                                                 array('width'=>150, 'height'=>150))); ?>
                                     </div>
@@ -284,19 +293,6 @@
                             </div>
                         </div>
 
-
-                        <div class="row">
-                            <div class="form-group">
-                                <!--  TODO: This must only displays the current user's business's  -->
-                                TODO: Show only business belonging to user.<br />
-                                <?php echo $form->labelEx($model,'event_business_id',array('class'=>"col-sm-2 control-label", 'id'=>'event_business_id')); ?>
-                                <div class="col-sm-10">
-                                    <?php echo $form->dropDownList($model,'event_business_id', CHtml::listData(Business::model()->findAll(), 'business_id', 'business_name')); ?>
-                                    <?php echo $form->error($model,'event_business_id'); ?>
-                                    <!--  todo: styling for dropdown -->
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="row">
                             <div class="form-group">
