@@ -796,7 +796,7 @@ class MyfriendController extends Controller
          $dbCriteria             = new CDbCriteria;
 
          $dbCriteria->condition  = "t.user_id      = :user_id AND
-                                    friend.status  = 'active' AND
+                                    friend.status  = 'inactive' AND
                                     t.connected_by = :connected_by";
          $dbCriteria->params     = array(':user_id'     => Yii::app()->user->id,
                                          ':connected_by'=> 'facebook');
