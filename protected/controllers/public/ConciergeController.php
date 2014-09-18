@@ -1085,7 +1085,7 @@ LIMIT 0 , $numberOfResults
         // Search the search history log. The search history is a temporary transactional
         // ...log table and may be cleaned up from time to time for operational reasons. If
         // ...the search is no longer available, we exit with an error message.
-        $itemSearchLog = SearchHistory::model()->findByPk(Yii::app()->session[' ']);
+        $itemSearchLog = SearchHistory::model()->findByPk(Yii::app()->session['last_search_history_id']);
 
         $searchDetails = unserialize($itemSearchLog->search_details);
 
