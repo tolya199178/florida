@@ -930,7 +930,7 @@ LIMIT 0 , $numberOfResults
 
         if (! empty($argWithWhat)) {
             $activitySearchCriteria->addCondition( "FIND_IN_SET(:activity_type_keyword_tag,
-                                          CONCAT(`activityType`.keyword,',',IFNULL(`activityType`.related_words,'')))");
+                                          CONCAT(`b`.keyword,',',IFNULL(`b`.related_words,'')))");
 
             $activitySearchCriteria->params       = array_merge($activitySearchCriteria->params,
                 array(':activity_type_keyword_tag'=>$argWithWhat));
