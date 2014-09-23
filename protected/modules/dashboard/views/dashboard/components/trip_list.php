@@ -1,33 +1,30 @@
+<?php
 
+$myActiveTrips      = $data['myActiveTrips'];
+
+?>
                         <!-- search listing component -->
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                My Saved Searches <i class="fa fa-link fa-1x"></i>
+                                My Trips <i class="fa fa-link fa-1x"></i>
                             </div>
                             <div class="panel-body">
                                 <ul class="list-group">
-                                <?php foreach ($mySavedSearch as $itemSearch) { ?>
+                                <?php foreach ($myActiveTrips as $itemTrip) { ?>
                                     <li class="list-group-item">
-                                        <a href="<?php echo Yii::app()->createURL('/calendar/calendar/details/', array('id' => $itemSearch['search_id']))?>">
-                                           <?php echo $itemSearch['search_name']  ; ?>
-                                        </a>
-
-                                        <a data-toggle="modal" data-target="#modalEditSearch" class="edit_search btn btn-xs btn-info pull-right" href="<?php echo Yii::app()->createUrl('webuser/profile/editsearch/', array('id' => $itemSearch['search_id'])); ?>">
-                                            <i class="glyphicon glyphicon-plus-sign"></i>
-                                            Edit
-                                        </a>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <a class="delete_search btn btn-xs btn-danger pull-right"
-                                           href="<?php echo Yii::app()->createUrl('webuser/profile/removesearch/', array('id' => $itemSearch['search_id'])); ?>"
-                                           rel="<?php echo $itemSearch['search_id']  ; ?>" >
-                                            <i class="glyphicon glyphicon-minus-sign"></i>
-                                            Delete
+                                        <a href="<?php echo Yii::app()->createURL('/mytravel/mytravel/manage', array('trip' => $itemTrip['trip_id']))?>">
+                                           <?php echo $itemTrip['trip_name']  ; ?>
                                         </a>
 
                                     </li>
                                 <?php }?>
                                 </ul>
+
+                                <a class="btn btn-lg btn-default" href="<?php echo Yii::app()->createUrl('mytravel/mytravel/show'); ?>">
+                                    <i class="glyphicon glyphicon-plus-sign"></i>
+                                    Manage your trips
+                                </a>
 
                             </div>
                         </div>

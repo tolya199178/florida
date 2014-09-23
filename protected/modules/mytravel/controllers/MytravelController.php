@@ -253,6 +253,8 @@ class MytravelController extends Controller
 
 	    }
 
+	   //  $lstWhoIsGoing = $this->getWhoIsGoing($argTripId);
+
 	    $dbCriteria             = new CDbCriteria;
 	    $dbCriteria->condition  = 'user_id = :user_id';
 	    $dbCriteria->params     = array(':user_id'=>Yii::app()->user->id);
@@ -261,6 +263,32 @@ class MytravelController extends Controller
 
 	    // Show the details screen
 	    $lstMyTrips = Trip::model()->findAll($dbCriteria);
+
+// 	    // Get the related trip details
+// 	    foreach ($lstMyTrips as $itemTrip)
+// 	    {
+//             // Get the details of who else is going to the same place during the same time.
+// 	        $lstOtherTripLegs   = Yii::app()->db->createCommand()
+// 	                                        ->select('*')
+// 	                                        ->from('tbl_trip_leg')
+// 	                                        ->join('tbl_trip', 'tbl_trip_leg.trip_id = tbl_trip.trip_id')
+// 	                                        ->where('city_id = :city_id AND
+// 	                                              :leg_start_leg >= leg_start_date AND
+// 	                                              :leg_start_leg <= leg_end_date',
+// 	                                               array(':city_id'      => $itemTrip->city_id,
+// 	                                                     ':leg_start_leg'=> $itemTrip->leg_start_leg) )
+// 	                                        ->queryAll();
+
+// 	        print_r($lstOtherTripLegs);
+
+// 	        foreach ($lstOtherTripLegs as $itemLeg)
+// 	        {
+//                 // Get the details of the traveller
+// //                 $
+// 	        }
+
+
+// 	    }
 
 	    // Show the dashboard
 	    $this->render('mytravel_main', array('mainview'        => 'details',
@@ -341,6 +369,31 @@ class MytravelController extends Controller
 
 	    // Show the dashboard
 	    $this->renderPartial('trip_leg_details', array('model'=> $modelTripLeg));
+
+	}
+
+	/**
+	 * Get details of who else is going on the trip
+	 * Leag interface is AJAX.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	private function actionWhoisgoing($tripId)
+	{
+
+        $lstOtherTripLegs   = Yii::app()->db->createCommand()
+                                        ->select('*')
+                                        ->from('tbl_trip_leg')
+                                        ->join('tbl_trip', 'tbl_trip_leg.trip_id = tbl_trip.trip_id')
+                                        ->where('city_id = :city_id AND
+                                              :leg_start_leg >= leg_start_date AND
+                                              :leg_start_leg <= leg_end_date',
+                                               array(':city_id'      => $itemTrip->city_id,
+                                                     ':leg_start_leg'=> $itemTrip->leg_start_leg) )
+                                        ->queryAll();
 
 	}
 

@@ -81,9 +81,24 @@ $model = $data['model'];
                 </div>
                 <div class="panel-body">
                     <ul class="list-group">
-                    <?php foreach ($model->tripLegs as $itemLeg) { ?>
-                        <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/mytravel/mytravel/details', array('id' => $itemLeg->trip_leg_id))?>"><?php echo CHtml::encode($itemLeg->description); ?></a></li>
-                    <?php }?>
+                        <?php foreach ($model->tripLegs as $itemLeg) { ?>
+                            <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/mytravel/mytravel/details', array('id' => $itemLeg->trip_leg_id))?>"><?php echo CHtml::encode($itemLeg->description); ?></a></li>
+
+                            <a class="btn btn-xs btn-default" id="who_is_going"
+                               href="<?php echo Yii::app()->createUrl('/mytravel/mytravel/whoisgoing/', array('leg'=>$itemLeg->trip_leg_id)); ?>">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                Who is going
+                            </a>
+                            <a class="btn btn-xs btn-default" id="offers"
+                               href="<?php echo Yii::app()->createUrl('/mytravel/mytravel/offers/', array('city'=>$itemLeg->city_id)); ?>">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                Check Specials
+                            </a>
+                        <?php }?>
+
+
+
+
                     </ul>
 
                     <a class="btn btn-sm btn-success" id="add_leg" href="<?php echo Yii::app()->createUrl('/mytravel/mytravel/addleg/', array('trip'=>$model->trip_id)); ?>">
@@ -104,6 +119,8 @@ $model = $data['model'];
 <?php
 
 $baseUrl = $this->createAbsoluteUrl('/');
+
+$baseUrl = $this->createAbsoluteUrl('/mytravel/mytravel/manage/trip/1');
 
 
 $script = <<<EOD
