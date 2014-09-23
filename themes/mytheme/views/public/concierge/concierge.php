@@ -873,11 +873,20 @@ $script = <<<EOD
             }
             var savedSearch = data.search.search_details;
 
-            $('#dowhat').tagsinput('remove', $("#dowhat").val());
-            $('#dowhat').tagsinput('add', savedSearch.dowhat);
-            $('#withwhat').tagsinput('remove', $("#withwhat").val());
-            $('#withwhat').tagsinput('add', savedSearch.withwhat);
+
+        $("#dowhat").select2("val", "");
+        $("#dowhat").select2("data", {id: savedSearch.dowhat, text: savedSearch.dowhat});
+        $("#withwhat").select2("val", "");
+        $("#withwhat").select2("data", {id: savedSearch.withwhat, text: savedSearch.withwhat});
+
+
+//             $('#dowhat').tagsinput('remove', $("#dowhat").val());
+//             $('#dowhat').tagsinput('add', savedSearch.dowhat);
+//             $('#withwhat').tagsinput('remove', $("#withwhat").val());
+//             $('#withwhat').tagsinput('add', savedSearch.withwhat);
             $("#city").val(savedSearch.where);
+            doSearch();
+
 
 		});
 

@@ -196,13 +196,19 @@ class DashboardController extends Controller
                                        ->queryAll();
 
         // /////////////////////////////////////////////////////////////////////
-        // TODO: Get a list of the user's activities logs
+        // Get a list of the user's trips
         // /////////////////////////////////////////////////////////////////////
-        // TODO:
-        $listMyActivities                   = array(); // TODO:
-        // TODO:
+        $myActiveTrips = Yii::app()->db->createCommand()
+                                   ->select("*")
+                                   ->from('tbl_trip')
+                                   ->where('user_id = :user_id AND trip_status="Active"',
+                                           array(':user_id' => Yii::app()->user->id))
+                                   ->queryAll();
 
 
+        // /////////////////////////////////////////////////////////////////////
+        // Get friensd details
+        // /////////////////////////////////////////////////////////////////////
         $resultsFriendSummary = MyFriend::FriendSummary(Yii::app()->user->id);
         $userFriendSummary = array_pop($resultsFriendSummary);
 
@@ -223,7 +229,7 @@ class DashboardController extends Controller
             'listMyMessages'    => $listMyMessages,
             'listEvents'        => $listEvents,
             'myPhotos'          => $listPhotos,
-            'myActivities'      => $listMyActivities,
+            'myActiveTrips'     => $myActiveTrips,
             'myFriendsCount'    => $myFriendsCount,
             'myMessagesCount'   => $myMessagesCount,
             'mySavedSearch'     => $mySavedSearch,

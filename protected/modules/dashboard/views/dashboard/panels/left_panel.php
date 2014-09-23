@@ -31,3 +31,5 @@ $myInboxCount       = $data['myMessagesCount'];
                         <?php $this->renderPartial('components/messages_summary', array('myInboxCount'=>$myInboxCount)) ?>
 
                         <?php $this->renderPartial('components/events_top5', array('data'=>$data)) ?>
+
+                        <?php $this->renderPartial('components/trip_list', array('data'=>$data)) ?>
