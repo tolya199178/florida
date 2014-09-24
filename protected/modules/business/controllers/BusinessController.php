@@ -504,14 +504,30 @@ EOD;
                 // Get all businesses in the list of categories
 
 
-                $lstBusinessInSameCategory = Yii::app()->db->createCommand()
-                                                         ->select('c.category_id, c.category_name, b.business_id, b.business_name, b.image')
+//                 $lstBusinessInSameCategory = Yii::app()->db->createCommand()
+//                                                          ->select('c.category_id, c.category_name, b.business_id, b.business_name, b.image')
+//                                                          ->from('tbl_business_category bc ')
+//                                                          ->join('tbl_business b', 'b.business_id = bc.business_id')
+//                                                          ->join('tbl_category c', 'c.category_id = bc.category_id')
+//                                                          ->where('c.is_featured = "Y"')
+//                                                          ->where(array('in', 'c.category_id', $businessCatagories))
+//                                                          ->queryAll();
+                $lstBusinessInSameCategory = array();
+
+
+                // Get the list of business categories, and the count of the number of businesses in each category for
+                // ...each category that the business belongs to.
+                $lstBusinesCountPerCategory = Yii::app()->db->createCommand()
+                                                         ->select('bc.category_id, c.category_name, count(bc.business_category_id) as business_count')
                                                          ->from('tbl_business_category bc ')
-                                                         ->join('tbl_business b', 'b.business_id = bc.business_id')
+                                                         //->join('tbl_business b', 'b.business_id = bc.business_id')
                                                          ->join('tbl_category c', 'c.category_id = bc.category_id')
-                                                         ->where('c.is_featured = "Y"')
+                                                        // ->where('c.is_featured = "Y"')
                                                          ->where(array('in', 'c.category_id', $businessCatagories))
+                                                         ->group('bc.category_id')
                                                          ->queryAll();
+
+//                 print_r($lstBusinesCountPerCategory);exit;
 
 
                 // /////////////////////////////////////////////////////////////
@@ -558,7 +574,8 @@ EOD;
                                     'lstCoupon'                 => $lstCoupon,
                                     'lstNewBusiness'            => $lstNewBusiness,
                                     'lstBusinessDiscussions'    => $lstBusinessDiscussions,
-                                    'lstBusinessInSameCategory' => $lstBusinessInSameCategory,
+                                    // 'lstBusinessInSameCategory' => $lstBusinessInSameCategory,
+                                    'lstBusinesCountPerCategory'=> $lstBusinesCountPerCategory
                               ));
             }
         }
