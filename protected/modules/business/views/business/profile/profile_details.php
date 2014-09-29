@@ -198,7 +198,7 @@ hr:before {
                         <!-- Business in same category -->
                         <div class="new_business_list">
 
-                            <?php $this->renderPartial('profile/same_category_business_listing', array('lstBusinessInSameCategory'=>$lstBusinessInSameCategory)); ?>
+                            <?php $this->renderPartial('profile/business_categories', array('lstBusinesCountPerCategory'=>$lstBusinesCountPerCategory)); ?>
 
                         </div>
                         <!-- ./Business in same category -->

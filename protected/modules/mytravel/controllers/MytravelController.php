@@ -264,6 +264,27 @@ class MytravelController extends Controller
 	    // Show the details screen
 	    $lstMyTrips = Trip::model()->findAll($dbCriteria);
 
+	    $lstUserTrips = array();
+	    foreach ($lstMyTrips as $itemTrip)
+	    {
+            $lstUserTrips[] = $itemTrip->trip_id;
+	    }
+
+
+
+
+
+	    // Fetch the trip questions
+        $lstOtherTripLegs   = Yii::app()->db->createCommand()
+                                        ->select('*')
+                                        ->from('tbl_post_question')
+                                        ->join('tbl_trip', 'tbl_trip_leg.trip_id = tbl_trip.trip_id')
+                                        ->where('entity_type = "trip"')
+                                        ->andWhere(array('in', 'id', $lstUserTrips))
+
+                                        ->queryAll();
+
+
 // 	    // Get the related trip details
 // 	    foreach ($lstMyTrips as $itemTrip)
 // 	    {
