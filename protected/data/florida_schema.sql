@@ -1516,6 +1516,9 @@ ALTER TABLE `tbl_post_question` ADD COLUMN question_rating_value int(11) DEFAULT
 
 ALTER TABLE `tbl_post_question` ADD COLUMN post_category_id int(11) DEFAULT NULL;
 
+ALTER TABLE `tbl_post_question` CHANGE COLUMN `entity_type` `entity_type` enum('city', 'state', 'business', 'user', 'general', 'event', 'trip') DEFAULT 'general';
+
+
 
 ALTER TABLE tbl_post_question
 ADD CONSTRAINT fk_post_question_post_category

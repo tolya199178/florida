@@ -116,6 +116,47 @@ $model = $data['model'];
 <?php } ?>
 
 
+            <!-- Trip q and a --->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Take Advice for the trip <i class="fa fa-link fa-1x"></i>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <?php foreach ($model->tripQuestions as $itemQuestion) { ?>
+                            <li class="list-group-item"><a href="<?php echo Yii::app()->createURL('/mytravel/mytravel/details', array('id' => $itemLeg->trip_leg_id))?>"><?php echo CHtml::encode($itemLeg->description); ?></a></li>
+
+                            <a class="btn btn-xs btn-default" id="who_is_going"
+                               href="<?php echo Yii::app()->createUrl('/mytravel/mytravel/whoisgoing/', array('leg'=>$itemLeg->trip_leg_id)); ?>">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                Who is going
+                            </a>
+                            <a class="btn btn-xs btn-default" id="offers"
+                               href="<?php echo Yii::app()->createUrl('/mytravel/mytravel/offers/', array('city'=>$itemLeg->city_id)); ?>">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                                Check Specials
+                            </a>
+                        <?php }?>
+
+
+
+
+                    </ul>
+
+                    <a class="btn btn-sm btn-success" id="add_leg" href="<?php echo Yii::app()->createUrl('/mytravel/mytravel/addleg/', array('trip'=>$model->trip_id)); ?>">
+                        <i class="glyphicon glyphicon-plus-sign"></i>
+                        Add a Leg
+                    </a>
+
+                    <div id="legform">
+
+                    </div>
+                </div>
+            </div>
+            <!-- ./Trip q and a --->
+
+
+
 <?php
 
 $baseUrl = $this->createAbsoluteUrl('/');
