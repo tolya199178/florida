@@ -2416,6 +2416,41 @@ CREATE TABLE IF NOT EXISTS `batch_log` (
 
 
 -- ---------------------------------------------------------------------
+-- Gamification tables user_points
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_user_points`;
+
+CREATE TABLE IF NOT EXISTS `tbl_user_points` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `points` int(20)  NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_user_points
+   ADD CONSTRAINT fk_user_points_user
+   FOREIGN KEY (user_id) 
+   REFERENCES tbl_user(user_id);
+
+
+    
+    
+-- ---------------------------------------------------------------------
+-- Gamification tables user_points
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_points_allocation_map`;
+
+CREATE TABLE IF NOT EXISTS `tbl_points_allocation_map` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event` varchar(255) NOT NULL,
+  `points` int(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+   
+
+-- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
 -- ---------------------------------------------------------------------
