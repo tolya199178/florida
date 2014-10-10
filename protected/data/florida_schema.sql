@@ -2487,8 +2487,24 @@ ALTER TABLE tbl_user_badge
    REFERENCES tbl_badge(id);
 
 
-   
+-- ---------------------------------------------------------------------
+-- Gamification tables user_points
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_user_gamificaton_event`;
 
+CREATE TABLE IF NOT EXISTS `tbl_user_gamificaton_event` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `event_type` varchar(255),
+  `event_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `notes` varchar(1024),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_user_gamificaton_event
+   ADD CONSTRAINT fk_user_gamificaton_event_user
+   FOREIGN KEY (user_id) 
+   REFERENCES tbl_user(user_id);
 -- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
