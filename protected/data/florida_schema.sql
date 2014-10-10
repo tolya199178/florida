@@ -2436,7 +2436,7 @@ ALTER TABLE tbl_user_points
     
     
 -- ---------------------------------------------------------------------
--- Gamification tables user_points
+-- Gamification tables points_allocation_map
 -- ---------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_points_allocation_map`;
 
@@ -2446,6 +2446,45 @@ CREATE TABLE IF NOT EXISTS `tbl_points_allocation_map` (
   `points` int(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+-- ---------------------------------------------------------------------
+-- Gamification tables list of badges
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_badge`;
+
+CREATE TABLE IF NOT EXISTS `tbl_badge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `badge` varchar(255),
+  `description` varchar(1024),
+  `image` varchar(255),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- ---------------------------------------------------------------------
+-- Gamification tables user_points
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_user_badge`;
+
+CREATE TABLE IF NOT EXISTS `tbl_user_badge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `badge_id` int(20)  NOT NULL,
+  `allocation_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `notes` varchar(1024),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE tbl_user_badge
+   ADD CONSTRAINT fk_user_badge_user
+   FOREIGN KEY (user_id) 
+   REFERENCES tbl_user(user_id);
+   
+ALTER TABLE tbl_user_badge
+   ADD CONSTRAINT fk_user_badge_badge
+   FOREIGN KEY (badge_id) 
+   REFERENCES tbl_badge(id);
 
 
    
