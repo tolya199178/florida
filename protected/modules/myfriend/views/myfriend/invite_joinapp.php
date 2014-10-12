@@ -306,6 +306,22 @@ $script = <<<EOD
         $('input:checkbox').removeAttr('checked');
         // TODO: Removeclass invited for all entries and clear checkboxes
        console.log(response);
+
+       // Inform the server about invited friends
+       debugger;
+
+        var url = '$baseUrl/myfriend/myfriend/notifyjoinapp';
+
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: {requested_friends: response},
+               success: function(data)
+               {
+                    $('#modalInviteMyFriends').modal('hide');
+               }
+        });
+
     }
 
     // Submit the modal form and close the modal

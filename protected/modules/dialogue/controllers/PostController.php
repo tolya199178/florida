@@ -113,6 +113,12 @@ class PostController extends Controller
             {
                 $modelQuestion->views = $modelQuestion->views + 1;
                 $modelQuestion->save();
+
+                if ($modelQuestion->views == 100) {
+                    GamificationService::raiseEvent('POPULAR_QUESTION', Yii::app()->user->id, 'Question id:'.$modelQuestion->id);
+                }
+
+
             }
 
             $listAnswers    = PostAnswer::model()->findAllByAttributes(array('question_id' => $modelQuestion->id));
@@ -157,6 +163,7 @@ class PostController extends Controller
 
             Yii::app()->user->setFlash('error','Problem saving saved answer. Contact administrator.');
 
+            GamificationService::raiseEvent('POST_ANSWER', Yii::app()->user->id, 'Answer id:'.$modelAnswer->id);
 
             $this->redirect(Yii::app()->createAbsoluteUrl('/dialogue/post/view', array(
                             'question' => $formValues['question_id']
@@ -212,9 +219,6 @@ class PostController extends Controller
     public function actionQuestion()
     {
 
-//         print_r($_POST);
-//         exit;
-
         $formValues         = Yii::app()->request->getPost('PostQuestion');
 
         $modelQuestion      = new PostQuestion;
@@ -253,6 +257,8 @@ class PostController extends Controller
 
                 $modelPostSubscription->save();
             }
+
+            GamificationService::raiseEvent('POST_QUESTION', Yii::app()->user->id, 'Question_id:'.$questionId);
 
             Yii::app()->user->setFlash('success','Question saved.');
             $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
@@ -308,6 +314,15 @@ class PostController extends Controller
 
         if ($modelQuestion->save() === false)
         {
+            if (($argRating == 1) || ($argRating == 2))
+            {
+                GamificationService::raiseEvent('POST_RANT', Yii::app()->user->id, 'Rant id'.$modelQuestion->id);
+            }
+            else if (($argRating == 3) || ($argRating == 4) || ($argRating == 5))
+            {
+                GamificationService::raiseEvent('POST_RANT', Yii::app()->user->id, 'Rave id'.$modelQuestion->id);
+            }
+
 
             Yii::app()->user->setFlash('error','Problem saving your post. Your request could not be processed at this time.');
 
@@ -351,6 +366,8 @@ class PostController extends Controller
 
                 if ($modelQuestion->save())
                 {
+
+                    GamificationService::raiseEvent('SOMETHING_WAS_LIKED', Yii::app()->user->id,  'Rant id'.$modelQuestion->id);
 
                     echo CJSON::encode(array(
                                     'result' => true,

@@ -2416,6 +2416,129 @@ CREATE TABLE IF NOT EXISTS `batch_log` (
 
 
 -- ---------------------------------------------------------------------
+-- Gamification tables user_points
+-- ---------------------------------------------------------------------
+ DROP TABLE IF EXISTS `tbl_user_points`;
+
+CREATE TABLE IF NOT EXISTS `tbl_user_points` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `points` int(20)  NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_user_points
+   ADD CONSTRAINT fk_user_points_user
+   FOREIGN KEY (user_id) 
+   REFERENCES tbl_user(user_id);
+
+
+    
+    
+-- ---------------------------------------------------------------------
+-- Gamification tables points_allocation_map
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_points_allocation_map`;
+
+CREATE TABLE IF NOT EXISTS `tbl_points_allocation_map` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event` varchar(255) NOT NULL,
+  `points` int(20) NOT NULL DEFAULT '0',
+  `description` varchar(512),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+-- ---------------------------------------------------------------------
+-- Gamification tables list of badges
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_badge`;
+
+CREATE TABLE IF NOT EXISTS `tbl_badge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `badge` varchar(255),
+  `description` varchar(1024),
+  `image` varchar(255),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- ---------------------------------------------------------------------
+-- Gamification tables user_points
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_user_badge`;
+
+CREATE TABLE IF NOT EXISTS `tbl_user_badge` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `badge_id` int(20)  NOT NULL,
+  `allocation_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `notes` varchar(1024),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE tbl_user_badge
+   ADD CONSTRAINT fk_user_badge_user
+   FOREIGN KEY (user_id) 
+   REFERENCES tbl_user(user_id);
+   
+ALTER TABLE tbl_user_badge
+   ADD CONSTRAINT fk_user_badge_badge
+   FOREIGN KEY (badge_id) 
+   REFERENCES tbl_badge(id);
+
+
+-- ---------------------------------------------------------------------
+-- Gamification tables user_points
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_user_gamificaton_event`;
+
+CREATE TABLE IF NOT EXISTS `tbl_user_gamificaton_event` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `event_type` varchar(255),
+  `event_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `notes` varchar(1024),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+ALTER TABLE tbl_user_gamificaton_event
+   ADD CONSTRAINT fk_user_gamificaton_event_user
+   FOREIGN KEY (user_id) 
+   REFERENCES tbl_user(user_id);
+
+   
+   
+-- ---------------------------------------------------------------------
+-- App invitations
+-- ---------------------------------------------------------------------
+  DROP TABLE IF EXISTS `tbl_app_invitation`;
+  
+  CREATE TABLE `tbl_app_invitation` (
+    `invitation_id`     int(11) NOT NULL AUTO_INCREMENT,
+    `user_id`           int(11) NOT NULL,
+    `friend_id`         int(11) NOT NULL,
+    `created_time`      TIMESTAMP NOT NULL DEFAULT 0,
+    `connected_by`      varchar(255) default null comment 'Site, facebook, ...',
+     request_time       DATETIME,
+     process_time       DATETIME,
+  PRIMARY KEY (`invitation_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+ALTER TABLE tbl_app_invitation
+ADD CONSTRAINT app_invitation_user
+     FOREIGN KEY (user_id) 
+     REFERENCES tbl_user(user_id);
+     
+ALTER TABLE tbl_app_invitation
+ADD CONSTRAINT app_invitation_friend
+     FOREIGN KEY (friend_id) 
+     REFERENCES tbl_user(user_id);
+   
+   
+   
+   
+-- ---------------------------------------------------------------------
 -- ---------------------------------------------------------------------
 -- END
 -- ---------------------------------------------------------------------
