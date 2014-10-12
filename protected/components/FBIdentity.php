@@ -103,7 +103,8 @@ class FBIdentity extends CUserIdentity
                 // ... in via facebook. We store the facebook id.
                 // //////////////////////////////////////////////////////////////
 
-                if (($modelUser->facebook_id == $fbUserInfo['id']) && ($modelUser->email == $fbUserInfo['email'])) { // The user matche on the facebook id and email. This is a
+                if (($modelUser->facebook_id == $fbUserInfo['id']) && ($modelUser->email == $fbUserInfo['email'])) {
+                  // The user matche on the facebook id and email. This is a
                   // ...know user that is logging in again
                   // ...Do nothing
                     ;
@@ -117,6 +118,21 @@ class FBIdentity extends CUserIdentity
                     // ...(possibly legacy) user, who is now logging in via
                     // ...facebook. We store the new/uddated facebook id.
                     $modelUser->facebook_id = $fbUserInfo['id'];
+                }
+
+                // /////////////////////////////////////////////////////////////
+                // If this was the first user interaction with the site (for
+                // ...example the user was invited and logged in now for the
+                // ...first time), we activate the user and log the gamification
+                // ...event.
+                // /////////////////////////////////////////////////////////////
+                if ($modelUser->activation_status == 'not_activated')
+                {
+                    $modelUser->activation_code     = $modelUser->facebook_id;
+                    $modelUser->setScenario(User::SCENARIO_VALIDATION);
+                    $modelUser->activation_status   = 'activated';
+
+                    GamificationService::raiseEvent('FRIENDS_JOINED', $modelUser->user_id);
                 }
 
             }

@@ -810,5 +810,22 @@ class MyfriendController extends Controller
      }
 
 
+     /**
+      * Process notification of friend requests receieved by Facebook.
+      * Used for dropdowns
+      *
+      * @param <none> <none>
+      *
+      * @return <none> <none>
+      * @access public
+      */
+     public function actionNotifyjoinapp()
+     {
+
+         GamificationService::raiseEvent('INVITE_FRIENDS', Yii::app()->user->id);
+
+
+     }
+
 
 }

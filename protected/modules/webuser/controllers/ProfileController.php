@@ -155,7 +155,7 @@ class ProfileController extends Controller
 	            $modelBusinessReview = BusinessReview::model()->findByAttributes(array('user_id'=> Yii::app()->user->id, 'business_id' => $argBusinessId));
 	            if ($modelBusinessReview === null)
 	            {
-	                $modelBusinessReview              = new Businessreview;
+	                $modelBusinessReview                  = new Businessreview;
 	                $modelBusinessReview->user_id         = $userId;
 	                $modelBusinessReview->business_id     = $argBusinessId;
 	            }
@@ -179,6 +179,39 @@ class ProfileController extends Controller
 // 	                $modelBusinessReview                  = new Businessreview;
 
 // 	            }
+
+                /* Log the review for gamification purposes. Hotel review are handled differently */
+                if ($modelBusiness->business_type == 'hotel') {
+                    GamificationService::raiseEvent('HOTEL_REVIEW', Yii::app()->user->id);
+                }
+                else {
+                    if (strlen($argReview) < 1) {
+                        GamificationService::raiseEvent('STAR_RATING_ONLY', Yii::app()->user->id);
+                    }
+                    else {
+                        if (strlen($argReview) < 75) {
+                            GamificationService::raiseEvent('TINY_REVIEW', Yii::app()->user->id);
+                        }
+                        else {
+                            GamificationService::raiseEvent('BUSINESS_REVIEW', Yii::app()->user->id);
+                        }
+                    }
+                }
+
+                /*
+                 * If this is the first review for the business, give the reviewer some points
+                 */
+                $numReviews = Yii::app()->db->createCommand()
+                                        ->select('COUNT(*) review_count')
+                                        ->from('tbl_business_review')
+                                        ->where('business_id = :business_id', array(':business_id'=> $argBusinessId))
+                                        ->queryScalar();
+
+                if ($numReviews === 1) {
+                    GamificationService::raiseEvent('FIRST_TO_REVIEW', Yii::app()->user->id);
+                }
+
+
 
 	            $jsonResult = '{"result":true,"message":"The business review has been added to your profile."}';
 	            header('Content-Type: application/json');

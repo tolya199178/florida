@@ -35,8 +35,16 @@
  * @version 1.0
  */
 
+
 class AppInvitation extends CActiveRecord
 {
+
+    // /////////////////////////////////////////////////////////////////////////
+    // Scenario constants
+    // /////////////////////////////////////////////////////////////////////////
+    const SCENARIO_INVITE           = 'invite';
+    const SCENARIO_JOIN             = 'join';
+
 
     /**
      * Get database table name associated with the model.
@@ -68,7 +76,7 @@ class AppInvitation extends CActiveRecord
 			array('user_id, friend_id', 'required'),
 			array('user_id, friend_id', 'numerical', 'integerOnly'=>true),
 			array('connected_by', 'length', 'max'=>255),
-			array('created_time, request_time, process_time', 'safe'),
+			array('request_time, process_time', 'safe'),
 
             // The following rule is used by search(). It only contains attributes that should be searched.
 			array('invitation_id, user_id, friend_id, created_time, connected_by, request_time, process_time', 'safe', 'on'=>'search'),
@@ -162,5 +170,45 @@ class AppInvitation extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+
+	    /*
+	     * Log processing times
+	     */
+
+	    if ($this->isNewRecord) {
+	        $this->created_time = new CDbExpression('NOW()');
+
+	        /* If a user id was not explicitly stated, then set it to the current user, if logged in */
+	        if (empty($this->user_id))
+	        {
+	            $this->user_id      = isset(Yii::app()->user->id)?Yii::app()->user->id:1;
+	        }
+
+	    }
+
+	    if ($this->scenario == self::SCENARIO_INVITE)
+	    {
+	        $this->request_time = new CDbExpression('NOW()');
+	    }
+
+	    if ($this->scenario == self::SCENARIO_JOIN)
+	    {
+	        $this->process_time = new CDbExpression('NOW()');
+	    }
+	    return parent::beforeSave();
 	}
 }

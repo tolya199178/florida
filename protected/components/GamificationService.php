@@ -43,17 +43,17 @@ class GamificationService
     public static function raiseEvent($eventType, $userId, $additionalInfo = null)
     {
 
-//         /*
-//          * Find the event points allocation
-//          */
-//         $modelPointsAllocation = PointsAllocationMap::model()->findByAttributes(array('event'=>$eventType));
-
         // Create the event log
         $modelGamificationEvent                 = new UserGamificatonEvent;
         $modelGamificationEvent->user_id        = $userId;
         $modelGamificationEvent->event_type     = $eventType;
 
         $queryResult = $modelGamificationEvent->save();
+
+        /*
+         * Find the event points allocation
+        */
+        $modelPointsAllocation = PointsAllocationMap::model()->findByAttributes(array('event'=>$eventType));
 
         return $queryResult;
 
