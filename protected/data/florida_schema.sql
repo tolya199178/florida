@@ -2444,6 +2444,7 @@ CREATE TABLE IF NOT EXISTS `tbl_points_allocation_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `event` varchar(255) NOT NULL,
   `points` int(20) NOT NULL DEFAULT '0',
+  `description` varchar(512),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

@@ -62,7 +62,7 @@ class UserGamificatonEvent extends CActiveRecord
 	{
 
 		return array(
-			array('user_id, event_date', 'required'),
+			array('user_id', 'required'),
 			array('user_id', 'numerical', 'integerOnly'=>true),
 			array('event_type', 'length', 'max'=>255),
 			array('notes', 'length', 'max'=>1024),
@@ -154,5 +154,26 @@ class UserGamificatonEvent extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Runs just before the models save method is invoked. It provides a change to
+	 * ...further prepare the data for saving. The CActiveRecord (parent class)
+	 * ...beforeSave is called to process any raised events.
+	 *
+	 * @param <none> <none>
+	 * @return boolean the decision to continue the save or not.
+	 *
+	 * @access public
+	 */
+	public function beforeSave()
+	{
+
+	    // /////////////////////////////////////////////////////////////////
+	    // Auto set the date
+	    // /////////////////////////////////////////////////////////////////
+	    $this->event_date    = new CDbExpression('NOW()');
+
+	    return parent::beforeSave();
 	}
 }
