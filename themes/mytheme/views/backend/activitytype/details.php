@@ -11,7 +11,7 @@
 }
 </style>
 
-    <h3>Update Activity Type: <?php echo $model->keyword; ?></h3>
+    <h3>Update Activity Type: <?php echo CHtml::encode($model->keyword); ?></h3>
 
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(

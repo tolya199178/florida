@@ -11,8 +11,8 @@
 }
 </style>
 
-    <h3>Update Activity: <?php echo $model->keyword; ?></h3>
-        
+    <h3>Update Activity: <?php echo CHtml::encode($model->keyword); ?></h3>
+
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(
     'id'=>'activity-details-form',
@@ -43,7 +43,7 @@
                     <div class="col-sm-4">
                     <?php echo $form->dropDownList($model,'language', CHtml::listData(Language::model()->findAll(), 'short', 'name'), array('class' =>"form-control",
                         'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Select language", "data-original-title"=>"Select language.")); ?>
-                        
+
                         <?php echo $form->error($model,'language'); ?>
                     </div>
                 </div>

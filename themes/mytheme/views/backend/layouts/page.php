@@ -153,7 +153,7 @@
 
 		  <div class="col-md-10">
 
-              <?php echo $content; ?>
+              <?php echo CHtml::encode($content); ?>
 
               <p>&nbsp;</p>
 

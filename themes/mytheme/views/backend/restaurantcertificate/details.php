@@ -26,7 +26,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->theme->baseUrl. '/resou
 }
 </style>
 
-    <h3>Manage Certificate: <?php echo $model->certificate_number; ?></h3>
+    <h3>Manage Certificate: <?php echo CHtml::encode($model->certificate_number); ?></h3>
 
 <div class="form">
 

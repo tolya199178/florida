@@ -5,7 +5,7 @@
 ?>
 
 <?php if($imported) {?>
-        <?php echo $importCount?> certificates imported
+        <?php echo CHtml::encode($importCount); ?> certificates imported
 <?php }?>
 
 <div class="form">

@@ -40,7 +40,7 @@
                                 {
                                     if (file_exists(Yii::getPathOfAlias('webroot').'/uploads/images/user/'.$value->user->image))
                                     {
-                                        $searchUserImage = Yii::app()->request->baseUrl .'/uploads/images/user/'.$value->user->image;
+                                        $searchUserImage = Yii::app()->request->baseUrl .'/uploads/images/user/'.CHtml::encode($value->user->image);
                                     }
                                     else
                                     {
@@ -53,7 +53,7 @@
                                 $searchUserImage   = Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH'];
                             }
 
-                            $searchUserName     = CHtml::link($value->user->first_name, Yii::app()->createUrl('/webuser/profile/show'), array('id' => $value->user->user_id));
+                            $searchUserName     = CHtml::link(CHtml::encode($value->user->first_name), Yii::app()->createUrl('/webuser/profile/show'), array('id' => (int) $value->user->user_id));
                             $searchUserFullName = CHtml::encode($value->user->first_name).' '.CHtml::encode($value->user->last_name);
                             $searchUserLocation = '';
                         }

@@ -118,7 +118,7 @@
                             foreach($itemTypes as $type) {
                         ?>
                             <div class="row">
-                                <label class="col-sm-2 control-label"><?php echo $type['name']?></label>
+                                <label class="col-sm-2 control-label"><?php echo CHtml::encode($type['name'])?></label>
                                 <div class="col-sm-2">
                                     <?php
                                         echo CHtml::hiddenField('item_type_id['.$k.']', $type['package_item_type_id']);

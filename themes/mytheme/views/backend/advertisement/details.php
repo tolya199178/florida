@@ -13,7 +13,7 @@
 </style>
 
 <div class="form">
-    <h3>Update Advertisement : <?php echo $model->title; ?></h3>
+    <h3>Update Advertisement : <?php echo CHtml::encode($model->title); ?></h3>
 
     <?php $form=$this->beginWidget('CActiveForm', array(
         'id'=>'advertisement-details-form',

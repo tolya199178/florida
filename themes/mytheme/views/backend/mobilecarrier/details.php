@@ -7,7 +7,7 @@
 <div class="form">
 
 
-    <h3>Update Event : <?php echo $model->mobile_carrier_name; ?></h3>
+    <h3>Update Event : <?php echo CHtml::encode($model->mobile_carrier_name); ?></h3>
     <p>&nbsp;</p>
 
 <?php $form=$this->beginWidget('CActiveForm', array(
