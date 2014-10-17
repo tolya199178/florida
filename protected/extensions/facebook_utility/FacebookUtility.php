@@ -212,7 +212,7 @@ class FacebookUtility extends CApplicationComponent
 	 * Checks if a user is currently logged  in
 	 *
 	 * @param <none> <none>
-	 * @return boolean UserId The provider user id
+	 * @return string UserId The provider user id
 	 */
 	public function isLoggedIn()
 	{
@@ -224,7 +224,7 @@ class FacebookUtility extends CApplicationComponent
 	 * Returns the provider user id of the currently logged in user.
 	 *
 	 * @param <none> <none>
-	 * @return boolean UserId The facebook user id
+	 * @return string UserId The facebook user id
 	 */
 	public function getUserId()
 	{
