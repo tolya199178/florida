@@ -379,7 +379,6 @@ class ConciergeController extends Controller
     public function actionLoadpanel()
     {
         $reqPanel   = Yii::app()->request->getQuery("panel");
-        $reqPanel   = filter_var($reqPanel,FILTER_SANITIZE_STRING);
 
         switch ($reqPanel)
         {
@@ -654,9 +653,8 @@ class ConciergeController extends Controller
     public function actionLoadactivitytype()
     {
         $reqActivity   = Yii::app()->request->getQuery("activity");
-        $reqActivity   = filter_var($reqActivity,FILTER_SANITIZE_NUMBER_INT);
 
-        $lstActivityType    = ActivityType::model()->findAllByAttributes(array('activity_id' => $reqActivity));
+        $lstActivityType    = ActivityType::model()->findAllByAttributes(array('activity_id' => (int) $reqActivity));
 
 
         echo ConciergeToolbar::getActivityType($lstActivityType);
@@ -714,8 +712,7 @@ class ConciergeController extends Controller
     public function actionSendfriendinvitations()
     {
 
-        $argBusinessId          = Yii::app()->request->getPost('business_id', null);
-        $argBusinessId          = filter_var($argBusinessId,FILTER_SANITIZE_NUMBER_INT);
+        $argBusinessId          = (int) Yii::app()->request->getPost('business_id', null);
 
         $argInvitationList      = Yii::app()->request->getPost('invitation_list', array());
 
@@ -723,7 +720,6 @@ class ConciergeController extends Controller
         $argMeetingTime         = Yii::app()->request->getPost('meeting_time', null);
 
         $argMessage             = Yii::app()->request->getPost('my_message', null);
-        $argMessage             = filter_var($argMessage,FILTER_SANITIZE_STRING);
 
         // /////////////////////////////////////////////////////////////////////
         // Get the business entry

@@ -462,7 +462,7 @@ ALTER TABLE tbl_business CHANGE COLUMN `longitude` `longitude` DECIMAL (11,8)  D
  CREATE TABLE `tbl_business_user` (
   `business_user_id` int(11) NOT NULL AUTO_INCREMENT,
   `business_id`      int(11) NOT NULL,    -- fk to business
-  `user_id`          int(11) NOT NULL,    -- fk to user 
+  `user_id`          int(11) NOT NULL,    -- 
   `primary_user`     enum('Y', 'N') DEFAULT 'N',
   PRIMARY KEY        (`business_user_id`),
   UNIQUE KEY         `idx_business_primary_user` (`business_id`,`user_id`)
@@ -561,7 +561,7 @@ ADD CONSTRAINT tbl_business_review_business
  CREATE TABLE `tbl_business_category` (
   `business_category_id`    int(11) NOT NULL AUTO_INCREMENT,
   `business_id`             int(11) NOT NULL,    -- fk to business
-  `category_id`             int(11) NOT NULL,    -- fk to user 
+  `category_id`             int(11) NOT NULL,    -- fk to category
   `primary_category`        enum('Y', 'N') DEFAULT 'N',
   PRIMARY KEY        (`business_category_id`),
   UNIQUE KEY         `idx_business_primary_category` (`business_id`,`category_id`)
@@ -1397,7 +1397,7 @@ ALTER TABLE `getaroom_import` ADD COLUMN sync_comment TEXT;
  CREATE TABLE `tbl_search_history` (
   `search_id`        int(11) NOT NULL AUTO_INCREMENT,
   `user_id`          int(11) DEFAULT NULL,    -- fk to user
-  `user_location`    int(11) DEFAULT NULL,    -- fk to user
+  `user_location`    int(11) DEFAULT NULL,
   `created_time`     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `search_details` text NOT NULL DEFAULT '',       -- Serialised string with filter details
   PRIMARY KEY (`search_id`)

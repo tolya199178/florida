@@ -231,8 +231,8 @@ body {
 
 <?php               foreach ($listEvent as $eventItem ) { ?>
 <?php
-                        $eventTitle         = strlen($eventItem['event_title']) < 30 ? $eventItem['event_title'] : substr($eventItem['event_title'], 0, 30) . "...";
-                        $eventDescription   = strlen($eventItem['event_description']) < 39 ? $eventItem['event_description'] : substr($eventItem['event_title'], 0, 39) . "...";
+                        $eventTitle         = strlen($eventItem['event_title']) < 30 ? CHtml::encode($eventItem['event_title']) : CHtml::encode(substr($eventItem['event_title']), 0, 30) . "...";
+                        $eventDescription   = strlen($eventItem['event_description']) < 39 ? CHtml::encode($eventItem['event_description']) : CHtml::encode(substr($eventItem['event_title']), 0, 39) . "...";
 ?>
 
                         <div class="col-sm-6">
@@ -244,14 +244,14 @@ body {
                                             <span class="year"><?php echo date("Y", strtotime($eventItem['event_start_date'])); ?></span>
 <!--                                         <span class="time">ALL DAY</span> -->
                                         </time>
-                                        <a href="<?php echo Yii::app()->createUrl('//calendar/calendar/showevent', array('event' => $eventItem['event_id'])); ?>">
+                                        <a href="<?php echo Yii::app()->createUrl('//calendar/calendar/showevent', array('event' => (int) $eventItem['event_id'])); ?>">
                                             <img alt="<?php echo CHtml::encode($eventTitle); ?>" class="event_thumbnail"
                                                  src="<?php echo  CHtml::encode($eventItem['event_photo']); ?>" />
                                         </a>
                                         <div class="info">
                                             <h2 class="title">
                                                 <a data-toggle="modal"
-                                                   href="<?php echo Yii::app()->createUrl('//calendar/calendar/showevent', array('event' => $eventItem['event_id'])); ?>"
+                                                   href="<?php echo Yii::app()->createUrl('//calendar/calendar/showevent', array('event' => (int) $eventItem['event_id'])); ?>"
                                                    data-target="#modalEventDetails"><?php echo CHtml::encode($eventTitle); ?>
                                                 </a>
                                             </h2>

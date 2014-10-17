@@ -189,18 +189,18 @@ Yii::app()->clientScript->registerScript('friend_list', $script, CClientScript::
                                     	   </div>
                                     	   <div class='col-lg-11'>
                                                 <?php
-                                                if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$myFriend->friend['image']))
-                                                {
+//                                                 if(@GetImageSize(Yii::getPathOfAlias('webroot').'/uploads/images/user/thumbnails/'.$myFriend->friend['image']))
+//                                                 {
                                                     echo CHtml::image(Yii::app()->request->baseUrl.'/uploads/images/user/thumbnails/'.$myFriend->friend['image'],
                                                                       CHtml::encode($myFriend->friend->first_name).' '.CHtml::encode($myFriend->friend->last_name),
                                                                       array("width"=>"150px" ,"height"=>"150px") );
-                                                }
-                                                else
-                                                {
-                                                    echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg',
-                                                        CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']),
-                                                        array("width"=>"150px" ,"height"=>"150px") );
-                                                }
+//                                                 }
+//                                                 else
+//                                                 {
+//                                                     echo CHtml::image(Yii::app()->theme->baseUrl .'/resources/images/site/no-image.jpg',
+//                                                         CHtml::encode($myFriend->friend['first_name']).' '.CHtml::encode($myFriend->friend['last_name']),
+//                                                         array("width"=>"150px" ,"height"=>"150px") );
+//                                                 }
                                                 ?>
                                     	   </div>
 

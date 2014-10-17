@@ -23,7 +23,7 @@ Yii::app()->clientScript->registerScript('register_script_name', $script, CClien
 }
 </style>
 
-    <h3>Update City: <?php echo $model->city_name; ?></h3>
+    <h3>Update City: <?php echo CHtml::encode($model->city_name); ?></h3>
 
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(

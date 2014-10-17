@@ -431,7 +431,7 @@
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'is_closed',array('class'=>"col-sm-2 control-label")); ?>
                     <div class="col-sm-4">
-                        <?php echo $form->checkBox($model,'is_featured', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
+                        <?php echo $form->checkBox($model,'is_closed', array('value' => 'Y', 'uncheckValue'=>'N','class'=>"form-control",
                             'data-toggle' => "tooltip", "data-placement" => "bottom", "title"=>"Check is closed", "data-original-title"=>"Check is closed.")); ?>
                         <?php echo $form->error($model,'is_closed'); ?>
                     </div>

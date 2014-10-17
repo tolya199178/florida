@@ -67,15 +67,15 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <!-- TODO: render Goes wierd if there is a missing image. Check for image first -->
         <div class='product-img-container' href='#'>
             <?php
-            if (@GetImageSize('./' . $event->getThumbnailUrl())) {
+//             if (@GetImageSize('./' . $event->getThumbnailUrl())) {
                 echo CHtml::image($event->getThumbnailUrl(), "Image", array(
                     'class' => "product-img"
                 ));
-            } else {
-                echo CHtml::image(Yii::app()->theme->baseUrl . '/resources/images/site/no-image.jpg', "No image available", array(
-                    'class' => "product-img"
-                ));
-            }
+//             } else {
+//                 echo CHtml::image(Yii::app()->theme->baseUrl . '/resources/images/site/no-image.jpg', "No image available", array(
+//                     'class' => "product-img"
+//                 ));
+//             }
             ?>
         </div>
 

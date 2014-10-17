@@ -23,7 +23,7 @@
 
                             <span class="qa-created">
                                 <span class="qa-time"><?php echo $model->modified_date; ?></span>
-                                <span class="qa-user"><?php echo $model->user['first_name'].' '.$model->user['last_name'] ?></span>
+                                <span class="qa-user"><?php echo CHtml::encode($model->user['first_name']).' '.CHtml::encode($model->user['last_name']) ?></span>
                             </span>
 
                         </div>

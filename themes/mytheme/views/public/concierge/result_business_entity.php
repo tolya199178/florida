@@ -42,7 +42,7 @@
 ?>
                         </div>
                         <div class="rating hidden-sm col-md-6">
-<?php                       for ($i=0; $i< $data->star_rating; $i++) { ?>
+<?php                       for ($i=0; $i < $data->star_rating; $i++) { ?>
                                 <i class="price-text-color fa fa-star"></i>
 <?php                       } ?>
                             <i class="fa fa-star"></i>
@@ -52,7 +52,7 @@
                          <p class="btn-add">
                              <i class="fa fa-envelope-o"></i><br/>
                                 <?php if (!Yii::app()->user->isGuest) { ?>
-                                    <a class="label label-lg label-info invite_friends-modal" href="#modalInviteMyFriends" data-href="/concierge/invitefriends/business/<?php echo $data->business_id; ?>">Invite My Friends</a>
+                                    <a class="label label-lg label-info invite_friends-modal" href="#modalInviteMyFriends" data-href="/concierge/invitefriends/business/<?php echo CHtml::encode($data->business_id); ?>">Invite My Friends</a>
                                 <?php }?>
                              </p>
                          <p class="btn-details">

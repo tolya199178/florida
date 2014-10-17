@@ -48,7 +48,7 @@ padding:1px;
   </head>
   <body>
 
-    <?php echo $content; ?>
+    <?php echo CHtml::encode($content); ?>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <!--     <script src="https://code.jquery.com/jquery.js"></script>   -->

@@ -45,7 +45,14 @@ class FacebookUtility extends CApplicationComponent
      * @var integer
      */
     private $fbuser;
-    private $fbUser;
+
+    /**
+     * Facebook generated id
+     *
+     * @var integer
+     */
+
+    private $fbGeneratedUserId;
 
     /**
      * Facebook API key
@@ -119,7 +126,7 @@ class FacebookUtility extends CApplicationComponent
         $this->handleFacebook = new Facebook($facebookConfig);
 
         // Get User ID
-        $this->fbUser = $this->handleFacebook->getUser();
+        $this->fbGeneratedUserId = $this->handleFacebook->getUser();
 
         // We may or may not have this data based on whether the user is logged in.
         //
@@ -127,18 +134,18 @@ class FacebookUtility extends CApplicationComponent
         // Facebook, but we don't know if the access token is valid. An access
         // token is invalid if the user logged out of Facebook.
 
-        if ($this->fbUser) {
+        if ($this->fbGeneratedUserId) {
             try {
                 // Proceed knowing you have a logged in user who's authenticated.
                 $this->userProfile = $this->handleFacebook->api('/me');
             } catch (FacebookApiException $e) {
                 error_log($e);
-                $this->fbUser = null;
+                $this->fbGeneratedUserId = null;
             }
         }
 
         // Login or logout url will be needed depending on current user state.
-        if ($this->fbUser) {
+        if ($this->fbGeneratedUserId) {
             $this->logoutURL = $this->handleFacebook->getLogoutUrl();
         } else {
             // $this->statusUrl = $this->handleFacebook->getLoginStatusUrl();
@@ -205,11 +212,11 @@ class FacebookUtility extends CApplicationComponent
 	 * Checks if a user is currently logged  in
 	 *
 	 * @param <none> <none>
-	 * @return boolean UserId The provider user id
+	 * @return string UserId The provider user id
 	 */
 	public function isLoggedIn()
 	{
-        return $this->fbUser;
+        return $this->fbGeneratedUserId;
 	}
 
 
@@ -217,11 +224,11 @@ class FacebookUtility extends CApplicationComponent
 	 * Returns the provider user id of the currently logged in user.
 	 *
 	 * @param <none> <none>
-	 * @return boolean UserId The facebook user id
+	 * @return string UserId The facebook user id
 	 */
 	public function getUserId()
 	{
-	    return $this->fbUser;
+	    return $this->fbGeneratedUserId;
 	}
 
 

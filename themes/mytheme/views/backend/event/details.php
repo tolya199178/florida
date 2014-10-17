@@ -12,7 +12,7 @@
 }
 </style>
 
-    <h3>Update Event : <?php echo $model->event_title; ?></h3>
+    <h3>Update Event : <?php echo CHtml::encode($model->event_title); ?></h3>
 
         <!-- todo: jquery order loading issue where setting enableAjaxValidation=true -->
 <?php $form=$this->beginWidget('CActiveForm', array(

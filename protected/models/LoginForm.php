@@ -8,10 +8,10 @@
  * @property string fldPassword
  *
  */
-    
+
 /**
  * LoginForm class.
- * LoginForm is the data structure for keeping user login form data.    
+ * LoginForm is the data structure for keeping user login form data.
  * It is used by the 'login' action of 'SiteController'.
  *
  * @package   Components
@@ -67,11 +67,11 @@ class LoginForm extends CFormModel
      * @param <none>
      * @return array of rules
      */
-    
-    
+
+
     public $isNewRecord = false;
     public $email;
-    
+
     /**
      * Set rules for validation of model attributes. Each attribute is listed with its
      * ...associated rules. All attributes listed in the rules set forms a set of 'safe'
@@ -85,35 +85,35 @@ class LoginForm extends CFormModel
     public function rules()
     {
         return array(
-            
+
             // fldUserName and fldPassword are required
             array(
                 'fldUserName, fldPassword',
                 'required',
                 'message' => "{attribute} required"
             ),
-            
+
             // Pradesh hack for offline testing for audit. Disable MX check
             // array('fldUserName', 'email', 'checkMX' => true, 'allowName' => true, 'message' => 'Email id not valid'),
-            
+
             array(
                 'fldPassword',
                 'length',
                 'max' => 20,
                 'allowEmpty' => false
             ), // 'min'=>6
-            
+
             array(
                 'fldUserName',
                 'validateUserAccount'
             ),
-            
+
             // rememberMe needs to be a boolean
             array(
                 'fldRememberMe',
                 'boolean'
             ),
-            
+
             // fldPassword needs to be authenticated
             array(
                 'fldPassword',
@@ -130,18 +130,18 @@ class LoginForm extends CFormModel
      *
      * @param string $attribute the field being validated
      * @param array $params options specified in the validation rule
-     * 
+     *
      * @return boolean result of validation
      */
     public function validateUserAccount($attribute,$params)
     {
-        
+
         $sql = 'user_name=:user_name AND status=:status';
         $count = User::model()->count($sql, array(
             ':user_name' => $this->fldUserName,
             ':status' => 'active'
         ));
-        
+
         if ($count == 0) {
             return false;
         }
@@ -189,32 +189,32 @@ class LoginForm extends CFormModel
 
     /**
      * Logs in the user using the given fldUserName and fldPassword in the model.
-     * 
+     *
      * @return boolean whether login is successful
      */
     public function login()
     {
-        
+
         // /////////////////////////////////////////////////////////////////////
         // Don't allow users that are not active.
         // /////////////////////////////////////////////////////////////////////
         $userModel = User::model()->find('LOWER(user_name)=?', array(
-            strtolower(CHtml::encode($this->fldUserName))
+            strtolower($this->fldUserName)
         ));
-        
+
         if ($userModel === null)        // Account not found
         {
             return false;
         }
-        
+
         if ( ($userModel->attributes['activation_status'] == 'not_activated') || ($userModel->attributes['status'] == 'inactive') )
         {
-            return false;   
+            return false;
         }
-        
-        
-        
-        
+
+
+
+
         if ($this->_identity === null) {
             $this->_identity = new UserIdentity(CHtml::encode($this->fldUserName), CHtml::encode($this->fldPassword));
             $this->_identity->authenticate();
