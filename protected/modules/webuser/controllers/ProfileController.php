@@ -162,7 +162,7 @@ class ProfileController extends Controller
 
 
 	            $modelBusinessReview->rating          = $argRating;
-	            $modelBusinessReview->review_text     = filter_var($argReview, FILTER_SANITIZE_STRING);
+	            $modelBusinessReview->review_text     = $argReview;
 
 	            if (!($modelBusinessReview->save()))
 	            {
@@ -172,13 +172,6 @@ class ProfileController extends Controller
 	                Yii::app()->end();
 	            }
 
-// 	            $boolIsReviewed = BusinessReview::isReviewed(Yii::app()->user->id, $argBusinessId);
-
-// 	            if ($boolIsReviewed === false)
-// 	            {
-// 	                $modelBusinessReview                  = new Businessreview;
-
-// 	            }
 
                 /* Log the review for gamification purposes. Hotel review are handled differently */
                 if ($modelBusiness->business_type == 'hotel') {
