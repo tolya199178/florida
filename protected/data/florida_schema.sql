@@ -462,7 +462,7 @@ ALTER TABLE tbl_business CHANGE COLUMN `longitude` `longitude` DECIMAL (11,8)  D
  CREATE TABLE `tbl_business_user` (
   `business_user_id` int(11) NOT NULL AUTO_INCREMENT,
   `business_id`      int(11) NOT NULL,    -- fk to business
-  `user_id`          int(11) NOT NULL,    -- fk to user 
+  `user_id`          int(11) NOT NULL,    -- 
   `primary_user`     enum('Y', 'N') DEFAULT 'N',
   PRIMARY KEY        (`business_user_id`),
   UNIQUE KEY         `idx_business_primary_user` (`business_id`,`user_id`)
