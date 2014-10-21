@@ -170,18 +170,23 @@ class AdvertisementController extends BackEndController
 
             if($advertisementModel->save())
             {
-                $imageFileName = 'advertisement-'.$advertisementModel->advertisement_id.'-'.$uploadedFile->name;
-                $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
                 if(!empty($uploadedFile))  // check if uploaded file is set or not
                 {
-                    $uploadedFile->saveAs($imagePath);
-                    $advertisementModel->image = $imageFileName;
+                    $imageFileName = 'advertisement-'.$advertisementModel->advertisement_id.'-'.$uploadedFile->name;
+                    $imagePath = $this->imagesDirPath.DIRECTORY_SEPARATOR.$imageFileName;
 
-                    $this->createThumbnail($imageFileName);
+                    if(!empty($uploadedFile))  // check if uploaded file is set or not
+                    {
+                        $uploadedFile->saveAs($imagePath);
+                        $advertisementModel->image = $imageFileName;
 
-                    $advertisementModel->save();
+                        $this->createThumbnail($imageFileName);
+
+                        $advertisementModel->save();
+                    }
                 }
+
 
                 $this->redirect(array('index'));
 
@@ -407,7 +412,7 @@ class AdvertisementController extends BackEndController
 
         $listAdvertisement          = Advertisement::model()->findAll($searchCriteria);
 
-        $countRows 		            = Advertisement::model()->count($searchCriteria);;
+        $countRows 		            = count(Advertisement);
         $countTotalRecords 		    = Advertisement::model()->count();
 
         /*
