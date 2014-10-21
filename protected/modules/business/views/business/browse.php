@@ -429,46 +429,15 @@ $friendListUrl = $baseUrl.'/myfriend/myfriend/autocompletelist/';
 
 $script = <<<EOD
 
-// /////////////////////////////////////////////////////////////////////////////
-// Business Listing
-// /////////////////////////////////////////////////////////////////////////////
-    var page = 0;
+// // /////////////////////////////////////////////////////////////////////////////
+// // Business Listing
+// // /////////////////////////////////////////////////////////////////////////////
 
-    function loadnewdata()
-    {
-        // do ajax stuff, update data.
-         var url         = '$showlistingUrl'+'/page/'+page;
-
-         $.ajax({ url: url,
-                  cache: false,
-                  success: function(data){
-     	                var existing_content = $('#business_listing_container').html();
-
-                        $('#business_listing_container').replaceWith('<div id="business_listing_container">'+existing_content+data+'</div>');
-
-                        page++;
-                  },
-                  dataType: "html"
-                });
-    }
-
-    setInterval(
-      function (){
-        if(($(document).height() - $(window).height() - $(document).scrollTop()) < 500){
-    	   loadnewdata();
-        }
-      },
-      500
-    );
-
-    // Run the initial listing load.
- 	loadnewdata();
 
     $("#city_list").select2({
         placeholder: "I am in...",
         allowClear: true
     });
-
 
 
     $(document.body).on("change","#city_list",function(){
@@ -644,6 +613,80 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
 
 ?>
 
+<?php
+
+$script = <<<EOD
+
+
+	var current    = 0; //the index of the starting page. 0 for index.html in this case
+
+
+	//on scroll gets when bottom of the page is reached and calls the function do load more content
+	$(window).scroll(function(e){
+
+	    if ($(window).data('ajaxready') == false) return;
+
+
+
+		//Not always the pos == h statement is verified, expecially on mobile devices, that's why a 300px of margin are assumed.
+		if($(window).scrollTop() + $(window).height() >= $(document).height() - 300) {
+
+		        $(window).data('ajaxready', false);
+
+			// console.log("bottom of the page reached!");
+
+			//in some broswer (es. chrome) if the scroll is fast, the bottom
+			//reach events fires several times, this may cause the page loaging
+			//more than once. To prevent such situation every time the bottom is
+			//reached the number of time is added to that page in suach a way to call
+			//the loadMoreContent page only when the page value in "loaded" array is
+			//minor or equal to one
+
+
+            loadnewdata(current+1);
+
+
+		}
+	});
+
+
+     function loadnewdata(page)
+     {
+
+         // do ajax stuff, update data.
+          var url         = '$showlistingUrl'+'/page/'+page;
+
+ 			$('#loader').fadeIn('slow', function() {
+                  $.ajax({ url: url,
+                           cache: false,
+                           success: function(data){
+
+        					$('#loader').fadeOut('slow', function() {
+        						$('#scroll-container').append(data).fadeIn(999);
+        						current=page;
+        					});
+
+	                       $(window).data('ajaxready', true);
+
+                           },
+                           dataType: "html"
+                         });
+ 			});
+
+
+
+     }
+
+
+	 loadnewdata(0);
+
+
+EOD;
+
+Yii::app()->clientScript->registerScript('biz_listing_new', $script, CClientScript::POS_READY);
+
+?>
+
 
 <div class="modal fade" id="modalBusinessDetails" tabindex="-1" role="dialog" aria-labelledby="titleBusinessDetails" aria-hidden="true">
     <div class="modal-dialog biz-details-modal">
@@ -704,146 +747,158 @@ Yii::app()->clientScript->registerScript('biz_listing', $script, CClientScript::
     <!-- /Main blocks left side -->
 
     <!-- Teasers right side wrapper col-->
-    <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 gradient-bg pull-left col"
-        id="main_panel">
-        <!-- ADDS PANEL-->
-        <div class="panel panel-primary margin-top-10">
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-">
-                        <label for="city" class="heading">I AM IN
-                            &nbsp;&nbsp;&nbsp;</label>
-                    </div>
-                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        <div class="cities">
 
-                            <select id="city_list" style="width:300px;" class="populate placeholder">
-                            <?php foreach ($listCities as $itemCity) { ?>
-                                <option value="<?php echo $itemCity->city_id; ?>"><?php echo CHtml::encode($itemCity->city_name); ?></option>
-                            <?php } ?>
-                            </select>
+        <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 gradient-bg pull-left col"
+            id="main_panel">
+            <!-- ADDS PANEL-->
+            <div class="panel panel-primary margin-top-10">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-">
+                            <label for="city" class="heading">I AM IN
+                                &nbsp;&nbsp;&nbsp;</label>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <div class="cities">
+
+                                <select id="city_list" style="width:300px;" class="populate placeholder">
+                                <?php foreach ($listCities as $itemCity) { ?>
+                                    <option value="<?php echo $itemCity->city_id; ?>"><?php echo CHtml::encode($itemCity->city_name); ?></option>
+                                <?php } ?>
+                                </select>
+
+                            </div>
 
                         </div>
-
-                    </div>
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-">
-                        <label for="city" class="heading">I AM LOOKING FOR
-                            &nbsp;&nbsp;&nbsp;</label>
-                    </div>
-                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 text-center">
-                        <input class="form-control" name="dowhat" id="dowhat"
-                            type="text" autocomplete="off" value="">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- / ADDS PANEL-->
-
-        <div class="row margin-top-3">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <div id='city_gallery'>
-                            <!--  City Gallery goes here -->
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-">
+                            <label for="city" class="heading">I AM LOOKING FOR
+                                &nbsp;&nbsp;&nbsp;</label>
+                        </div>
+                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 text-center">
+                            <input class="form-control" name="dowhat" id="dowhat"
+                                type="text" autocomplete="off" value="">
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <!-- / ADDS PANEL-->
 
-        <!-- RESULTS -->
-        <div class="panel panel-primary margin-top-10">
-            <div class="panel-body">
-                <div class="row">
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="panel panel-default margin-top-10">
-                            <div class="panel-heading">
-                                <h3>Search Other Categories</h3>
-                            </div>
-
-                            <div class="row margin-top-10">
-
-                                <ul>
-                                    <?php
-
-                                        foreach ($listSubcategories as $objBusiness)
-                                        {
-                                            echo '<li>'.
-                                                 CHtml::link(CHtml::encode($objBusiness['category_name']),
-                                                             Yii::app()->createUrl('//business/business/browse', array('category' => $objBusiness['category_id'])),
-                                                             array('class'=>"question-link", 'title'=>"")).
-                                                 '</li>';
-                                        }
-
-                                    ?>
-                				    </ul>
-
-
-
+            <div class="row margin-top-3">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div id='city_gallery'>
+                                <!--  City Gallery goes here -->
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div
-                        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+            <!-- RESULTS -->
+            <div class="panel panel-primary margin-top-10">
+                <div class="panel-body">
+                    <div class="row">
 
-                        <div id='category_breadcrumbs'>
-                            <!-- Business results go here -->
-<?php
-                                $elementCount = 0;
-                                foreach ($category_path as $path_component) {
-
-                                    echo CHtml::link(CHtml::encode($path_component['name']),
-                                                     Yii::app()->createUrl('//business/business/browse', array('category' => $path_component['id'])),
-                                                     array('class'=>"question-link", 'title'=>""));
-                                    $elementCount++;
-                                    if ($elementCount < count($category_path))
-                                    {
-                                        echo ' &raquo ';
-                                    }
-
-                                }
-?>
-                            </div>
-
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="panel panel-default margin-top-10">
-                            <div class="panel-heading">
-                                <h3>Featured Business</h3>
-                            </div>
-
-                            <div class="row margin-top-10">
-
-                                <div id="business_listing_container">
-                                    <!--  Business listing goes here -->
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="panel panel-default margin-top-10">
+                                <div class="panel-heading">
+                                    <h3>Search Other Categories</h3>
                                 </div>
 
+                                <div class="row margin-top-10">
+
+                                    <ul>
+                                        <?php
+
+                                            foreach ($listSubcategories as $objBusiness)
+                                            {
+                                                echo '<li>'.
+                                                     CHtml::link(CHtml::encode($objBusiness['category_name']),
+                                                                 Yii::app()->createUrl('//business/business/browse', array('category' => $objBusiness['category_id'])),
+                                                                 array('class'=>"question-link", 'title'=>"")).
+                                                     '</li>';
+                                            }
+
+                                        ?>
+                    				    </ul>
+
+
+
+                                </div>
                             </div>
                         </div>
+
+                        <div
+                            class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+
+                            <div id='category_breadcrumbs'>
+                                <!-- Business results go here -->
+    <?php
+                                    $elementCount = 0;
+                                    foreach ($category_path as $path_component) {
+
+                                        echo CHtml::link(CHtml::encode($path_component['name']),
+                                                         Yii::app()->createUrl('//business/business/browse', array('category' => $path_component['id'])),
+                                                         array('class'=>"question-link", 'title'=>""));
+                                        $elementCount++;
+                                        if ($elementCount < count($category_path))
+                                        {
+                                            echo ' &raquo ';
+                                        }
+
+                                    }
+    ?>
+                                </div>
+
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="panel panel-default margin-top-10">
+                                <div class="panel-heading">
+                                    <h3>Featured Business</h3>
+                                </div>
+
+                                <div class="row margin-top-10">
+	                                <div id="scroll-container" class="row">
+
+                                        <div id="business_listing_container">
+                                            <!--  Business listing goes here -->
+                                        </div>
+
+                                	</div>
+
+
+                                	<!-- This is the overlay DIV that is displayed while loading a new page -->
+                                	<div id="loader"></div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
                     </div>
-
-
-
                 </div>
+                <!-- ./RESULTS -->
+
+
+
+
+
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <a class="btn btn-warning btn-sm" href="#" title=""
+                        style="margin-top: 20px;"><i class="icon-angle-left"></i>
+                        Back to search results</a>
+                </div>
+
+
             </div>
-            <!-- ./RESULTS -->
-
-
-
-
-
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                <a class="btn btn-warning btn-sm" href="#" title=""
-                    style="margin-top: 20px;"><i class="icon-angle-left"></i>
-                    Back to search results</a>
-            </div>
-
-
         </div>
-    </div>
+
+
+
     <!-- /Main blog .container -->
     <!-- Marketing messaging and featurettes
                 ================================================== -->

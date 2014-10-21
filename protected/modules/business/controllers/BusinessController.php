@@ -114,16 +114,20 @@ class BusinessController extends Controller
         // https://code.google.com/p/yii/issues/detail?id=2678
         $dbCriteria->together   = true;
 
-        $dbCriteria->condition  = 'businessCategories.category_id = :category_id';
 
-        if (empty($currentCategory))
-        {
-            $dbCriteria->addCondition('businessCategories.category_id IS NULL', 'OR');
+        if (!empty($currentCategory) && ($currentCategory != 0)) {
+//             $dbCriteria->addCondition('businessCategories.category_id IS NULL', 'OR');
+//         }
+//         else {
+            $dbCriteria->condition  = 'businessCategories.category_id = :category_id';
+            $dbCriteria->params     = array(':category_id' => $currentCategory);
+
         }
 
-        $dbCriteria->params     = array(':category_id' => $currentCategory);
 
         $listBusiness   = Business::model()->findAll($dbCriteria);
+
+//         print_r($listBusiness);
 
         $this->renderPartial('business_list', array('listBusiness' => $listBusiness));
 
