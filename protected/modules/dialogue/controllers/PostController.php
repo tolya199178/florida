@@ -552,7 +552,7 @@ class PostController extends Controller
     }
 
     /**
-     * Search by tag
+     * Edit an existing post
      *
      * @param <none> <none>
      *
@@ -564,13 +564,22 @@ class PostController extends Controller
 
         // TODO: Check that only the original poster can edit.
 
-        if (isset($_POST['post_id']))
+        if (isset($_POST['post_id']))           // Form submission
         {
+            /*
+             * Get the details of the post from the submitted edit form
+             */
             $argPostType     = Yii::app()->request->getPost('post_type');
             $argPostId       = Yii::app()->request->getPost('post_id');
             $argQuestion_id  = Yii::app()->request->getPost('static_question_id');
 
-            if ($argPostType == 'question')
+
+            /*
+             * The edit request can be for either a question or an answer.
+             * ...Save to the the appropriate table and display the post.
+             *
+             */
+            if ($argPostType == 'question')             // Question
             {
                 $modelQuestion = PostQuestion::model()->findByPk($argPostId);
 
@@ -588,14 +597,12 @@ class PostController extends Controller
                 }
 
                 //  Show the post
-                //$listAnswers    = PostAnswer::model()->findAllByAttributes(array('question_id' => $modelQuestion->id));
-                //  return $this->render('view', compact('modelQuestion', 'listAnswers'));
                 $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
                                                 'question' => $argQuestion_id
                                             )));
 
             }
-            else
+            else                                        // Answer
             if ($argPostType == 'answer')
             {
                 $modelAnswer = PostAnswer::model()->findByPk($argPostId);
@@ -611,9 +618,9 @@ class PostController extends Controller
 
                 }
 
-//                 //  Show the post
-//                 $listAnswers    = PostAnswer::model()->findAllByAttributes(array('question_id' => $argQuestion_id));
-//                 return $this->render('view', compact('modelQuestion', 'listAnswers'));
+                // Show the post.
+                // Note that we show the question (plus answers), even though we are editing an answer.
+
                 $this->redirect(Yii::app()->createUrl('/dialogue/post/view', array(
                                                 'question' => $argQuestion_id
                                             )));
@@ -622,12 +629,17 @@ class PostController extends Controller
             }
 
         }
-        else
+        else                // Request for the post to edit
         {
             $argQuestionId  = (int) Yii::app()->request->getQuery('question', null);
             $argAnswerId    = (int) Yii::app()->request->getQuery('answer', null);
 
-            if ($argQuestionId != null)
+            /*
+             * The edit request can be for either a question or an answer.
+             * ...Read from the appropriate table and display the post.
+             *
+             */
+            if ($argQuestionId != null)             // Process edit question request
             {
 
                 $modelQuestion = PostQuestion::model()->findByPk($argQuestionId);
@@ -664,7 +676,7 @@ class PostController extends Controller
                 }
 
             }
-            else  if ($argAnswerId != null)
+            else  if ($argAnswerId != null)                   // Process edit answer request
             {
                 $modelAnswer = PostAnswer::model()->findByPk($argAnswerId);
 
