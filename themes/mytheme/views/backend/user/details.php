@@ -173,7 +173,7 @@ function changeUserType(userType)
         <div class="form-group">
             <?php echo $form->labelEx($model,'created_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::textField('UserReadOnly[createdBy]', ((!empty($model->createdBy->user_name))?CHtml::encode($model->createdBy->user_name):''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[createdBy]', ((!empty($model->createdBy->user_name))?$model->createdBy->user_name:''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>
 	</div>
@@ -191,7 +191,7 @@ function changeUserType(userType)
         <div class="form-group">
             <?php echo $form->labelEx($model,'modified_by',array('class'=>"col-sm-2 control-label")); ?>
             <div class="col-sm-4">
-                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', ((!empty($model->modifiedBy->user_name))?CHtml::encode($model->modifiedBy->user_name):''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
+                <?php echo CHtml::textField('UserReadOnly[modifiedBy]', ((!empty($model->modifiedBy->user_name))?$model->modifiedBy->user_name:''), array('class'=>"form-control", 'readonly' => 'readonly')); ?>
             </div>
         </div>
 	</div>
