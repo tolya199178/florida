@@ -388,7 +388,7 @@ class PostController extends Controller
             else
             {
                 echo CJSON::encode(array(
-                    'result' => true,
+                    'result' => false,
                     'votes' => - 999
                 ));
                 Yii::app()->end();
@@ -477,7 +477,7 @@ class PostController extends Controller
             {
 
                 echo CJSON::encode(array(
-                                'result' => true,
+                                'result' => false,
                                 'votes' => - 999
                             ));
                 Yii::app()->end();
