@@ -174,7 +174,7 @@ class BusinessController extends Controller
                                          ->from('tbl_category');
         if (empty($currentCategory))
         {
-            $cmdSubCategoryList->where('parent_id = 0 OR parent_id  IS NULL', array(':category_id'=>$currentCategory));
+            $cmdSubCategoryList->where('parent_id = 0 OR parent_id  IS NULL');
         }
         else
         {

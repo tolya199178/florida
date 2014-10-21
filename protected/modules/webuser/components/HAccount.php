@@ -142,7 +142,7 @@ class HAccount
             return null;
         }
 
-        $messageContent       = $modelMailTemplate->attributes['msg'];
+        $messageContent       = CHtml::encode($modelMailTemplate->attributes['msg']);
 
         return $messageContent;
 
@@ -167,7 +167,7 @@ class HAccount
             return null;
         }
 
-        $messageSubject       = $modelMailTemplate->attributes['subject'];
+        $messageSubject       = CHtml::encode($modelMailTemplate->attributes['subject']);
 
         return $messageSubject;
 
