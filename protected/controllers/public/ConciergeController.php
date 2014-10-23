@@ -95,12 +95,23 @@ class ConciergeController extends Controller
 
 	    $conciergeData = array();
 
-	    // Pre-load the list of cities
-	    $listCities                        = Yii::app()->db->createCommand()
-                                                	       ->select("*")
-                                                	       ->from('tbl_city')
-                                                	       ->queryAll();
-	    $conciergeData['listCities']       = $listCities;
+
+
+        // dependency query
+//         $dependencyQuery = new CDbCacheDependency('SELECT MAX(city_id) FROM tbl_city');
+//         $listCities        = Yii::app()->db
+//             ->cache(3600, $dependencyQuery)
+//             ->createCommand()
+//             ->select("*")
+//             ->from('tbl_city')
+//             ->queryAll();
+
+
+
+
+	    $conciergeData['listCities']       = City::getCollection();
+
+
 
 	    // Load the current city
 	    $conciergeData['myLocation']       = $myLocation;
@@ -122,46 +133,12 @@ class ConciergeController extends Controller
 
 	    $conciergeData['saved_searches'] = $listSavedSearch;
 
-
-
-
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
 
 		$this->render('concierge', array('data' => $conciergeData));
 	}
 
-    /**
-     * Generates a JSON encoded list of all citys.
-     *
-     * @param <none> <none>
-     *
-     * @return <none> <none>
-     * @access public
-     */
-    public function actionPrefecthlistall()
-    {
-
-
-        // /////////////////////////////////////////////////////////////////////
-        // Create a Db Criteria to filter and customise the resulting results
-        // /////////////////////////////////////////////////////////////////////
-        $searchCriteria = new CDbCriteria;
-
-        $cityList          = City::model()->findAll($searchCriteria);
-
-         $listResults = array();
-
-         foreach($cityList as $recCity){
-             $listResults[] = array('city_name' => $recCity->attributes['city_name']);
-         }
-          header('Content-type: application/json');
-
-         echo CJSON::encode($listResults);
-
-
-
-    }
 
     /**
      * Generates a JSON encoded list of saved search attributes

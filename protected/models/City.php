@@ -225,7 +225,7 @@ class City extends CActiveRecord
 	}
 
 	/* Get List of City Array Data */
-	public static function getCity($order = "city_name",$byAutoSearch=0) {
+	public static function getCity($order = "city_name", $byAutoSearch = 0) {
 	    $order = array('order' => $order);
 	    $models = self::model()->findAll($order);
 
@@ -266,6 +266,32 @@ class City extends CActiveRecord
 	    // echo json_encode($listResults);
 	    return CJSON::encode($listResults);
 
+
+
+	}
+
+	/**
+	 * Generates an array of all records
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	static public function getCollection($columnOrder = "city_name")
+	{
+
+	    // dependency query
+	    $dependencyQuery       = new CDbCacheDependency('SELECT MAX(city_id) FROM tbl_city');
+        $listResults           = Yii::app()->db
+                                       ->cache(Yii::app()->params['CACHE_EXPIRY_LOOKUP_DATA'], $dependencyQuery)
+                                       ->createCommand()
+                                       ->select("*")
+                                       ->order($columnOrder)
+                                       ->from('tbl_city')
+                                       ->queryAll();
+
+        return $listResults;
 
 
 	}
