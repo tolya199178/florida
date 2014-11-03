@@ -273,10 +273,10 @@ class City extends CActiveRecord
 	/**
 	 * Generates an array of all records
 	 *
-	 * @param <none> <none>
+	 * @param $columnOrder string Optional column order to pass to query
 	 *
-	 * @return <none> <none>
-	 * @access public
+     * @return $listResults array List of matched enytries
+     * @access public
 	 */
 	static public function getCollection($columnOrder = "city_name")
 	{
@@ -292,7 +292,6 @@ class City extends CActiveRecord
                                        ->queryAll();
 
         return $listResults;
-
 
 	}
 

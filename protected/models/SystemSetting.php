@@ -144,4 +144,38 @@ class SystemSetting extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Generates an array of all records
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	static public function getCollection($flagAssociative = false)
+	{
+
+	    // dependency query
+	    $dependencyQuery       = new CDbCacheDependency('SELECT MAX(settings_id) FROM tbl_system_settings');
+	    $listResults           = Yii::app()->db
+    	    ->cache(Yii::app()->params['CACHE_EXPIRY_LOOKUP_DATA'], $dependencyQuery)
+    	    ->createCommand()
+    	    ->select("*")
+    	    ->from('tbl_system_settings')
+    	    ->queryAll();
+
+	    if ($flagAssociative) {
+	        $associativeList = array();
+	        foreach ($listResults as $systemSetting) {
+	            $associativeList[$systemSetting['attribute']] = $systemSetting;
+	        }
+
+	        return $associativeList;
+	    }
+
+	    return $listResults;
+
+
+	}
 }
