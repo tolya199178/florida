@@ -154,4 +154,84 @@ class ActivityType extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Generates an array of all records
+	 *
+	 * @param $columnOrder string Optional column order to pass to query
+	 *
+	 * @return $listResults array List of matched enytries
+	 * @access public
+	 */
+	static public function getCollection($columnOrder = "activity_id")
+	{
+
+	    // dependency query
+	    $dependencyQuery       = new CDbCacheDependency('SELECT MAX(activity_type_id) FROM tbl_activity_type');
+	    $listResults           = Yii::app()->db
+                            	    ->cache(Yii::app()->params['CACHE_EXPIRY_LOOKUP_DATA'], $dependencyQuery)
+                            	    ->createCommand()
+                            	    ->select("*")
+                            	    ->order($columnOrder)
+                            	    ->from('tbl_activity_type')
+                            	    ->queryAll();
+
+	    return $listResults;
+
+	}
+
+	/**
+	 * Generates an flattened list of actvity types. It does this by flattening the results set
+	 * ...into a simple list
+	 *
+	 * @param $columnOrder string Optional column order to pass to query
+	 *
+	 * @return $listResults array List of matched enytries
+	 * @access public
+	 */
+	static public function getFlattenedCollection()
+	{
+
+	    // Specify the ID for the cache item we wish to reference
+	    $activityTypeCacheId   = 'flattened_activitytype_list';
+
+	    // Attempt to load the data from the cache, based on the key
+	    $activityTypeData      = false;
+	    $activityTypeData      = Yii::app()->cache->get($activityTypeCacheId);
+
+	    // If the results were false, then we have no valid data, so load it
+
+	    $flattenedActivityTypeList = array();
+
+	    /* IF the results are not cached, load it */
+	    if($activityTypeData === false)
+	    {
+
+	        $activityTypeList  = self::getCollection();
+
+	        foreach ($activityTypeList as $activityTypeItem) {
+
+	            $flattenedActivityTypeList[] = array('id'   => $activityTypeItem['activity_id'],
+	                'text' => $activityTypeItem['keyword']);
+
+	            // Now explode the related word lists and add that to the list
+	            $relatedWordList = explode(",", $activityTypeItem['related_words']);
+
+	            foreach ($relatedWordList as $relatedWord) {
+	                $flattenedActivityTypeList[] = array('id'   => $activityTypeItem['activity_id'],
+	                    'text' => $relatedWord);
+	            }
+
+	        }
+
+	        /* Save the results to cache */
+	        Yii::app()->cache->set($activityTypeCacheId, $flattenedActivityTypeList, 10000);
+
+	        return $flattenedActivityTypeList;
+	    }
+	    else {          // return the cached results
+	        return $activityTypeData;
+	    }
+	}
+
 }

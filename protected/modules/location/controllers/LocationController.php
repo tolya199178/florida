@@ -66,4 +66,58 @@ class LocationController extends Controller
         echo CJSON::encode($lstCities);
 
 	}
+
+	/**
+	 * Fires off a search and returns all results to the client.
+	 *
+	 * @param <none> <none>
+	 *
+	 * @return <none> <none>
+	 * @access public
+	 */
+	public function actionCitygallery()
+	{
+
+	    $argCityName  = Yii::app()->request->getPost('city', null);
+
+	    // /////////////////////////////////////////////////////////////////////
+	    //  Find city record from city name
+	    // /////////////////////////////////////////////////////////////////////
+	    if ($argCityName != null)
+	    {
+	        $cityModel = City::model()->findByAttributes(array('city_name' => $argCityName));
+	        if ($cityModel != null)
+	        {
+	            $cityId = $cityModel->city_id;
+
+	            // /////////////////////////////////////////////////////////////
+	            // Get all photos for the city
+	            // /////////////////////////////////////////////////////////////
+	            $lstCityPhotos  = Photo::model()->findAllByAttributes(array('entity_id' => $cityId, 'photo_type' => 'city'));
+
+	            // If there are no images, load the no-image by creating a psudeo-model. Remember not to save!
+	            if (count($lstCityPhotos) <= 0)
+	            {
+	                $psuedoPhotoModel = new Photo();
+	                $psuedoPhotoModel->attributes =
+	                array('photo_type'  => 'city',
+	                    'title'       => 'No image found',
+	                    'caption'     => 'No image found',
+	                    'path'        => Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH']
+	                );
+
+	                $lstCityPhotos[]    = $psuedoPhotoModel;
+
+	            }
+
+	            $this->renderPartial('city_gallery', array('lstCityPhotos'=> $lstCityPhotos));
+
+
+	            Yii::app()->end();
+
+	        }
+
+	    }
+
+	}
 }

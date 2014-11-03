@@ -549,7 +549,7 @@ $script = <<<EOD
 
     var where            = where_data.text;
 
-    var url              = '$baseUrl/concierge/gallery/';
+    var url              = '$baseUrl/location/location/citygallery/';
 
     where                = where.trim()
 

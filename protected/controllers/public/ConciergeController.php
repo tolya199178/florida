@@ -95,19 +95,13 @@ class ConciergeController extends Controller
 
 	    $conciergeData = array();
 
-	    // Pre-load the list of cities
-	    $listCities                        = Yii::app()->db->createCommand()
-                                                	       ->select("*")
-                                                	       ->from('tbl_city')
-                                                	       ->queryAll();
-	    $conciergeData['listCities']       = $listCities;
+	    $conciergeData['listCities']       = City::getCollection();
 
 	    // Load the current city
 	    $conciergeData['myLocation']       = $myLocation;
 
 	    // Get the users saved search list, for logged in users
-	    if (!Yii::app()->user->isGuest)
-	    {
+	    if (!Yii::app()->user->isGuest) {
 
 	        $listSavedSearch = Yii::app()->db->createCommand()
                                 	         ->select("*")
@@ -115,53 +109,15 @@ class ConciergeController extends Controller
                                 	         ->where('user_id = :user_id', array(':user_id' => Yii::app()->user->id))
                                 	         ->queryAll();
 	    }
-	    else
-	    {
+	    else {
 	        $listSavedSearch = array();
 	    }
 
 	    $conciergeData['saved_searches'] = $listSavedSearch;
 
-
-
-
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-
 		$this->render('concierge', array('data' => $conciergeData));
 	}
 
-    /**
-     * Generates a JSON encoded list of all citys.
-     *
-     * @param <none> <none>
-     *
-     * @return <none> <none>
-     * @access public
-     */
-    public function actionPrefecthlistall()
-    {
-
-
-        // /////////////////////////////////////////////////////////////////////
-        // Create a Db Criteria to filter and customise the resulting results
-        // /////////////////////////////////////////////////////////////////////
-        $searchCriteria = new CDbCriteria;
-
-        $cityList          = City::model()->findAll($searchCriteria);
-
-         $listResults = array();
-
-         foreach($cityList as $recCity){
-             $listResults[] = array('city_name' => $recCity->attributes['city_name']);
-         }
-          header('Content-type: application/json');
-
-         echo CJSON::encode($listResults);
-
-
-
-    }
 
     /**
      * Generates a JSON encoded list of saved search attributes
@@ -473,60 +429,6 @@ class ConciergeController extends Controller
 
         $this->renderPartial("left_panel_feed_activity", array('model' => $lstSearchLog));
         Yii::app()->end();
-
-    }
-
-    /**
-     * Fires off a search and returns all results to the client.
-     *
-     * @param <none> <none>
-     *
-     * @return <none> <none>
-     * @access public
-     */
-    public function actionGallery()
-    {
-
-        $argCityName  = Yii::app()->request->getPost('city', null);
-
-        // /////////////////////////////////////////////////////////////////////
-        //  Find city record from city name
-        // /////////////////////////////////////////////////////////////////////
-        if ($argCityName != null)
-        {
-            $cityModel = City::model()->findByAttributes(array('city_name' => $argCityName));
-            if ($cityModel != null)
-            {
-                $cityId = $cityModel->city_id;
-
-                // /////////////////////////////////////////////////////////////
-                // Get all photos for the city
-                // /////////////////////////////////////////////////////////////
-                $lstCityPhotos  = Photo::model()->findAllByAttributes(array('entity_id' => $cityId, 'photo_type' => 'city'));
-
-                // If there are no images, load the no-image by creating a psudeo-model. Remember not to save!
-                if (count($lstCityPhotos) <= 0)
-                {
-                    $psuedoPhotoModel = new Photo();
-                    $psuedoPhotoModel->attributes =
-                        array('photo_type'  => 'city',
-                            'title'       => 'No image found',
-                            'caption'     => 'No image found',
-                            'path'        => Yii::app()->theme->baseUrl.'/'.Yii::app()->params['NOIMAGE_PATH']
-                        );
-
-                    $lstCityPhotos[]    = $psuedoPhotoModel;
-
-                }
-
-                $this->renderPartial('city_gallery', array('lstCityPhotos'=> $lstCityPhotos));
-
-
-                Yii::app()->end();
-
-            }
-
-        }
 
     }
 
@@ -991,12 +893,14 @@ LIMIT 0 , $numberOfResults
     private function getMyLocation()
     {
 
-        // TODO: This need to go into the system settings
-        // TODO: User test data until the city database is properly populated
-        // $defaultCityList   = array('Miami', 'Palm Beach', 'Key West');
-        $defaultCityList   = array('Miami');
-        $defaultCityKey    = array_rand($defaultCityList, 1);
-        $defaultCity       = $defaultCityList[$defaultCityKey];
+
+        $defaultCitySettings    = SystemSetting::getCollection(true);
+        $defaultCityList        = explode(",", $defaultCitySettings['cities_in_focus']['value']);
+        $defaultCityList        = array_map('trim', $defaultCityList);
+
+
+        $defaultCityKey         = array_rand($defaultCityList, 1);
+        $defaultCity            = $defaultCityList[$defaultCityKey];
 
 
         // /////////////////////////////////////////////////////////////////////
@@ -1025,13 +929,11 @@ LIMIT 0 , $numberOfResults
             // If the user is not local to a florida address, assign the user to
             // ...a default location
             // /////////////////////////////////////////////////////////////////
-            if (($myLocation->countryName != 'United States') || ($myLocation->regionName != 'Florida'))
-            {
+            if (($myLocation->countryName != 'United States') || ($myLocation->regionName != 'Florida')) {
                 $myCity = $defaultCity;
             }
 
         }
-
 
 
         // /////////////////////////////////////////////////////////////////////
@@ -1040,8 +942,7 @@ LIMIT 0 , $numberOfResults
         // /////////////////////////////////////////////////////////////////////
         $cityModel      = City::model()->findByAttributes(array('city_name' => $myCity));
 
-        if ($cityModel === null)
-        {
+        if ($cityModel === null) {
             $myCity         = $defaultCity;
             $cityModel      = City::model()->findByAttributes(array('city_name' => $myCity));
         }
@@ -1134,26 +1035,32 @@ LIMIT 0 , $numberOfResults
     public function actionActivitylist()
     {
 
-        $strSearchFilter = $_GET['query'];
+        $strSearchFilter        = $_GET['query'];
 
         // Don't process short request to prevent load on the system.
-        if (strlen($strSearchFilter) < 2)
-        {
+        if (strlen($strSearchFilter) < 2) {
             header('Content-type: application/json');
             return "";
             Yii::app()->end();
 
         }
 
-        $lstActivity = Yii::app()->db
-                                ->createCommand()
-                                ->select('activity_id AS id, keyword AS text')
-                                ->from('tbl_activity')
-                                ->where(array('LIKE', 'keyword', '%'.$_GET['query'].'%'))
-                                ->queryAll();
+        /* Get a list of all keywords, plus related words, in a flattened list */
+        $activityList           = Activity::getFlattenedCollection();
+
+        /* Search the list for the keywords. The search will return the list of index of the matches */
+        $lstActivityMatches     = ListHelper::findValue( 'text', $_GET['query'], $activityList);
+
+        /* Create a list of matches to send back to the dropdown */
+        $listActivities = array();
+        if ($lstActivityMatches) {
+            foreach ($lstActivityMatches as $listIndex) {
+                $listActivities[] = $activityList[$listIndex];
+            }
+        }
 
         header('Content-type: application/json');
-        echo CJSON::encode($lstActivity);
+        echo CJSON::encode($listActivities);
 
     }
 
@@ -1171,24 +1078,30 @@ LIMIT 0 , $numberOfResults
 
         $strSearchFilter = $_GET['query'];
 
+
         // Don't process short request to prevent load on the system.
-        if (strlen($strSearchFilter) < 2)
-        {
+        if (strlen($strSearchFilter) < 2) {
             header('Content-type: application/json');
             return "";
             Yii::app()->end();
-
         }
 
-        $lstActivityType = Yii::app()->db
-                                    ->createCommand()
-                                    ->select('activity_id AS id, keyword AS text')
-                                    ->from('tbl_activity_type')
-                                    ->where(array('LIKE', 'keyword', '%'.$_GET['query'].'%'))
-                                    ->queryAll();
+        /* Get a list of all keywords, plus related words, in a flattened list */
+        $activityTypeList       = ActivityType::getFlattenedCollection();
+
+        /* Search the list for the keywords. The search will return the list of index of the matches */
+        $lstActivityTypeMatches = ListHelper::findValue( 'text', $_GET['query'], $activityTypeList);
+
+        /* Create a list of matches to send back to the dropdown */
+        $listActivityTypes      = array();
+        if ($lstActivityTypeMatches) {
+            foreach ($lstActivityTypeMatches as $listIndex) {
+                $listActivityTypes[] = $activityTypeList[$listIndex];
+            }
+        }
 
         header('Content-type: application/json');
-        echo CJSON::encode($lstActivityType);
+        echo CJSON::encode($listActivityTypes);
 
     }
 
